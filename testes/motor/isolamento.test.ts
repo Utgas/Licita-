@@ -20,7 +20,8 @@ async function violacoes(arquivo: string, codigo: string): Promise<string[]> {
     .map((m) => m.ruleId as string);
 }
 
-describe("isolamento de src/motor", () => {
+// A primeira chamada ao ESLint carrega a configuração inteira e passa dos 5 s quando roda junto com os outros testes.
+describe("isolamento de src/motor", { timeout: 30_000 }, () => {
   const arquivoDoMotor = "src/motor/wizard/proibido.ts";
 
   it.each([
