@@ -38,7 +38,7 @@ Se algo disso não estiver lá, pare e avise. O arquivo `correspondencia_process
 
 1. **Compilador e tipos.**
    - Atualize os cabeçalhos esperados: M04 ganha `depende_de_expr` e `calculo_expr`; M05 ganha `calculo_expr` e `calculo_ordem`; M11 ganha `condicional_expr`, `preenche_expr` e `sugere_expr`; entra o M12. Compile de novo e só então trate os erros de expressão.
-   - Leia o `M12_parametros.csv` e inclua os parâmetros no pacote. O `valor` tem três formas: número, lista JSON (`[]`) ou texto (os marcadores de lei revogada). Valor que não se encaixa em nenhuma das três é erro. Hoje o PAR-05 está como `30 dias`; reporte e não corrija.
+   - Leia o `M12_parametros.csv` e inclua os parâmetros no pacote. O `valor` tem três formas: número, lista JSON (`[]`) ou texto (os marcadores de lei revogada). Valor que não se encaixa em nenhuma das três é erro. (Feito no passo 1. Hoje o tipo é lido da frase "Tipo do valor: …" na `fonte`; o agente das matrizes vai criar a coluna `tipo` no M12, e aí o compilador passa a ler a coluna.)
    - Acrescente `parametros.*` às variáveis conhecidas. Variável `parametros.x` sem linha no M12 é erro.
    - Operadores (decisão P31): `reduce`, `+`, `-`, `*`, `/` e `%` são aceitos **só** em `M04.calculo_expr` e `M05.calculo_expr`. Em qualquer outra coluna, são erro. As variáveis `accumulator` e `current` só valem dentro de `reduce`.
    - Contexto de item: dentro de `some`, `none` e `reduce` sobre itens, e no `calculo_expr` do M05, valem os atributos do item mais as respostas, as variáveis, os `parametros.*`, `itens_do_grupo` e `valor_unidade_disputa`, como descreve o README das matrizes. Fora disso, atributo de item solto é erro.
@@ -77,6 +77,8 @@ Se algo disso não estiver lá, pare e avise. O arquivo `correspondencia_process
 7. **Validação** (`src/motor/validacao/`). As regras do M10 com `condicao_expr` geram alertas ou bloqueios. As que não têm expressão (P27) ficam listadas como "conferência manual".
 
 8. **Cenários de ouro** (`testes/cenarios/`). Os 8 cenários de `matrizes/v1/cenarios/` precisam dar exatamente os blocos, as cláusulas, os alertas e as pendências esperados. Os resultados esperados vêm de outra implementação (o simulador do agente das matrizes), então uma diferença aponta erro num dos dois. Não ajuste o código só para bater: investigue e diga de que lado está o erro.
+   - Diferenças já conhecidas do simulador, que o agente das matrizes vai corrigir e reemitir os cenários: (a) ele trata valor ausente como 0 em contas e comparações; vale a regra desta tarefa (ausente dá ausente e vira lacuna); (b) ele não aplica "filho sem o pai não entra"; (c) ele não aplica "exatamente uma opção por grupo de alternativas". Nesses três pontos o motor segue esta tarefa. Se um cenário divergir só por um deles, registre como "simulador" e siga; não pare.
+   - Os números do avaliador vêm do pacote como número do JavaScript. Converta para decimal exato pela forma escrita mais curta do número (`String(n)`), nunca pela representação binária.
 
 9. **Reprodução** (R1 e R2). Compare a minuta com o TR real e classifique cada diferença em um de quatro tipos:
    - **motor**: erro do código;
