@@ -383,7 +383,8 @@
    "VAL-012",
    "VAL-015",
    "VAL-018",
-   "VAL-040"
+   "VAL-040",
+   "VAL-051"
   ],
   "perguntas_sem_resposta": [
    "WZ-15",
@@ -397,7 +398,8 @@
    "WZ-48",
    "WZ-57",
    "WZ-58"
-  ]
+  ],
+  "bloqueios_grupo_alternativas": []
  },
  "referencia": {
   "derivadas": {
@@ -424,7 +426,8 @@
    {
     "numero": 1,
     "tratamento_me_epp": "EXCLUSIVO",
-    "valor_unidade_disputa": 5000.0,
+    "valor_unidade_disputa": 5000,
+    "cota_calculada": 2500,
     "quantidade_cota": null,
     "perecivel": "S",
     "exige_amostra": "N",
@@ -438,7 +441,8 @@
    {
     "numero": 2,
     "tratamento_me_epp": "EXCLUSIVO",
-    "valor_unidade_disputa": 60000.0,
+    "valor_unidade_disputa": 60000,
+    "cota_calculada": 750,
     "quantidade_cota": null,
     "perecivel": "S",
     "exige_amostra": "S",
@@ -452,8 +456,9 @@
    {
     "numero": 3,
     "tratamento_me_epp": "COTA",
-    "valor_unidade_disputa": 120000.0,
-    "quantidade_cota": 5000.0,
+    "valor_unidade_disputa": 120000,
+    "cota_calculada": 5000,
+    "quantidade_cota": 5000,
     "perecivel": "S",
     "exige_amostra": "N",
     "grupo": null,
@@ -466,8 +471,9 @@
    {
     "numero": 4,
     "tratamento_me_epp": "COTA",
-    "valor_unidade_disputa": 135000.0,
-    "quantidade_cota": 2.0,
+    "valor_unidade_disputa": 135000,
+    "cota_calculada": 2,
+    "quantidade_cota": 2,
     "perecivel": "N",
     "exige_amostra": "N",
     "grupo": null,
@@ -480,8 +486,9 @@
    {
     "numero": 5,
     "tratamento_me_epp": "COTA",
-    "valor_unidade_disputa": 128000.0,
-    "quantidade_cota": 1.0,
+    "valor_unidade_disputa": 128000,
+    "cota_calculada": 1,
+    "quantidade_cota": 1,
     "perecivel": "N",
     "exige_amostra": "N",
     "grupo": "G1",
@@ -494,8 +501,9 @@
    {
     "numero": 6,
     "tratamento_me_epp": "COTA",
-    "valor_unidade_disputa": 128000.0,
-    "quantidade_cota": 1.0,
+    "valor_unidade_disputa": 128000,
+    "cota_calculada": 1,
+    "quantidade_cota": 1,
     "perecivel": "N",
     "exige_amostra": "N",
     "grupo": "G1",
@@ -508,7 +516,8 @@
    {
     "numero": 7,
     "tratamento_me_epp": "AMPLA",
-    "valor_unidade_disputa": 120000.0,
+    "valor_unidade_disputa": 120000,
+    "cota_calculada": 0,
     "quantidade_cota": null,
     "perecivel": "N",
     "exige_amostra": "N",

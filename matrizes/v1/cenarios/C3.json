@@ -33,8 +33,7 @@
    "WZ_41": "NAO",
    "WZ_43": "SUBSTITUTIVO_PEQUENO_VALOR",
    "WZ_51": "NAO",
-   "WZ_49": "SIM",
-   "WZ_56": "NAO"
+   "WZ_49": "SIM"
   },
   "checklist": {
    "CK_C_10_1": "Sim",
@@ -443,7 +442,8 @@
    "WZ-57",
    "WZ-58",
    "WZ-59"
-  ]
+  ],
+  "bloqueios_grupo_alternativas": []
  },
  "referencia": {
   "derivadas": {
@@ -458,19 +458,13 @@
   "preenchido_pelo_checklist": {
    "WZ_07": "AMBOS"
   },
-  "sugestoes": {
-   "WZ_56": [
-    [
-     "CK-C-10.1",
-     "SIM"
-    ]
-   ]
-  },
+  "sugestoes": {},
   "itens_calculados": [
    {
     "numero": 1,
     "tratamento_me_epp": null,
-    "valor_unidade_disputa": 9000.0,
+    "valor_unidade_disputa": 9000,
+    "cota_calculada": null,
     "quantidade_cota": null,
     "perecivel": "S",
     "exige_amostra": "N",
@@ -484,7 +478,8 @@
    {
     "numero": 2,
     "tratamento_me_epp": null,
-    "valor_unidade_disputa": 4000.0,
+    "valor_unidade_disputa": 4000,
+    "cota_calculada": null,
     "quantidade_cota": null,
     "perecivel": "N",
     "exige_amostra": "N",

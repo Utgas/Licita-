@@ -50,7 +50,7 @@ def testes(pasta, M):
             return True
         if ctx == "reduce":
             return nome == "accumulator" or (nome.startswith("current.") and nome[8:] in attr_item)
-        base = re.sub(r"_texto$", "", nome)
+        base = re.sub(r"_(?:texto|numero)$", "", nome)
         if base in globais:
             return True
         if ctx == "item":
@@ -71,7 +71,8 @@ def testes(pasta, M):
                 literais.append(f"{onde}: número {e}")
             return
         if isinstance(e, str):
-            if re.search(r"\d", e) and e not in opcoes and not re.fullmatch(r"(TR|SET|ETP)-[A-Za-z0-9.\-]+", e):
+            if re.search(r"\d", e) and e not in opcoes and not re.fullmatch(r"(TR|SET|ETP)-[A-Za-z0-9.\-]+", e) and \
+                    not re.fullmatch(r"CK-[CPX]-(?:CAB\.\d{2}|\d{1,2}(?:\.\d{1,2})?)", e):
                 literais.append(f"{onde}: texto '{e}'")
             return
         if not isinstance(e, dict) or len(e) != 1:
@@ -191,6 +192,84 @@ def testes(pasta, M):
     sem_uso = [r["nome"] for r in m12 if not r["usado_em"]]
     reg(not ruins and not sem_uso, f"M12: {len(m12)} parâmetros com fonte e status, todos usados por alguma regra"
         + (f" | {ruins} {sem_uso}" if ruins or sem_uso else ""))
+    # --------------------------------------------------------- Fase 11
+    from jlogic import avaliar as _av
+    from parametros import VALORES
+    import f11_checklist as f11
+
+    def com_globais(d):
+        d = dict(d, parametros=VALORES)
+        d["itens"] = [dict({k: v for k, v in d.items() if k != "itens"}, **i) for i in d.get("itens", [])]
+        return d
+    cs11 = f11.casos(M["M11"])
+    ruins11, n11 = [], 0
+    for r in M["M11"]:
+        if not r["revisao_expr"]:
+            continue
+        ex = json.loads(r["revisao_expr"])
+        lst = cs11.get(r["id"], [])
+        if not any(v for _, v in lst) or not any(v is False for _, v in lst):
+            ruins11.append(f"{r['id']}: sem caso que dispara e caso que não dispara")
+        for dados, esp in lst:
+            n11 += 1
+            if bool(_av(ex, com_globais(dados))) != esp:
+                ruins11.append(f"{r['id']}: {dados} deveria {'disparar' if esp else 'não disparar'}")
+    reg(not ruins11, f"M11.revisao_expr: {sum(1 for r in M['M11'] if r['revisao_expr'])} expressões, {n11} casos (cada uma "
+        f"dispara e não dispara)" + (f" | {ruins11[:6]}" if ruins11 else ""))
+    gerais = [r["id"] for r in M["M11"] if r["revisao_expr"] and re.search(r'"(reduce|\+|\*|-|/|%)":', r["revisao_expr"])]
+    reg(not gerais, "M11.revisao_expr só com operadores gerais (sem os de cálculo)")
+    compl = [r for r in M["M11"] if r["checklist"] == "COMPLEMENTO"]
+    ok_c = len(compl) == 9 and all(re.fullmatch(r"CK-X-\d{2}", r["id"]) and (r["preenche_expr"] or r["sugere_expr"])
+                                   and r["condicional_expr"] for r in compl)
+    reg(ok_c, f"M11: {len(compl)} complementos do operador (CK-X-01 a CK-X-09, checklist COMPLEMENTO), com condição e "
+        f"expressão")
+    com = [r["id"] for r in M["M11"] if r["id"] in [f"CK-C-10.{n}" for n in range(1, 12)]
+           and (r["efeito"] != "SO_CONTROLE" or r["destinos"] or r["preenche_expr"] or r["sugere_expr"])]
+    wz56 = next(r for r in M["M04"] if r["id"] == "WZ-56")["depende_de_expr"]
+    s01 = next(r for r in M["M08"] if r["id"] == "SET-01")["condicao_expr"]
+    v27 = next(r for r in M["M10"] if r["id"] == "VAL-027")["condicao_expr"]
+    reg(not com and wz56 == s01 == v27 == "false", "comodato fora do sistema: CK-C-10.1 a 10.11 só controle; WZ-56, SET-01 e "
+        "VAL-027 com expressão false e o motivo no texto" + (f" | {com}" if com else ""))
+    # cota zero: VAR-160 e VAL-051
+    v51 = json.loads(next(r for r in M["M10"] if r["id"] == "VAL-051")["condicao_expr"])
+    m5 = {r["id"]: r for r in M["M05"]}
+    item = {"quantidade": 3, "valor_unitario": 40000, "WZ_01": "LICITACAO", "VAR_057": 25, "parametros": VALORES}
+    ctx = dict(item)
+    for vid in ("VAR-119", "VAR-160", "VAR-113", "VAR-118"):
+        ctx["itens_do_grupo"] = [dict(ctx)]
+        ctx[m5[vid]["nome"].split(".", 1)[1]] = _av(json.loads(m5[vid]["calculo_expr"]), ctx)
+    ctx2 = dict(item, quantidade=9, valor_unitario=15000)
+    for vid in ("VAR-119", "VAR-160", "VAR-113", "VAR-118"):
+        ctx2["itens_do_grupo"] = [dict(ctx2)]
+        ctx2[m5[vid]["nome"].split(".", 1)[1]] = _av(json.loads(m5[vid]["calculo_expr"]), ctx2)
+    ok_cz = (ctx["cota_calculada"] == 0 and ctx["tratamento_me_epp"] == "AMPLA" and ctx["quantidade_cota"] is None
+             and _av(v51, {"itens": [ctx]}) and ctx2["tratamento_me_epp"] == "COTA" and ctx2["quantidade_cota"] == 2
+             and not _av(v51, {"itens": [ctx2]}))
+    reg(ok_cz, f"cota zero: 3 x 25% dá cota 0, item em AMPLA e VAL-051 dispara; 9 x 25% dá cota 2, COTA e VAL-051 não "
+        f"dispara ({ctx['tratamento_me_epp']}, {ctx2['tratamento_me_epp']})")
+    sem_valor = dict(item, valor_unitario=None)
+    for vid in ("VAR-119", "VAR-160", "VAR-113"):
+        sem_valor["itens_do_grupo"] = [dict(sem_valor)]
+        sem_valor[m5[vid]["nome"].split(".", 1)[1]] = _av(json.loads(m5[vid]["calculo_expr"]), sem_valor)
+    reg(sem_valor["valor_unidade_disputa"] is None and sem_valor["tratamento_me_epp"] is None,
+        "valor ausente: item sem valor_unitario fica sem valor da unidade e sem tratamento ME/EPP (não vira EXCLUSIVO)")
+    # limite exato em decimal: soma igual ao limite é EXCLUSIVO; um centavo acima, não
+    lim = dict(item, quantidade=3, valor_unitario=26666.67)  # 80000.01
+    lim2 = dict(item, quantidade=4, valor_unitario=20000.00)  # 80000.00
+    res = []
+    for x in (lim2, lim):
+        for vid in ("VAR-119", "VAR-160", "VAR-113"):
+            x["itens_do_grupo"] = [dict(x)]
+            x[m5[vid]["nome"].split(".", 1)[1]] = _av(json.loads(m5[vid]["calculo_expr"]), x)
+        res.append(x["tratamento_me_epp"])
+    reg(res == ["EXCLUSIVO", "AMPLA"], f"conta exata no limite: 4 x 20.000,00 = limite dá EXCLUSIVO; 3 x 26.666,67 "
+        f"(80.000,01) não ({res})")
+    tipos = {r["nome"]: r["tipo"] for r in m12}
+    reg(all(t in ("numero", "lista", "texto") for t in tipos.values()) and tipos.get("prazo_entrega_referencia") == "numero",
+        f"M12: coluna tipo em todas as linhas ({sorted(set(tipos.values()))})")
+    ids05 = {r["id"] for r in M["M05"]}
+    citados = {v for r in m12 for v in re.findall(r"VAR-\d{3}", r["fonte"] + r["base"])}
+    reg(citados <= ids05, f"M12: toda VAR citada na fonte e na base existe no M05 ({sorted(citados)})")
     # --------------------------------------------------------- correções de 23/10/2026 (revisão da Fase 10)
     from jlogic import avaliar
     v29 = json.loads(next(r for r in M["M10"] if r["id"] == "VAL-029")["condicao_expr"])
@@ -215,8 +294,9 @@ def testes(pasta, M):
         e = d.get("esperado", {})
         if set(d.get("entrada", {})) != {"wizard", "checklist", "itens", "variaveis", "metadados"}:
             estrutura.append(f"{k}: entrada")
+        ids_ga = {r["grupo_alternativa"].split(" ")[0] for r in M["M02"] if r["grupo_alternativa"]}
         for campo, ids in (("blocos", ids02), ("clausulas_m08", ids08), ("validacoes_m10", ids10),
-                           ("perguntas_sem_resposta", ids04)):
+                           ("perguntas_sem_resposta", ids04), ("bloqueios_grupo_alternativas", ids_ga)):
             if campo not in e or [x for x in e[campo] if x not in ids]:
                 estrutura.append(f"{k}: esperado.{campo}")
         if k.startswith("R") and ([x["dv"] for x in d.get("divergencias_conhecidas", []) if x["dv"] not in ids09]
@@ -245,6 +325,25 @@ def testes(pasta, M):
            detecta("M04", "WZ-09", "calculo_expr", '"SIM","NAO"', '"NAO","SIM"')]
     reg(all(det), f"controle negativo das colunas novas: 4 erros injetados (depende_de_expr, M05.calculo_expr, "
         f"preenche_expr, M04.calculo_expr), detectados {sum(det)}")
+    # regras do motor que nenhum cenário de ouro aciona: filho sem pai e grupo de alternativas
+    c1 = next(d for d in docs if d["id"] == "C1")
+    base_blocos = sim.caminho_expr(m, c1["entrada"])[0]["blocos"]
+    paiz = next(b for b in base_blocos if any(x.startswith(b + ".") for x in base_blocos) and
+                next(r for r in m["M02"] if r["id"] == b)["grupo_alternativa"] == "")
+    ids02_ = {r["id"] for r in m["M02"]}
+    filhos = [x for x in base_blocos if sim.pai(x, ids02_) == paiz]
+    mm = copy.deepcopy(m)
+    for r in mm["M02"]:
+        if r["id"] == paiz:
+            r["condicao_expr"] = "false"
+    sem_pai = sim.caminho_expr(mm, c1["entrada"])[0]["blocos"]
+    ok_pai = not [x for x in filhos if x in sem_pai]
+    mm = copy.deepcopy(m)
+    alt = next(r for r in mm["M02"] if r["grupo_alternativa"].startswith("GA-01") and r["opcao"] and r["id"] not in base_blocos)
+    alt["condicao_expr"] = "true"
+    bl = sim.caminho_expr(mm, c1["entrada"])[0]["bloqueios_grupo_alternativas"]
+    reg(ok_pai and bl == ["GA-01"], f"regras de montagem no simulador: com {paiz} desligado, {len(filhos)} filhos saem; com "
+        f"duas opções no GA-01 ({alt['id']} ligado à força), bloqueio {bl}")
     # --------------------------------------------------------- dados reais
     achados = []
     for k, d in arqs.items():

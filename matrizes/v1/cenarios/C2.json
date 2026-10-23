@@ -372,7 +372,8 @@
    "WZ-46",
    "WZ-47",
    "WZ-48"
-  ]
+  ],
+  "bloqueios_grupo_alternativas": []
  },
  "referencia": {
   "derivadas": {
@@ -393,7 +394,8 @@
    {
     "numero": 1,
     "tratamento_me_epp": null,
-    "valor_unidade_disputa": 5000.0,
+    "valor_unidade_disputa": 5000,
+    "cota_calculada": null,
     "quantidade_cota": null,
     "perecivel": "N",
     "exige_amostra": "N",
@@ -407,7 +409,8 @@
    {
     "numero": 2,
     "tratamento_me_epp": null,
-    "valor_unidade_disputa": 800.0,
+    "valor_unidade_disputa": 800,
+    "cota_calculada": null,
     "quantidade_cota": null,
     "perecivel": "N",
     "exige_amostra": "N",

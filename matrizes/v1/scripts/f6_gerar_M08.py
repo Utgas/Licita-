@@ -48,9 +48,10 @@ def marcado(lista, n, opcao):
 S = [
     dict(id="SET-01", tema="Comodato de equipamento vinculado ao fornecimento de material de consumo",
          documento="AMBOS", origem="CK-C-10.1 a CK-C-10.11",
-         condicao="SE o checklist de consumo indicar dependência de equipamento em comodato (CK-C-10.1 = Sim) E a equipe "
-                  "administrativa admitir o comodato (WZ-56 = SIM)",
-         expr=e(sim(C, "10.1"), eq("WZ_56", "SIM")),
+         condicao="DESLIGADA: comodato fora do sistema por enquanto (P24, decisão 0008 de 23/10/2026); condicao_expr = false, "
+                  "a cláusula nunca entra. Condição anterior: SE o checklist de consumo indicar dependência de equipamento "
+                  "em comodato (CK-C-10.1 = Sim) E a equipe administrativa admitir o comodato (WZ-56 = SIM)",
+         expr=False,
          ponto="TR: seção 5, depois de TR-5.4.1, como subitem próprio 'Comodato'; ETP: ETP-06.01 (descrição da solução) e "
                "ETP-04.01 (requisitos)",
          texto="Para o fornecimento dos itens [VAR-125: itens que dependem do equipamento], o Contratado disponibilizará ao "
@@ -196,7 +197,7 @@ S = [
          evid=f"{TR117} p.6: 'em situações de urgência, a entrega deverá ocorrer no prazo máximo de 4 horas'",
          obs="O prazo vem do checklist; o sistema não sugere prazo.", status="INFERIDO"),
     dict(id="SET-11", tema="Instalação, montagem, testes e comissionamento (permanentes; equipamento em comodato)",
-         documento="AMBOS", origem="CK-P-11.1 a CK-P-11.6; CK-C-10.7",
+         documento="AMBOS", origem="CK-P-11.1 a CK-P-11.6 (a CK-C-10.7, de comodato, ficou só para controle: S21)",
          condicao="SE o checklist indicar instalação ou montagem especializada (CK-P-11.1 = Sim)",
          expr=sim(P, "11.1"),
          ponto="TR: seção 5, depois das condições de entrega; complementa TR-8.9 (texto em preto, que já põe a instalação "
@@ -210,9 +211,10 @@ S = [
               f"manuais em português e certificados de garantia.'",
          obs="Com WZ-08 = SIM, a atividade associada pode justificar atestado (WZ-38, NE-071).", status="INFERIDO"),
     dict(id="SET-12", tema="Treinamento de operação",
-         documento="AMBOS", origem="CK-P-12.1 a CK-P-12.8; CK-C-10.8; CK-C-18.4; CK-C-20.5",
-         condicao="SE o checklist indicar treinamento (CK-P-12.1, CK-C-10.8 ou CK-C-18.4 = Sim)",
-         expr=ou(sim(P, "12.1"), sim(C, "10.8"), sim(C, "18.4")),
+         documento="AMBOS", origem="CK-P-12.1 a CK-P-12.8; CK-C-18.4; CK-C-20.5 (a CK-C-10.8, de comodato, ficou só para "
+                                   "controle: S21)",
+         condicao="SE o checklist indicar treinamento (CK-P-12.1 ou CK-C-18.4 = Sim)",
+         expr=ou(sim(P, "12.1"), sim(C, "18.4")),
          ponto="TR: seção 5; ETP: ETP-06.01",
          texto="O Contratado ministrará treinamento [VAR-138: público e quantidade aproximada], com o conteúdo mínimo [VAR-138], "
                "carga horária mínima [VAR-138] e [VAR-138: formato: prática presencial, material em português, certificado], "

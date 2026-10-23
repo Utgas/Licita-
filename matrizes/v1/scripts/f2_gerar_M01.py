@@ -144,10 +144,11 @@ F = [
     ("ETP-90.01", "90", "Seção adicional (no corpus: 'Justificativas pontuais')", "Seção livre criada pelo requisitante", "", "N", "",
      "EU+IA",
      "Observada só no ETP 117/2025, com justificativas de qualificação técnica e de compatibilidade com o Plano de Logística "
-     "Sustentável; renumera as seções seguintes",
-     ANTI, "Não usar no MVP até conferir nas telas do ETP Digital se a seção existe como recurso do sistema; o conteúdo cabe em "
-           "ETP-04.01 e ETP-14.01", "TR-9.34; TR-4.1", False, ["tipo", "regra_preenchimento", "quando_nao_se_aplica", "destino_tr"],
-     "Status A_VERIFICAR: recurso não confirmado no sistema."),
+     "Sustentável; renumera as seções seguintes. Seção opcional, sem texto padrão: só entra se o requisitante escrever",
+     ANTI, "Opcional e sem texto padrão: o ETP Digital aceita a seção (P19, resposta de 23/10/2026); quando não há conteúdo "
+           "próprio, não entra, e o assunto cabe em ETP-04.01 e ETP-14.01", "TR-9.34; TR-4.1", False,
+     ["tipo", "regra_preenchimento", "quando_nao_se_aplica", "destino_tr"],
+     "P19 fechada em 23/10/2026: o ETP Digital aceita a seção; campo opcional, sem texto padrão."),
 ]
 
 ROT = {"PREENCHIDO": "preenchido", "REMISSAO": "remissão", "NAO_SE_APLICA": "não se aplica", "OMITIDO": "omitido",
@@ -235,7 +236,6 @@ def main():
             origem = ORIGEM[cid]
             fonte += f" Origem principal: {origem}."
         if cid == "ETP-90.01":
-            status = "A_VERIFICAR"
             fonte += " Ver P19."
         linhas.append({
             "id": cid, "secao_numero": sec, "secao_nome": nome, "campo": campo, "inciso_art18": inc,

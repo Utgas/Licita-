@@ -39,14 +39,15 @@ def r_eq(cid, valor):
     return eq(ckn(cid), valor)
 
 
-def opcao_ou_texto(cid, outro="Outro", mapa=None):
-    """valor da opção; 'Outro' vira o texto escrito; mapa traduz opção literal em número."""
+def opcao_ou_texto(cid, outro="Outro", mapa=None, sufixo_outro="_texto"):
+    """valor da opção; 'Outro' vira o texto escrito (ou o número lido dele, sufixo _numero, S20); mapa traduz opção
+    literal em número."""
     n = ckn(cid)
     if mapa:
         partes = []
         for op, v in mapa.items():
             partes += [eq(n, op), v]
-        return {"if": partes + [eq(n, outro), var(n + "_texto"), None]}
+        return {"if": partes + [eq(n, outro), var(n + sufixo_outro), None]}
     return se(eq(n, outro), var(n + "_texto"), var(n))
 
 
@@ -66,6 +67,8 @@ def regra(cid, pre=None, sug=None, sem_padrao=()):
 for L, O in (("C", "P"), ("P", "C")):
     regra(f"CK-{L}-CAB.01", pre={"VAR_001": se(vazio("VAR_001"), var(ckn(f"CK-{L}-CAB.01")))})
     regra(f"CK-{L}-CAB.02", pre={"VAR_006": se(vazio(ckn(f"CK-{L}-1.1")), var(ckn(f"CK-{L}-CAB.02")))})
+    # S03: a seção 1 prevalece sobre o cabeçalho também para o responsável técnico
+    regra(f"CK-{L}-CAB.04", pre={"VAR_007": se(vazio(ckn(f"CK-{L}-1.4")), var(ckn(f"CK-{L}-CAB.04")))})
     cat = "CONSUMO" if L == "C" else "PERMANENTE"
     regra(f"CK-{L}-1.5", pre={"WZ_07": se(tem(ckn(f"CK-{O}-1.5")), "AMBOS", cat),
                               "itens.categoria": se(vazio(ckn(f"CK-{O}-1.5")), cat)})
@@ -95,7 +98,7 @@ regra(C + "10.1", sug={"WZ_56": sim_para(C + "10.1", "SIM")})
 regra(C + "10.7", pre={"WZ_08": sim_para(C + "10.7", "SIM")})
 regra(C + "10.8", pre={"WZ_08": sim_para(C + "10.8", "SIM")})
 regra(C + "12.1", pre={"VAR_060": opcao_ou_texto(C + "12.1", mapa={"15 dias": 15, "30 dias": 30, "45 dias": 45,
-                                                                     "60 dias": 60})})
+                                                                     "60 dias": 60}, sufixo_outro="_numero")})
 regra(C + "12.3", pre={"WZ_26": {"if": [r_eq(C + "12.3", "Única"), "REMESSA_UNICA",
                                          inn(var(ckn(C + "12.3")), ["Parcelada", "Conforme pedidos da unidade"]),
                                          "PARCELADA", None]}})
@@ -129,7 +132,7 @@ regra(P + "7.1", sug={})
 regra(P + "7.2", pre={"itens.grupo": se(r_eq(P + "7.2", SIM), var(ckn(P + "7.2") + "_texto"))}, sem_padrao=("VAR-102",))
 regra(P + "7.5", sug={"itens.grupo": se(r_eq(P + "7.5", SIM), var(ckn(P + "7.5") + "_texto"))})
 regra(P + "8.1", pre={"VAR_060": opcao_ou_texto(P + "8.1", mapa={"30 dias": 30, "60 dias": 60, "90 dias": 90,
-                                                                    "120 dias": 120, "180 dias": 180})})
+                                                                    "120 dias": 120, "180 dias": 180}, sufixo_outro="_numero")})
 regra(P + "8.3", pre={"WZ_26": {"if": [r_eq(P + "8.3", "Em remessa única por item"), "REMESSA_UNICA",
                                         inn(var(ckn(P + "8.3")), ["Em etapas previamente definidas",
                                                                    "Conforme cronograma de implantação"]),

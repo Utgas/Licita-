@@ -14,6 +14,9 @@ Convenções de nomes de variável (as mesmas em M02.condicao_expr, M04.liga_exp
 Operadores usados: var, ==, !=, !, !!, and, or, in, some, all, none, if, merge, >, >=, <, <=, +, *.
 """
 import json
+from decimal import Decimal, getcontext
+
+getcontext().prec = 50
 
 
 def var(nome, padrao=None):
@@ -71,6 +74,40 @@ def dumps(x):
     return json.dumps(x, ensure_ascii=False, separators=(",", ":"))
 
 
+def verdadeiro(v):
+    """Falso: null, false, 0, "" e []. Todo o resto é verdadeiro (regra do motor, Marco 1)."""
+    if v is None or v is False or v == "" or v == []:
+        return False
+    if isinstance(v, (int, float, Decimal)) and not isinstance(v, bool) and v == 0:
+        return False
+    return True
+
+
+def numero(v):
+    """Decimal exato a partir da forma escrita do número; None se não for número."""
+    if isinstance(v, bool) or v is None:
+        return None
+    if isinstance(v, Decimal):
+        return v
+    if isinstance(v, int):
+        return Decimal(v)
+    if isinstance(v, float):
+        return Decimal(repr(v))
+    return None
+
+
+def igual(a, b):
+    """Igualdade estrita: tipos diferentes são diferentes; números comparam por valor; null só é igual a null."""
+    na, nb = numero(a), numero(b)
+    if na is not None and nb is not None:
+        return na == nb
+    if (na is None) != (nb is None):
+        return False
+    if isinstance(a, bool) or isinstance(b, bool):
+        return a is b
+    return type(a) is type(b) and a == b
+
+
 def avaliar(ex, d):
     if isinstance(ex, list):
         return [avaliar(x, d) for x in ex]
@@ -87,21 +124,23 @@ def avaliar(ex, d):
             if isinstance(v, dict) and parte in v:
                 v = v[parte]
             else:
-                return padrao
+                return avaliar(padrao, d) if isinstance(padrao, (dict, list)) else padrao
         return v
     if op == "reduce":
-        arr = avaliar(a[0], d) or []
+        arr = avaliar(a[0], d)
+        arr = arr if isinstance(arr, list) else []
         acc = avaliar(a[2], d) if len(a) > 2 else None
         for x in arr:
             acc = avaliar(a[1], {"current": x, "accumulator": acc})
         return acc
     if op in ("some", "all", "none"):
-        arr = avaliar(a[0], d) or []
-        res = [bool(avaliar(a[1], x)) for x in arr]
+        arr = avaliar(a[0], d)
+        arr = arr if isinstance(arr, list) else []
+        res = [verdadeiro(avaliar(a[1], x)) for x in arr]
         return any(res) if op == "some" else (all(res) and bool(res)) if op == "all" else not any(res)
     if op == "if":
         for k in range(0, len(a) - 1, 2):
-            if avaliar(a[k], d):
+            if verdadeiro(avaliar(a[k], d)):
                 return avaliar(a[k + 1], d)
         return avaliar(a[-1], d) if len(a) % 2 else None
     args = a if isinstance(a, list) else [a]
@@ -109,19 +148,20 @@ def avaliar(ex, d):
         r = True
         for x in args:
             r = avaliar(x, d)
-            if not r:
+            if not verdadeiro(r):
                 return r
         return r
     if op == "or":
+        r = False
         for x in args:
             r = avaliar(x, d)
-            if r:
+            if verdadeiro(r):
                 return r
-        return False
+        return r
     if op == "!":
-        return not avaliar(args[0], d)
+        return not verdadeiro(avaliar(args[0], d))
     if op == "!!":
-        return bool(avaliar(args[0], d))
+        return verdadeiro(avaliar(args[0], d))
     v = [avaliar(x, d) for x in args]
     if op == "merge":
         out = []
@@ -129,30 +169,35 @@ def avaliar(ex, d):
             out.extend(x if isinstance(x, list) else [x])
         return out
     if op == "==":
-        return v[0] == v[1]
+        return igual(v[0], v[1])
     if op == "!=":
-        return v[0] != v[1]
+        return not igual(v[0], v[1])
     if op == "in":
-        if v[1] is None or v[0] is None:
+        if v[0] is None or v[1] is None:
             return False
-        return v[0] in v[1]
+        if isinstance(v[1], str):
+            return isinstance(v[0], str) and v[0] in v[1]
+        if isinstance(v[1], list):
+            return any(igual(v[0], x) for x in v[1])
+        return False
+    # conta e comparação de ordem: valor ausente (ou não numérico) dá ausente; divisão por zero dá ausente
+    ns = [numero(x) for x in v]
+    if any(n is None for n in ns):
+        return None
     if op in (">", ">=", "<", "<="):
-        try:
-            x, y = float(v[0] or 0), float(v[1] or 0)
-        except (TypeError, ValueError):
-            return False
+        x, y = ns[0], ns[1]
         return {">": x > y, ">=": x >= y, "<": x < y, "<=": x <= y}[op]
     if op == "*":
-        r = 1.0
-        for x in v:
-            r *= float(x or 0)
+        r = Decimal(1)
+        for x in ns:
+            r *= x
         return r
     if op == "+":
-        return sum(float(x or 0) for x in v)
+        return sum(ns, Decimal(0))
     if op == "-":
-        return float(v[0] or 0) - float(v[1] or 0) if len(v) > 1 else -float(v[0] or 0)
-    if op == "/":
-        return float(v[0] or 0) / float(v[1])
-    if op == "%":
-        return float(v[0] or 0) % float(v[1])
+        return ns[0] - ns[1] if len(ns) > 1 else -ns[0]
+    if op in ("/", "%"):
+        if ns[1] == 0:
+            return None
+        return ns[0] / ns[1] if op == "/" else ns[0] % ns[1]
     raise ValueError(f"operador JSON Logic não suportado: {op}")

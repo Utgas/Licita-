@@ -331,7 +331,8 @@
   "validacoes_m10": [
    "VAL-001",
    "VAL-025",
-   "VAL-026"
+   "VAL-026",
+   "VAL-051"
   ],
   "perguntas_sem_resposta": [
    "WZ-15",
@@ -343,7 +344,8 @@
    "WZ-42",
    "WZ-46",
    "WZ-48"
-  ]
+  ],
+  "bloqueios_grupo_alternativas": []
  },
  "referencia": {
   "derivadas": {
@@ -383,7 +385,8 @@
    {
     "numero": 1,
     "tratamento_me_epp": "AMPLA",
-    "valor_unidade_disputa": 450000.0,
+    "valor_unidade_disputa": 450000,
+    "cota_calculada": 0,
     "quantidade_cota": null,
     "perecivel": "N",
     "exige_amostra": "N",
@@ -397,7 +400,8 @@
    {
     "numero": 2,
     "tratamento_me_epp": "EXCLUSIVO",
-    "valor_unidade_disputa": 60000.0,
+    "valor_unidade_disputa": 60000,
+    "cota_calculada": 0,
     "quantidade_cota": null,
     "perecivel": "N",
     "exige_amostra": "N",

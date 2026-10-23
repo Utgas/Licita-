@@ -1,6 +1,6 @@
 {
  "id": "C8",
- "descricao": "consumo com comodato, temperatura, controle especial e respostas incoerentes no checklist",
+ "descricao": "consumo com temperatura, controle especial e respostas incoerentes no checklist (comodato respondido no Word, fora do sistema)",
  "observacao": "Dados fictícios de teste. Gerado por f10_simulador.py (caminho do texto); a reprodução pelas colunas _expr é conferida pelo f9_testes.py.",
  "entrada": {
   "wizard": {
@@ -36,7 +36,6 @@
    "WZ_41": "NAO",
    "WZ_43": "CONTRATO",
    "WZ_49": "SIM",
-   "WZ_56": "SIM",
    "WZ_57": "SIM",
    "WZ_59": "NAO"
   },
@@ -325,7 +324,6 @@
    "TR-ASSIN.03"
   ],
   "clausulas_m08": [
-   "SET-01",
    "SET-02",
    "SET-03",
    "SET-04",
@@ -353,7 +351,8 @@
    "WZ-46",
    "WZ-47",
    "WZ-48"
-  ]
+  ],
+  "bloqueios_grupo_alternativas": []
  },
  "referencia": {
   "derivadas": {
@@ -371,12 +370,6 @@
   "via_checklist": {},
   "preenchido_pelo_checklist": {},
   "sugestoes": {
-   "WZ_56": [
-    [
-     "CK-C-10.1",
-     "SIM"
-    ]
-   ],
    "WZ_57": [
     [
      "CK-C-14.4",
@@ -394,7 +387,8 @@
    {
     "numero": 1,
     "tratamento_me_epp": "EXCLUSIVO",
-    "valor_unidade_disputa": 20000.0,
+    "valor_unidade_disputa": 20000,
+    "cota_calculada": 1250,
     "quantidade_cota": null,
     "perecivel": "S",
     "exige_amostra": "N",
@@ -408,8 +402,9 @@
    {
     "numero": 2,
     "tratamento_me_epp": "COTA",
-    "valor_unidade_disputa": 120000.0,
-    "quantidade_cota": 200.0,
+    "valor_unidade_disputa": 120000,
+    "cota_calculada": 200,
+    "quantidade_cota": 200,
     "perecivel": "S",
     "exige_amostra": "N",
     "grupo": null,

@@ -64,7 +64,9 @@ def main():
     sug = sum(1 for r in m11 if r["sugere_expr"])
     cnd = sum(1 for r in m11 if r["condicional_expr"])
     o = ["# Licita+ | Matrizes v1", "",
-         "Estado em 23/10/2026: Fases 0 a 10 concluídas. Na Fase 10 as regras que o motor executa ficaram todas em JSON "
+         "Estado em 23/10/2026: Fases 0 a 11 concluídas. A Fase 11 leva para as matrizes o lote 1 de respostas (decisão "
+         "0008), a decisão de não mudar o checklist distribuído (decisão 0009) e as regras do simulador alinhadas ao motor "
+         "(Marco 1). Na Fase 10 as regras que o motor executa ficaram todas em JSON "
          "Logic (dependências do wizard, condições e preenchimento do checklist, atributos calculados), com os parâmetros "
          "no M12 e os cenários de ouro e de reprodução em `cenarios/`. Antes, na mesma data, a tarefa extra da Fase 10 "
          "conferiu o M07 com o repositório auxiliar ctresb/leis e fechou a P16.", "",
@@ -72,12 +74,27 @@ def main():
     o += [f"| `{a}` | {d} | {n[a]} |" for a, d in ARQ]
     o += ["| `matrizes_v1.xlsx` | cópia de leitura e revisão: aba LEIA_ME e uma aba por CSV; colunas de revisão em amarelo no M03 e no M04 | |",
           f"| `cenarios/` | cenários de ouro C1 a C8 ({n_c}) e casos de reprodução R1 e R2 ({n_r}) em JSON, com entrada e esperado | |",
-          "| `perguntas_abertas.md` | decisões pendentes e adotadas, P01 a P31 | |",
+          "| `perguntas_abertas.md` | decisões pendentes e adotadas, P01 a P32 | |",
           "| `sugestoes_checklist.md` | lacunas, duplicidades e ambiguidades dos checklists, com redação proposta | |",
           "| `auditoria_matrizes_01_02.md` | auditoria das matrizes rascunho 01 e 02 (Fase 8) | |",
           "| `log_fase10_repo_leis.md` | arquivos do repositório auxiliar ctresb/leis (commit 15eb09b) cruzados com o M07 e uso de cada um | |",
           "| `logs/` | conferências, cobertura do checklist, comparação dos TRs, expressões, simulação, normas, testes | |",
           "| `scripts/` | scripts de análise que geram tudo acima | |", "",
+          "## O que mudou na Fase 11", "",
+          f"- M11: colunas `leitura`, `revisao_expr` e `revisao_pergunta` ({sum(1 for r in m11 if r['revisao_expr'])} "
+          f"expressões de revisão, {sum(1 for r in m11 if r['revisao_pergunta'])} perguntas ao operador) e "
+          f"{sum(1 for r in m11 if r['checklist'] == 'COMPLEMENTO')} complementos do operador (CK-X-01 a CK-X-09). As "
+          f"perguntas 10.1 a 10.11 do consumo (comodato) passaram a só controle.",
+          "- M12: coluna `tipo` (numero, lista ou texto), que passa a ser a fonte do tipo; a frase 'Tipo do valor' na fonte "
+          "continua. PAR-03 corrigido: cita a VAR-160, que agora existe (cota calculada).",
+          "- Cota zero (decisão 0008): VAR-160 nova, VAR-113 e VAR-118 refeitas sem ciclo (ordem 4, 5 e 6) e VAL-051 nova.",
+          "- Comodato fora do sistema (P24): WZ-56, SET-01 e VAL-027 com expressão `false` e o motivo no texto ('DESLIGADA').",
+          "- VAL-001 só com as perguntas 15.3 e 15.5 do checklist de permanentes (P28). ETP-90.01 opcional, sem texto padrão "
+          "(P19). DV-35 nova (TR 23/2026, blocos de cota sem cota), ligada ao R1.",
+          "- M02: coluna `grupo_ativo_expr` (quando um grupo de alternativas vale), usada pela regra de exatamente uma opção.",
+          "- Simulador com as regras do motor: valor ausente, filho sem pai, grupo de alternativas, igualdade estrita, falso "
+          "e conta em decimal exato (seção 'Regras do simulador'). Cenários reemitidos; `esperado` ganhou "
+          "`bloqueios_grupo_alternativas`.", "",
           "## O que mudou na Fase 10", "",
           f"- `M04.depende_de_expr` em {dep} de {len(m04)} perguntas (vazia quando a pergunta vale sempre ou só depende de "
           f"dado dos itens) e `M04.calculo_expr` nas 6 perguntas derivadas dos itens.",
@@ -107,9 +124,9 @@ def main():
           "`M10.condicao_expr`. O texto livre continua como comentário. O que não coube está na P27.",
           "- Colunas `validacao` e `comentario_validacao` no M03 e no M04, vazias, para a sua revisão no xlsx.",
           "- P17 e P21 resolvidas; P16 fechada na Fase 10 (Decreto 12.174/2024, art. 2º, conferido no Planalto); P10 atualizada (DFDs chegaram, mas nenhum do processo do par 117/2025).", "",
-          "## Especificação reconstruída (leia antes de revisar M06 a M10)", "",
-          "O texto original do prompt não está disponível nesta sessão (o `attachment.txt` de 22/10/2026 é a lista de tarefas). As "
-          "colunas abaixo e a lista de achados da seção 5 foram reconstruídas do registro das Fases 0 a 3; confirme ou corrija (P23).", "",
+          "## Especificação das matrizes M06 a M10 (oficial desde 23/10/2026)", "",
+          "Reconstruída do registro das Fases 0 a 3, porque o prompt original não estava disponível; o gestor fechou a P23 e "
+          "esta especificação passou a ser a oficial.", "",
           "- M06: `bloco_tr`, `secao`, `campos_etp`, `variaveis`, `perguntas_wz`, `classe_origem`, `regra_derivacao`, "
           "`teste_par_117`, `evidencia_par_117`, `teste_caso_67_23`, `evidencia_caso_67_23`, `fonte`, `status`.",
           "- M07: `id` (NRM-xxx, estável pela `chave`), `chave`, `norma`, `tipo`, `numero`, `ano`, `orgao`, `dispositivos_citados`, "
@@ -168,23 +185,52 @@ def main():
           "diferente; cada contribuição guarda o ID da pergunta. SUGERE só mostra.",
           "- Ordem de avaliação usada no simulador (sugestão para o motor): entrada; M11 (preenche, na ordem das linhas); "
           "M05 por `calculo_ordem`; M04 `calculo_expr`; M04 `depende_de_expr`; M02, M04 liga/desliga, M08 e M10.",
-          "- `M12_parametros.csv`: `id` (PAR-01), `nome`, `valor`, `unidade`, `base`, `vigencia`, `usado_em`, `fonte`, `status`.",
+          "- `M12_parametros.csv`: `id` (PAR-01), `nome`, `valor`, `tipo` (numero, lista ou texto; a coluna é a fonte do "
+          "tipo), `unidade`, `base`, `vigencia`, `usado_em`, `fonte`, `status`.",
+          "- `M02.grupo_ativo_expr`: nas linhas com `grupo_alternativa`, quando o grupo vale (mesmo valor em todo o grupo).",
+          "- Condição desligada: `false` na coluna `_expr`, com o texto da linha começando por 'DESLIGADA' e o motivo.",
+          "",
+          "### Colunas da Fase 11 no M11 e complementos do operador", "",
+          "- `leitura`: como ler a resposta do Word e qual prevalece em duplicidade (texto).",
+          "- `revisao_expr`: JSON Logic, só com operadores gerais; verdadeira = resposta destacada para o operador revisar. "
+          "Avaliada no fim, com os mesmos dados das validações do M10. Usa os metadados de leitura "
+          "`checklist.marcas_multiplas`, `checklist.resposta_unica_por_item` e `checklist.divergencias_leitura` e o "
+          "número `CK_x_numero` lido do 'Outro' do prazo (P32).",
+          "- `revisao_pergunta`: pergunta que o sistema faz ao operador quando a dúvida muda a minuta; vazia quando basta o "
+          "destaque. Pergunta sem resposta mantém a VAL-037 (bloqueio).",
+          "- Complementos do operador: linhas `CK-X-nn` (dois dígitos, a partir de 01), `checklist = COMPLEMENTO`, seção "
+          "'COMPLEMENTO DO OPERADOR', número `X.nn`, variável `CK_X_nn`. Preenchidos no sistema, não existem no Word; ligados "
+          "às mesmas variáveis e destinos das perguntas do checklist; sem opção pré-definida que não venha de norma ou de "
+          "domínio do M05.",
+          "",
+          "### Regras do simulador (as mesmas do motor, Marco 1)", "",
+          "- Valor ausente: conta (`+`, `-`, `*`, `/`, `%`) e comparação de ordem (`<=`, `>`) com valor ausente dão ausente "
+          "(`null`), nunca 0; divisão por zero também. Item sem valor unitário fica sem valor da unidade e sem tratamento ME/EPP.",
+          "- Igualdade estrita: `==` e `!=` comparam tipo e valor (\"30\" é diferente de 30; 30 é igual a 30.0); `null` só é "
+          "igual a `null`.",
+          "- Falso para `!`, `!!`, `if`, `and`, `or`, `some` e `none`: `null`, `false`, 0, \"\" e `[]`; o resto é verdadeiro.",
+          "- Conta exata: números convertidos para decimal pela forma escrita mais curta e somados e multiplicados em decimal.",
+          "- Filho sem o pai não entra: pai é o ID sem o último segmento numérico, de letra ou romano (TR-4.41.1 tem pai "
+          "TR-4.41), quando esse ID existe no M02; vale em cascata, na ordem do M02.",
+          "- Grupo de alternativas ativo (`grupo_ativo_expr`): exatamente uma opção entra; nenhuma ou mais de uma vai para "
+          "`bloqueios_grupo_alternativas`.",
           "",
           "### Cenários (`cenarios/`)", "",
           "- C1 a C8: gerados pelo `f10_simulador.py` (implementação independente do motor). `entrada` tem `wizard`, "
           "`checklist`, `itens` (com `respostas_por_item` quando a pergunta é por item), `variaveis` e `metadados`, todos "
-          "fictícios. `esperado` tem `blocos` (M02, na ordem), `clausulas_m08`, `validacoes_m10` e "
-          "`perguntas_sem_resposta`. O esperado vem do caminho do texto (liga/desliga e depende_de em texto, derivadas em "
+          "fictícios. `esperado` tem `blocos` (M02, na ordem), `clausulas_m08`, `validacoes_m10`, "
+          "`perguntas_sem_resposta` e `bloqueios_grupo_alternativas`. O esperado vem do caminho do texto (liga/desliga e depende_de em texto, derivadas em "
           "Python); o teste reproduz pelo caminho das expressões. `referencia` é informativa.",
           "- R1 (TR 23/2026) e R2 (TR 58/2026): entrada anonimizada com as respostas tiradas do TR real "
           "(`origem_das_respostas`), itens fictícios, blocos que o TR real contém, `divergencias_conhecidas` ligadas ao M09 e, em "
-          "`referencia.diferencas_simulacao`, o que a simulação monta a mais ou a menos que o TR real.", "",
+          "`referencia.diferencas_simulacao`, o que a simulação monta a mais ou a menos que o TR real. Cada divergência traz "
+          "`classificacao` ('TR real').", "",
           "## Checklists técnicos", "",
           "Versões mapeadas no M11 (qualquer mudança no checklist exige refazer o M11; ver P30 e VAL-036):", ""]
     o += [f"- `Checklists/{k}`: SHA-256 `{v}`" for k, v in hashes.items()]
     o += ["", "Divisão de trabalho: o checklist traz os fatos técnicos (M11); o wizard fica com as decisões jurídicas (M04, "
           "`DECISAO_JURIDICA`). A tabela de atributos de item por checklist está em `sugestoes_checklist.md`.", "",
-          "## Testes de aceite (Fases 9 e 10)", "",
+          "## Testes de aceite (Fases 9 a 11)", "",
           f"Resultado completo em `logs/f9_testes.txt`. {falhas}.", ""]
     o += [f"- {l[6:]}" if l.startswith("OK") else f"- **FALHA** {l[6:]}" for l in principais]
     o += ["", "Outras conferências:", ""]

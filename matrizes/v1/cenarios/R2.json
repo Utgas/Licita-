@@ -371,7 +371,8 @@
    "WZ-48",
    "WZ-58",
    "WZ-59"
-  ]
+  ],
+  "bloqueios_grupo_alternativas": []
  },
  "blocos_nao_comparados": [
   "TR-CAB.05",
@@ -475,6 +476,7 @@
  "divergencias_conhecidas": [
   {
    "dv": "DV-02",
+   "classificacao": "TR real",
    "tipo": "TEXTO_PRETO_ALTERADO",
    "local": "p.1, item 1.4",
    "descricao": "Texto em preto do modelo alterado: retirado 'ou outro instrumento hábil que o substitua' ('O contrato oferece maior detalhamento...').",
@@ -483,6 +485,7 @@
   },
   {
    "dv": "DV-03",
+   "classificacao": "TR real",
    "tipo": "TEXTO_PRETO_ALTERADO",
    "local": "p.16, item 9.36",
    "descricao": "Texto em preto adaptado ao caso (sem registro de preços): retirado 'ou da ata de registro de preços ou do aceite do instrumento equivalente'. A adaptação é coerente com o caso, mas o modelo pede justificativa nos autos.",
@@ -491,6 +494,7 @@
   },
   {
    "dv": "DV-05",
+   "classificacao": "TR real",
    "tipo": "CLAUSULA_SEM_PERTINENCIA",
    "local": "p.5, item 7.2.4.7.1",
    "descricao": "Infração específica 'Não apresentar site planning e projeto de infraestrutura e adequação da sala de exames' num TR de ambulância; o mesmo texto está no TR 58/2026 (p.9), de equipamentos hospitalares.",
@@ -499,6 +503,7 @@
   },
   {
    "dv": "DV-06",
+   "classificacao": "TR real",
    "tipo": "CLAUSULA_SEM_PERTINENCIA",
    "local": "p.15, item 9.32",
    "descricao": "Exige Declaração do Detentor de Registro 'quando for o caso de importação de medicamento' num TR de equipamentos médico-hospitalares.",
@@ -507,6 +512,7 @@
   },
   {
    "dv": "DV-07",
+   "classificacao": "TR real",
    "tipo": "TERMINOLOGIA",
    "local": "p.1, item 1.6",
    "descricao": "Diz que o pregão se destina 'à contratação direta e exclusiva' do órgão. Contratação direta é a dispensa ou a inexigibilidade (WZ-01); o texto quis dizer que não haverá ata de registro de preços.",
@@ -553,6 +559,9 @@
   "blocos_simulados": 277,
   "clausulas_m08_simuladas": [
    "SET-13"
+  ],
+  "bloqueios_grupo_alternativas_simulados": [
+   "GA-03"
   ],
   "validacoes_m10_simuladas": [
    "VAL-005",

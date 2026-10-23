@@ -56,7 +56,15 @@ Se algo disso não estiver lá, pare e avise. O arquivo `correspondencia_process
      - Escreva um teste para cada uma dessas regras, porque é aqui que dois avaliadores de JSON Logic costumam divergir.
    - O avaliador não arredonda por conta própria. Arredondamento só existe se a expressão o fizer (como a VAR-118 faz com `%`).
 
-3. **Itens** (`src/motor/itens/`). Calcule os atributos derivados pelo `calculo_expr` do M05, na ordem de `calculo_ordem`, com os valores do M12. Exemplo: o tratamento ME/EPP (exclusivo, cota ou ampla) pelo valor estimado do item ou do grupo. Nenhum número de lei ou valor monetário no código. Cota igual a zero (decisão do Gabriel, 23/10/2026): o item fica sem cota, em ampla participação, com alerta. Essa regra vai entrar na matriz pelo agente das matrizes; enquanto não entrar, se a VAR-118 der zero para um item marcado COTA, gere alerta e registre o caso no relatório, sem mudar o tratamento no código.
+3. **Itens** (`src/motor/itens/`). Calcule os atributos derivados pelo `calculo_expr` do M05, na ordem de `calculo_ordem`, com os valores do M12. Exemplo: o tratamento ME/EPP (exclusivo, cota ou ampla) pelo valor estimado do item ou do grupo. Nenhum número de lei ou valor monetário no código. Cota igual a zero (decisão do Gabriel, 23/10/2026): já está na matriz da Fase 11 (VAR-160, VAR-113, VAR-118 e VAL-051). Retire do código o alerta provisório de cota zero; o alerta passa a vir só da VAL-051.
+
+3b. **Matrizes da Fase 11.** Já estão no ramo `marco-1`. O compilador recusa os cabeçalhos novos. Ajuste:
+   - M02 ganha `grupo_ativo_expr`; M11 ganha `leitura`, `revisao_expr` e `revisao_pergunta`; M12 ganha `tipo`. O compilador passa a ler o tipo da coluna `tipo` e deixa de ler a frase da `fonte`.
+   - Aceite o checklist `COMPLEMENTO` e os IDs `CK-X-nn`.
+   - Aceite as variáveis da leitura (`checklist.*` e os sufixos `_texto` e `_numero` de resposta de checklist). Variável fora dessa lista continua erro.
+   - Aceite `false` como expressão (linha desligada: WZ-56, SET-01, VAL-027). Linha desligada nunca entra nem é oferecida.
+   - Em `revisao_expr` e `grupo_ativo_expr`, só os operadores gerais, sem os de cálculo.
+   - Retire dos testes o contorno da VAR-160: ela agora existe. Com isso, `npm run compilar` grava o pacote novo e o GitHub Actions volta a ficar verde. Confira.
 
 4. **Do checklist para o wizard** (`src/motor/wizard/`).
    - `preenche_expr` preenche a resposta.
@@ -64,11 +72,18 @@ Se algo disso não estiver lá, pare e avise. O arquivo `correspondencia_process
    - Se a equipe já respondeu de outro jeito, vale a resposta da equipe, e a diferença vira alerta.
    - Valor que não bate com o `tipo` do M05 não é convertido nem adivinhado: vira lacuna marcada e alerta. Caso real: a VAR-060 é NUMERO, mas a opção "Outro" da CK-C-12.1 e da CK-P-8.1 copia o texto livre ("20 dias"). Nesse caso a minuta mostra a lacuna e pede o número.
 
+   - **Leitura e revisão (Fase 11, decisão 0009).** O checklist distribuído não muda; o sistema contorna. Para cada pergunta do M11:
+     - `revisao_expr` verdadeira marca a resposta como **destaque** (o operador revisa; na tela, amarelo);
+     - se a linha tiver `revisao_pergunta`, o motor devolve também uma **pergunta ao operador**, e a minuta fica bloqueada até a resposta;
+     - a coluna `leitura` é texto para quem programa a leitura do Word no Marco 2; o motor não a executa.
+   - **Dados da leitura.** As expressões usam o que a leitura do Word vai produzir: `checklist.consumo`, `checklist.permanentes`, `checklist.marcas_multiplas` (lista de IDs com mais de uma opção marcada) e os sufixos `_texto` e `_numero` (por exemplo `CK_C_12_1_numero`). Ponha esses campos no contrato de entrada (`src/motor/entrada.ts`), com a descrição do README das matrizes. Nos testes, preencha à mão.
+   - **Complementos do operador.** As linhas `CK-X-01` a `CK-X-09` (`checklist = COMPLEMENTO`) são respondidas pelo operador no sistema e entram como qualquer resposta de checklist (`CK_X_03`).
+
 5. **Wizard.** Calcule as perguntas habilitadas pela `depende_de_expr` e devolva as pendentes. Nunca escolha sozinho uma opção de pergunta marcada como `DECISAO_JURIDICA`.
 
 6. **Montagem** (`src/motor/montagem/`).
    - **Quais blocos entram.** Um bloco entra pela sua `condicao_expr` e pelos `liga_expr` e `desliga_expr` do M04. Desligar vence ligar.
-   - **Alternativas.** Num grupo de alternativas ativo, exatamente uma opção entra; nenhuma ou mais de uma vira bloqueio.
+   - **Alternativas.** O grupo é ativo quando a `grupo_ativo_expr` do M02 é verdadeira (vazia = sempre ativo). Num grupo ativo, exatamente uma opção entra; nenhuma ou mais de uma vira bloqueio, listado em `bloqueios_grupo_alternativas` como nos cenários.
    - **O que fica fora.** Filho sem o pai não entra. Também ficam fora o cabeçalho do modelo, os separadores "OU" e tudo que o M02 marca como "não entra na minuta".
    - **Setoriais.** Entram as cláusulas do M08 cuja condição for verdadeira.
    - **Lacunas.** São preenchidas com variáveis e respostas. O que faltar fica marcado.

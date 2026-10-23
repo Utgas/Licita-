@@ -197,6 +197,13 @@ D = [
     ("DV-34", M02R, "linhas 44 e 168", "NORMA_A_CONFERIR",
      "Cita o Decreto 10.024/2019 (linha 44) e a IN SLTI/MP 01/2010 (linha 168), do regime anterior; situação não conferida "
      "em fonte oficial.", "M01; M07", "VAL-004", "seção 5, achado 6", "A_VERIFICAR", "Fase 8"),
+    ("DV-35", TR23, "p.2, item 4.4 e subtítulo anterior", "CLAUSULA_SEM_PERTINENCIA",
+     "Mantém o subtítulo 'Reserva de cotas para microempresas e empresas de pequeno porte' e o item 4.4 do modelo, "
+     "alterado para negar a cota: '4.4. Na presente licitação, não será realizada a reserva de cota de até 25% para "
+     "microempresas e empresas de pequeno porte.', com justificativa no 4.4.1. No modelo, os blocos TR-4.H08 e TR-4.41 só "
+     "entram quando há item ou grupo com cota. Classificado pelo dono do projeto em 23/10/2026 como erro do TR real (decisão 0008).",
+     "TR-4.H08; TR-4.41; WZ-24; VAR-113", "Blocos ligados só pela WZ-24 = SIM (derivada da VAR-113); sem cota, não entram. "
+     "No caso de reprodução R1, a diferença é do tipo 'TR real'.", "", "EXTRAIDO", "comparação f6; decisão 0008"),
 ]
 
 
@@ -206,7 +213,7 @@ def main():
     linhas = []
     for (did, doc, local, tipo, desc, ref, trat, achado, st, origem) in D:
         fonte = f"{doc}, {local}. Origem da linha: {origem}."
-        if origem == "comparação f6":
+        if origem.startswith("comparação f6"):
             fonte += (" Comparação automática bloco a bloco com o M02 (f6_comparar_trs.py, difflib sobre texto normalizado), "
                       "conferida na página citada.")
         fonte += " descricao EXTRAIDA do documento citado; tipo, referencia e tratamento INFERIDOS."

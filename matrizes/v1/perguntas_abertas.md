@@ -52,13 +52,15 @@ Situação de cada item:
 - **Situação:** a resposta veio com o marcador sem preencher ("[SIM ou NÃO: o TR 190/2025 é da IRP 134/2025]"). Sigo tratando o TR 190/2025 como não confirmado.
 - **Recomendo:** responder SIM ou NÃO.
 - **Por quê:** se for, a base ganha um conjunto completo de gerenciador e participantes (TR 190/2025 e ETPs 99/2025, 151/2025 e 801/2025), o melhor caso de teste para a WZ-11 e para a consolidação das quantidades por órgão (TR-1.1.1.TAB1 a TAB3).
+- **Lote 1 de respostas (decisão 0008, 23/10/2026):** o dono do projeto não sabe. Continua aberta; o TR 190/2025 segue como não confirmado.
 
-### P10. DFD do processo do par 117/2025 (ABERTA)
+### P10. DFD do processo do par 117/2025 (RESOLVIDA, 23/10/2026)
 
 - **Situação (22/10/2026):** entraram três DFDs (18/2026, 710/2025 e o da PMPV) e os dois checklists técnicos. As origens que dependiam de DFD foram refeitas: o checklist passou a ser a entrada da área requisitante (M11) e as linhas deixaram de ser `A_VERIFICAR`. Nenhum DFD novo é do processo PROC-02, então a cadeia DFD, ETP e TR continua sem caso completo.
 - **Recomendo:** incluir, anonimizado, o DFD (ou o checklist preenchido) do processo PROC-02.
 - **Por quê:** é o único processo com ETP e TR na base; com a peça de origem, o M06 testaria a cadeia inteira.
 - **Atenção:** o DFD da PMPV traz nomes e CPF de pessoas. Nada disso foi copiado para as matrizes, mas o arquivo da base deveria ser anonimizado.
+- **Lote 1 de respostas (decisão 0008, 23/10/2026):** seguir sem o DFD do PROC-02. O Marco 3 testa só a derivação do ETP para o TR.
 
 ### P11. Arquivo-fonte da matriz 01 (RESOLVIDA)
 
@@ -91,7 +93,7 @@ Situação de cada item:
 - **Recomendo:** (a) nesses casos, usar TR-10.1, ou TR-10.3 com orçamento sigiloso, com status `INFERIDO`; (b) no técnica e preço, o wizard avisa que os critérios de pontuação precisam ser escritos pelo usuário, e o sistema não os gera.
 - **Por quê:** TR-10.1 só declara o valor estimado, o que serve a qualquer critério. Gerar critérios de pontuação sem fonte seria preencher por dedução.
 
-### P16. Obrigações do Decreto 12.174/2024 no Anexo I (RESOLVIDA na Fase 10, 23/10/2026)
+### P16. Obrigações do Decreto 12.174/2024 no Anexo I (RESOLVIDA na Fase 10 e CONFIRMADA em 23/10/2026)
 
 - **Situação:** os itens TR-AI-4.1.22 a TR-AI-4.1.26 estão em vermelho itálico. A NE-095 só diz que vêm do art. 2º do Decreto 12.174/2024, sem dizer quando suprimi-los. A WZ-51 decide a inclusão.
 - **Conferência (23/10/2026):** texto no planalto.gov.br (https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/decreto/d12174.htm). Sem nota de revogação. O art. 1º, caput, trata das "garantias trabalhistas a serem observadas na execução dos contratos administrativos no âmbito da administração pública federal direta, autárquica e fundacional". O art. 2º, caput, diz: "Os contratos administrativos conterão cláusulas que disponham sobre:" (I proteção ao trabalho; II trabalho escravo e infantil; III denúncias de discriminação, violência e assédio; IV responsabilidade solidária por subcontratada). O art. 3º é o que se restringe a serviços contínuos com dedicação exclusiva de mão de obra.
@@ -99,6 +101,7 @@ Situação de cada item:
 - **Decisão:** a WZ-51 fica com padrão SIM, status `INFERIDO` e passa a exigir justificativa para NAO. O decreto não restringe o art. 2º a serviços, então compras também estão no alcance pelo texto.
 - **O que continua sendo leitura minha:** o Anexo I só aparece quando não há termo de contrato (WZ-43 diferente de CONTRATO). Tratar o instrumento substitutivo como "contrato administrativo" para o art. 2º é inferência; o decreto não fala dele. Se a assessoria jurídica entender diferente, basta mudar o padrão da WZ-51.
 - **Repositório auxiliar:** o arquivo do decreto no ctresb/leis (commit 15eb09b, `federal/decretos/2024/dec-12174-2024-09-11.md`) tem `versao_texto: "original"` e não foi usado para o conteúdo.
+- **Lote 1 de respostas (decisão 0008, 23/10/2026):** confirmada. WZ-51 com padrão SIM; resposta NAO exige justificativa.
 
 ### P17. Textos prontos que estão dentro das notas, fora do corpo do modelo (RESOLVIDA)
 
@@ -119,11 +122,12 @@ Situação de cada item:
 - **Recomendo:** manter o texto literal no M02 e no M03 (regra 3); mapear a NE-099 para o TR-AI-5.7 (`INFERIDO`); registrar as duplicatas; na minuta, tratar o "1.6.1" digitado como numeração e não imprimi-lo, regra aplicada só a esse parágrafo.
 - **Por quê:** a regra 3 proíbe corrigir o texto da AGU, mas o "1.6.1" é numeração manual, não conteúdo; imprimi-lo geraria item com dois números. Os seis pontos entram na auditoria (Fase 8).
 
-### P19. Seção adicional do ETP, "Justificativas pontuais" (ABERTA)
+### P19. Seção adicional do ETP, "Justificativas pontuais" (RESOLVIDA, 23/10/2026)
 
 - **Situação:** só o ETP 117/2025 tem essa seção, numerada 12, o que desloca as seguintes. Não sei se o ETP Digital permite criar seção livre ou se era um recurso que deixou de existir. No M01 ela é o campo ETP-90.01, `A_VERIFICAR`.
 - **Recomendo:** conferir nas telas do ETP Digital. Se for seção livre, manter ETP-90.01 como opcional e sem texto padrão; se não existir, retirar.
 - **Por quê:** o sistema não deve propor seção que o ETP Digital não aceita.
+- **Lote 1 de respostas (decisão 0008, 23/10/2026):** o ETP Digital aceita a seção. A ETP-90.01 fica opcional e sem texto padrão (só entra se o requisitante escrever) e deixou de ser `A_VERIFICAR`.
 
 ### P20. Formatação que não basta para decidir a inclusão (ADOTADA PROVISORIAMENTE)
 
@@ -149,26 +153,31 @@ Situação de cada item:
   3. Exceção sobre item que seria EXCLUSIVO: permitida só com a hipótese do art. 10 do decreto e alerta (VAL-017, `A_VERIFICAR`).
   4. Validade: coluna por item (VAR-117); a VAR-065 só existe quando todos os perecíveis têm o mesmo critério.
 - **Por quê:** são as leituras que reproduzem a NE-003 e a NE-022 sem inventar número. A 2 e a 3 merecem confirmação da assessoria jurídica.
+- **Cota calculada em zero (decisão 0008, 23/10/2026):** confirmado o item 2. A VAR-160 (`cota_calculada`, ordem 4) guarda a parte inteira de quantidade x VAR-057 / 100 de todo item; a VAR-113 (ordem 5) só dá COTA quando todo item da unidade tem cota maior que zero; senão AMPLA, e a VAL-051 avisa. A VAR-118 (ordem 6) copia a VAR-160 quando o item é COTA. Não há ciclo: 160 antes de 113, 113 antes de 118. Item sem valor unitário fica sem valor da unidade e sem tratamento (regra do valor ausente).
 
-### P23. Especificação das matrizes M06 a M10 e achados da seção 5 (ABERTA)
+### P23. Especificação das matrizes M06 a M10 e achados da seção 5 (RESOLVIDA, 23/10/2026)
 
 - **Situação:** o texto original do prompt não está mais disponível nesta sessão; o `attachment.txt` reenviado em 22/10/2026 é a lista de tarefas, não o prompt. As colunas do M06 ao M10 e a lista dos achados da seção 5 foram reconstruídas a partir do registro das Fases 0 a 3 (logs/f0_conferencias.txt e perguntas P01 a P11). O README descreve o que foi reconstruído.
 - **Recomendo:** reenviar o prompt original, ou só as seções que descrevem M06 a M10 e a seção 5, para eu conferir colunas e achados.
 - **Por quê:** o teste 8 depende da lista exata de achados; hoje ele usa a lista reconstruída (10 achados).
+- **Lote 1 de respostas (decisão 0008, 23/10/2026):** fechada pelo gestor. O prompt original não será reenviado; a especificação reconstruída no README passa a ser a oficial, e o teste 8 continua com a lista de 10 achados.
 
-### P24. Comodato numa aquisição (ABERTA)
+### P24. Comodato numa aquisição (RESOLVIDA, 23/10/2026: fora do sistema por enquanto)
 
 - **Situação:** o checklist de consumo tem uma seção inteira sobre comodato (10.1 a 10.11) e o TR 117/2025 usa "consignação com comodato", mas o modelo AGU e as notas não tratam do assunto. Criei a WZ-56 e o SET-01, ambos `A_VERIFICAR`.
 - **Recomendo:** a assessoria jurídica decidir se o comodato entra como obrigação acessória da compra (cláusula no TR, como no SET-01) ou como instrumento próprio.
 - **Por quê:** o custo do equipamento vai embutido no preço do material e afeta a competição; é decisão jurídica, não técnica.
+- **Lote 1 de respostas (decisão 0008, 23/10/2026):** o comodato fica fora do sistema por enquanto. Um estudo jurídico futuro pode trazer uma pergunta sim/não com justificativa padrão com lacunas, sujeita à validação do dono do projeto.
+- **Como ficou desligado, sem apagar linhas:** a condição passou a ser `false` e o motivo está no texto da própria linha, que começa por "DESLIGADA": WZ-56 (`depende_de` e `depende_de_expr`; a pergunta não é oferecida), SET-01 (`condicao` e `condicao_expr`; a cláusula nunca entra) e VAL-027 (o alerta de comodato sem decisão perderia o sentido). No M11, as perguntas 10.1 a 10.11 do consumo viraram `SO_CONTROLE`, sem destino nem expressão, com a regra antiga guardada no texto (S21). A SET-12 deixou de ler a CK-C-10.8. Para religar, basta trocar `false` pela condição anterior, escrita no texto.
 
 ### P25. Atestado que exige "garantia mínima de 12 meses prestada" (ABERTA)
 
 - **Situação:** os TRs 23/2026 e 58/2026 exigem atestado de contrato com garantia mínima de 12 meses prestada (DV-09). A NE-071 veda limitação de tempo ou de época nos atestados; não está claro se a duração da garantia atestada entra na vedação.
 - **Recomendo:** a assessoria jurídica responder. Até lá, o sistema não oferece essa característica de atestado.
 - **Por quê:** se for vedada, a exigência restringe a habilitação sem base; se não for, falta a justificativa técnica no ETP.
+- **Lote 1 de respostas (decisão 0008, 23/10/2026):** pendente de esclarecimento. Continua aberta; o sistema não oferece essa característica de atestado (nenhuma opção da WZ-38 nem bloco a gera).
 
-### P26. Leitura por máquina do checklist preenchido no Word (ABERTA, depende da revisão do checklist)
+### P26. Leitura por máquina do checklist preenchido no Word (ABERTA para o Marco 2; checklist congelado, decisão 0009)
 
 - **Como seria a leitura (sem código):**
   1. Abrir o docx preenchido e percorrer os parágrafos e as tabelas na ordem do documento, como o `ck_ler.py` faz com o modelo em branco.
@@ -188,6 +197,7 @@ Situação de cada item:
   - checklist impresso e escaneado (só OCR, sem estrutura).
 - **Recomendo:** cada incerteza vira pendência na leitura (VAL-037), e a pendência bloqueia a geração até o usuário confirmar. Na revisão do checklist, trocar "☐" por caixa de seleção do Word e cada resposta por controle de conteúdo com marca igual ao ID do M11 (sugestoes_checklist.md, S19).
 - **Por quê:** com âncoras de texto, a leitura funciona enquanto o usuário não mexe no formulário; com controles de conteúdo, a âncora deixa de depender do texto.
+- **Decisão 0009 (23/10/2026):** o Word distribuído não muda. A leitura segue a coluna `leitura` do M11; o que fica incerto é destacado pela `revisao_expr` e, quando muda a minuta, vira pergunta ao operador (`revisao_pergunta`), com a VAL-037 bloqueando a geração até a resposta. O que o motor precisa oferecer para isso está na P32.
 
 ### P27. Condições que não cabem em JSON Logic (ADOTADA PROVISORIAMENTE)
 
@@ -199,12 +209,13 @@ Situação de cada item:
 - **Por quê:** o JSON Logic padrão não tem agregação por grupo nem comparação de textos; forçar operadores próprios tiraria a portabilidade das expressões.
 - **Fase 10 (23/10/2026):** o item 3 saiu daqui. tratamento_me_epp, valor_unidade_disputa, quantidade_cota, perecivel, tic e as derivadas do M04 (inclusive a WZ-50) ganharam `calculo_expr`, com os operadores padrão `reduce`, `+`, `*`, `-`, `/` e `%`, que estão fora da lista da Fase 10 (P31). Os itens 1 e 2 continuam.
 
-### P28. Lista de classes de TIC para o alerta de escopo (ABERTA)
+### P28. Lista de classes de TIC para o alerta de escopo (RESOLVIDA, 23/10/2026)
 
 - **Situação:** o VAL-001 usa o atributo tic de cada item, calculado pela classe ou PDM do DFD (VAR-153, VAR-154). Não há na base lista oficial de classes de TIC.
 - **Recomendo:** a OM manter a lista (classes e PDM que ela trata como TIC) como parâmetro do sistema; até lá, o alerta usa só as perguntas 15.3 e 15.5 do checklist de permanentes.
 - **Por quê:** inventar a lista seria preencher por dedução.
 - **Fase 10:** a lista virou o parâmetro `classes_tic` (M12, PAR-12), vazio até a OM cadastrar; com a lista vazia todo item sai com tic = N.
+- **Lote 1 de respostas (decisão 0008, 23/10/2026):** não é prioridade; processos de TIC são raros na OM. O PAR-12 fica vazio e a VAL-001 usa só a 15.3 e a 15.5 do checklist de permanentes. A VAR-154 continua calculada (sai tic = N com a lista vazia) para quando a lista existir.
 
 ### P29. Origem CHECKLIST no M05 e variáveis novas (ADOTADA PROVISORIAMENTE)
 
@@ -212,9 +223,10 @@ Situação de cada item:
 - **Recomendo:** aceitar. A VAR-011 (tabela de itens) continua com origem DFD, porque o DFD do Compras.gov é a fonte mais estruturada; o checklist só anexa a tabela.
 - **Por quê:** cada lacuna das cláusulas precisa de variável com origem e validação, como as do modelo AGU.
 
-### P30. Checklist em revisão e M11 (INFORMATIVA)
+### P30. Checklist e M11 (INFORMATIVA)
 
 - **Situação:** o M11 foi feito sobre as versões dos docx cujo SHA-256 está no README. Qualquer mudança no checklist exige refazer o M11 (rodar `ck_ler.py` e `ck_gerar_M11.py`). As sugestões para a revisão estão em sugestoes_checklist.md.
+- **Decisão 0009 (23/10/2026):** a versão distribuída (hashes no README) fica congelada; o M11 mapeia só ela. As sugestões S01 a S21 viraram regras de leitura, destaques, perguntas ao operador e complementos (sugestoes_checklist.md, linha "No sistema"). Uma versão nova do checklist gera M11 e pacote novos.
 
 ### P31. Fase 10: o que ficou fora da lista de operadores e as convenções que o compilador e o motor precisam aceitar (RESOLVIDA, 23/10/2026)
 
@@ -228,3 +240,18 @@ Situação de cada item:
 - **Recomendo:** (1) ajustar o compilador para aceitar os seis operadores só nas duas colunas de cálculo, as variáveis acima e o contexto de item; (2) manter o contexto de item como contrato do motor (README, "JSON Logic"); (3) decidir se a VAR-085 passa a TEXTO ou se a VAL-029 lê o texto final.
 - **Por quê:** sem esses operadores, o motor teria de calcular ME/EPP e quantidade da cota em código, que é exatamente o que o projeto proíbe.
 - **Decisão (23/10/2026):** os seis operadores ficam aceitos só em `M04.calculo_expr` e `M05.calculo_expr`, e o contexto de item fica como está no README. A VAR-085 continua lista: a VAL-029 passou a usar `some` sobre a `VAR_085` e procura "período mínimo", "Período mínimo", "últimos" e "Últimos" em cada item (`{"var": ""}` é o próprio item da lista). O PAR-05 passou a valor numérico (30, dias corridos); a VAL-020 e a condicional da CK-C-12.2 comparam a VAR-060, que recebe o prazo da CK-C-12.1 em número.
+
+### P32. Fase 11: o que o motor e o compilador precisam oferecer para a leitura do checklist e as regras novas (ABERTA)
+
+- **Leitura do Word (função do motor, não expressão):**
+  1. `CK_x_numero`: número lido do texto escrito no "Outro" do prazo de entrega (CK-C-12.1 e CK-P-8.1), quando o texto é número seguido de "dias" (ex.: "45 dias" vira 45); qualquer outra coisa deixa vazio (S20). Sem isso, a VAR-060 fica vazia no "Outro" e a pergunta ao operador resolve.
+  2. `checklist.marcas_multiplas`: lista dos IDs de pergunta de uma opção (UNICA e SIM_NAO) que vieram com duas ou mais marcas; a resposta fica vazia (S05).
+  3. `checklist.resposta_unica_por_item`: lista dos IDs de pergunta por item (CK-C-14.1, CK-C-14.2, CK-P-13.1) respondidas uma vez só, sem indicar itens; a leitura aplica a resposta a todos os itens do checklist (S07).
+  4. `checklist.divergencias_leitura`: lista dos IDs em que a leitura achou diferença que a expressão não compara, hoje o nome do responsável no cabeçalho e na tabela 1.4 (S03).
+  5. Detector de nome de pessoa: não existe; por isso as perguntas "Quem..." ficam destacadas sempre que respondidas (S08). Um detector reduziria os destaques.
+- **Compilador:** aceitar as colunas novas (`M11.leitura`, `M11.revisao_expr`, `M11.revisao_pergunta`, `M02.grupo_ativo_expr`, `M12.tipo`), o checklist `COMPLEMENTO` e os IDs `CK-X-01` a `CK-X-09` (variáveis `CK_X_01` e seguintes), o sufixo `_numero` ao lado do `_texto`, os metadados acima (já cabem em `checklist.*`), a VAR-160 e a VAL-051, e `false` como expressão de condição desligada. Em `revisao_expr`, só operadores gerais.
+- **Grupo de alternativas ativo (`M02.grupo_ativo_expr`):** coluna nova, preenchida nas linhas que têm grupo, com o mesmo valor em todas as linhas do grupo. GA-03 só vale com WZ-49 = SIM (PCA detalhado); GA-11 a GA-13 só quando WZ-43 é diferente de CONTRATO (Anexo I); os demais grupos valem sempre. Num grupo ativo, exatamente uma opção entra; nenhuma ou mais de uma é bloqueio.
+- **Ordem de avaliação:** `revisao_expr` é avaliada no fim, com os mesmos dados das validações do M10 (depois do preenchimento do M11 e do cálculo do M05), porque a S09 lê o valor da unidade de disputa.
+- **Outros "Outro" que ainda copiam texto para variável NUMERO:** CK-C-16.3 e CK-P-19.5 (VAR-074), CK-P-19.3 (VAR-075), CK-P-13.7 (VAR-067) e "Outro: ______ meses" da CK-P-13.1 (garantia). A S20 cobre só o prazo de entrega; até decisão, o motor trata esses casos como lacuna com alerta (passo 4 do Marco 1). Estender a leitura `_numero` a eles depende do dono do projeto.
+- **Recomendo:** implementar 1 a 4 na leitura do Marco 2 e ajustar o compilador agora, no Marco 1.
+- **Por quê:** ler número em texto livre e comparar nomes não cabem em JSON Logic sem operador novo, e a decisão 0009 manda deixar a regra no M11, não no código.

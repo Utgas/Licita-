@@ -17,7 +17,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from comum import gravar_csv  # noqa: E402
 
-COLS = ["id", "nome", "valor", "unidade", "base", "vigencia", "usado_em", "fonte", "status"]
+COLS = ["id", "nome", "valor", "tipo", "unidade", "base", "vigencia", "usado_em", "fonte", "status"]
 DEC8538 = ("Decreto 8.538/2015 conferido em https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/decreto/d8538.htm "
            "em 22/10/2026 (M07, NRM-027)")
 LC123 = ("LC 123/2006, art. 48, conferida como vigente em https://planalto.gov.br/ccivil_03/leis/LCP/Lcp123.htm em "
@@ -36,7 +36,8 @@ _P = [
      f"25% em bens divisíveis. Limite da VAR-057 (validacao).", "EXTRAIDO"),
     ("divisor_percentual", "100", "numero", "adimensional",
      "conversão de percentual em fração (quantidade x VAR-057 / 100)", "",
-     "Constante aritmética da VAR-118 (parte inteira de quantidade x VAR-057 / 100) e da VAR-160; não vem de norma.",
+     "Constante aritmética da VAR-160 (cota calculada: parte inteira de quantidade x VAR-057 / 100), da qual dependem a "
+     "VAR-113 (tratamento ME/EPP) e a VAR-118 (quantidade da cota); não vem de norma.",
      "INFERIDO"),
     ("garantia_padrao_meses", "12", "numero", "meses",
      "CK-P-13.2 (texto da pergunta: 'garantia superior a 12 meses'); NE-029 nota 2 (justificar a garantia nos autos)",
@@ -106,7 +107,7 @@ def main():
     extra = {"percentual_maximo_cota_me_epp": ["VAR-057.validacao"]}
     for i, (n, v, t, un, base, vig, fonte, st) in enumerate(_P, 1):
         ondes = u.get(n, []) + extra.get(n, [])
-        linhas.append({"id": f"PAR-{i:02d}", "nome": n, "valor": v, "unidade": un, "base": base, "vigencia": vig,
+        linhas.append({"id": f"PAR-{i:02d}", "nome": n, "valor": v, "tipo": t, "unidade": un, "base": base, "vigencia": vig,
                        "usado_em": "; ".join(ondes), "fonte": fonte + " Tipo do valor: " + t + ".", "status": st})
     gravar_csv(pasta / "M12_parametros.csv", COLS, linhas, preservar=())
     sem_uso = [l["nome"] for l in linhas if not l["usado_em"]]

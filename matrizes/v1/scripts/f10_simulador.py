@@ -15,6 +15,7 @@ Dois caminhos, com código separado:
 Os dados dos cenários são fictícios (quantidades, preços e textos de teste; nenhum dado real de processo).
 """
 import copy
+from decimal import Decimal
 import csv
 import json
 import re
@@ -22,7 +23,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from f3_simular_wizard import CENARIOS, derivar, efeitos  # noqa: E402
+from f3_simular_wizard import CENARIOS, dec, derivar, efeitos, pai  # noqa: E402
 from jlogic import avaliar as jl  # noqa: E402
 from parametros import VALORES  # noqa: E402
 
@@ -151,6 +152,8 @@ def cond_texto(t, r):
 
 
 def aplica_texto(dep, r):
+    if dep.startswith("DESLIGADA"):
+        return False
     conds = [p.strip() for p in dep.split(";") if p.strip() and not p.strip().startswith("VAR-")]
     if not conds:
         return True
@@ -162,6 +165,37 @@ def aplica_texto(dep, r):
     if " ou " in c:
         return any(cond_texto(x, r) for x in c.split(" ou "))
     return cond_texto(c, r)
+
+
+CHAVES_ESPERADO = ("blocos", "clausulas_m08", "validacoes_m10", "perguntas_sem_resposta", "bloqueios_grupo_alternativas")
+
+
+def sem_orfaos(blocos, lista):
+    """Regra do motor: filho sem o pai não entra. Pai = o ID sem o último segmento (TR-4.41.1 -> TR-4.41), quando esse
+    ID existe no M02; aplicada na ordem do M02, em cascata."""
+    ids = set(lista)
+    dentro = set(blocos)
+    for i in [x for x in lista if x in dentro]:
+        p = pai(i, ids)
+        if p and p not in dentro:
+            dentro.discard(i)
+    return [x for x in lista if x in dentro]
+
+
+def bloqueios_grupo(m, blocos, ativos):
+    """Regra do motor: num grupo de alternativas ativo, exatamente uma opção entra; nenhuma ou mais de uma é bloqueio."""
+    ops = {}
+    dentro = set(blocos)
+    for r in m["M02"]:
+        if r["grupo_alternativa"] and r["opcao"] and r["id"] in dentro:
+            ops.setdefault(r["grupo_alternativa"].split(" ")[0], set()).add(r["opcao"])
+    return sorted(g for g in ativos if len(ops.get(g, set())) != 1)
+
+
+def json_num(o):
+    if isinstance(o, Decimal):
+        return int(o) if o == o.to_integral_value() else str(o)
+    raise TypeError(type(o))
 
 
 def com_contexto(globais, itens):
@@ -208,6 +242,14 @@ def caminho_texto(m, cod):
             continue
         if not r["condicao_inclusao"].startswith(("SE ", "Acompanha", "Opcional")) or i in liga:
             blocos.append(i)
+    blocos = sem_orfaos(blocos, lista)
+    # grupos de alternativas ativos (regra escrita aqui, independente da coluna grupo_ativo_expr do M02)
+    ativos = {"GA-01", "GA-02", "GA-04", "GA-05", "GA-06", "GA-07", "GA-08", "GA-09", "GA-10"}
+    if todas.get("WZ-49") == "SIM":
+        ativos.add("GA-03")
+    if todas.get("WZ-43") != "CONTRATO":
+        ativos |= {"GA-11", "GA-12", "GA-13"}
+    bloq = bloqueios_grupo(m, blocos, ativos)
     # dados para M08 e M10
     ent = montar_entrada(cod)
     g = {wzv(k): ([x for x in v.split(";") if x] if multipla.get(k) else v) for k, v in todas.items()}
@@ -219,12 +261,15 @@ def caminho_texto(m, cod):
     vud = {}
     for it in itens:
         mesmo = [x for x in itens if (x["grupo"] and x["grupo"] == it["grupo"]) or x is it]
-        vud[it["numero"]] = sum(x["quantidade"] * x["valor_unitario"] for x in mesmo)
+        vud[it["numero"]] = sum(dec(x["quantidade"]) * dec(x["valor_unitario"]) for x in mesmo)
     base_itens = []
     for it in itens:
         x = {k: v for k, v in it.items() if k != "excecao"}
         x["tratamento_me_epp"] = trat.get(it["numero"])
         x["valor_unidade_disputa"] = vud[it["numero"]]
+        pct = cen["pct_cota"]
+        x["cota_calculada"] = int(dec(it["quantidade"]) * dec(pct) / 100) if pct is not None else None
+        x["quantidade_cota"] = x["cota_calculada"] if x["tratamento_me_epp"] == "COTA" else None
         base_itens.append(x)
     g["itens"] = com_contexto({k: v for k, v in g.items() if k != "itens"}, base_itens)
     sets = [r["id"] for r in m["M08"] if r["condicao_expr"] and jl(json.loads(r["condicao_expr"]), g)]
@@ -236,7 +281,8 @@ def caminho_texto(m, cod):
     ref = {"derivadas": {k: derivadas[k] for k in sorted(derivadas)},
            "tratamento_me_epp": {str(k): v for k, v in sorted(trat.items())},
            "via_checklist": {k: v for k, v in via.get("wz", {}).items()}}
-    return {"blocos": blocos, "clausulas_m08": sets, "validacoes_m10": vals, "perguntas_sem_resposta": sem}, ref
+    return {"blocos": blocos, "clausulas_m08": sets, "validacoes_m10": vals, "perguntas_sem_resposta": sem,
+            "bloqueios_grupo_alternativas": bloq}, ref
 
 
 # =========================================================================== caminho das expressões
@@ -351,16 +397,24 @@ def caminho_expr(m, ent):
         if aplica and vazio(g.get(wzv(r["id"]))):
             sem.append(r["id"])
     blocos = [r["id"] for r in m["M02"] if r["item_modelo"] != "OU" and jl(json.loads(r["condicao_expr"]), d)]
+    blocos = sem_orfaos(blocos, [r["id"] for r in m["M02"]])
+    ativos = set()
+    for r in m["M02"]:
+        if r["grupo_ativo_expr"] and jl(json.loads(r["grupo_ativo_expr"]), d):
+            ativos.add(r["grupo_alternativa"].split(" ")[0])
+    bloq = bloqueios_grupo(m, blocos, ativos)
     sets = [r["id"] for r in m["M08"] if r["condicao_expr"] and jl(json.loads(r["condicao_expr"]), d)]
     vals = [r["id"] for r in m["M10"] if r["condicao_expr"] and jl(json.loads(r["condicao_expr"]), d)]
     extra = {"variaveis": {k: v for k, v in g.items() if k.startswith("VAR_")},
              "preenchido_pelo_checklist": preenchido, "conflitos": conflitos, "sugestoes": sugestoes,
              "derivadas": {k: g.get(wzv(k)) for k in sorted(DERIVADAS)},
-             "itens": [{a: it.get(a) for a in ("numero", "tratamento_me_epp", "valor_unidade_disputa", "quantidade_cota",
+             "itens": [{a: it.get(a) for a in ("numero", "tratamento_me_epp", "valor_unidade_disputa", "cota_calculada",
+                                                 "quantidade_cota",
                                                  "perecivel", "exige_amostra", "grupo", "faixa_temperatura",
                                                  "garantia_minima_meses", "validade_minima", "controle_especial",
                                                  "categoria")} for it in itens]}
-    return {"blocos": blocos, "clausulas_m08": sets, "validacoes_m10": vals, "perguntas_sem_resposta": sem}, extra
+    return {"blocos": blocos, "clausulas_m08": sets, "validacoes_m10": vals, "perguntas_sem_resposta": sem,
+            "bloqueios_grupo_alternativas": bloq}, extra
 
 
 # =========================================================================== gravação e conferência
@@ -369,7 +423,7 @@ NOMES_CURTOS = {cod: nome.split(" ", 1)[1] for cod, nome in CODIGOS.items()}
 
 def comparar(esp, obt):
     dif = []
-    for k in ("blocos", "clausulas_m08", "validacoes_m10", "perguntas_sem_resposta"):
+    for k in CHAVES_ESPERADO:
         if esp.get(k) != obt.get(k):
             a, b = esp.get(k) or [], obt.get(k) or []
             dif.append(f"{k}: faltam {[x for x in a if x not in b][:10]}, sobram {[x for x in b if x not in a][:10]}"
@@ -408,7 +462,8 @@ def gerar(pasta):
                "referencia": dict(ref, preenchido_pelo_checklist=extra["preenchido_pelo_checklist"],
                                   sugestoes={k: v for k, v in extra["sugestoes"].items()},
                                   itens_calculados=extra["itens"])}
-        (saida / f"{cod}.json").write_text(json.dumps(doc, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        (saida / f"{cod}.json").write_text(json.dumps(doc, ensure_ascii=False, indent=1, default=json_num) + "\n",
+                                           encoding="utf-8")
         print(f"{cod}: {len(esp['blocos'])} blocos, M08 {esp['clausulas_m08']}, M10 {esp['validacoes_m10']}, "
               f"sem resposta {len(esp['perguntas_sem_resposta'])}; preenchidas pelo checklist "
               f"{extra['preenchido_pelo_checklist']}" + (" | DIFERENÇAS: " + " || ".join(dif) if dif else ""))

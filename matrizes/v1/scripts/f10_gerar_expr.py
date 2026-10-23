@@ -76,6 +76,8 @@ def depende_expr(texto):
     """'A e B', 'A ou B', 'X em P ou Q'; trechos 'VAR-xxx (...)' são dependência de dado, não condição."""
     partes = [p.strip() for p in texto.split(";")]
     conds = [p for p in partes if p and not p.startswith("VAR-")]
+    if texto.startswith("DESLIGADA"):
+        return False  # pergunta fora do sistema; o motivo está no próprio texto de depende_de
     if not conds:
         return None
     if len(conds) > 1:
@@ -126,10 +128,12 @@ def piso_percentual(qtd, pct):
 
 
 VALOR_UNIDADE = reduz("itens_do_grupo", {"+": [ACC, {"*": [cur("quantidade"), cur("valor_unitario")]}]}, 0)
-COTA_POSSIVEL = e(tem("VAR_057"),
-                  nenhum("itens_do_grupo", {">": [par("divisor_percentual"), {"*": [var("quantidade"), var("VAR_057")]}]}))
+# cota só quando todo item da unidade de disputa tem cota calculada maior que zero; cota zero fica em ampla com alerta
+# (VAL-051, decisão 0008 de 23/10/2026). Valor ausente não vira zero: sem valor da unidade, o tratamento fica vazio.
+COTA_POSSIVEL = e(tem("VAR_057"), nenhum("itens_do_grupo", nao({">": [var("cota_calculada"), 0]})))
 TRATAMENTO = se(eq("WZ_01", "LICITACAO"),
                 {"if": [algum("itens_do_grupo", tem("justificativa_excecao_me_epp")), "EXCECAO_JUSTIFICADA",
+                        vazio("valor_unidade_disputa"), None,
                         {"<=": [var("valor_unidade_disputa"), par("limite_exclusivo_me_epp")]}, "EXCLUSIVO",
                         COTA_POSSIVEL, "COTA",
                         "AMPLA"]},
@@ -149,15 +153,18 @@ CALC_M05 = {
                 "(CK-C-14.2) para o item; N em permanente"),
     "VAR-154": (2, se(inn(var("classe_pdm"), par("classes_tic")), "S", "N"), "por item; lista de classes do M12"),
     "VAR-119": (3, VALOR_UNIDADE, "por item; soma de quantidade x valor_unitario em itens_do_grupo"),
-    "VAR-113": (4, TRATAMENTO, "por item; exceção > limite exclusivo > cota possível em todos os itens da unidade > ampla"),
-    "VAR-118": (5, se(eq("tratamento_me_epp", "COTA"), piso_percentual(var("quantidade"), var("VAR_057")), None),
+    "VAR-160": (4, piso_percentual(var("quantidade"), var("VAR_057")),
+                "por item; parte inteira de quantidade x VAR-057 / 100 para todo item (vazia sem VAR-057 ou sem quantidade)"),
+    "VAR-113": (5, TRATAMENTO, "por item; exceção > sem valor (vazio) > limite exclusivo > cota calculada maior que zero em "
+                               "todos os itens da unidade > ampla"),
+    "VAR-118": (6, se(eq("tratamento_me_epp", "COTA"), var("cota_calculada"), None),
                 "por item; parte inteira de quantidade x VAR-057 / 100, só com COTA"),
-    "VAR-111": (6, {"if": [eq("WZ_14", "CONTINUO"), "CONTINUADO", eq("WZ_26", "REMESSA_UNICA"), "INTEGRAL",
+    "VAR-111": (7, {"if": [eq("WZ_14", "CONTINUO"), "CONTINUADO", eq("WZ_26", "REMESSA_UNICA"), "INTEGRAL",
                            eq("WZ_26", "PARCELADA"), "PARCELADO", None]}, "global"),
-    "VAR-031": (7, CALC_M04["WZ-13"], "global; mesmo cálculo da WZ-13"),
-    "VAR-049": (8, reduz("itens", se(eq(cur("exige_amostra"), "S"), {"merge": [ACC, [cur("numero")]]}, ACC), []),
+    "VAR-031": (8, CALC_M04["WZ-13"], "global; mesmo cálculo da WZ-13"),
+    "VAR-049": (9, reduz("itens", se(eq(cur("exige_amostra"), "S"), {"merge": [ACC, [cur("numero")]]}, ACC), []),
                 "global; números dos itens com exige_amostra = S"),
-    "VAR-065": (9, VALIDADE_COMUM, "global; validade comum aos perecíveis, vazia se os critérios forem diferentes"),
+    "VAR-065": (10, VALIDADE_COMUM, "global; validade comum aos perecíveis, vazia se os critérios forem diferentes"),
 }
 
 NOVAS_M05 = [
@@ -176,6 +183,12 @@ NOVAS_M05 = [
      "descricao": "Coluna da VAR-011: valor unitário de referência do item, da pesquisa de preços",
      "tipo_dado": "MOEDA", "validacao": "maior que zero; vem da pesquisa de preços, nunca calculado pelo sistema",
      "obrigatoria": "S", "origem": "PESQUISA_PRECOS", "usada_em": "TR-1.1.TAB1; VAR-119"},
+    {"id": "VAR-160", "nome": "tabela_itens.cota_calculada",
+     "descricao": "Coluna da VAR-011: parte inteira de quantidade x VAR-057 / 100, calculada para todo item quando há "
+                  "percentual de cota; decide se a unidade de disputa pode ter cota (VAR-113), dá a quantidade reservada "
+                  "(VAR-118) e dispara o alerta de cota zero (VAL-051)",
+     "tipo_dado": "NUMERO", "validacao": "inteiro maior ou igual a zero; vazia sem VAR-057 ou sem quantidade",
+     "obrigatoria": "N", "origem": "SISTEMA", "usada_em": "VAR-113; VAR-118; VAL-051"},
 ]
 FONTE_NOVA = ("Linha criada na Fase 10 (23/10/2026): atributo de item já usado nas expressões do M10 (achado do compilador "
               "do Marco 0) ou no calculo_expr do M05; descrição a partir da VAR-011.")
@@ -191,9 +204,26 @@ def anota(r, cols):
         r["fonte"] = r["fonte"].rstrip() + NOTA.format(cols=", ".join(cols))
 
 
+# grupo de alternativas ativo: exatamente uma opção tem de entrar (regra do motor); fora disso o grupo não se aplica
+GRUPO_ATIVO = {"GA-03": eq("WZ_49", "SIM"), "GA-11": ne("WZ_43", "CONTRATO"), "GA-12": ne("WZ_43", "CONTRATO"),
+               "GA-13": ne("WZ_43", "CONTRATO")}
+
+
 def main():
     pasta = Path(sys.argv[1])
     log = []
+    # M02: grupo_ativo_expr
+    m02 = ler_csv(pasta / "M02_tr_blocos.csv")
+    cols2 = [c for c in m02[0] if c != "grupo_ativo_expr"]
+    k2 = cols2.index("opcao") + 1
+    cols2 = cols2[:k2] + ["grupo_ativo_expr"] + cols2[k2:]
+    for r in m02:
+        g = r["grupo_alternativa"].split(" ")[0] if r["grupo_alternativa"] else ""
+        r["grupo_ativo_expr"] = dumps(GRUPO_ATIVO.get(g, True)) if g else ""
+        anota(r, ("grupo_ativo_expr",))
+    gravar_csv(pasta / "M02_tr_blocos.csv", cols2, m02, preservar=())
+    log.append(f"M02: grupo_ativo_expr em {sum(1 for r in m02 if r['grupo_ativo_expr'])} blocos de "
+               f"{len({r['grupo_alternativa'].split(' ')[0] for r in m02 if r['grupo_alternativa']})} grupos")
     # M04
     m04 = ler_csv(pasta / "M04_wizard.csv")
     cols4 = [c for c in m04[0] if c not in ("depende_de_expr", "calculo_expr")]

@@ -53,9 +53,9 @@ TL = "textos_livres"
 
 V = [
     ("VAL-001", "Objeto possivelmente de TIC, fora do modelo AGU da base", "ALERTA", "CHECKLIST",
-     "SE o equipamento depender de software ou licença (CK-P-15.3 = Sim) OU se integrar à rede (CK-P-15.5 = Sim) OU algum item "
-     "for de classe marcada como TIC pela OM (atributo tic)",
-     ou(sim(P, "15.3"), sim(P, "15.5"), algum_item(eq("tic", "S"))),
+     "SE o equipamento depender de software ou licença (CK-P-15.3 = Sim) OU se integrar à rede (CK-P-15.5 = Sim). Só as "
+     "perguntas do checklist de permanentes (P28 fechada em 23/10/2026: a lista de classes de TIC, PAR-12, fica vazia)",
+     ou(sim(P, "15.3"), sim(P, "15.5")),
      "O objeto pode ser de Tecnologia da Informação e Comunicação. O modelo AGU usado pelo sistema é o de aquisições 'exceto "
      "TIC'. Confirme o enquadramento com a equipe administrativa antes de gerar o TR.",
      "CK-P-15.3; CK-P-15.5; VAR-154; SET-16; SET-14", "TR-CAB.01 (título do modelo: 'AQUISIÇÕES, EXCETO TIC'); M00",
@@ -195,7 +195,8 @@ V = [
      "Garantia acima de 12 meses precisa de justificativa técnica (pergunta 13.2) registrada nos autos (NE-029).",
      "VAR-124; VAR-066; WZ-29", "NE-027; NE-029", "", "INFERIDO"),
     ("VAL-027", "Comodato indicado no checklist sem decisão da equipe administrativa", "ALERTA", "WIZARD",
-     "SE CK-C-10.1 = Sim E WZ-56 sem resposta", e(sim(C, "10.1"), vazio("WZ_56")),
+     "DESLIGADA: comodato fora do sistema por enquanto (P24, decisão 0008 de 23/10/2026; S21); condicao_expr = false. "
+     "Condição anterior: SE CK-C-10.1 = Sim E WZ-56 sem resposta", False,
      "O checklist indica fornecimento com equipamento em comodato. A equipe administrativa precisa decidir o enquadramento "
      "(WZ-56).", "WZ-56; SET-01", "M08 SET-01", "", "INFERIDO"),
     ("VAL-028", "Exigência de experiência com quantidade mínima", "ALERTA", "WIZARD",
@@ -304,6 +305,14 @@ V = [
      e(eq("WZ_29", "SIM"), algum_item(e(eq("categoria", "PERMANENTE"), vazio("garantia_minima_meses")))),
      "Informe o prazo mínimo de garantia de cada item permanente (pergunta 13.1 do checklist de permanentes).",
      "VAR-124; VAR-155; WZ-29", "NE-027; NE-029", "", "INFERIDO"),
+    ("VAL-051", "Cota calculada em zero: item em ampla participação", "ALERTA", "ITENS",
+     "SE algum item ficar em AMPLA porque a cota calculada (VAR-160, parte inteira de quantidade x VAR-057 / 100) deu zero "
+     "nele",
+     algum_item(e(eq("tratamento_me_epp", "AMPLA"), eq("cota_calculada", 0))),
+     "Com o percentual de cota informado, a quantidade reservada a ME/EPP neste item dá zero unidade. O item (ou o grupo "
+     "dele) fica sem cota, em ampla participação. Confira o percentual ou a composição do grupo.",
+     "VAR-113; VAR-118; VAR-160; VAR-057; WZ-24", "NE-022; decisão do dono do projeto de 23/10/2026 (decisão 0008 do repositório)",
+     "", "INFERIDO"),
 ]
 
 

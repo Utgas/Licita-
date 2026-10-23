@@ -22,12 +22,13 @@ Conferências por cenário:
      pelas expressões tem de ser igual ao calculado pelos textos.
 """
 import csv
+from decimal import Decimal
 import json
 import re
 import sys
 from pathlib import Path
 
-LIMITE_EXCLUSIVO = 80000.00  # NE-003 nota 4
+LIMITE_EXCLUSIVO = Decimal("80000.00")  # NE-003 nota 4 (conta em decimal exato, regra do motor)
 DERIVADAS = {"WZ-09", "WZ-13", "WZ-18", "WZ-20", "WZ-24", "WZ-50"}
 
 
@@ -38,6 +39,11 @@ def item(n, qtd, unit, grupo="", amostra="N", marca="", validade="", temperatura
             "faixa_temperatura": temperatura, "controle_especial": controle, "excecao": excecao,
             "justificativa_excecao_me_epp": excecao, "categoria": categoria, "garantia_minima_meses": garantia,
             "catmat": catmat, "tic": tic}
+
+
+def dec(x):
+    """decimal exato pela forma escrita do número"""
+    return x if isinstance(x, Decimal) else Decimal(repr(x)) if isinstance(x, float) else Decimal(x)
 
 
 # dados fictícios de teste (quantidades e preços não vêm do corpus)
@@ -70,7 +76,7 @@ CENARIOS = {
                  "WZ-17": "NAO", "WZ-19": "NAO", "WZ-21": "NAO", "WZ-22": "SIM", "WZ-23": "SIM", "WZ-25": "NAO",
                  "WZ-26": "REMESSA_UNICA", "WZ-29": "SIM", "WZ-30": "SIM", "WZ-31": "SIM", "WZ-33": "SIM", "WZ-35": "NAO",
                  "WZ-37": "NAO", "WZ-38": "NENHUMA", "WZ-39": "SIM", "WZ-40": "NAO", "WZ-41": "NAO",
-                 "WZ-43": "SUBSTITUTIVO_PEQUENO_VALOR", "WZ-51": "NAO", "WZ-49": "SIM", "WZ-56": "NAO"},
+                 "WZ-43": "SUBSTITUTIVO_PEQUENO_VALOR", "WZ-51": "NAO", "WZ-49": "SIM"},
         "pct_cota": None,
         "itens": [item(1, 10, 900.00, validade="Dois terços do prazo total"), item(2, 1, 4000.00)],
         "ck": {"CK_C_10_1": "Sim"},
@@ -140,13 +146,13 @@ CENARIOS = {
         "sets_esperados": ["SET-05", "SET-11", "SET-12", "SET-13", "SET-14", "SET-16", "SET-17", "SET-18", "SET-19", "SET-20"],
         "vals_esperadas": ["VAL-001", "VAL-025", "VAL-026"],
     },
-    "C8 consumo com comodato, temperatura, controle especial e respostas incoerentes no checklist": {
+    "C8 consumo com temperatura, controle especial e respostas incoerentes no checklist (comodato respondido no Word, fora do sistema)": {
         "resp": {"WZ-01": "LICITACAO", "WZ-02": "PREGAO", "WZ-03": "MENOR_PRECO", "WZ-06": "COMUM", "WZ-07": "CONSUMO",
                  "WZ-08": "SIM", "WZ-10": "SIM", "WZ-11": "GERENCIADOR", "WZ-12": "0", "WZ-14": "NAO_CONTINUO",
                  "WZ-16": "DETALHADO", "WZ-17": "SIM", "WZ-19": "NAO", "WZ-21": "NAO", "WZ-22": "NAO", "WZ-23": "NAO",
                  "WZ-25": "NAO", "WZ-26": "PARCELADA", "WZ-29": "NAO", "WZ-30": "NAO", "WZ-31": "NAO", "WZ-33": "NAO",
                  "WZ-35": "NAO", "WZ-37": "NAO", "WZ-38": "NENHUMA", "WZ-39": "SIM", "WZ-40": "NAO", "WZ-41": "NAO",
-                 "WZ-43": "CONTRATO", "WZ-49": "SIM", "WZ-56": "SIM", "WZ-57": "SIM", "WZ-59": "NAO"},
+                 "WZ-43": "CONTRATO", "WZ-49": "SIM", "WZ-57": "SIM", "WZ-59": "NAO"},
         "pct_cota": 25,
         "itens": [item(1, 5000, 4.00, validade="12 meses", temperatura="2 a 8 °C"),
                   item(2, 800, 150.00, validade="75% do prazo total", controle="S")],
@@ -158,7 +164,7 @@ CENARIOS = {
         "meta": {"textos_livres": "Bens comuns nos termos da Lei 10.520, de 2002."},
         "esperado": {"WZ-24": "SIM", "WZ-09": "SIM", "WZ-20": "NAO", "WZ-18": "NAO", "WZ-13": "NAO", "WZ-50": "POR_ITEM"},
         "tratamento_esperado": {1: "EXCLUSIVO", 2: "COTA"},
-        "sets_esperados": ["SET-01", "SET-02", "SET-03", "SET-04", "SET-05", "SET-06", "SET-08", "SET-09", "SET-21",
+        "sets_esperados": ["SET-02", "SET-03", "SET-04", "SET-05", "SET-06", "SET-08", "SET-09", "SET-21",
                            "SET-22"],
         "vals_esperadas": ["VAL-004", "VAL-010", "VAL-011", "VAL-020", "VAL-022"],
     },
@@ -180,12 +186,12 @@ def tratamento(itens, licitacao, pct):
         return {}
     res = {}
     for chave, its in unidades(itens).items():
-        valor = sum(i["quantidade"] * i["valor_unitario"] for i in its)
+        valor = sum(dec(i["quantidade"]) * dec(i["valor_unitario"]) for i in its)
         if any(i["excecao"] for i in its):
             t = "EXCECAO_JUSTIFICADA"
         elif valor <= LIMITE_EXCLUSIVO:
             t = "EXCLUSIVO"
-        elif pct and all(int(i["quantidade"] * pct / 100) >= 1 for i in its):
+        elif pct and all(int(dec(i["quantidade"]) * dec(pct) / 100) >= 1 for i in its):
             t = "COTA"
         else:
             t = "AMPLA"
@@ -223,7 +229,7 @@ def derivar(resp, itens, pct):
 def checar_itens(resp, itens, trat, pct):
     probs = []
     for chave, its in unidades(itens).items():
-        valor = sum(i["quantidade"] * i["valor_unitario"] for i in its)
+        valor = sum(dec(i["quantidade"]) * dec(i["valor_unitario"]) for i in its)
         t = trat.get(its[0]["numero"])
         if t == "EXCLUSIVO" and valor > LIMITE_EXCLUSIVO:
             probs.append(f"unidade {chave} EXCLUSIVO com valor {valor:.2f} acima de 80.000,00")
@@ -292,7 +298,7 @@ def dados_jl(resp, itens, trat, derivadas, multipla, cen):
     valor_ud = {}
     for chave, its in unidades(itens).items():
         for i in its:
-            valor_ud[i["numero"]] = sum(x["quantidade"] * x["valor_unitario"] for x in its)
+            valor_ud[i["numero"]] = sum(dec(x["quantidade"]) * dec(x["valor_unitario"]) for x in its)
     d.update(cen.get("ck", {}))
     d.update(cen.get("var", {}))
     d.update(cen.get("meta", {}))
@@ -355,6 +361,11 @@ def main():
                 ativo.add(i)
             else:
                 sem_decisao.append(i)
+        # regra do motor: filho sem o pai não entra (na ordem do M02, para valer em cascata)
+        for i in [x for x in lista if x in ativo]:
+            p = pai(i, ids)
+            if p and p not in ativo:
+                ativo.discard(i)
         ops = {}
         for i, (g, o) in grupo.items():
             if i in ativo:
@@ -380,6 +391,10 @@ def main():
         if tem_expr:
             dados = dados_jl(resp, itens, trat, derivadas, multipla, cen)
             ativo_jl = {r["id"] for r in m02 if r["item_modelo"] != "OU" and jl(json.loads(r["condicao_expr"]), dados)}
+            for i in [x for x in lista if x in ativo_jl]:
+                p = pai(i, ids)
+                if p and p not in ativo_jl:
+                    ativo_jl.discard(i)
             dif = sorted((ativo ^ ativo_jl), key=ordem.get)
             jl_txt = f"; JSON Logic: {len(ativo_jl)} blocos"
             if dif:

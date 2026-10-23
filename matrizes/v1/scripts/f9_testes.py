@@ -37,14 +37,15 @@ ARQS = {"M00": "M00_inventario.csv", "M01": "M01_etp_campos.csv", "M02": "M02_tr
 CHAVE = {"M00": "arquivo", "M06": "bloco_tr"}
 PADRAO = {"M01": r"ETP-\d{2}\.\d{2}", "M02": r"TR-[A-Za-z0-9.\-]+", "M03": r"NE-\d{3}", "M04": r"WZ-\d{2}",
           "M05": r"VAR-\d{3}", "M06": r"TR-[A-Za-z0-9.\-]+", "M07": r"NRM-\d{3}", "M08": r"SET-\d{2}", "M09": r"DV-\d{2}",
-          "M10": r"VAL-\d{3}", "M11": r"CK-[CP]-(?:CAB\.\d{2}|\d{1,2}(?:\.\d{1,2})?)", "M12": r"PAR-\d{2}"}
+          "M10": r"VAL-\d{3}", "M11": r"CK-[CPX]-(?:CAB\.\d{2}|\d{1,2}(?:\.\d{1,2})?)", "M12": r"PAR-\d{2}"}
 LITERAIS = {"texto_literal", "texto_integral", "trecho_ancorado", "lacunas", "citacoes", "normas", "objeto_resumo", "pergunta",
             "opcoes", "orientacao", "evidencia_corpus", "evidencia_par_117", "evidencia_caso_67_23", "formas_citadas",
             "descricao", "condicao_expr", "liga_expr", "desliga_expr", "depende_de_expr", "calculo_expr",
-            "condicional_expr", "preenche_expr", "sugere_expr"}
+            "condicional_expr", "preenche_expr", "sugere_expr", "revisao_expr", "grupo_ativo_expr", "leitura",
+            "revisao_pergunta"}
 STATUS = {"EXTRAIDO", "INFERIDO", "A_VERIFICAR"}
 ID_RX = re.compile(r"\b(?:TR-[A-Za-z0-9.\-]+|ETP-\d{2}\.\d{2}|WZ-\d{2}|NE-\d{3}|VAR-\d{3}|SET-\d{2}|VAL-\d{3}|DV-\d{2}|"
-                   r"NRM-\d{3}|CK-[CP]-(?:CAB\.\d{2}|\d{1,2}(?:\.\d{1,2})?))")
+                   r"NRM-\d{3}|CK-[CPX]-(?:CAB\.\d{2}|\d{1,2}(?:\.\d{1,2})?))")
 # Achados da seção 5 do prompt (lista reconstruída do registro da Fase 0: logs/f0_conferencias.txt e P01 a P11)
 ACHADOS_S5 = {1: "notas explicativas do modelo e ausência delas na matriz 01", 2: "arquivo-fonte e linhas da matriz 01",
               3: "estimativas ('~') na matriz 01", 4: "ETP 19/2026 com páginas ausentes",
@@ -202,7 +203,7 @@ def main():
            "M08": {"documento": {"ETP", "TR", "AMBOS"}},
            "M10": {"tipo": {"BLOQUEIO", "ALERTA", "INFORMATIVO"}, "momento": {"CHECKLIST", "ITENS", "WIZARD", "MINUTA", "IMPORTACAO"}},
            "M11": {"tipo_resposta": {"SIM_NAO", "UNICA", "MULTIPLA", "TEXTO", "NUMERO", "TABELA"}, "por_item": {"S", "N"},
-                   "efeito": {"PREENCHE", "SUGERE", "JUSTIFICA", "ALERTA", "SO_CONTROLE"}, "checklist": {"CONSUMO", "PERMANENTES"}},
+                   "efeito": {"PREENCHE", "SUGERE", "JUSTIFICA", "ALERTA", "SO_CONTROLE"}, "checklist": {"CONSUMO", "PERMANENTES", "COMPLEMENTO"}},
            "M06": {"teste_par_117": {"CONSISTENTE", "PARCIAL", "DIVERGENTE", "NAO_LIDO", "NAO_TESTADO"},
                    "teste_caso_67_23": {"CONSISTENTE", "PARCIAL", "DIVERGENTE", "NAO_LIDO", "NAO_TESTADO"}}}
     for k, d in dom.items():

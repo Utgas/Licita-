@@ -301,7 +301,8 @@
    "WZ-49",
    "WZ-58",
    "WZ-59"
-  ]
+  ],
+  "bloqueios_grupo_alternativas": []
  },
  "blocos_nao_comparados": [
   "TR-CAB.05",
@@ -405,6 +406,7 @@
  "divergencias_conhecidas": [
   {
    "dv": "DV-01",
+   "classificacao": "TR real",
    "tipo": "TEXTO_PRETO_ALTERADO",
    "local": "p.1, item 1.5",
    "descricao": "Texto em preto do modelo alterado: 'vigência e execução do objeto' no lugar de 'vigência da contratação', sem justificativa no documento.",
@@ -413,6 +415,7 @@
   },
   {
    "dv": "DV-04",
+   "classificacao": "TR real",
    "tipo": "TERMINOLOGIA",
    "local": "TR 23/2026 p.9, item 9.12.2; TR 58/2026 p.15, item 9.33",
    "descricao": "A Autorização Especial é chamada de 'Autorização de Funcionamento (AE)'. A NE-073 trata da 'Autorização Especial, emitida pela Agência Nacional de Vigilância Sanitária'; AFE é a Autorização de Funcionamento.",
@@ -421,6 +424,7 @@
   },
   {
    "dv": "DV-05",
+   "classificacao": "TR real",
    "tipo": "CLAUSULA_SEM_PERTINENCIA",
    "local": "p.5, item 7.2.4.7.1",
    "descricao": "Infração específica 'Não apresentar site planning e projeto de infraestrutura e adequação da sala de exames' num TR de ambulância; o mesmo texto está no TR 58/2026 (p.9), de equipamentos hospitalares.",
@@ -429,6 +433,7 @@
   },
   {
    "dv": "DV-08",
+   "classificacao": "TR real",
    "tipo": "CONTRARIA_NOTA_AGU",
    "local": "TR 23/2026 p.11, itens 9.30.5 a 9.30.8; TR 58/2026 p.16, itens 9.34.6 a 9.34.9",
    "descricao": "Declarações de garantia de 36 meses, de peças por dez anos, de assistência pelo fabricante e de treinamento exigidas como documento de habilitação técnica. São obrigações de execução; a NE-056 veda requisito de habilitação sem suporte nos arts. 66 a 69 da Lei 14.133/2021.",
@@ -437,6 +442,7 @@
   },
   {
    "dv": "DV-09",
+   "classificacao": "TR real",
    "tipo": "A_CONFERIR",
    "local": "TR 23/2026 p.11, item 9.30.1.1; TR 58/2026 p.16, item 9.34.2.1",
    "descricao": "O atestado deve comprovar 'garantia mínima de 12 (doze) meses prestada ao equipamento'. A NE-071 veda limitação de tempo ou de época nos atestados; não está claro se a duração da garantia atestada entra nessa vedação.",
@@ -445,6 +451,7 @@
   },
   {
    "dv": "DV-10",
+   "classificacao": "TR real",
    "tipo": "MARCA_DE_EDICAO",
    "local": "p.7, item 8.25; p.9, item 9.18",
    "descricao": "Marcas de comentário do editor no texto final ('[A5]' e '[A8]').",
@@ -453,11 +460,21 @@
   },
   {
    "dv": "DV-11",
+   "classificacao": "TR real",
    "tipo": "DIVERGENCIA_ETP_TR",
    "local": "ETP 67/2026 p.1, p.3 a p.6; TR 23/2026 p.1 e p.11",
    "descricao": "Mesmo objeto (ambulância tipo D para o mesmo hospital). O ETP prevê registro de preços (p.3, p.4 e p.6) e o TR é pregão sem registro de preços com fornecimento integral (p.1); os valores estimados diferem (ETP p.4 e p.5; TR p.11); o ETP não tem número de processo (p.1).",
    "referencia": "M06; WZ-10; VAR-014; VAR-001",
    "tratamento_no_sistema": "VAL-045; VAL-005"
+  },
+  {
+   "dv": "DV-35",
+   "classificacao": "TR real",
+   "tipo": "CLAUSULA_SEM_PERTINENCIA",
+   "local": "p.2, item 4.4 e subtítulo anterior",
+   "descricao": "Mantém o subtítulo 'Reserva de cotas para microempresas e empresas de pequeno porte' e o item 4.4 do modelo, alterado para negar a cota: '4.4. Na presente licitação, não será realizada a reserva de cota de até 25% para microempresas e empresas de pequeno porte.', com justificativa no 4.4.1. No modelo, os blocos TR-4.H08 e TR-4.41 só entram quando há item ou grupo com cota. Classificado pelo dono do projeto em 23/10/2026 como erro do TR real (decisão 0008).",
+   "referencia": "TR-4.H08; TR-4.41; WZ-24; VAR-113",
+   "tratamento_no_sistema": "Blocos ligados só pela WZ-24 = SIM (derivada da VAR-113); sem cota, não entram. No caso de reprodução R1, a diferença é do tipo 'TR real'."
   }
  ],
  "referencia": {
@@ -507,6 +524,7 @@
   "clausulas_m08_simuladas": [
    "SET-13"
   ],
+  "bloqueios_grupo_alternativas_simulados": [],
   "validacoes_m10_simuladas": [
    "VAL-005",
    "VAL-025",

@@ -419,7 +419,8 @@
    "VAL-018",
    "VAL-025",
    "VAL-030",
-   "VAL-050"
+   "VAL-050",
+   "VAL-051"
   ],
   "perguntas_sem_resposta": [
    "WZ-15",
@@ -434,7 +435,8 @@
    "WZ-48",
    "WZ-58",
    "WZ-59"
-  ]
+  ],
+  "bloqueios_grupo_alternativas": []
  },
  "referencia": {
   "derivadas": {
@@ -462,7 +464,8 @@
    {
     "numero": 1,
     "tratamento_me_epp": "AMPLA",
-    "valor_unidade_disputa": 950000.0,
+    "valor_unidade_disputa": 950000,
+    "cota_calculada": 0,
     "quantidade_cota": null,
     "perecivel": "N",
     "exige_amostra": "S",

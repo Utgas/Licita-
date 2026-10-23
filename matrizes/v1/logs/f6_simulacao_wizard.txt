@@ -26,8 +26,8 @@
    blocos na minuta: 226 de 483; JSON Logic: 226 blocos; cláusulas setoriais: ['SET-05', 'SET-11', 'SET-12', 'SET-13', 'SET-14', 'SET-16', 'SET-17', 'SET-18', 'SET-19', 'SET-20']; validações disparadas: ['VAL-001', 'VAL-025', 'VAL-026']; derivadas: WZ-09=NAO, WZ-18=NAO, WZ-20=NAO, WZ-24=NAO, WZ-50=POR_ITEM; tratamento ME/EPP: {'AMPLA': 1, 'EXCLUSIVO': 1}
    grupos ativos: GA-01=A, GA-02=A, GA-03=B, GA-04=A, GA-05=A, GA-06=A, GA-07=B, GA-08=A, GA-09=A, GA-10=A
    sem problemas
-== C8 consumo com comodato, temperatura, controle especial e respostas incoerentes no checklist
-   blocos na minuta: 216 de 483; JSON Logic: 216 blocos; cláusulas setoriais: ['SET-01', 'SET-02', 'SET-03', 'SET-04', 'SET-05', 'SET-06', 'SET-08', 'SET-09', 'SET-21', 'SET-22']; validações disparadas: ['VAL-004', 'VAL-010', 'VAL-011', 'VAL-020', 'VAL-022']; derivadas: WZ-09=SIM, WZ-13=NAO, WZ-18=NAO, WZ-20=NAO, WZ-24=SIM, WZ-50=POR_ITEM; tratamento ME/EPP: {'COTA': 1, 'EXCLUSIVO': 1}
+== C8 consumo com temperatura, controle especial e respostas incoerentes no checklist (comodato respondido no Word, fora do sistema)
+   blocos na minuta: 216 de 483; JSON Logic: 216 blocos; cláusulas setoriais: ['SET-02', 'SET-03', 'SET-04', 'SET-05', 'SET-06', 'SET-08', 'SET-09', 'SET-21', 'SET-22']; validações disparadas: ['VAL-004', 'VAL-010', 'VAL-011', 'VAL-020', 'VAL-022']; derivadas: WZ-09=SIM, WZ-13=NAO, WZ-18=NAO, WZ-20=NAO, WZ-24=SIM, WZ-50=POR_ITEM; tratamento ME/EPP: {'COTA': 1, 'EXCLUSIVO': 1}
    grupos ativos: GA-01=A, GA-02=A, GA-03=A, GA-04=A, GA-05=A, GA-06=B, GA-07=A, GA-08=A, GA-09=A, GA-10=B
    sem problemas
 TOTAL DE PROBLEMAS: 0

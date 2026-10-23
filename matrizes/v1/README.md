@@ -1,6 +1,6 @@
 # Licita+ | Matrizes v1
 
-Estado em 23/10/2026: Fases 0 a 10 concluídas. Na Fase 10 as regras que o motor executa ficaram todas em JSON Logic (dependências do wizard, condições e preenchimento do checklist, atributos calculados), com os parâmetros no M12 e os cenários de ouro e de reprodução em `cenarios/`. Antes, na mesma data, a tarefa extra da Fase 10 conferiu o M07 com o repositório auxiliar ctresb/leis e fechou a P16.
+Estado em 23/10/2026: Fases 0 a 11 concluídas. A Fase 11 leva para as matrizes o lote 1 de respostas (decisão 0008), a decisão de não mudar o checklist distribuído (decisão 0009) e as regras do simulador alinhadas ao motor (Marco 1). Na Fase 10 as regras que o motor executa ficaram todas em JSON Logic (dependências do wizard, condições e preenchimento do checklist, atributos calculados), com os parâmetros no M12 e os cenários de ouro e de reprodução em `cenarios/`. Antes, na mesma data, a tarefa extra da Fase 10 conferiu o M07 com o repositório auxiliar ctresb/leis e fechou a P16.
 
 ## Arquivos
 
@@ -11,28 +11,38 @@ Estado em 23/10/2026: Fases 0 a 10 concluídas. Na Fase 10 as regras que o motor
 | `M02_tr_blocos.csv` | blocos do modelo AGU de TR (DEZ/2025), com texto literal, formatação, condição em texto e em JSON Logic | 499 |
 | `M03_notas_explicativas.csv` | as 102 notas explicativas do modelo, com regra derivada, perguntas e regras afetadas e colunas de revisão | 102 |
 | `M04_wizard.csv` | decisões do wizard (jurídicas e derivadas dos itens), perguntas do checklist que as pré-preenchem, liga/desliga em texto e em JSON Logic, colunas de revisão | 59 |
-| `M05_variaveis.csv` | variáveis de entrada e atributos de item, com origem, validação e onde são usadas | 159 |
+| `M05_variaveis.csv` | variáveis de entrada e atributos de item, com origem, validação e onde são usadas | 160 |
 | `M06_derivacao_etp_tr.csv` | derivação ETP para TR por bloco, com o teste no par 117/2025 e o caso 67/2026 x 23/2026 | 499 |
 | `M07_normas.csv` | normas e orientações citadas nas matrizes, com origem e situação conferida quando possível | 104 |
 | `M08_clausulas_setoriais.csv` | cláusulas setoriais de saúde que o modelo não traz, com fonte no checklist e evidência no corpus | 22 |
-| `M09_desvios.csv` | desvios encontrados nos documentos da base e nas matrizes rascunho, com o tratamento no sistema | 34 |
-| `M10_validacoes.csv` | validações e alertas, com condição em JSON Logic quando cabe | 50 |
-| `M11_checklist.csv` | uma linha por pergunta dos dois checklists técnicos, com tipo, condicional, destino e efeito, e as mesmas regras em JSON Logic | 276 |
+| `M09_desvios.csv` | desvios encontrados nos documentos da base e nas matrizes rascunho, com o tratamento no sistema | 35 |
+| `M10_validacoes.csv` | validações e alertas, com condição em JSON Logic quando cabe | 51 |
+| `M11_checklist.csv` | uma linha por pergunta dos dois checklists técnicos, com tipo, condicional, destino e efeito, e as mesmas regras em JSON Logic | 285 |
 | `M12_parametros.csv` | valores numéricos, limites e marcadores usados pelas regras, com base, vigência e onde são usados | 12 |
 | `matrizes_v1.xlsx` | cópia de leitura e revisão: aba LEIA_ME e uma aba por CSV; colunas de revisão em amarelo no M03 e no M04 | |
 | `cenarios/` | cenários de ouro C1 a C8 (8) e casos de reprodução R1 e R2 (2) em JSON, com entrada e esperado | |
-| `perguntas_abertas.md` | decisões pendentes e adotadas, P01 a P31 | |
+| `perguntas_abertas.md` | decisões pendentes e adotadas, P01 a P32 | |
 | `sugestoes_checklist.md` | lacunas, duplicidades e ambiguidades dos checklists, com redação proposta | |
 | `auditoria_matrizes_01_02.md` | auditoria das matrizes rascunho 01 e 02 (Fase 8) | |
 | `log_fase10_repo_leis.md` | arquivos do repositório auxiliar ctresb/leis (commit 15eb09b) cruzados com o M07 e uso de cada um | |
 | `logs/` | conferências, cobertura do checklist, comparação dos TRs, expressões, simulação, normas, testes | |
 | `scripts/` | scripts de análise que geram tudo acima | |
 
+## O que mudou na Fase 11
+
+- M11: colunas `leitura`, `revisao_expr` e `revisao_pergunta` (260 expressões de revisão, 85 perguntas ao operador) e 9 complementos do operador (CK-X-01 a CK-X-09). As perguntas 10.1 a 10.11 do consumo (comodato) passaram a só controle.
+- M12: coluna `tipo` (numero, lista ou texto), que passa a ser a fonte do tipo; a frase 'Tipo do valor' na fonte continua. PAR-03 corrigido: cita a VAR-160, que agora existe (cota calculada).
+- Cota zero (decisão 0008): VAR-160 nova, VAR-113 e VAR-118 refeitas sem ciclo (ordem 4, 5 e 6) e VAL-051 nova.
+- Comodato fora do sistema (P24): WZ-56, SET-01 e VAL-027 com expressão `false` e o motivo no texto ('DESLIGADA').
+- VAL-001 só com as perguntas 15.3 e 15.5 do checklist de permanentes (P28). ETP-90.01 opcional, sem texto padrão (P19). DV-35 nova (TR 23/2026, blocos de cota sem cota), ligada ao R1.
+- M02: coluna `grupo_ativo_expr` (quando um grupo de alternativas vale), usada pela regra de exatamente uma opção.
+- Simulador com as regras do motor: valor ausente, filho sem pai, grupo de alternativas, igualdade estrita, falso e conta em decimal exato (seção 'Regras do simulador'). Cenários reemitidos; `esperado` ganhou `bloqueios_grupo_alternativas`.
+
 ## O que mudou na Fase 10
 
 - `M04.depende_de_expr` em 25 de 59 perguntas (vazia quando a pergunta vale sempre ou só depende de dado dos itens) e `M04.calculo_expr` nas 6 perguntas derivadas dos itens.
-- `M05.calculo_expr` e `M05.calculo_ordem` em 9 variáveis (VAR-031, VAR-049, VAR-065, VAR-111, VAR-113, VAR-116, VAR-118, VAR-119, VAR-154). Linhas novas: VAR-156 `numero`, VAR-157 `catmat`, VAR-158 `quantidade` e VAR-159 `valor_unitario` (atributos de item que as regras já usavam).
-- `M11.condicional_expr` em 61 perguntas, `preenche_expr` em 159 e `sugere_expr` em 38. O que a regra do M11 não permite traduzir ficou sem expressão e está listado em `logs/f10_expr.txt` (P31).
+- `M05.calculo_expr` e `M05.calculo_ordem` em 10 variáveis (VAR-031, VAR-049, VAR-065, VAR-111, VAR-113, VAR-116, VAR-118, VAR-119, VAR-154, VAR-160). Linhas novas: VAR-156 `numero`, VAR-157 `catmat`, VAR-158 `quantidade` e VAR-159 `valor_unitario` (atributos de item que as regras já usavam).
+- `M11.condicional_expr` em 70 perguntas, `preenche_expr` em 160 e `sugere_expr` em 38. O que a regra do M11 não permite traduzir ficou sem expressão e está listado em `logs/f10_expr.txt` (P31).
 - `M12_parametros.csv` com 12 parâmetros: nenhuma expressão traz número de lei ou valor monetário.
 - M10: literais trocados por `parametros.*` (VAL-004, 017, 020, 025, 026) e por `VAR_099` (VAL-032); mensagem da VAL-033 reescrita sem o padrão de ID.
 - Números de processo do corpus trocados por PROC-01 a PROC-12 no M00, no `perguntas_abertas.md` e nos scripts; a correspondência ficou fora do pacote.
@@ -41,16 +51,16 @@ Estado em 23/10/2026: Fases 0 a 10 concluídas. Na Fase 10 as regras que o motor
 ## O que mudou da Fase 3 à Fase 9
 
 - Ajuste 1: o item virou entidade (VAR-011 com as colunas VAR-112 a VAR-124 e VAR-153 a VAR-155). Tratamento de ME/EPP calculado pelo valor do item ou do grupo; WZ-09, WZ-13, WZ-18, WZ-20, WZ-24 e WZ-50 são derivadas dos itens. Cenário misto C6 na simulação.
-- Checklists técnicos como entrada do sistema: M11 com 276 perguntas (131 de consumo, 145 de permanentes); efeito: PREENCHE 164, JUSTIFICA 50, SUGERE 42, SO_CONTROLE 10, ALERTA 10.
+- Checklists técnicos como entrada do sistema: M11 com 285 perguntas (131 de consumo, 145 de permanentes); efeito: PREENCHE 165, JUSTIFICA 47, SUGERE 42, SO_CONTROLE 21, ALERTA 10.
 - M04: 59 perguntas. A coluna `pre_preenchida_por` mostra 17 respondidas ou sugeridas pelo checklist, 6 derivadas dos itens e 36 marcadas `DECISAO_JURIDICA` (equipe administrativa). WZ-56 a WZ-59 são novas (comodato, validade excepcional, desinstalação, fabricante ou rede credenciada).
-- M05: 159 variáveis; origem: WIZARD 75, CHECKLIST 53, SISTEMA 20, DFD 6, PESQUISA_PRECOS 5. CHECKLIST entrou no domínio de origem (P29).
+- M05: 160 variáveis; origem: WIZARD 75, CHECKLIST 53, SISTEMA 21, DFD 6, PESQUISA_PRECOS 5. CHECKLIST entrou no domínio de origem (P29).
 - Condições em JSON Logic: `M02.condicao_expr`, `M04.liga_expr` e `M04.desliga_expr`, `M08.condicao_expr` e `M10.condicao_expr`. O texto livre continua como comentário. O que não coube está na P27.
 - Colunas `validacao` e `comentario_validacao` no M03 e no M04, vazias, para a sua revisão no xlsx.
 - P17 e P21 resolvidas; P16 fechada na Fase 10 (Decreto 12.174/2024, art. 2º, conferido no Planalto); P10 atualizada (DFDs chegaram, mas nenhum do processo do par 117/2025).
 
-## Especificação reconstruída (leia antes de revisar M06 a M10)
+## Especificação das matrizes M06 a M10 (oficial desde 23/10/2026)
 
-O texto original do prompt não está disponível nesta sessão (o `attachment.txt` de 22/10/2026 é a lista de tarefas). As colunas abaixo e a lista de achados da seção 5 foram reconstruídas do registro das Fases 0 a 3; confirme ou corrija (P23).
+Reconstruída do registro das Fases 0 a 3, porque o prompt original não estava disponível; o gestor fechou a P23 e esta especificação passou a ser a oficial.
 
 - M06: `bloco_tr`, `secao`, `campos_etp`, `variaveis`, `perguntas_wz`, `classe_origem`, `regra_derivacao`, `teste_par_117`, `evidencia_par_117`, `teste_caso_67_23`, `evidencia_caso_67_23`, `fonte`, `status`.
 - M07: `id` (NRM-xxx, estável pela `chave`), `chave`, `norma`, `tipo`, `numero`, `ano`, `orgao`, `dispositivos_citados`, `formas_citadas`, `onde_citada`, `n_citacoes`, `origem` (MODELO_AGU, NOTA_AGU, CORPUS, CHECKLIST, MATRIZ), `situacao` (VIGENTE, REVOGADA, NAO_CONFERIDA), `verificacao` (URL e data), `fonte`, `status`.
@@ -87,12 +97,30 @@ O texto original do prompt não está disponível nesta sessão (o `attachment.t
 - `M11.condicional_expr`: quando a pergunta do checklist deve ser respondida.
 - `M11.preenche_expr` e `M11.sugere_expr`: objeto `{destino: expressão}`, destino `WZ_xx`, `VAR_xxx` ou `itens.<atributo>`. Só são avaliadas com a pergunta respondida e a condicional verdadeira; resultado `null` não conta. PREENCHE não sobrescreve o que o usuário já respondeu; duas perguntas que preenchem a mesma WZ com valores diferentes deixam a WZ sem resposta e o conflito aparece para a equipe. Destino `VAR_xxx` com várias contribuições: TEXTO junta em linhas, LISTA e TABELA juntam em lista, NUMERO fica com a primeira e acusa conflito se outra for diferente; cada contribuição guarda o ID da pergunta. SUGERE só mostra.
 - Ordem de avaliação usada no simulador (sugestão para o motor): entrada; M11 (preenche, na ordem das linhas); M05 por `calculo_ordem`; M04 `calculo_expr`; M04 `depende_de_expr`; M02, M04 liga/desliga, M08 e M10.
-- `M12_parametros.csv`: `id` (PAR-01), `nome`, `valor`, `unidade`, `base`, `vigencia`, `usado_em`, `fonte`, `status`.
+- `M12_parametros.csv`: `id` (PAR-01), `nome`, `valor`, `tipo` (numero, lista ou texto; a coluna é a fonte do tipo), `unidade`, `base`, `vigencia`, `usado_em`, `fonte`, `status`.
+- `M02.grupo_ativo_expr`: nas linhas com `grupo_alternativa`, quando o grupo vale (mesmo valor em todo o grupo).
+- Condição desligada: `false` na coluna `_expr`, com o texto da linha começando por 'DESLIGADA' e o motivo.
+
+### Colunas da Fase 11 no M11 e complementos do operador
+
+- `leitura`: como ler a resposta do Word e qual prevalece em duplicidade (texto).
+- `revisao_expr`: JSON Logic, só com operadores gerais; verdadeira = resposta destacada para o operador revisar. Avaliada no fim, com os mesmos dados das validações do M10. Usa os metadados de leitura `checklist.marcas_multiplas`, `checklist.resposta_unica_por_item` e `checklist.divergencias_leitura` e o número `CK_x_numero` lido do 'Outro' do prazo (P32).
+- `revisao_pergunta`: pergunta que o sistema faz ao operador quando a dúvida muda a minuta; vazia quando basta o destaque. Pergunta sem resposta mantém a VAL-037 (bloqueio).
+- Complementos do operador: linhas `CK-X-nn` (dois dígitos, a partir de 01), `checklist = COMPLEMENTO`, seção 'COMPLEMENTO DO OPERADOR', número `X.nn`, variável `CK_X_nn`. Preenchidos no sistema, não existem no Word; ligados às mesmas variáveis e destinos das perguntas do checklist; sem opção pré-definida que não venha de norma ou de domínio do M05.
+
+### Regras do simulador (as mesmas do motor, Marco 1)
+
+- Valor ausente: conta (`+`, `-`, `*`, `/`, `%`) e comparação de ordem (`<=`, `>`) com valor ausente dão ausente (`null`), nunca 0; divisão por zero também. Item sem valor unitário fica sem valor da unidade e sem tratamento ME/EPP.
+- Igualdade estrita: `==` e `!=` comparam tipo e valor ("30" é diferente de 30; 30 é igual a 30.0); `null` só é igual a `null`.
+- Falso para `!`, `!!`, `if`, `and`, `or`, `some` e `none`: `null`, `false`, 0, "" e `[]`; o resto é verdadeiro.
+- Conta exata: números convertidos para decimal pela forma escrita mais curta e somados e multiplicados em decimal.
+- Filho sem o pai não entra: pai é o ID sem o último segmento numérico, de letra ou romano (TR-4.41.1 tem pai TR-4.41), quando esse ID existe no M02; vale em cascata, na ordem do M02.
+- Grupo de alternativas ativo (`grupo_ativo_expr`): exatamente uma opção entra; nenhuma ou mais de uma vai para `bloqueios_grupo_alternativas`.
 
 ### Cenários (`cenarios/`)
 
-- C1 a C8: gerados pelo `f10_simulador.py` (implementação independente do motor). `entrada` tem `wizard`, `checklist`, `itens` (com `respostas_por_item` quando a pergunta é por item), `variaveis` e `metadados`, todos fictícios. `esperado` tem `blocos` (M02, na ordem), `clausulas_m08`, `validacoes_m10` e `perguntas_sem_resposta`. O esperado vem do caminho do texto (liga/desliga e depende_de em texto, derivadas em Python); o teste reproduz pelo caminho das expressões. `referencia` é informativa.
-- R1 (TR 23/2026) e R2 (TR 58/2026): entrada anonimizada com as respostas tiradas do TR real (`origem_das_respostas`), itens fictícios, blocos que o TR real contém, `divergencias_conhecidas` ligadas ao M09 e, em `referencia.diferencas_simulacao`, o que a simulação monta a mais ou a menos que o TR real.
+- C1 a C8: gerados pelo `f10_simulador.py` (implementação independente do motor). `entrada` tem `wizard`, `checklist`, `itens` (com `respostas_por_item` quando a pergunta é por item), `variaveis` e `metadados`, todos fictícios. `esperado` tem `blocos` (M02, na ordem), `clausulas_m08`, `validacoes_m10`, `perguntas_sem_resposta` e `bloqueios_grupo_alternativas`. O esperado vem do caminho do texto (liga/desliga e depende_de em texto, derivadas em Python); o teste reproduz pelo caminho das expressões. `referencia` é informativa.
+- R1 (TR 23/2026) e R2 (TR 58/2026): entrada anonimizada com as respostas tiradas do TR real (`origem_das_respostas`), itens fictícios, blocos que o TR real contém, `divergencias_conhecidas` ligadas ao M09 e, em `referencia.diferencas_simulacao`, o que a simulação monta a mais ou a menos que o TR real. Cada divergência traz `classificacao` ('TR real').
 
 ## Checklists técnicos
 
@@ -103,7 +131,7 @@ Versões mapeadas no M11 (qualquer mudança no checklist exige refazer o M11; ve
 
 Divisão de trabalho: o checklist traz os fatos técnicos (M11); o wizard fica com as decisões jurídicas (M04, `DECISAO_JURIDICA`). A tabela de atributos de item por checklist está em `sugestoes_checklist.md`.
 
-## Testes de aceite (Fases 9 e 10)
+## Testes de aceite (Fases 9 a 11)
 
 Resultado completo em `logs/f9_testes.txt`. FALHAS: 0.
 
@@ -111,20 +139,20 @@ Resultado completo em `logs/f9_testes.txt`. FALHAS: 0.
 - teste 3: M02 com 499 IDs únicos e no padrão
 - teste 3: M03 com 102 IDs únicos e no padrão
 - teste 3: M04 com 59 IDs únicos e no padrão
-- teste 3: M05 com 159 IDs únicos e no padrão
+- teste 3: M05 com 160 IDs únicos e no padrão
 - teste 3: M06 com 499 IDs únicos e no padrão
 - teste 3: M07 com 104 IDs únicos e no padrão
 - teste 3: M08 com 22 IDs únicos e no padrão
-- teste 3: M09 com 34 IDs únicos e no padrão
-- teste 3: M10 com 50 IDs únicos e no padrão
-- teste 3: M11 com 276 IDs únicos e no padrão
+- teste 3: M09 com 35 IDs únicos e no padrão
+- teste 3: M10 com 51 IDs únicos e no padrão
+- teste 3: M11 com 285 IDs únicos e no padrão
 - teste 3: M12 com 12 IDs únicos e no padrão
 - teste 3: referências cruzadas entre M00 e M11: 0 quebradas
 - teste 1: 556 de 556 parágrafos não vazios do modelo em exatamente um bloco do M02 (100.00%); blocos tirados das notas (TR-NE*) fora da conta: 9
 - teste 2: 102 notas (NE-001 a NE-102) ligadas a bloco existente do M02
 - teste 4: normas citadas de M00 a M11 presentes no M07 (104 normas): 0 faltando
 - teste 4: norma citada só em texto das matrizes, sem base nem conferência: 0
-- teste 5: fonte e status preenchidos e no domínio nas 1863 linhas de M00 a M11
+- teste 5: fonte e status preenchidos e no domínio nas 1875 linhas de M00 a M11
 - teste 6: incisos obrigatórios no M01 = ['I', 'IV', 'VI', 'VIII', 'XIII']
 - teste 7: nomes de pessoas nos arquivos de saída: 0 (nomes de pessoas identificados no corpus: 46; sobrenomes distintivos: 73)
 - teste 8: achados da seção 5 (lista reconstruída, 10) no M09 ou no M10: 1=1, 2=2, 3=2, 4=2, 5=4, 6=6, 7=1, 8=3, 9=2, 10=1
@@ -143,20 +171,30 @@ Outras conferências:
 - M06: uma linha por bloco do M02 (499 de 499)
 - M11: toda pergunta tem destino ou é SO_CONTROLE com motivo na regra
 - M11: hash dos dois checklists da base confere com o registrado nas linhas: Checklist_Tecnico_Aquisicao_de_Materiais... 7c6d3cc9bf16; Checklist_Tecnico_Medicamentos_e_Materia... 6294e718c983
-- JSON Logic: 949 expressões em todas as colunas *_expr, JSON válido, só operadores permitidos e variáveis conhecidas (parametros.* no M12)
+- JSON Logic: 1352 expressões em todas as colunas *_expr, JSON válido, só operadores permitidos e variáveis conhecidas (parametros.* no M12)
 - operadores fora da lista só em M04.calculo_expr e M05.calculo_expr e registrados na P31: ['%', '*', '+', '-', '/', 'reduce']
 - nenhum número de lei ou valor monetário dentro de expressão (números só 0 e 1 de contagem e opção literal do checklist; textos com dígito só se forem opção)
 - M04: depende_de_expr preenchida exatamente nas perguntas com condição em depende_de
 - M04: calculo_expr nas 6 derivadas: ['WZ-09', 'WZ-13', 'WZ-18', 'WZ-20', 'WZ-24', 'WZ-50']
-- M11: preenche_expr só em PREENCHE, sugere_expr só em SUGERE, condicional_expr em toda condicional (61)
-- M05: calculo_expr em 9 variáveis, ordem única e cada cálculo só lê atributo já calculado
+- M11: preenche_expr só em PREENCHE, sugere_expr só em SUGERE, condicional_expr em toda condicional (70)
+- M05: calculo_expr em 10 variáveis, ordem única e cada cálculo só lê atributo já calculado
 - M05: atributos de item catmat, quantidade, valor_unitario e numero presentes (achado do compilador)
 - M12: 12 parâmetros com fonte e status, todos usados por alguma regra
+- M11.revisao_expr: 260 expressões, 712 casos (cada uma dispara e não dispara)
+- M11.revisao_expr só com operadores gerais (sem os de cálculo)
+- M11: 9 complementos do operador (CK-X-01 a CK-X-09, checklist COMPLEMENTO), com condição e expressão
+- comodato fora do sistema: CK-C-10.1 a 10.11 só controle; WZ-56, SET-01 e VAL-027 com expressão false e o motivo no texto
+- cota zero: 3 x 25% dá cota 0, item em AMPLA e VAL-051 dispara; 9 x 25% dá cota 2, COTA e VAL-051 não dispara (AMPLA, COTA)
+- valor ausente: item sem valor_unitario fica sem valor da unidade e sem tratamento ME/EPP (não vira EXCLUSIVO)
+- conta exata no limite: 4 x 20.000,00 = limite dá EXCLUSIVO; 3 x 26.666,67 (80.000,01) não (['EXCLUSIVO', 'AMPLA'])
+- M12: coluna tipo em todas as linhas (['lista', 'numero', 'texto'])
+- M12: toda VAR citada na fonte e na base existe no M05 (['VAR-057', 'VAR-060', 'VAR-113', 'VAR-118', 'VAR-154', 'VAR-160'])
 - VAL-029: some sobre a VAR_085 (lista) acha 'período mínimo' e 'últimos', com e sem inicial maiúscula, em cada item; 7 casos
 - PAR-05: valor numérico (30) com unidade 'dias corridos'
 - cenarios/: 8 cenários de ouro e 2 casos de reprodução com entrada e esperado completos, IDs existentes e DV-xx do M09
 - simulador pelas colunas novas reproduz os 8 cenários (blocos, M08, M10 e perguntas sem resposta)
 - controle negativo das colunas novas: 4 erros injetados (depende_de_expr, M05.calculo_expr, preenche_expr, M04.calculo_expr), detectados 4
+- regras de montagem no simulador: com TR-1 desligado, 5 filhos saem; com duas opções no GA-01 (TR-1.3 ligado à força), bloqueio ['GA-01']
 - números de processo trocados por PROC-xx no M00, no perguntas_abertas.md e nos scripts; entradas dos cenários sem número de processo nem UASG
 - VAL-033: mensagem ao usuário sem 'ETP-SS.CC'
 - README: lista de operadores igual à da Fase 10 (14 operadores)
@@ -169,13 +207,9 @@ Outras conferências:
 ## Perguntas que dependem de você
 
 - P09. Gerenciador da IRP 134/2025 (ABERTA)
-- P10. DFD do processo do par 117/2025 (ABERTA)
-- P19. Seção adicional do ETP, "Justificativas pontuais" (ABERTA)
-- P23. Especificação das matrizes M06 a M10 e achados da seção 5 (ABERTA)
-- P24. Comodato numa aquisição (ABERTA)
 - P25. Atestado que exige "garantia mínima de 12 meses prestada" (ABERTA)
-- P26. Leitura por máquina do checklist preenchido no Word (ABERTA, depende da revisão do checklist)
-- P28. Lista de classes de TIC para o alerta de escopo (ABERTA)
+- P26. Leitura por máquina do checklist preenchido no Word (ABERTA para o Marco 2; checklist congelado, decisão 0009)
+- P32. Fase 11: o que o motor e o compilador precisam oferecer para a leitura do checklist e as regras novas (ABERTA)
 
 ## Revisão no xlsx
 

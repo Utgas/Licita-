@@ -15,13 +15,13 @@ OK    teste 3: M01 com 24 IDs únicos e no padrão
 OK    teste 3: M02 com 499 IDs únicos e no padrão
 OK    teste 3: M03 com 102 IDs únicos e no padrão
 OK    teste 3: M04 com 59 IDs únicos e no padrão
-OK    teste 3: M05 com 159 IDs únicos e no padrão
+OK    teste 3: M05 com 160 IDs únicos e no padrão
 OK    teste 3: M06 com 499 IDs únicos e no padrão
 OK    teste 3: M07 com 104 IDs únicos e no padrão
 OK    teste 3: M08 com 22 IDs únicos e no padrão
-OK    teste 3: M09 com 34 IDs únicos e no padrão
-OK    teste 3: M10 com 50 IDs únicos e no padrão
-OK    teste 3: M11 com 276 IDs únicos e no padrão
+OK    teste 3: M09 com 35 IDs únicos e no padrão
+OK    teste 3: M10 com 51 IDs únicos e no padrão
+OK    teste 3: M11 com 285 IDs únicos e no padrão
 OK    teste 3: M12 com 12 IDs únicos e no padrão
 OK    teste 3: referências cruzadas entre M00 e M11: 0 quebradas
 OK    teste 1: 556 de 556 parágrafos não vazios do modelo em exatamente um bloco do M02 (100.00%); blocos tirados das notas (TR-NE*) fora da conta: 9
@@ -29,7 +29,7 @@ OK    teste 2: 102 notas (NE-001 a NE-102) ligadas a bloco existente do M02
 OK    teste 4: normas citadas de M00 a M11 presentes no M07 (104 normas): 0 faltando
 OK    teste 4: norma citada só em texto das matrizes, sem base nem conferência: 0
 OK    M07: status A_VERIFICAR só em norma não conferida
-OK    teste 5: fonte e status preenchidos e no domínio nas 1863 linhas de M00 a M11
+OK    teste 5: fonte e status preenchidos e no domínio nas 1875 linhas de M00 a M11
 OK    teste 6: incisos obrigatórios no M01 = ['I', 'IV', 'VI', 'VIII', 'XIII']
 OK    teste 7: nomes de pessoas nos arquivos de saída: 0 (nomes de pessoas identificados no corpus: 46; sobrenomes distintivos: 73)
 OK    teste 8: achados da seção 5 (lista reconstruída, 10) no M09 ou no M10: 1=1, 2=2, 3=2, 4=2, 5=4, 6=6, 7=1, 8=3, 9=2, 10=1
@@ -45,20 +45,30 @@ OK    M06: colunas de domínio fechado no domínio
 OK    M06: uma linha por bloco do M02 (499 de 499)
 OK    M11: toda pergunta tem destino ou é SO_CONTROLE com motivo na regra
 OK    M11: hash dos dois checklists da base confere com o registrado nas linhas: Checklist_Tecnico_Aquisicao_de_Materiais... 7c6d3cc9bf16; Checklist_Tecnico_Medicamentos_e_Materia... 6294e718c983
-OK    JSON Logic: 949 expressões em todas as colunas *_expr, JSON válido, só operadores permitidos e variáveis conhecidas (parametros.* no M12)
+OK    JSON Logic: 1352 expressões em todas as colunas *_expr, JSON válido, só operadores permitidos e variáveis conhecidas (parametros.* no M12)
 OK    operadores fora da lista só em M04.calculo_expr e M05.calculo_expr e registrados na P31: ['%', '*', '+', '-', '/', 'reduce']
 OK    nenhum número de lei ou valor monetário dentro de expressão (números só 0 e 1 de contagem e opção literal do checklist; textos com dígito só se forem opção)
 OK    M04: depende_de_expr preenchida exatamente nas perguntas com condição em depende_de
 OK    M04: calculo_expr nas 6 derivadas: ['WZ-09', 'WZ-13', 'WZ-18', 'WZ-20', 'WZ-24', 'WZ-50']
-OK    M11: preenche_expr só em PREENCHE, sugere_expr só em SUGERE, condicional_expr em toda condicional (61)
-OK    M05: calculo_expr em 9 variáveis, ordem única e cada cálculo só lê atributo já calculado
+OK    M11: preenche_expr só em PREENCHE, sugere_expr só em SUGERE, condicional_expr em toda condicional (70)
+OK    M05: calculo_expr em 10 variáveis, ordem única e cada cálculo só lê atributo já calculado
 OK    M05: atributos de item catmat, quantidade, valor_unitario e numero presentes (achado do compilador)
 OK    M12: 12 parâmetros com fonte e status, todos usados por alguma regra
+OK    M11.revisao_expr: 260 expressões, 712 casos (cada uma dispara e não dispara)
+OK    M11.revisao_expr só com operadores gerais (sem os de cálculo)
+OK    M11: 9 complementos do operador (CK-X-01 a CK-X-09, checklist COMPLEMENTO), com condição e expressão
+OK    comodato fora do sistema: CK-C-10.1 a 10.11 só controle; WZ-56, SET-01 e VAL-027 com expressão false e o motivo no texto
+OK    cota zero: 3 x 25% dá cota 0, item em AMPLA e VAL-051 dispara; 9 x 25% dá cota 2, COTA e VAL-051 não dispara (AMPLA, COTA)
+OK    valor ausente: item sem valor_unitario fica sem valor da unidade e sem tratamento ME/EPP (não vira EXCLUSIVO)
+OK    conta exata no limite: 4 x 20.000,00 = limite dá EXCLUSIVO; 3 x 26.666,67 (80.000,01) não (['EXCLUSIVO', 'AMPLA'])
+OK    M12: coluna tipo em todas as linhas (['lista', 'numero', 'texto'])
+OK    M12: toda VAR citada na fonte e na base existe no M05 (['VAR-057', 'VAR-060', 'VAR-113', 'VAR-118', 'VAR-154', 'VAR-160'])
 OK    VAL-029: some sobre a VAR_085 (lista) acha 'período mínimo' e 'últimos', com e sem inicial maiúscula, em cada item; 7 casos
 OK    PAR-05: valor numérico (30) com unidade 'dias corridos'
 OK    cenarios/: 8 cenários de ouro e 2 casos de reprodução com entrada e esperado completos, IDs existentes e DV-xx do M09
 OK    simulador pelas colunas novas reproduz os 8 cenários (blocos, M08, M10 e perguntas sem resposta)
 OK    controle negativo das colunas novas: 4 erros injetados (depende_de_expr, M05.calculo_expr, preenche_expr, M04.calculo_expr), detectados 4
+OK    regras de montagem no simulador: com TR-1 desligado, 5 filhos saem; com duas opções no GA-01 (TR-1.3 ligado à força), bloqueio ['GA-01']
 OK    números de processo trocados por PROC-xx no M00, no perguntas_abertas.md e nos scripts; entradas dos cenários sem número de processo nem UASG
 OK    VAL-033: mensagem ao usuário sem 'ETP-SS.CC'
 OK    README: lista de operadores igual à da Fase 10 (14 operadores)
@@ -68,16 +78,16 @@ OK    travessão (U+2014) fora das colunas literais e nos .md: 0
 OK    simulação do wizard: 8 cenários, TOTAL DE PROBLEMAS: 0
 OK    controle negativo da simulação: 3 erros injetados (condição de bloco, liga_expr, cláusula setorial), detectados 3
 INFO  M00: 23 linhas | status {'INFERIDO': 7, 'A_VERIFICAR': 4, 'EXTRAIDO': 12}
-INFO  M01: 24 linhas | status {'INFERIDO': 23, 'A_VERIFICAR': 1}
+INFO  M01: 24 linhas | status {'INFERIDO': 24}
 INFO  M02: 499 linhas | status {'INFERIDO': 332, 'EXTRAIDO': 167}
 INFO  M03: 102 linhas | status {'INFERIDO': 102}
 INFO  M04: 59 linhas | status {'INFERIDO': 58, 'A_VERIFICAR': 1}
-INFO  M05: 159 linhas | status {'INFERIDO': 159}
+INFO  M05: 160 linhas | status {'INFERIDO': 160}
 INFO  M06: 499 linhas | status {'INFERIDO': 484, 'EXTRAIDO': 15}
 INFO  M07: 104 linhas | status {'EXTRAIDO': 96, 'A_VERIFICAR': 8}
 INFO  M08: 22 linhas | status {'A_VERIFICAR': 1, 'INFERIDO': 21}
-INFO  M09: 34 linhas | status {'EXTRAIDO': 29, 'INFERIDO': 1, 'A_VERIFICAR': 4}
-INFO  M10: 50 linhas | status {'INFERIDO': 49, 'A_VERIFICAR': 1}
-INFO  M11: 276 linhas | status {'INFERIDO': 276}
+INFO  M09: 35 linhas | status {'EXTRAIDO': 30, 'INFERIDO': 1, 'A_VERIFICAR': 4}
+INFO  M10: 51 linhas | status {'INFERIDO': 50, 'A_VERIFICAR': 1}
+INFO  M11: 285 linhas | status {'INFERIDO': 285}
 INFO  M12: 12 linhas | status {'EXTRAIDO': 8, 'INFERIDO': 1, 'A_VERIFICAR': 3}
 FALHAS: 0

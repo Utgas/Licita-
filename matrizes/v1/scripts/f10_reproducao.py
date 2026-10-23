@@ -11,6 +11,7 @@ esperado.blocos: blocos do M02 que o TR real contém (classe IGUAL ou ALTERADO n
 esperado.clausulas_m08: cláusulas setoriais com evidência no próprio TR (coluna evidencia_corpus do M08).
 esperado.validacoes_m10: validações que o M09 aponta para os desvios deste TR (tratamento_no_sistema).
 esperado.perguntas_sem_resposta: perguntas aplicáveis (texto de depende_de) que o TR não permite responder.
+esperado.bloqueios_grupo_alternativas: vazio, porque o TR real é documento concluído (uma opção por grupo).
 divergencias_conhecidas: linhas do M09 sobre o TR. referencia.diferencas_simulacao: o que a simulação pelas
          expressões monta a mais ou a menos que o TR real; serve de ponto de partida para o Marco 1, não é erro do motor.
 """
@@ -21,7 +22,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from f10_simulador import DERIVADAS, aplica_texto, caminho_expr, carregar, vazio  # noqa: E402
+from f10_simulador import DERIVADAS, aplica_texto, caminho_expr, carregar, json_num, vazio  # noqa: E402
 
 CASOS = {
     "R1": {
@@ -138,19 +139,20 @@ def main():
             "entrada": entrada,
             "origem_das_respostas": {k: f"{c['doc']}, {o}" for k, (_, o) in c["wizard"].items()},
             "esperado": {"blocos": presentes, "clausulas_m08": sets, "validacoes_m10": vals,
-                         "perguntas_sem_resposta": sem},
+                         "perguntas_sem_resposta": sem, "bloqueios_grupo_alternativas": []},
             "blocos_nao_comparados": nao_comp,
-            "divergencias_conhecidas": [{"dv": r["id"], "tipo": r["tipo"], "local": r["local"],
+            "divergencias_conhecidas": [{"dv": r["id"], "classificacao": "TR real", "tipo": r["tipo"], "local": r["local"],
                                          "descricao": r["descricao"], "referencia": r["referencia"],
                                          "tratamento_no_sistema": r["tratamento_no_sistema"]} for r in dvs],
             "referencia": {"diferencas_simulacao": dif, "blocos_simulados": len(sim),
                            "clausulas_m08_simuladas": obt["clausulas_m08"],
+                           "bloqueios_grupo_alternativas_simulados": obt["bloqueios_grupo_alternativas"],
                            "validacoes_m10_simuladas": obt["validacoes_m10"],
                            "derivadas_simuladas": extra["derivadas"],
                            "nota": "Diferença entre o TR real e a simulação não é erro do motor: vem de resposta que o "
                                    "TR não permite ler, de bloco opcional mantido ou retirado pela equipe, de texto muito "
                                    "alterado (abaixo do limiar da comparação) ou dos desvios listados."}}
-        (pasta / "cenarios" / f"{cod}.json").write_text(json.dumps(doc, ensure_ascii=False, indent=1) + "\n",
+        (pasta / "cenarios" / f"{cod}.json").write_text(json.dumps(doc, ensure_ascii=False, indent=1, default=json_num) + "\n",
                                                          encoding="utf-8")
         print(f"{cod} ({c['doc']}): {len(presentes)} blocos presentes, {len(nao_comp)} não comparados; M08 {sets}; "
               f"M10 {vals}; DV {[r['id'] for r in dvs]}; sem resposta {len(sem)}; simulação {len(sim)} blocos, "

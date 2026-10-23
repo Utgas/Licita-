@@ -398,7 +398,8 @@ W = [
     ("WZ-55", "O atendimento dos índices econômicos será atestado por declaração de profissional contábil?", "TR", "SIM_NAO",
      "SIM; NAO", "WZ-37=SIM", "SIM: TR-9.32", "NAO: TR-9.32", "S se SIM: justificativa nos autos (NE-067)", "", "NE-067", ""),
     ("WZ-56", "O fornecimento incluirá equipamento em comodato, como obrigação acessória da aquisição dos materiais?", "AMBOS",
-     "SIM_NAO", "SIM; NAO", "CK-C-10.1=Sim", "SIM: SET-01", "NAO: SET-01",
+     "SIM_NAO", "SIM; NAO", "DESLIGADA: comodato fora do sistema por enquanto (P24, decisão 0008 de 23/10/2026); a pergunta "
+     "não é oferecida e a SET-01 não entra na minuta. Condição anterior: CK-C-10.1=Sim", "SIM: SET-01", "NAO: SET-01",
      "S se SIM: ETP-06.01 explica por que o equipamento é indispensável e por que a Administração não usa equipamento próprio "
      "(CK-C-10.5 e CK-C-10.6)",
      "O modelo AGU não trata de comodato; o custo do equipamento fica embutido no preço do material. Com SIM, a WZ-08 tende a "
