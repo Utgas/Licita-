@@ -16,7 +16,7 @@ O dono do projeto, Gabriel, é pregoeiro e não escreve código. Explique cada d
 
 ## Estado atual
 
-**Marco 0 (esqueleto).** Tarefa: `docs/tarefas/marco-0.md`. Trabalhe só no marco atual. Não adiante telas, banco, login, motor ou IA.
+**Marco 1 (motor do TR, sem telas).** Tarefa: `docs/tarefas/marco-1.md`, no ramo `marco-1`. Trabalhe só no marco atual. Não adiante telas, banco, login ou IA.
 
 ## Onde está cada coisa
 

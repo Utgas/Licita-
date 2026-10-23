@@ -2,7 +2,7 @@
 
 Gera minutas de Termo de Referência (e, depois, de ETP) no modelo AGU, para compras de saúde. A entrada é o checklist técnico da área requisitante e as decisões da equipe administrativa no wizard. A minuta é revisada por pessoas e colada no Compras.gov.br.
 
-**Estado:** Marco 0 (esqueleto). O repositório tem o projeto Next.js, os testes automáticos e o compilador que confere as matrizes e gera o pacote de regras. Ainda não há telas, banco, login, motor nem IA. As matrizes jurídicas estão prontas para revisão.
+**Estado:** Marco 0 concluído; Marco 1 (motor do TR) em andamento no ramo `marco-1`. As matrizes da Fase 10 já estão lá, mas o compilador só as aceita depois do passo 1 do Marco 1. Ainda não há telas, banco, login nem IA.
 
 ## Como começar
 
@@ -34,7 +34,7 @@ O GitHub Actions roda lint, typecheck, testes e compilação em todo push e pull
 | Pasta | O que tem |
 | --- | --- |
 | `docs/` | escopo, arquitetura, decisões e tarefas por marco |
-| `matrizes/v1/` | as matrizes M00 a M11 (CSV), a planilha de revisão e os registros do agente das matrizes |
+| `matrizes/v1/` | as matrizes M00 a M12 (CSV), os cenários de ouro, a planilha de revisão e os registros do agente das matrizes |
 | `referencias/` | modelo AGU de TR (DEZ/2025) e checklists técnicos em branco |
 | `regras/` | pacote compilado (`npm run compilar`; nunca editar à mão) |
 | `scripts/` | compilador e simulador |
