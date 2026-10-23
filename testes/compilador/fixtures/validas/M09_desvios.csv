@@ -1,0 +1,2 @@
+﻿"id","documento","local","tipo","descricao","referencia","tratamento_no_sistema","achado","fonte","status"
+"DV-01","Documento fictício","p.1","TEXTO_PRETO_ALTERADO","Desvio fictício.","TR-1.1","VAL-001","","fixture fictícia de teste","EXTRAIDO"

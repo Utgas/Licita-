@@ -1,0 +1,2 @@
+﻿"id","pergunta","documento","tipo_resposta","opcoes","depende_de","pre_preenchida_por","liga_blocos","liga_expr","desliga_blocos","desliga_expr","exige_justificativa","coerencia","fundamento","fonte","status","validacao","comentario_validacao"
+"WZ-01","Pergunta fictícia?","TR","SIM_NAO","SIM; NAO","","CK-C-1.1","SIM: TR-1.1","{""merge"":[{""if"":[{""=="":[{""var"":""WZ_01""},""SIM""]},[""TR-1.1""],[]]}]}","","","N","","NE-001","fixture fictícia de teste","INFERIDO","",""

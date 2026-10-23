@@ -1,0 +1,3 @@
+﻿"id","secao","item_modelo","texto_literal","formatacao","tipo","grupo_alternativa","opcao","lacunas","notas","condicao_inclusao","condicao_expr","origem_dado","normas","fonte","status"
+"TR-1.1","1","1.1","Texto fictício do bloco 1.1.","PRETO","TF","","","VAR-001","NE-001","SE WZ-01 = SIM","{""=="":[{""var"":""WZ_01""},""SIM""]","MODELO","NRM-001","fixture fictícia de teste","EXTRAIDO"
+"TR-1.2","1","1.2","Texto fictício do bloco 1.2.","VERMELHO_ITALICO","TF","","","","","SE algum item for perecível","{""some"":[{""var"":""itens""},{""=="":[{""var"":""perecivel""},""S""]}]}","MODELO","","fixture fictícia de teste","INFERIDO"

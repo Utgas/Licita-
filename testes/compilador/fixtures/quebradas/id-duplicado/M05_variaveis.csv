@@ -1,0 +1,4 @@
+﻿"id","nome","descricao","tipo_dado","validacao","obrigatoria","origem","usada_em","fonte","status"
+"VAR-001","valor_ficticio","Variável fictícia","TEXTO","","S","WIZARD","TR-1.1","fixture fictícia de teste","INFERIDO"
+"VAR-002","tabela_itens.perecivel","Coluna fictícia do item","LISTA","S ou N","CONDICIONAL","SISTEMA","TR-1.2","fixture fictícia de teste","INFERIDO"
+"VAR-001","outro_valor","Repete o ID da primeira linha","TEXTO","","N","WIZARD","","fixture fictícia de teste","INFERIDO"

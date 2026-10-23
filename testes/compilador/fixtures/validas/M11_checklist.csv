@@ -1,0 +1,2 @@
+﻿"id","checklist","secao","numero","pergunta","tipo_resposta","opcoes","orientacao","condicional","por_item","destinos","efeito","regra","fonte","status"
+"CK-C-1.1","CONSUMO","1. SEÇÃO FICTÍCIA","1.1","Pergunta fictícia?","SIM_NAO","Sim; Não","","","N","WZ-01","PREENCHE","Preenche WZ-01.","fixture fictícia de teste","INFERIDO"

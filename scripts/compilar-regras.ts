@@ -489,6 +489,10 @@ export function compilarConteudos(conteudos: Record<string, string>, opcoes: Opc
     }
     linhas[nome] = lerCsv(nome, conteudo, erros);
   }
+  // Sem todas as matrizes lidas, as demais conferências só repetiriam o mesmo problema.
+  if (erros.some((e) => e.tipo === "csv" || e.tipo === "cabecalho")) {
+    return { erros, relatorio: montarRelatorio(linhas, 0) };
+  }
 
   const ids = {} as Record<NomeDaMatriz, Set<string>>;
   for (const nome of NOMES) ids[nome] = conferirIdsUnicos(nome, linhas[nome], erros);

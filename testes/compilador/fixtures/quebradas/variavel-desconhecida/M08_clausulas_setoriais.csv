@@ -1,0 +1,2 @@
+﻿"id","tema","documento","origem_checklist","condicao","condicao_expr","ponto_insercao","texto_proposto","variaveis","perguntas_wz","base_no_modelo","evidencia_corpus","observacao","fonte","status"
+"SET-01","Tema fictício","TR","CK-C-1.1","SE CK-C-1.1 = Sim","{""=="":[{""var"":""CK_C_9_9""},""Sim""]}","depois de TR-1.1","Texto fictício [VAR-001].","VAR-001","WZ-01","","","","fixture fictícia de teste","INFERIDO"

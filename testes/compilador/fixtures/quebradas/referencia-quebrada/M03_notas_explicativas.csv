@@ -1,0 +1,2 @@
+﻿"id","bloco_ancora","trecho_ancorado","texto_integral","natureza","regra_derivada","afeta","citacoes","fonte","status","validacao","comentario_validacao"
+"NE-001","TR-1.1","Texto fictício","Nota fictícia.","CONDICAO","SE WZ-01 = SIM ENTÃO TR-1.1","WZ-99","","fixture fictícia de teste","INFERIDO","",""

@@ -1,0 +1,2 @@
+﻿"id","secao_numero","secao_nome","campo","inciso_art18","obrigatorio_par2","dispositivo_in58","tipo","regra_preenchimento","regra_anti_alucinacao","quando_nao_se_aplica","destino_tr","corpus_preenchido_omitido_na","fonte","status"
+"ETP-01.01","01","Seção fictícia","Campo fictício","","N","","EU","Regra fictícia","Nunca gerar","Nunca","TR-1.1","","fixture fictícia de teste","INFERIDO"
