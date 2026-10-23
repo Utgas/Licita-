@@ -219,14 +219,14 @@ O Marco 1 concentra o risco: se o motor não reproduzir os TRs reais, nenhuma te
 
 ## Decisões em aberto
 
-O checklist congelado, o formato do checklist e o prazo de expurgo travam o Marco 2. A validação das regras do M03 e do M04, a aprovação da hospedagem, a conta e o patrocinador travam o Marco 4; o provedor de IA, o Marco 5. Recomenda-se validar as regras aos poucos, durante os Marcos 1 a 3, para o retrabalho não chegar todo junto antes do piloto.
+O checklist congelado trava o Marco 2 (o formato do checklist e o prazo de expurgo já foram decididos). A validação das regras do M03 e do M04, a aprovação da hospedagem, a conta e o patrocinador travam o Marco 4; o provedor de IA, o Marco 5. Recomenda-se validar as regras aos poucos, durante os Marcos 1 a 3, para o retrabalho não chegar todo junto antes do piloto.
 
 | Decisão | Opções | Recomendação | Trava |
 | --- | --- | --- | --- |
 | Validação das regras | Validar tudo ou só o que decide o TR | Validar primeiro as regras CONDICAO do M03 e as perguntas do M04, aos poucos, durante os Marcos 1 a 3 | Marco 4 |
 | Versão do checklist | Congelar agora ou depois da revisão | Terminar a revisão com as sugestões do agente e congelar antes do Marco 2 | Marco 2 |
-| Formato do checklist | Só formulário, só Word ou os dois | Os dois: formulário para quem tem acesso, Word para participantes e outras OMs | Marco 2 |
-| Prazo de expurgo | 30, 90 ou 180 dias após "concluído" | 30 dias | Marco 2 |
+| Formato do checklist | Só formulário, só Word ou os dois | Decidido (23/10/2026): os dois. Formulário para quem tem acesso, Word para participantes e outras OMs | Marco 2 |
+| Prazo de expurgo | 30, 90 ou 180 dias após "concluído" | Decidido (23/10/2026): 30 dias | Marco 2 |
 | Aprovação da hospedagem | Vercel e Supabase, ambos em São Paulo (decidido) | Levar à TI e à chefia antes de qualquer dado real | Marco 4 |
 | Conta e plano | Conta pessoal ou conta autorizada pela OM | Gratuito só para desenvolver com dados fictícios. No piloto, plano Pro em conta autorizada pela OM | Marco 4 |
 | Patrocinador formal | Chefe da OM ou da seção | Pedir com o Marco 2 pronto, mostrando o sistema funcionando com dados fictícios | Marco 4 |

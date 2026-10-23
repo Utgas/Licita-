@@ -1,0 +1,25 @@
+# 0008. Respostas do Gabriel às perguntas abertas (lote 1)
+
+- Data: 23/10/2026
+- Situação: aceita. Dadas pelo Gabriel no chat de gestão do projeto.
+
+## Contexto
+
+As perguntas abertas das matrizes (`matrizes/v1/perguntas_abertas.md`) e as decisões do plano (`docs/arquitetura.md`) passam a ser respondidas pelo Gabriel no chat, em lotes. Este registro guarda as respostas até o agente das matrizes levá-las para as matrizes. As matrizes continuam sendo alteradas só pelo agente das matrizes, porque cada entrega dele substitui `matrizes/v1/` inteira.
+
+## Respostas
+
+| Tema | Resposta | Efeito |
+| --- | --- | --- |
+| Decisão 0006 (testes do compilador) | Aprovada | Nenhum |
+| TR 23/2026 com blocos de cota sem cota (TR-4.H08, TR-4.41) | Erro do TR real | R1 classifica a diferença como "TR real"; entra em `divergencias_conhecidas` |
+| Cota calculada em zero (VAR-118) | Item sem cota, em ampla participação, com alerta | Regra nova na matriz (VAR-113 e uma validação) |
+| P16 (Decreto 12.174 no Anexo I, WZ-51) | Confirmada a decisão do agente: padrão SIM, NÃO exige justificativa | P16 fechada |
+| P09 (TR 190/2025 e IRP 134/2025) | Não sabe | Continua aberta; TR 190/2025 segue como não confirmado |
+| P10 (DFD do PROC-02) | Seguir sem | Fechada; o Marco 3 testa só a derivação ETP para TR |
+| P19 (seção "Justificativas pontuais" no ETP) | O ETP Digital aceita | ETP-90.01 opcional, sem texto padrão |
+| P24 (comodato) | Fora do sistema por enquanto | WZ-56 e SET-01 não são oferecidos. Estudo jurídico futuro pode trazer uma pergunta sim/não com justificativa padrão, sujeita à validação do Gabriel |
+| P25 (atestado com garantia mínima prestada) | Pendente de esclarecimento | Continua aberta |
+| P28 (classes de TIC) | Não é prioridade; processos de TIC são raros na OM | PAR-12 fica vazio; o alerta usa só as perguntas do checklist |
+| Prazo de expurgo | 30 dias após "concluído" | Trava do Marco 2 resolvida |
+| Formato do checklist | Formulário no sistema e Word | Trava do Marco 2 resolvida |

@@ -56,7 +56,7 @@ Se algo disso não estiver lá, pare e avise. O arquivo `correspondencia_process
      - Escreva um teste para cada uma dessas regras, porque é aqui que dois avaliadores de JSON Logic costumam divergir.
    - O avaliador não arredonda por conta própria. Arredondamento só existe se a expressão o fizer (como a VAR-118 faz com `%`).
 
-3. **Itens** (`src/motor/itens/`). Calcule os atributos derivados pelo `calculo_expr` do M05, na ordem de `calculo_ordem`, com os valores do M12. Exemplo: o tratamento ME/EPP (exclusivo, cota ou ampla) pelo valor estimado do item ou do grupo. Nenhum número de lei ou valor monetário no código. Se a VAR-118 der cota igual a zero para um item marcado COTA, gere alerta e registre o caso no relatório; não mude o tratamento.
+3. **Itens** (`src/motor/itens/`). Calcule os atributos derivados pelo `calculo_expr` do M05, na ordem de `calculo_ordem`, com os valores do M12. Exemplo: o tratamento ME/EPP (exclusivo, cota ou ampla) pelo valor estimado do item ou do grupo. Nenhum número de lei ou valor monetário no código. Cota igual a zero (decisão do Gabriel, 23/10/2026): o item fica sem cota, em ampla participação, com alerta. Essa regra vai entrar na matriz pelo agente das matrizes; enquanto não entrar, se a VAR-118 der zero para um item marcado COTA, gere alerta e registre o caso no relatório, sem mudar o tratamento no código.
 
 4. **Do checklist para o wizard** (`src/motor/wizard/`).
    - `preenche_expr` preenche a resposta.
@@ -84,7 +84,7 @@ Se algo disso não estiver lá, pare e avise. O arquivo `correspondencia_process
    - **TR real**: erro já conhecido do documento, listado em `divergencias_conhecidas`;
    - **lacuna**: dado que só existe no processo real.
 
-   Corrija só as do tipo "motor".
+   Corrija só as do tipo "motor". Já decidido: no R1, os blocos TR-4.H08 e TR-4.41 (reserva de cota sem haver cota) são do tipo **TR real**.
 
 10. **Simulação legível.** O script `scripts/simular-wizard.ts`, rodado com `npm run simular -- C1`, imprime a minuta do cenário em texto corrido. É assim que o Gabriel confere o resultado sem ler código.
 

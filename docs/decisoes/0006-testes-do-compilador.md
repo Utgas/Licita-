@@ -1,7 +1,7 @@
 # 0006. Testes do compilador em `testes/compilador/`
 
 - Data: 23/10/2026
-- Situação: aceita no Marco 0, pendente de confirmação do Gabriel
+- Situação: aceita (confirmada pelo Gabriel em 23/10/2026)
 
 ## Contexto
 
