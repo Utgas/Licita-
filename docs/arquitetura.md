@@ -49,7 +49,7 @@ A entrada principal do sistema é o checklist técnico, e não o DFD. A área re
 
 **A IA perde peso.** Com respostas estruturadas, a v1 já monta o ETP a partir do checklist. Na v2, a IA só melhora a redação, sempre citando a pergunta de origem.
 
-**O checklist está em revisão.** O mapeamento das perguntas (M11) vale para uma versão congelada. Mudança depois disso exige refazer o mapeamento e gera um pacote de regras novo.
+**O checklist está congelado na versão já distribuída às OMs** (decisão 0009). Ele chega por upload do Word preenchido. A leitura destaca em amarelo o que ficou incerto, pergunta ao operador o que muda a minuta e oferece campos de complemento para o que o checklist não pede. Uma versão nova do checklist exige um M11 novo e gera um pacote de regras novo.
 
 ## Componentes
 
@@ -210,7 +210,7 @@ São seis marcos, e cada um só termina quando cumpre o critério de saída. Os 
 | --- | --- | --- | --- | --- |
 | 0. Esqueleto | v0 | Repositório, CLAUDE.md, testes e compilador lendo as matrizes | O compilador gera o pacote sem erro a partir dos CSV atuais | Nada |
 | 1. Motor do TR, sem telas | v0 | Wizard, regras por item, montagem com numeração e validação determinística | C1 a C8 passam e os TRs 23/2026 e 58/2026 são reproduzidos, exceto nos trechos variáveis | Matrizes da Fase 10 (feitas) |
-| 2. Telas e banco | v0 | Login, checklist do requisitante, wizard, itens, revisão, PDF, copiar por campo e auditoria | Alguém de fora do desenvolvimento faz um TR do início ao PDF, com dados fictícios | Checklist congelado |
+| 2. Telas e banco | v0 | Login, checklist do requisitante, wizard, itens, revisão, PDF, copiar por campo e auditoria | Alguém de fora do desenvolvimento faz um TR do início ao PDF, com dados fictícios | Nada (checklist, formato e expurgo decididos) |
 | 3. ETP e derivação | v1 | ETP montado a partir do checklist (M11) e derivação do ETP para o TR (M06) | O par 117/2025 é reproduzido a partir das mesmas respostas | Fases 4 a 9 das matrizes (feitas) |
 | 4. Piloto na OM | piloto | 3 processos reais feitos em paralelo com o método atual | Nenhuma ressalva da CJU atribuível ao sistema e tempo de elaboração medido | Regras do M03 e do M04 validadas, hospedagem aprovada, conta e patrocinador formal |
 | 5. IA | v2 | IA melhora a redação do ETP a partir do checklist e do DFD, citando a pergunta de origem | Nenhuma citação fora da base curada no banco de testes de DFDs | Provedor de IA aprovado |
@@ -219,12 +219,12 @@ O Marco 1 concentra o risco: se o motor não reproduzir os TRs reais, nenhuma te
 
 ## Decisões em aberto
 
-O checklist congelado trava o Marco 2 (o formato do checklist e o prazo de expurgo já foram decididos). A validação das regras do M03 e do M04, a aprovação da hospedagem, a conta e o patrocinador travam o Marco 4; o provedor de IA, o Marco 5. Recomenda-se validar as regras aos poucos, durante os Marcos 1 a 3, para o retrabalho não chegar todo junto antes do piloto.
+A versão do checklist, o formato e o prazo de expurgo já foram decididos, e nada mais trava o Marco 2. A validação das regras do M03 e do M04, a aprovação da hospedagem, a conta e o patrocinador travam o Marco 4; o provedor de IA, o Marco 5. Recomenda-se validar as regras aos poucos, durante os Marcos 1 a 3, para o retrabalho não chegar todo junto antes do piloto.
 
 | Decisão | Opções | Recomendação | Trava |
 | --- | --- | --- | --- |
 | Validação das regras | Validar tudo ou só o que decide o TR | Validar primeiro as regras CONDICAO do M03 e as perguntas do M04, aos poucos, durante os Marcos 1 a 3 | Marco 4 |
-| Versão do checklist | Congelar agora ou depois da revisão | Terminar a revisão com as sugestões do agente e congelar antes do Marco 2 | Marco 2 |
+| Versão do checklist | Congelar agora ou depois da revisão | Decidido (23/10/2026): a versão já distribuída, sem mudança; o sistema contorna (decisão 0009) | Marco 2 |
 | Formato do checklist | Só formulário, só Word ou os dois | Decidido (23/10/2026): os dois. Formulário para quem tem acesso, Word para participantes e outras OMs | Marco 2 |
 | Prazo de expurgo | 30, 90 ou 180 dias após "concluído" | Decidido (23/10/2026): 30 dias | Marco 2 |
 | Aprovação da hospedagem | Vercel e Supabase, ambos em São Paulo (decidido) | Levar à TI e à chefia antes de qualquer dado real | Marco 4 |
