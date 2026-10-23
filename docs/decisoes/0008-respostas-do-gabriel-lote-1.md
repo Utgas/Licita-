@@ -45,3 +45,4 @@ A validação do M03 e do M04 agora fica no repositório. Toda entrega nova do a
 | Reserva de cota sem cota no TR 58 | Erro do TR real, como no TR 23 | Divergência registrada no M09 para o TR 58 |
 | SET-13 quando há garantia do bem | Mantida sempre que houver garantia | Nenhum |
 | Revisão do checklist (P34) | Pergunta sem resposta só destaca; bloqueia só a dúvida que muda a minuta | Confirmado |
+| Linha de cota na tabela de itens (P35) | As linhas de cota vão para o fim da tabela; os itens de ampla participação não são renumerados | Ajuste no `tabela_colunas` do TR-1.1.TAB1 (Fase 14) |
