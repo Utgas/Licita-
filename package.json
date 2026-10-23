@@ -14,7 +14,8 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "compilar": "node scripts/compilar-regras.ts",
-    "compilar:piloto": "node scripts/compilar-regras.ts --piloto"
+    "compilar:piloto": "node scripts/compilar-regras.ts --piloto",
+    "simular": "node scripts/simular-wizard.ts"
   },
   "dependencies": {
     "next": "16.4.2",

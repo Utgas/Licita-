@@ -77,7 +77,8 @@ Exigem Node 22.18 ou mais novo (o Node roda o TypeScript dos scripts direto). In
 
 - `npm run compilar`: confere as matrizes e gera `regras/agu-tr-compras-2025-12/pacote.json` e `pacote.sha256`. Com erro, lista os problemas, não grava o pacote e sai com código 1.
 - `npm run compilar:piloto`: igual, mas falha se alguma regra CONDICAO do M03 ou alguma pergunta do M04 não estiver com `validacao = OK`.
-- `npm test`: Vitest (compilador, fixtures fictícias e isolamento do motor).
+- `npm test`: Vitest (compilador, fixtures fictícias, motor, cenários de ouro e reprodução dos TRs reais).
+- `npm run simular -- C1`: imprime a minuta de um cenário (C1 a C8, R1 ou R2) em texto corrido, com as pendências e a contagem de lacunas por motivo.
 - `npm run lint`: ESLint, com a regra que isola `src/motor`.
 - `npm run typecheck`: gera os tipos do Next (`next typegen`) e roda o TypeScript.
 

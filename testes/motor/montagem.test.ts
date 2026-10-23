@@ -200,6 +200,13 @@ describe("lacunas", () => {
     expect(resultado.lacunas.map((l) => l.motivo)).toEqual(["sem_ligacao_unica", "sem_ligacao_unica"]);
   });
 
+  it("tabela do modelo (tipo TB) não é montada: fica marcada, com a lacuna própria", () => {
+    const linha = bloco("TR-1.1.TAB1", { tipo: "TB", texto_literal: "ITEM | VALOR", lacunas: "R$ ...." });
+    const resultado = preencherBloco(linha, linha.texto_literal, ["VAR-011"], {});
+    expect(resultado.texto).toBe("[[TABELA NÃO MONTADA]]\nITEM | VALOR");
+    expect(resultado.lacunas.map((l) => l.motivo)).toEqual(["tabela_nao_montada"]);
+  });
+
   it("marcador repetido é tratado uma ocorrência de cada vez", () => {
     const linha = bloco("TR-4.18.1", { texto_literal: "[...] e [...]", lacunas: "[...] | [...]" });
     expect(preencherBloco(linha, linha.texto_literal, ["VAR-054"], {}).texto).toBe("[[LACUNA VAR-054]] e [[LACUNA VAR-054]]");

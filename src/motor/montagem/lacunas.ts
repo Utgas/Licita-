@@ -4,7 +4,7 @@
  * O M02 lista os marcadores do texto (separados por " | "), mas não diz qual variável preenche cada um. A ligação
  * vem do M05 (usada_em). O motor só preenche quando ela é certa: o bloco tem um marcador só e uma variável só o
  * cita. Nos demais casos o marcador fica como lacuna, com as variáveis candidatas, e nada é adivinhado.
- * Valor ausente também fica marcado: [[LACUNA VAR-xxx]].
+ * Valor ausente também fica marcado: [[LACUNA VAR-xxx]]. Tabela do modelo ainda não é montada: [[TABELA NÃO MONTADA]].
  */
 import { type Valor } from "../pacote/avaliador.ts";
 import type { LinhaM02, LinhaM05 } from "../pacote/esquema.ts";
@@ -21,8 +21,19 @@ export type LacunaDoTexto = {
   marcador: string;
   /** Variáveis que podem preencher o marcador (vazia quando o M05 não liga nenhuma ao bloco). */
   candidatas: string[];
-  motivo: "sem_valor" | "sem_ligacao_unica";
+  /**
+   * sem_valor: a variável existe, mas o dado não veio; sem_ligacao_unica: o M02 não diz qual variável preenche o
+   * marcador; tabela_nao_montada: tabela do modelo (tipo TB) que o motor ainda não monta a partir dos itens.
+   */
+  motivo: "sem_valor" | "sem_ligacao_unica" | "tabela_nao_montada";
 };
+
+const TABELA = "TB";
+const MARCA_DE_TABELA = "[[TABELA NÃO MONTADA]]";
+
+export function ehTabela(linha: LinhaM02): boolean {
+  return linha.tipo.split("+").includes(TABELA);
+}
 
 /** Variáveis do M05 que citam cada bloco na coluna usada_em. */
 export function variaveisPorBloco(m05: readonly LinhaM05[]): Map<string, string[]> {
@@ -61,6 +72,14 @@ export function preencherBloco(
   candidatasDoBloco: string[],
   globais: Record<string, Valor>,
 ): { texto: string; lacunas: LacunaDoTexto[]; preenchidas: string[] } {
+  // A tabela fica como no modelo, marcada; as colunas virão do M02 (tabela_colunas, Fase 13 das matrizes).
+  if (ehTabela(linha)) {
+    return {
+      texto: `${MARCA_DE_TABELA}\n${texto}`,
+      lacunas: [{ trecho: linha.id, marcador: MARCA_DE_TABELA, candidatas: candidatasDoBloco, motivo: "tabela_nao_montada" }],
+      preenchidas: [],
+    };
+  }
   if (linha.lacunas.trim() === "") return { texto, lacunas: [], preenchidas: [] };
   const marcadores = linha.lacunas.split(" | ").filter((m) => m !== "");
   const ligacaoUnica = marcadores.length === 1 && candidatasDoBloco.length === 1;
