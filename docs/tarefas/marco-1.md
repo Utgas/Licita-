@@ -66,6 +66,14 @@ Se algo disso não estiver lá, pare e avise. O arquivo `correspondencia_process
    - Em `revisao_expr` e `grupo_ativo_expr`, só os operadores gerais, sem os de cálculo.
    - Retire dos testes o contorno da VAR-160: ela agora existe. Com isso, `npm run compilar` grava o pacote novo e o GitHub Actions volta a ficar verde. Confira.
 
+3c. **Matrizes da Fase 13 (texto da minuta).** Já estão no ramo `marco-1`. O compilador recusa os cabeçalhos novos. Ajuste o compilador e ligue o motor às colunas novas:
+   - M02 `lacunas_mapa`: cada marcador do texto, na ordem, com a sua `fonte` (variável ou resposta), as `acao` (por exemplo ESCOLHA, com `opcoes` e `quando` em JSON Logic) e `fonte` nula quando a equipe preenche à mão. Substitui a ligação pela coluna `usada_em` do M05. O que o mapa não preencher continua lacuna marcada, com o motivo.
+   - M02 `tabela_colunas`: monte as tabelas a partir dos itens (TR-1.1.TAB1, TR-1.1.1.TAB1 a TAB3, TR-5.2.TAB1), inclusive a linha de cota e o "SIGILOSO" do orçamento sigiloso.
+   - M08 `inserir_apos`, `nivel` e `inserir_apos_alternativo`: posição e numeração das cláusulas setoriais. Substituem a heurística do texto livre.
+   - M11 `revisao_pergunta_expr`: só bloqueia a pergunta ao operador quando essa expressão for verdadeira; nos outros casos da `revisao_expr`, só destaque.
+   - Valor padrão vindo do mapa (como o "1 (um) mês" do TR-AI-3.1.8.1, art. 123 da Lei 14.133) entra no texto marcado como padrão, para o operador ver que não foi informado.
+   - Rode `npm run simular -- C1` e compare a contagem de lacunas por motivo com a de antes (72: 17 de dado, 50 de ligação, 5 de tabela).
+
 4. **Do checklist para o wizard** (`src/motor/wizard/`).
    - `preenche_expr` preenche a resposta.
    - `sugere_expr` só gera uma sugestão marcada; quem decide é a equipe.
