@@ -73,8 +73,16 @@ O dono do projeto, Gabriel, é pregoeiro e não escreve código. Explique cada d
 
 ## Comandos
 
-Definidos no Marco 0. Atualize esta seção quando eles existirem.
+Exigem Node 22.18 ou mais novo (o Node roda o TypeScript dos scripts direto). Instale as dependências com `npm ci`.
 
-- `npm run compilar`: gera `regras/agu-tr-compras-2025-12/` a partir das matrizes
-- `npm run compilar:piloto`: igual, mas falha se houver regra sem validação
-- `npm test`, `npm run lint`, `npm run typecheck`
+- `npm run compilar`: confere as matrizes e gera `regras/agu-tr-compras-2025-12/pacote.json` e `pacote.sha256`. Com erro, lista os problemas, não grava o pacote e sai com código 1.
+- `npm run compilar:piloto`: igual, mas falha se alguma regra CONDICAO do M03 ou alguma pergunta do M04 não estiver com `validacao = OK`.
+- `npm test`: Vitest (compilador, fixtures fictícias e isolamento do motor).
+- `npm run lint`: ESLint, com a regra que isola `src/motor`.
+- `npm run typecheck`: gera os tipos do Next (`next typegen`) e roda o TypeScript.
+
+Notas:
+
+- Mudou uma matriz: rode `npm run compilar` e faça commit do CSV junto com o pacote. O GitHub Actions falha se o pacote em `regras/` não corresponder às matrizes.
+- M00 e M09 são conferidas, mas ficam fora do pacote: descrevem os documentos reais da base e não são regras.
+- Dependência nova: use `npx npm@11 install -E <pacote>@<versão>`. O npm 10 que vem com o Node 22 trava ao montar a árvore de dependências do Vitest. `npm ci` e `npm install` com o lockfile pronto funcionam no npm 10.

@@ -2,7 +2,7 @@
 
 Gera minutas de Termo de Referência (e, depois, de ETP) no modelo AGU, para compras de saúde. A entrada é o checklist técnico da área requisitante e as decisões da equipe administrativa no wizard. A minuta é revisada por pessoas e colada no Compras.gov.br.
 
-**Estado:** Marco 0 (esqueleto). Ainda não há código do sistema. As matrizes jurídicas estão prontas para revisão.
+**Estado:** Marco 0 (esqueleto). O repositório tem o projeto Next.js, os testes automáticos e o compilador que confere as matrizes e gera o pacote de regras. Ainda não há telas, banco, login, motor nem IA. As matrizes jurídicas estão prontas para revisão.
 
 ## Como começar
 
@@ -12,6 +12,23 @@ Gera minutas de Termo de Referência (e, depois, de ETP) no modelo AGU, para com
 
 Vercel e Supabase só entram de verdade no Marco 2 (telas e banco). Até lá basta o GitHub.
 
+## Como rodar
+
+Precisa do Node 22.18 ou mais novo.
+
+```
+npm ci                    # instala as dependências nas versões fixadas
+npm run compilar          # confere as matrizes e gera o pacote de regras
+npm test                  # testes automáticos
+npm run lint              # padrões de código e isolamento do motor
+npm run typecheck         # tipos do TypeScript
+npm run dev               # página inicial em http://localhost:3000
+```
+
+O `npm run compilar` imprime um relatório: linhas por matriz, contagem de status (EXTRAIDO, INFERIDO, A_VERIFICAR), situação da validação no M03 e no M04 e a lista de erros. Sem erro, ele grava `regras/agu-tr-compras-2025-12/pacote.json` e o hash em `pacote.sha256`; compilar de novo dá o mesmo hash. `npm run compilar:piloto` falha enquanto houver regra CONDICAO do M03 ou pergunta do M04 sem `validacao = OK`.
+
+O GitHub Actions roda lint, typecheck, testes e compilação em todo push e pull request, e falha se o pacote em `regras/` não corresponder às matrizes.
+
 ## Estrutura
 
 | Pasta | O que tem |
@@ -19,7 +36,7 @@ Vercel e Supabase só entram de verdade no Marco 2 (telas e banco). Até lá bas
 | `docs/` | escopo, arquitetura, decisões e tarefas por marco |
 | `matrizes/v1/` | as matrizes M00 a M11 (CSV), a planilha de revisão e os registros do agente das matrizes |
 | `referencias/` | modelo AGU de TR (DEZ/2025) e checklists técnicos em branco |
-| `regras/` | pacote compilado (gerado no Marco 0) |
+| `regras/` | pacote compilado (`npm run compilar`; nunca editar à mão) |
 | `scripts/` | compilador e simulador |
 | `src/` | motor, telas, banco, login, auditoria, exportação e IA |
 | `supabase/` | configuração e migrações do banco |
@@ -49,6 +66,8 @@ Detalhes em `docs/arquitetura.md`.
    ```
 
    O registro lista as linhas marcadas CORRIGIR e DUVIDA, que voltam para o agente das matrizes.
+
+4. Rode `npm run compilar` e confira, no relatório, a tabela "Validação do Gabriel (M03 e M04)". Quando tudo estiver OK, `npm run compilar:piloto` passa.
 
 ## O que não entra aqui
 
