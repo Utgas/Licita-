@@ -156,8 +156,10 @@ CALC_M05 = {
                 "(CK-C-14.2) para o item; N em permanente"),
     "VAR-154": (2, se(inn(var("classe_pdm"), par("classes_tic")), "S", "N"), "por item; lista de classes do M12"),
     "VAR-119": (3, VALOR_UNIDADE, "por item; soma de quantidade x valor_unitario em itens_do_grupo"),
-    "VAR-160": (4, piso_percentual(var("quantidade"), var("VAR_057")),
-                "por item; parte inteira de quantidade x VAR-057 / 100 para todo item (vazia sem VAR-057 ou sem quantidade)"),
+    # Fase 13: só calcula com percentual de cota (VAR-057), como a VAR-113 (COTA_POSSIVEL)
+    "VAR-160": (4, se(tem("VAR_057"), piso_percentual(var("quantidade"), var("VAR_057")), None),
+                "por item; com VAR-057 preenchida, parte inteira de quantidade x VAR-057 / 100 para todo item; sem VAR-057 "
+                "não calcula (vazia), como a VAR-113; vazia também sem quantidade"),
     "VAR-113": (5, TRATAMENTO, "por item; exceção > sem valor (vazio) > limite exclusivo > cota calculada maior que zero em "
                                "todos os itens da unidade > ampla"),
     "VAR-118": (6, se(eq("tratamento_me_epp", "COTA"), var("cota_calculada"), None),
@@ -168,6 +170,15 @@ CALC_M05 = {
     "VAR-049": (9, reduz("itens", se(eq(cur("exige_amostra"), "S"), {"merge": [ACC, [cur("numero")]]}, ACC), []),
                 "global; números dos itens com exige_amostra = S"),
     "VAR-065": (10, VALIDADE_COMUM, "global; validade comum aos perecíveis, vazia se os critérios forem diferentes"),
+    # Fase 13: colunas da tabela do item 1.1 (TR-1.1.TAB1), com a linha da cota reservada
+    "VAR-174": (11, se(eq("tratamento_me_epp", "COTA"), {"-": [var("quantidade"), var("quantidade_cota")]},
+                       var("quantidade")),
+                "por item; quantidade da linha do item na tabela 1.1: com COTA, quantidade menos a cota; senão, a "
+                "quantidade"),
+    "VAR-175": (12, {"*": [var("quantidade_principal"), var("valor_unitario")]},
+                "por item; valor total da linha do item na tabela 1.1 (quantidade principal x valor unitário)"),
+    "VAR-176": (13, se(eq("tratamento_me_epp", "COTA"), {"*": [var("quantidade_cota"), var("valor_unitario")]}, None),
+                "por item; valor total da linha da cota reservada (quantidade da cota x valor unitário), só com COTA"),
 }
 
 NOVAS_M05 = [
@@ -198,9 +209,82 @@ NOVAS_M05 = [
      "descricao": "Coluna da VAR-011: parte inteira de quantidade x VAR-057 / 100, calculada para todo item quando há "
                   "percentual de cota; decide se a unidade de disputa pode ter cota (VAR-113), dá a quantidade reservada "
                   "(VAR-118) e dispara o alerta de cota zero (VAL-051)",
-     "tipo_dado": "NUMERO", "validacao": "inteiro maior ou igual a zero; vazia sem VAR-057 ou sem quantidade",
+     "tipo_dado": "NUMERO", "validacao": "inteiro maior ou igual a zero; só calculada quando a VAR-057 está preenchida (Fase 13); vazia sem VAR-057 ou sem quantidade",
      "obrigatoria": "N", "origem": "SISTEMA", "usada_em": "VAR-113; VAR-118; VAL-051"},
 ]
+F13 = ("Linha criada na Fase 13 (23/10/2026) para o lacunas_mapa ou a tabela_colunas do M02 (texto da minuta); "
+       "descrição e domínio INFERIDOS do marcador do modelo e da variável de origem.")
+NOVAS_M05 += [
+    {"id": "VAR-163", "nome": "prazo_vigencia_unidade", "descricao": "Unidade do prazo de vigência da VAR-034 (a WZ-15 "
+     "pede número e unidade); escrita depois do número no texto", "tipo_dado": "LISTA",
+     "validacao": "DIAS, MESES ou ANOS; obrigatória com a VAR-034", "obrigatoria": "S", "origem": "WIZARD",
+     "usada_em": "TR-1.5; TR-1.6; TR-1.8; TR-AI-2.8", "fonte": F13},
+    {"id": "VAR-164", "nome": "subcontratacao_parcelas_vedadas", "descricao": "Parcelas do objeto cuja subcontratação "
+     "é vedada; desdobra a VAR-054 para os subitens do TR-4.18", "tipo_dado": "LISTA",
+     "validacao": "ao menos uma com subcontratação permitida (WZ-22 = SIM)", "obrigatoria": "CONDICIONAL",
+     "origem": "WIZARD", "usada_em": "TR-4.18.1; TR-4.18.2; TR-4.18.3", "fonte": F13},
+    {"id": "VAR-165", "nome": "subcontratacao_parcelas_permitidas", "descricao": "Parcelas do objeto que podem ser "
+     "subcontratadas; desdobra a VAR-054 para os subitens do TR-4.19", "tipo_dado": "LISTA",
+     "validacao": "ao menos uma com subcontratação permitida (WZ-22 = SIM)", "obrigatoria": "CONDICIONAL",
+     "origem": "WIZARD", "usada_em": "TR-4.19.1; TR-4.19.2; TR-4.19.3; TR-NE071.01", "fonte": F13},
+    {"id": "VAR-166", "nome": "amostra_endereco", "descricao": "Endereço de entrega das amostras; desdobra a VAR-050",
+     "tipo_dado": "TEXTO", "validacao": "endereço completo; obrigatório com item que exige amostra",
+     "obrigatoria": "CONDICIONAL", "origem": "WIZARD", "usada_em": "TR-4.6", "fonte": F13},
+    {"id": "VAR-167", "nome": "amostra_prazo", "descricao": "Prazo limite de entrega das amostras, com a unidade "
+     "(ex.: '5 (cinco) dias úteis'); desdobra a VAR-050", "tipo_dado": "TEXTO",
+     "validacao": "número e unidade informados pela equipe; obrigatório com item que exige amostra",
+     "obrigatoria": "CONDICIONAL", "origem": "WIZARD", "usada_em": "TR-4.6", "fonte": F13},
+    {"id": "VAR-168", "nome": "foro_cidade", "descricao": "Cidade do foro da Justiça Federal; desdobra a VAR-096",
+     "tipo_dado": "TEXTO", "validacao": "sugerida pelo perfil da OM e confirmada na WZ-45", "obrigatoria": "CONDICIONAL",
+     "origem": "SISTEMA", "usada_em": "TR-AI-8.1", "fonte": F13},
+    {"id": "VAR-169", "nome": "foro_secao_judiciaria", "descricao": "Seção judiciária do foro; desdobra a VAR-096",
+     "tipo_dado": "TEXTO", "validacao": "sugerida pelo perfil da OM e confirmada na WZ-45", "obrigatoria": "CONDICIONAL",
+     "origem": "SISTEMA", "usada_em": "TR-AI-8.1", "fonte": F13},
+    {"id": "VAR-170", "nome": "anexo1_prazo_aceite", "descricao": "Prazo para o adjudicatário aceitar o instrumento "
+     "equivalente ao contrato (WZ-44); desdobra a VAR-093", "tipo_dado": "TEXTO",
+     "validacao": "número e unidade informados pela equipe", "obrigatoria": "CONDICIONAL", "origem": "WIZARD",
+     "usada_em": "TR-AI-1.1", "fonte": F13},
+    {"id": "VAR-171", "nome": "anexo1_instrumento", "descricao": "Instrumento equivalente ao contrato no Anexo I (WZ-44); "
+     "desdobra a VAR-093", "tipo_dado": "LISTA",
+     "validacao": "NOTA_DE_EMPENHO, CARTA_CONTRATO, AUTORIZACAO ou ESTE_ANEXO (opções da WZ-44)",
+     "obrigatoria": "CONDICIONAL", "origem": "WIZARD", "usada_em": "TR-AI-1.1", "fonte": F13},
+    {"id": "VAR-172", "nome": "tabela_itens.especificacao", "descricao": "Coluna da VAR-011: especificação do item, como "
+     "no DFD ou no descritivo anexo do checklist", "tipo_dado": "TEXTO", "validacao": "não vazia",
+     "obrigatoria": "S", "origem": "DFD", "usada_em": "TR-1.1.TAB1; TR-1.1.1.TAB1; TR-1.1.1.TAB2; TR-1.1.1.TAB3",
+     "fonte": F13},
+    {"id": "VAR-173", "nome": "tabela_itens.unidade_medida", "descricao": "Coluna da VAR-011: unidade de fornecimento do "
+     "item", "tipo_dado": "TEXTO", "validacao": "não vazia", "obrigatoria": "S", "origem": "DFD",
+     "usada_em": "TR-1.1.TAB1; TR-1.1.1.TAB1; TR-1.1.1.TAB2; TR-1.1.1.TAB3", "fonte": F13},
+    {"id": "VAR-174", "nome": "tabela_itens.quantidade_principal", "descricao": "Coluna da VAR-011: quantidade da linha "
+     "do item na tabela 1.1; com cota reservada, a quantidade menos a cota (VAR-118)", "tipo_dado": "NUMERO",
+     "validacao": "inteiro maior que zero", "obrigatoria": "S", "origem": "SISTEMA", "usada_em": "TR-1.1.TAB1; VAR-175",
+     "fonte": F13},
+    {"id": "VAR-175", "nome": "tabela_itens.valor_total", "descricao": "Coluna da VAR-011: valor total da linha do item "
+     "(quantidade principal x valor unitário)", "tipo_dado": "MOEDA", "validacao": "vazio sem valor unitário",
+     "obrigatoria": "N", "origem": "SISTEMA", "usada_em": "TR-1.1.TAB1", "fonte": F13},
+    {"id": "VAR-176", "nome": "tabela_itens.valor_total_cota", "descricao": "Coluna da VAR-011: valor total da linha da "
+     "cota reservada (quantidade da cota x valor unitário)", "tipo_dado": "MOEDA",
+     "validacao": "só com tratamento COTA; vazio sem valor unitário", "obrigatoria": "N", "origem": "SISTEMA",
+     "usada_em": "TR-1.1.TAB1", "fonte": F13},
+]
+# Fase 13: domínio e estrutura de variáveis já existentes, para o lacunas_mapa e a tabela_colunas
+AJUSTES_M05 = {
+    "VAR-081": ("validacao", "CAPITAL_MINIMO ou PATRIMONIO_LIQUIDO_MINIMO; um dos dois, nunca ambos"),
+    "VAR-029": ("descricao", " Campos (Fase 13): orgao, papel (GERENCIADOR ou PARTICIPANTE), item, minima, maxima, total."),
+    "VAR-051": ("descricao", " Campos (Fase 13): uma linha por grupo de itens, com itens e criterios."),
+    "VAR-062": ("descricao", " Campos (Fase 13): parcela (número), composicao (texto ou lista de item e quantidade), "
+                             "prazo_dias, termo_inicial."),
+    "VAR-071": ("descricao", " Campos (Fase 13): a, b, c, d e e_a_h (alíneas do TR-7.2.4), cada um com minimo e maximo."),
+    "VAR-079": ("descricao", " Campos (Fase 13): forma (PARCIAL ou TOTAL), valor, condicionante, valor_segunda_etapa, "
+                             "etapas_seguintes, indice_correcao, prazo_dias, documento, garantia_adicional_percentual."),
+    "VAR-091": ("descricao", " Campos (Fase 13): gestao_unidade, fonte_recursos, programa_trabalho, elemento_despesa, "
+                             "plano_interno."),
+    "VAR-050": ("descricao", " No texto, desdobrada na VAR-166 e na VAR-167 (Fase 13)."),
+    "VAR-054": ("descricao", " No texto, desdobrada na VAR-164 e na VAR-165 (Fase 13)."),
+    "VAR-093": ("descricao", " No texto, desdobrada na VAR-170 e na VAR-171 (Fase 13)."),
+    "VAR-096": ("descricao", " No texto, desdobrada na VAR-168 e na VAR-169 (Fase 13)."),
+    "VAR-034": ("descricao", " A unidade fica na VAR-163 (Fase 13)."),
+}
 FONTE_NOVA = ("Linha criada na Fase 10 (23/10/2026): atributo de item já usado nas expressões do M10 (achado do compilador "
               "do Marco 0) ou no calculo_expr do M05; descrição a partir da VAR-011.")
 
@@ -261,7 +345,14 @@ def main():
     for n in sorted(NOVAS_M05, key=lambda x: x["id"]):
         if n["id"] in ids5:
             raise SystemExit(f"M05: {n['id']} já existe")
-        m05.append(dict(n, fonte=FONTE_NOVA, status="INFERIDO"))
+        m05.append({"fonte": FONTE_NOVA, "status": "INFERIDO", **n})
+    for r in m05:
+        if r["id"] in AJUSTES_M05:
+            col, txt = AJUSTES_M05[r["id"]]
+            if col == "validacao":
+                r[col] = txt
+            elif txt.strip() not in r[col]:
+                r[col] = r[col].rstrip() + txt
     cols5 = [c for c in m05[0] if c not in ("calculo_expr", "calculo_ordem")]
     k = cols5.index("validacao") + 1
     cols5 = cols5[:k] + ["calculo_expr", "calculo_ordem"] + cols5[k:]

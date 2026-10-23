@@ -437,7 +437,277 @@
    "WZ-59",
    "WZ-60"
   ],
-  "bloqueios_grupo_alternativas": []
+  "bloqueios_grupo_alternativas": [],
+  "texto_sem_lacuna": [
+   "TR-CAB.05",
+   "TR-1",
+   "TR-1.3",
+   "TR-1.9",
+   "TR-2",
+   "TR-2.1",
+   "TR-3",
+   "TR-3.1",
+   "TR-4",
+   "TR-4.H01",
+   "TR-4.1",
+   "TR-4.H02",
+   "TR-4.2",
+   "TR-4.H03",
+   "TR-4.H04",
+   "TR-4.4",
+   "TR-4.5",
+   "TR-4.5.1",
+   "TR-4.7",
+   "TR-4.8",
+   "TR-4.9",
+   "TR-4.10",
+   "TR-4.11",
+   "TR-4.12",
+   "TR-4.14",
+   "TR-4.H05",
+   "TR-4.15",
+   "TR-4.H06",
+   "TR-4.18",
+   "TR-4.19",
+   "TR-4.20",
+   "TR-4.21",
+   "TR-4.22",
+   "TR-4.23",
+   "TR-NE016.01",
+   "TR-NE016.05",
+   "TR-NE016.06",
+   "TR-NE016.07",
+   "TR-NE016.08",
+   "TR-4.H07",
+   "TR-4.26",
+   "TR-4.26.1",
+   "TR-4.26.2",
+   "TR-4.26.3",
+   "TR-4.26.4",
+   "TR-4.26.5",
+   "TR-4.27",
+   "TR-4.28",
+   "TR-4.29",
+   "TR-4.30",
+   "TR-4.30.1",
+   "TR-4.31",
+   "TR-4.31.1",
+   "TR-4.31.2",
+   "TR-4.32",
+   "TR-4.33",
+   "TR-4.34",
+   "TR-4.35",
+   "TR-4.35.1",
+   "TR-4.35.2",
+   "TR-4.36",
+   "TR-4.36.1",
+   "TR-4.36.2",
+   "TR-4.37",
+   "TR-4.38",
+   "TR-4.39",
+   "TR-4.40",
+   "TR-4.H09",
+   "TR-5",
+   "TR-5.H01",
+   "TR-5.2",
+   "TR-5.H02",
+   "TR-5.7",
+   "TR-5.8",
+   "TR-5.9",
+   "TR-5.10",
+   "TR-5.11",
+   "TR-5.13",
+   "TR-5.14",
+   "TR-5.15",
+   "TR-5.16",
+   "TR-5.17",
+   "TR-6",
+   "TR-6.1",
+   "TR-6.2",
+   "TR-6.3",
+   "TR-6.4",
+   "TR-6.5",
+   "TR-6.H01",
+   "TR-6.6",
+   "TR-6.H02",
+   "TR-6.7",
+   "TR-6.8",
+   "TR-6.9",
+   "TR-6.10",
+   "TR-6.11",
+   "TR-6.12",
+   "TR-6.H03",
+   "TR-6.13",
+   "TR-6.14",
+   "TR-6.15",
+   "TR-6.16",
+   "TR-6.H04",
+   "TR-6.17",
+   "TR-6.17.1",
+   "TR-6.17.2",
+   "TR-6.17.3",
+   "TR-6.17.4",
+   "TR-6.17.5",
+   "TR-6.17.6",
+   "TR-6.17.7",
+   "TR-7",
+   "TR-7.1",
+   "TR-7.1.a",
+   "TR-7.1.b",
+   "TR-7.1.c",
+   "TR-7.1.d",
+   "TR-7.1.e",
+   "TR-7.1.f",
+   "TR-7.1.g",
+   "TR-7.1.h",
+   "TR-7.2",
+   "TR-7.2.1",
+   "TR-7.2.2",
+   "TR-7.2.3",
+   "TR-7.2.4",
+   "TR-7.2.4.2",
+   "TR-7.2.4.2.1",
+   "TR-7.3",
+   "TR-7.4",
+   "TR-7.5",
+   "TR-7.6",
+   "TR-7.8",
+   "TR-7.8.1",
+   "TR-7.8.2",
+   "TR-7.9",
+   "TR-7.9.1",
+   "TR-7.9.2",
+   "TR-7.9.3",
+   "TR-7.9.4",
+   "TR-7.9.5",
+   "TR-7.10",
+   "TR-7.11",
+   "TR-7.12",
+   "TR-7.12.1",
+   "TR-7.13",
+   "TR-7.14",
+   "TR-8",
+   "TR-8.H01",
+   "TR-8.1",
+   "TR-8.5",
+   "TR-8.6",
+   "TR-8.7",
+   "TR-8.8",
+   "TR-8.9",
+   "TR-8.H02",
+   "TR-8.10",
+   "TR-8.11",
+   "TR-8.12",
+   "TR-8.12.1",
+   "TR-8.12.2",
+   "TR-8.12.3",
+   "TR-8.12.4",
+   "TR-8.12.5",
+   "TR-8.12.6",
+   "TR-8.13",
+   "TR-8.14",
+   "TR-8.15",
+   "TR-8.15.1",
+   "TR-8.15.2",
+   "TR-8.16",
+   "TR-8.17",
+   "TR-8.18",
+   "TR-8.19",
+   "TR-8.H03",
+   "TR-8.20",
+   "TR-8.H04",
+   "TR-8.22",
+   "TR-8.23",
+   "TR-8.24",
+   "TR-8.25",
+   "TR-8.26",
+   "TR-8.H05",
+   "TR-8.29",
+   "TR-8.30",
+   "TR-8.31",
+   "TR-8.33",
+   "TR-8.35",
+   "TR-8.36",
+   "TR-8.36.1",
+   "TR-8.37",
+   "TR-8.H06",
+   "TR-8.38",
+   "TR-8.38.1",
+   "TR-8.38.2",
+   "TR-8.38.3",
+   "TR-8.38.4",
+   "TR-8.39",
+   "TR-8.H07",
+   "TR-8.42",
+   "TR-8.43",
+   "TR-8.44",
+   "TR-8.45",
+   "TR-8.46",
+   "TR-8.47",
+   "TR-9",
+   "TR-9.H01",
+   "TR-9.1",
+   "TR-9.H02",
+   "TR-9.3",
+   "TR-9.H04",
+   "TR-9.5",
+   "TR-9.H05",
+   "TR-9.6",
+   "TR-9.7",
+   "TR-9.8",
+   "TR-9.9",
+   "TR-9.10",
+   "TR-9.11",
+   "TR-9.12",
+   "TR-9.13",
+   "TR-9.15",
+   "TR-9.H06",
+   "TR-9.16",
+   "TR-9.17",
+   "TR-9.18",
+   "TR-9.19",
+   "TR-9.20",
+   "TR-9.21",
+   "TR-9.22",
+   "TR-9.23",
+   "TR-9.H07",
+   "TR-9.24",
+   "TR-9.25",
+   "TR-9.26",
+   "TR-9.26.TAB1",
+   "TR-9.26.TAB2",
+   "TR-9.26.TAB3",
+   "TR-9.28",
+   "TR-9.29",
+   "TR-9.30",
+   "TR-9.31",
+   "TR-9.32",
+   "TR-9.H08",
+   "TR-9.33.1",
+   "TR-9.34",
+   "TR-9.34.1",
+   "TR-9.34.2",
+   "TR-9.34.3",
+   "TR-9.34.4",
+   "TR-9.H09",
+   "TR-9.36",
+   "TR-9.37",
+   "TR-9.38",
+   "TR-9.39",
+   "TR-9.40",
+   "TR-10",
+   "TR-10.3",
+   "TR-10.3.1",
+   "TR-10.4",
+   "TR-11",
+   "TR-11.1",
+   "TR-11.2",
+   "TR-11.3",
+   "TR-12",
+   "TR-12.1",
+   "TR-ASSIN.02",
+   "TR-ASSIN.03"
+  ]
  },
  "referencia": {
   "derivadas": {
@@ -459,6 +729,310 @@
    "WZ_07": "PERMANENTE",
    "WZ_26": "PARCELADA",
    "WZ_08": "SIM"
+  },
+  "texto_montado": {
+   "TR-CAB.03": "[[LACUNA VAR_004]]",
+   "TR-CAB.04": "(Processo Administrativo n° [[LACUNA VAR_001]])",
+   "TR-1.1": "Aquisição de [[LACUNA VAR_008]], [[LACUNA VAR_009]], nos termos da tabela abaixo, conforme condições e exigências estabelecidas neste instrumento.",
+   "TR-1.1.TAB1": "ITEM | ESPECIFICAÇÃO | CATMAT | UNIDADE DE MEDIDA | QUANTIDADE | VALOR UNITÁRIO | VALOR TOTAL\n1 | [[LACUNA]] | 000000 | [[LACUNA]] | 1 | SIGILOSO | SIGILOSO",
+   "TR-1.6": "O prazo de vigência da contratação é de [[LACUNA VAR_034]] contados do(a) [[LACUNA VAR_035]], prorrogável por até 10 anos, na forma dos artigos 106 e 107 da Lei n° 14.133, de 2021.",
+   "TR-1.7": "1.6.1 O fornecimento de bens é enquadrado como continuado tendo em vista que [[LACUNA VAR_036]], sendo a vigência plurianual mais vantajosa considerando o Estudo Técnico Preliminar;",
+   "TR-2.2": "O objeto da contratação está previsto no Plano de Contratações Anual [[LACUNA VAR_038]], conforme detalhamento a seguir:",
+   "TR-2.2.I": "ID PCA no PNCP: [[LACUNA VAR_039]];",
+   "TR-2.2.II": "Data de publicação no PNCP: [[LACUNA VAR_040]];",
+   "TR-2.2.III": "Id do item no PCA: [[LACUNA VAR_041]];",
+   "TR-2.2.IV": "Classe/Grupo: [[LACUNA VAR_042]];",
+   "TR-2.2.V": "Identificador da Futura Contratação: [[LACUNA VAR_043]];",
+   "TR-4.1.1": "[[LACUNA VAR_044]].",
+   "TR-4.2": "Na presente contratação será admitida a indicação da(s) seguinte(s) marca(s), característica(s) ou modelo(s), de acordo com as justificativas contidas nos Estudos Técnicos Preliminares: item 1: Modelo de referência X ou equivalente.",
+   "TR-4.3": "Diante das conclusões extraídas do processo administrativo nº [[LACUNA VAR_047]], a Administração não aceitará o fornecimento dos seguintes produtos/marcas:",
+   "TR-4.3.1.1": "[[LACUNA VAR_048]].",
+   "TR-4.5.1": "item 1.",
+   "TR-4.6": "As amostras poderão ser entregues no endereço [[LACUNA VAR_166]], no prazo limite de [[LACUNA VAR_167]], sendo que a empresa assume total responsabilidade pelo envio e por eventual atraso na entrega.",
+   "TR-4.9.1": "Itens [[LACUNA VAR_051]]: [[LACUNA VAR_051]].",
+   "TR-4.13": "Após a divulgação do resultado final do certame, as amostras entregues deverão ser recolhidas pelos fornecedores no prazo de [[LACUNA VAR_052]] dias, após o qual poderão ser descartadas pela Administração, sem direito a ressarcimento.",
+   "TR-4.17": "É permitida a subcontratação parcial do objeto, até o limite de [[LACUNA VAR_053]] do valor total do contrato, nas seguintes condições:",
+   "TR-4.18.1": "[[LACUNA VAR_164]].",
+   "TR-4.19.1": "[[LACUNA VAR_165]].",
+   "TR-NE016.02": "A subcontratação deverá observar o percentual mínimo de [[LACUNA EQUIPE]] e o máximo de [[LACUNA EQUIPE]] do valor da contratação, abrangendo as seguintes parcelas do objeto:",
+   "TR-NE016.03": "[[LACUNA EQUIPE]]; e",
+   "TR-NE016.04": "[[LACUNA EQUIPE]].",
+   "TR-4.25": "Será exigida a garantia da contratação de que tratam os arts. 96 e seguintes da Lei nº 14.133, de 2021, com validade durante a execução do contrato e 90 (noventa) dias após término da vigência contratual, podendo o Contratado optar pela caução em dinheiro ou em títulos da dívida pública, seguro-garantia, fiança bancária ou título de capitalização, em valor correspondente a [[LACUNA VAR_055]] do valor [[LACUNA VAR_056]] da contratação.",
+   "TR-4.42": "O objeto da contratação enquadra-se na margem de preferência [[LACUNA EQUIPE]] [[LACUNA EQUIPE]] OU [[LACUNA EQUIPE]] de [[LACUNA EQUIPE]] %, prevista no Decreto n.º[[LACUNA EQUIPE]], conforme disposto na Resolução n.º [[LACUNA EQUIPE]] da Comissão Interministerial de Contratações Públicas para o Desenvolvimento Sustentável – CICS, por se tratar de [[LACUNA EQUIPE]] [[LACUNA EQUIPE]] OU [[LACUNA EQUIPE]].",
+   "TR-5.2.TAB1": "Parcela | Composição da parcela | Prazo de entrega\n1ª | ... unidades do item ..., ... unidades do item ... | ... dias da Assinatura/da Ordem de Fornecimento/[...]\n2ª | ... unidades do item ..., ... unidades do item ... | ... dias da Assinatura/da Ordem de Fornecimento/[...]\n3ª | ... unidades do item ..., ... unidades do item ... | ... dias da Assinatura/da Ordem de Fornecimento/[...]\n[...] | ... unidades do item ..., ... unidades do item ... | ... dias da Assinatura/da Ordem de Fornecimento/[...]",
+   "TR-5.3": "Caso não seja possível a entrega na data assinalada, a empresa deverá comunicar as razões respectivas com pelo menos [[LACUNA VAR_063]] dias de antecedência para que qualquer pleito de prorrogação de prazo seja analisado, ressalvadas situações de caso fortuito e força maior.",
+   "TR-5.4": "Os bens deverão ser entregues no seguinte endereço [[LACUNA VAR_064]]",
+   "TR-5.6": "O prazo de garantia contratual dos bens, complementar à garantia legal, será de, no mínimo, [[LACUNA VAR_066]] meses, ou pelo prazo fornecido pelo fabricante, se superior, contado a partir do primeiro dia útil subsequente à data do recebimento definitivo do objeto.",
+   "TR-5.12": "Uma vez notificado, o Contratado realizará a reparação ou substituição dos bens que apresentarem vício ou defeito no prazo de até [[LACUNA VAR_067]] dias úteis, já incluído nesse prazo o tempo necessário para eventual retirada e devolução do bem, a cargo do Contratado.",
+   "TR-6.15.1": "[[LACUNA VAR_068]].",
+   "TR-7.2.4.1": "Moratória, para as infrações descritas no item “d”, de [[LACUNA VAR_069]] por dia de atraso injustificado sobre o valor da parcela inadimplida, até o limite de [[LACUNA VAR_070]] dias",
+   "TR-7.2.4.3": "Compensatória, para as infrações descritas acima alíneas “e” a “h” de [[LACUNA VAR_071]] a [[LACUNA VAR_071]] do valor da contratação.",
+   "TR-7.2.4.4": "Compensatória, para a inexecução total do contrato prevista acima na alínea “c”, de [[LACUNA VAR_071]] a [[LACUNA VAR_071]] do valor da contratação.",
+   "TR-7.2.4.5": "Compensatória, para a infração descrita acima na alínea “b”, de [[LACUNA VAR_071]] a [[LACUNA VAR_071]] do valor da contratação.",
+   "TR-7.2.4.6": "Compensatória, em substituição à multa moratória para a infração descrita acima na alínea “d”, de [[LACUNA VAR_071]] a [[LACUNA VAR_071]] do valor da contratação.",
+   "TR-7.2.4.7": "Compensatória, para a infração descrita acima na alínea “a”, de [[LACUNA VAR_071]] a [[LACUNA VAR_071]] do valor da contratação , ressalvadas as seguintes infrações também enquadráveis nessa alínea:",
+   "TR-7.2.4.7.1": "[[LACUNA VAR_072]];",
+   "TR-7.7": "A multa poderá ser recolhida administrativamente no prazo máximo de [[LACUNA VAR_073]] dias, a contar da data do recebimento da comunicação enviada pela autoridade competente.",
+   "TR-8.2": "Os bens poderão ser rejeitados, no todo ou em parte, inclusive antes do recebimento provisório, quando em desacordo com as especificações constantes no Termo de Referência e na proposta, devendo ser substituídos no prazo de [[LACUNA VAR_074]] dias, a contar da notificação da contratada, às suas custas, sem prejuízo da aplicação das penalidades.",
+   "TR-8.3": "O recebimento definitivo ocorrerá no prazo de [[LACUNA VAR_075]] dias úteis, a contar do recebimento da nota fiscal ou instrumento de cobrança equivalente pela Administração, após a verificação da qualidade e quantidade do material e consequente aceitação mediante termo detalhado.",
+   "TR-8.4": "Para as contratações decorrentes de despesas cujos valores não ultrapassem o limite de que trata o inciso II do art. 75 da Lei nº 14.133, de 2021, o prazo máximo para o recebimento definitivo será de até [[LACUNA VAR_076]] dias úteis.",
+   "TR-8.21": "No caso de atraso pelo Contratante, os valores devidos ao Contratado serão atualizados monetariamente entre o termo final do prazo de pagamento até a data de sua efetiva realização, mediante aplicação do índice [[LACUNA VAR_077]] de correção monetária.",
+   "TR-8.27": "A presente contratação permite a antecipação de pagamento [[LACUNA VAR_079]], conforme as regras previstas no presente tópico.",
+   "TR-8.28": "O Contratado emitirá recibo/nota fiscal/fatura/documento idôneo/... correspondente ao valor da antecipação de pagamento de [[LACUNA VAR_079]] [[LACUNA VAR_079]], tão logo [[LACUNA VAR_079]], para que o Contratante efetue o pagamento antecipado.",
+   "TR-8.29.1": "[[LACUNA VAR_079]] [[LACUNA VAR_079]] quando do início da segunda etapa.",
+   "TR-8.29.2": "[[LACUNA VAR_079]]",
+   "TR-8.32": " O valor relativo à parcela antecipada e não executada do contrato será atualizado monetariamente pela variação acumulada do [[LACUNA VAR_079]], ou outro índice que venha a substituí-lo, desde a data do pagamento da antecipação até a data da devolução.",
+   "TR-8.34": "O pagamento antecipado será efetuado no prazo máximo de até [[LACUNA VAR_079]] dias, contados do recebimento do [[LACUNA VAR_079]].",
+   "TR-8.40": "Os preços inicialmente contratados são fixos e irreajustáveis no prazo de um ano contado da data do orçamento estimado, em [[LACUNA VAR_015]] (DD/MM/AAAA).",
+   "TR-8.41": "Após o interregno de um ano, e independentemente de pedido do Contratado, os preços iniciais serão reajustados, mediante a aplicação, pelo Contratante, do índice [[LACUNA VAR_078]], exclusivamente para as obrigações iniciadas e concluídas após a ocorrência da anualidade.",
+   "TR-9.1": "O fornecedor será selecionado por meio da realização de procedimento de LICITAÇÃO, na modalidade CONCORRÊNCIA, sob a forma ELETRÔNICA, com adoção do critério de julgamento pelo TÉCNICA E PREÇO.",
+   "TR-9.3": "O fornecimento do objeto será continuado.",
+   "TR-9.26": "balanço patrimonial, demonstração de resultado de exercício e demais demonstrações contábeis dos dois últimos exercícios sociais, já exigíveis e apresentados na forma da lei, comprovando, índices de Liquidez Geral (LG), Liquidez Corrente (LC), e Solvência Geral (SG) superiores a 1 (um), obtidos por meio da aplicação das seguintes fórmulas:",
+   "TR-9.27": "Caso a empresa interessada apresente resultado inferior ou igual a 1 (um) em qualquer dos índices de Liquidez Geral (LG), Solvência Geral (SG) e Liquidez Corrente (LC), será exigido para fins de habilitação [[LACUNA VAR_081]] de [[LACUNA VAR_082]]% do [[LACUNA VAR_083]].",
+   "TR-9.33": "Registro ou inscrição da empresa na entidade profissional competente [[LACUNA VAR_084]], em plena validade;",
+   "TR-9.34.1.1": "[[LACUNA VAR_085]].",
+   "TR-NE071.01": "Será admitida a apresentação de atestados relativos a potencial subcontratado em relação à parcela do fornecimento de[[LACUNA VAR_165]]..., cuja subcontratação foi expressamente autorizada no tópico pertinente.",
+   "TR-11.2.I": "Gestão/unidade: [[LACUNA VAR_091]];",
+   "TR-11.2.II": "Fonte de recursos: [[LACUNA VAR_091]];",
+   "TR-11.2.III": "Programa de trabalho: [[LACUNA VAR_091]];",
+   "TR-11.2.IV": "Elemento de despesa: [[LACUNA VAR_091]]; e",
+   "TR-11.2.V": "Plano interno: [[LACUNA VAR_091]].",
+   "TR-12.1": "As informações contidas neste Termo de Referência não são classificadas como sigilosas exceto o custo estimado da contratação, que possui caráter sigiloso até o julgamento das propostas.",
+   "TR-ASSIN.01": "[[LACUNA VAR_005]], [[LACUNA VAR_097]] de [[LACUNA VAR_097]] de [[LACUNA VAR_097]].",
+   "TR-ASSIN.02": "__________________________________",
+   "SET-11": "O Contratado executará, nos itens [[LACUNA VAR-137]], as atividades [[LACUNA VAR-137]], e entregará [[LACUNA VAR-145]]. A instalação será considerada concluída quando atendidos os critérios [[LACUNA VAR-137]].",
+   "SET-13": "Durante a garantia estão incluídos, sem custo adicional, [[LACUNA VAR-139]]. O atendimento será [[LACUNA VAR-139]] e começará em até [[LACUNA VAR-140]] após a abertura do chamado. A garantia conta a partir de [[LACUNA VAR-141]]. [Equipamento substituto: VAR-152, em complemento a TR-5.14.]"
+  },
+  "lacunas_do_texto": {
+   "TR-CAB.03": [
+    "VAR_004"
+   ],
+   "TR-CAB.04": [
+    "VAR_001"
+   ],
+   "TR-1.1": [
+    "VAR_008",
+    "VAR_009"
+   ],
+   "TR-1.1.TAB1": [
+    "ESPECIFICAÇÃO do item 1",
+    "UNIDADE DE MEDIDA do item 1"
+   ],
+   "TR-1.6": [
+    "VAR_034",
+    "VAR_035"
+   ],
+   "TR-1.7": [
+    "VAR_036"
+   ],
+   "TR-2.2": [
+    "VAR_038"
+   ],
+   "TR-2.2.I": [
+    "VAR_039"
+   ],
+   "TR-2.2.II": [
+    "VAR_040"
+   ],
+   "TR-2.2.III": [
+    "VAR_041"
+   ],
+   "TR-2.2.IV": [
+    "VAR_042"
+   ],
+   "TR-2.2.V": [
+    "VAR_043"
+   ],
+   "TR-4.1.1": [
+    "VAR_044"
+   ],
+   "TR-4.3": [
+    "VAR_047"
+   ],
+   "TR-4.3.1.1": [
+    "VAR_048"
+   ],
+   "TR-4.6": [
+    "VAR_166",
+    "VAR_167"
+   ],
+   "TR-4.9.1": [
+    "VAR_051",
+    "VAR_051"
+   ],
+   "TR-4.13": [
+    "VAR_052"
+   ],
+   "TR-4.17": [
+    "VAR_053"
+   ],
+   "TR-4.18.1": [
+    "VAR_164"
+   ],
+   "TR-4.19.1": [
+    "VAR_165"
+   ],
+   "TR-NE016.02": [
+    "equipe: XX% (xxxxx por cento)",
+    "equipe: XX% (xxxxx por cento)"
+   ],
+   "TR-NE016.03": [
+    "equipe: [...]"
+   ],
+   "TR-NE016.04": [
+    "equipe: [...]"
+   ],
+   "TR-4.25": [
+    "VAR_055",
+    "escolha base_garantia (VAR_056)"
+   ],
+   "TR-4.42": [
+    "equipe: .............",
+    "equipe: [normal]",
+    "equipe: [adicional]",
+    "equipe: ........",
+    "equipe: .....................",
+    "equipe: .........................",
+    "equipe: ................",
+    "equipe: [bens manufaturados nacionais que atendam a normas técnicas brasileiras]",
+    "equipe: [bens reciclados, recicláveis ou biodegradáveis]"
+   ],
+   "TR-5.2.TAB1": [
+    "tabela sem linhas estruturadas (VAR_062)"
+   ],
+   "TR-5.3": [
+    "VAR_063"
+   ],
+   "TR-5.4": [
+    "VAR_064"
+   ],
+   "TR-5.6": [
+    "VAR_066"
+   ],
+   "TR-5.12": [
+    "VAR_067"
+   ],
+   "TR-6.15.1": [
+    "VAR_068"
+   ],
+   "TR-7.2.4.1": [
+    "VAR_069",
+    "VAR_070"
+   ],
+   "TR-7.2.4.3": [
+    "VAR_071",
+    "VAR_071"
+   ],
+   "TR-7.2.4.4": [
+    "VAR_071",
+    "VAR_071"
+   ],
+   "TR-7.2.4.5": [
+    "VAR_071",
+    "VAR_071"
+   ],
+   "TR-7.2.4.6": [
+    "VAR_071",
+    "VAR_071"
+   ],
+   "TR-7.2.4.7": [
+    "VAR_071",
+    "VAR_071"
+   ],
+   "TR-7.2.4.7.1": [
+    "VAR_072"
+   ],
+   "TR-7.7": [
+    "VAR_073"
+   ],
+   "TR-8.2": [
+    "VAR_074"
+   ],
+   "TR-8.3": [
+    "VAR_075"
+   ],
+   "TR-8.4": [
+    "VAR_076"
+   ],
+   "TR-8.21": [
+    "VAR_077"
+   ],
+   "TR-8.27": [
+    "VAR_079"
+   ],
+   "TR-8.28": [
+    "VAR_079",
+    "VAR_079",
+    "VAR_079"
+   ],
+   "TR-8.29.1": [
+    "VAR_079",
+    "VAR_079"
+   ],
+   "TR-8.29.2": [
+    "VAR_079"
+   ],
+   "TR-8.32": [
+    "VAR_079"
+   ],
+   "TR-8.34": [
+    "VAR_079",
+    "VAR_079"
+   ],
+   "TR-8.40": [
+    "VAR_015"
+   ],
+   "TR-8.41": [
+    "VAR_078"
+   ],
+   "TR-9.27": [
+    "escolha capital_ou_pl (VAR_081)",
+    "VAR_082",
+    "escolha base_qualif (VAR_083)"
+   ],
+   "TR-9.33": [
+    "VAR_084"
+   ],
+   "TR-9.34.1.1": [
+    "VAR_085"
+   ],
+   "TR-NE071.01": [
+    "VAR_165"
+   ],
+   "TR-11.2.I": [
+    "VAR_091"
+   ],
+   "TR-11.2.II": [
+    "VAR_091"
+   ],
+   "TR-11.2.III": [
+    "VAR_091"
+   ],
+   "TR-11.2.IV": [
+    "VAR_091"
+   ],
+   "TR-11.2.V": [
+    "VAR_091"
+   ],
+   "TR-ASSIN.01": [
+    "VAR_005",
+    "VAR_097",
+    "VAR_097",
+    "VAR_097"
+   ],
+   "SET-11": [
+    "VAR-137 em mais de um marcador (P36)",
+    "VAR-137 em mais de um marcador (P36)",
+    "VAR-145",
+    "VAR-137 em mais de um marcador (P36)"
+   ],
+   "SET-13": [
+    "VAR-139 em mais de um marcador (P36)",
+    "VAR-139 em mais de um marcador (P36)",
+    "VAR-140",
+    "VAR-141",
+    "trecho entre colchetes do texto proposto"
+   ]
   },
   "sugestoes": {},
   "itens_calculados": [

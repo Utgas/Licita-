@@ -18,7 +18,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from comum import gravar_csv, ler_csv  # noqa: E402
 from jlogic import algum_item, ck, dumps, e, eq, inn, ne, ou, tem, var  # noqa: E402
 
-COLS = ["id", "tema", "documento", "origem_checklist", "condicao", "condicao_expr", "ponto_insercao", "texto_proposto",
+COLS = ["id", "tema", "documento", "origem_checklist", "condicao", "condicao_expr", "ponto_insercao", "inserir_apos", "nivel",
+        "inserir_apos_alternativo", "texto_proposto",
         "variaveis", "perguntas_wz", "base_no_modelo", "evidencia_corpus", "observacao", "fonte", "status"]
 
 C, P = "C", "P"
@@ -377,8 +378,62 @@ S = [
 ]
 
 
+# --------------------------------------------------------------------------- Fase 13: onde e com que número (TR)
+# inserir_apos: bloco do M02 depois do qual a cláusula entra (depois dele e de todos os subitens dele).
+# nivel: MESMO_NIVEL = item novo no nível do bloco de referência, numerado logo depois dele (os seguintes são
+#        renumerados); SUBITEM = último subitem do bloco de referência; PREENCHE_BLOCO = não entra como item: o texto
+#        preenche as lacunas do bloco (TR-9.14, TR-9.35).
+# inserir_apos_alternativo: "bloco (nivel)" em ordem de preferência, usado quando o bloco de referência não está na
+#        minuta. Várias cláusulas no mesmo ponto entram na ordem do M08.
+# Regras: só 'item 1.1' é citado por número no modelo (TR-10.1), e a seção 1 não recebe cláusula; nada entra entre o
+# TR-5.12 e o TR-5.14, que se referem ao 'subitem anterior' e ao 'subitem acima'.
+INSERCAO = {
+    "SET-01": ("TR-5.4.1", "MESMO_NIVEL", "TR-5.4 (SUBITEM)"),
+    "SET-02": ("TR-5.4", "MESMO_NIVEL", ""),
+    "SET-03": ("TR-5.4", "MESMO_NIVEL", ""),
+    "SET-04": ("TR-5.4.1", "MESMO_NIVEL", "TR-5.4 (SUBITEM)"),
+    "SET-05": ("TR-4.1", "MESMO_NIVEL", "TR-4 (SUBITEM)"),
+    "SET-06": ("TR-9.35", "PREENCHE_BLOCO", ""),
+    "SET-07": ("TR-4.1", "MESMO_NIVEL", "TR-4 (SUBITEM)"),
+    "SET-08": ("TR-9.14", "PREENCHE_BLOCO", ""),
+    "SET-09": ("TR-5.4", "SUBITEM", ""),
+    "SET-10": ("TR-5.1", "MESMO_NIVEL", "TR-5.2 (MESMO_NIVEL); TR-5.4 (MESMO_NIVEL)"),
+    "SET-11": ("TR-5.4", "MESMO_NIVEL", ""),
+    "SET-12": ("TR-5.4", "MESMO_NIVEL", ""),
+    "SET-13": ("TR-5.17", "MESMO_NIVEL", "TR-5.5 (MESMO_NIVEL)"),
+    "SET-14": ("TR-5.17", "MESMO_NIVEL", "TR-5.5 (MESMO_NIVEL)"),
+    "SET-15": ("TR-5.4", "MESMO_NIVEL", ""),
+    "SET-16": ("TR-4.1", "MESMO_NIVEL", "TR-4 (SUBITEM)"),
+    "SET-17": ("TR-5.4", "MESMO_NIVEL", ""),
+    "SET-18": ("TR-5.4", "MESMO_NIVEL", ""),
+    "SET-19": ("TR-5.4", "MESMO_NIVEL", ""),
+    "SET-20": ("TR-8.3", "SUBITEM", ""),
+    "SET-21": ("TR-8.2", "SUBITEM", ""),
+    "SET-22": ("TR-5.4", "MESMO_NIVEL", ""),
+    "SET-23": ("TR-9.34.1", "MESMO_NIVEL", "TR-9.34 (SUBITEM)"),
+}
+NIVEIS = {"MESMO_NIVEL", "SUBITEM", "PREENCHE_BLOCO"}
+NOTA_INSERCAO = (" Fase 13 (23/10/2026): inserir_apos, nivel e inserir_apos_alternativo INFERIDOS do ponto_insercao; "
+                 "sem alternativo, o bloco de referência está sempre na minuta (condicao_expr true) ou é o próprio bloco "
+                 "que a cláusula preenche.")
+
+
+def conferir_insercao(pasta):
+    m02 = {r["id"]: r for r in ler_csv(pasta / "M02_tr_blocos.csv")}
+    for sid, (bloco, nivel, alt) in INSERCAO.items():
+        if bloco not in m02 or nivel not in NIVEIS:
+            raise SystemExit(f"{sid}: inserir_apos {bloco} ou nivel {nivel} inválido")
+        for parte in [x.strip() for x in alt.split(";") if x.strip()]:
+            b, n = parte.rstrip(")").split(" (")
+            if b not in m02 or n not in NIVEIS:
+                raise SystemExit(f"{sid}: alternativo inválido {parte}")
+        if not alt and nivel != "PREENCHE_BLOCO" and m02[bloco]["condicao_expr"] != "true":
+            raise SystemExit(f"{sid}: {bloco} pode faltar na minuta e não há alternativo")
+
+
 def main():
     pasta = Path(sys.argv[1])
+    conferir_insercao(pasta)
     ids_m01 = {r["id"] for r in ler_csv(pasta / "M01_etp_campos.csv")}
     linhas = []
     for s in S:
@@ -386,8 +441,11 @@ def main():
                  f"trecho e página citados em evidencia_corpus (EXTRAIDO). texto_proposto, condicao e ponto_insercao INFERIDOS.")
         linhas.append({"id": s["id"], "tema": s["tema"], "documento": s["documento"], "origem_checklist": s["origem"],
                        "condicao": s["condicao"], "condicao_expr": dumps(s["expr"]), "ponto_insercao": s["ponto"],
+                       "inserir_apos": INSERCAO[s["id"]][0], "nivel": INSERCAO[s["id"]][1],
+                       "inserir_apos_alternativo": INSERCAO[s["id"]][2],
                        "texto_proposto": s["texto"], "variaveis": s["vars_"], "perguntas_wz": s["wz"],
-                       "base_no_modelo": s["base"], "evidencia_corpus": s["evid"], "observacao": s["obs"], "fonte": fonte,
+                       "base_no_modelo": s["base"], "evidencia_corpus": s["evid"], "observacao": s["obs"],
+                       "fonte": fonte + NOTA_INSERCAO,
                        "status": s["status"]})
     gravar_csv(pasta / "M08_clausulas_setoriais.csv", COLS, linhas, preservar=())
     print(f"M08: {len(linhas)} cláusulas")

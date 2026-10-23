@@ -6,7 +6,10 @@ Uso: python3 -I f11_checklist.py <pasta_Matrizes_v1> <saida_log.txt>
 Roda depois do f10_gerar_expr.py. Acrescenta ao M11:
   leitura           como ler a resposta do Word e qual prevalece em duplicidade (texto);
   revisao_expr      JSON Logic; verdadeira = a resposta fica destacada para o operador revisar (só operadores gerais);
-  revisao_pergunta  pergunta que o sistema faz ao operador quando a dúvida muda a minuta (vazia quando basta o destaque).
+  revisao_pergunta  pergunta que o sistema faz ao operador quando a dúvida muda a minuta (vazia quando basta o destaque);
+  revisao_pergunta_expr (Fase 13) JSON Logic; verdadeira = a revisao_pergunta é feita e a minuta fica bloqueada até a
+                    resposta. Falta de resposta só destaca (revisao_expr), nunca bloqueia: a pendência que decide bloco
+                    já aparece como pergunta do wizard.
 Linhas novas: complementos do operador CK-X-01 a CK-X-09 (checklist = COMPLEMENTO), das sugestões S10 a S18.
 S21: perguntas 10.1 a 10.11 do consumo (comodato) viram SO_CONTROLE, sem efeito na minuta.
 revisao_expr é avaliada depois da leitura, do preenchimento (M11) e do cálculo dos itens (M05), com os mesmos dados das
@@ -19,6 +22,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from comum import gravar_csv, ler_csv  # noqa: E402
+from f10_m11_regras import SIM_NAO_DEST  # noqa: E402
 from jlogic import dumps, e, eq, inn, nao, ne, ou, tem, var, vazio  # noqa: E402
 
 SIM, NAO = "Sim", "Não"
@@ -218,9 +222,14 @@ def main():
     pasta = Path(sys.argv[1])
     m11 = ler_csv(pasta / "M11_checklist.csv")
     log = []
-    cols = [c for c in m11[0] if c not in ("leitura", "revisao_expr", "revisao_pergunta")]
+    novas = ("leitura", "revisao_expr", "revisao_pergunta", "revisao_pergunta_expr")
+    cols = [c for c in m11[0] if c not in novas]
     k = cols.index("sugere_expr") + 1
-    cols = cols[:k] + ["leitura", "revisao_expr", "revisao_pergunta"] + cols[k:]
+    cols = cols[:k] + list(novas) + cols[k:]
+    alimenta = {}
+    for (cid_, d_), dec_ in SIM_NAO_DEST.items():
+        if dec_[0] == "DETALHE":
+            alimenta.setdefault(d_, []).append(cid_)
     ids = {r["id"] for r in m11}
     for cid in ESPEC:
         if cid not in ids:
@@ -237,7 +246,23 @@ def main():
                 else LEITURA_TIPO[r["tipo_resposta"]])
         if r["por_item"] == "S" and cid not in P07:
             leit += " Por item: cada resposta fica ligada aos itens que ela indica."
+        sn = sorted((d_, dec_) for (c_, d_), dec_ in SIM_NAO_DEST.items() if c_ == cid)
+        det = [(d_, dec_[1]) for d_, dec_ in sn if dec_[0] == "DETALHE"]
+        if det:
+            leit += (f" Texto da caixa 'Resposta:' em {ckn(cid)}_texto (Fase 13); vai para "
+                     + " e ".join(f"a {d_}" for d_, _ in det) + f" só com a resposta '{det[0][1]}'.")
         r["leitura"] = (leit + " " + texto).strip()
+        if sn and "Fase 13 (23/10/2026)" not in r["regra"]:
+            partes_r = []
+            for d_, dec_ in sn:
+                if dec_[0] == "DETALHE":
+                    outras = [c_ for c_ in alimenta[d_] if c_ != cid]
+                    partes_r.append(f"{d_} recebe o texto da caixa de resposta, não a opção"
+                                    + (f"; acumula com {', '.join(outras)}, na ordem do M11, sem prevalência" if outras
+                                       else ""))
+                else:
+                    partes_r.append(f"{d_} não recebe a resposta ({'só condição' if dec_[0] == 'CONDICAO' else 'fica com a equipe'}: {dec_[1]})")
+            r["regra"] = r["regra"].rstrip() + " Fase 13 (23/10/2026), Sim/Não fora de campo de texto: " + "; ".join(partes_r) + "."
         cond = json.loads(r["condicional_expr"]) if r["condicional_expr"] else None
         partes = []
         if expr is not None:
@@ -245,14 +270,24 @@ def main():
         if r["efeito"] != "SO_CONTROLE":
             partes.append(generica(r, cond))
         r["revisao_expr"] = dumps(ou(*partes)) if partes else ""
-        pergunta = perg
-        if not pergunta and r["efeito"] == "PREENCHE" and r["preenche_expr"] and r["tipo_resposta"] in ("UNICA", "SIM_NAO"):
+        # Fase 13: pergunta ao operador (e bloqueio) só com dúvida que muda a minuta; falta de resposta só destaca
+        bloq, pergunta = [], perg
+        if perg and expr is not None:
+            bloq.append(expr)
+        if r["efeito"] == "PREENCHE" and r["preenche_expr"] and r["tipo_resposta"] in ("UNICA", "SIM_NAO"):
             lista = "consumo" if r["checklist"] == "CONSUMO" else "permanentes"
-            pergunta = (f"Na pergunta {r['numero']} do checklist de {lista} a leitura não achou uma opção única. Qual opção "
-                        f"vale: {r['opcoes'].split('campos:')[0].strip().rstrip(';')}?")
-        r["revisao_pergunta"] = pergunta
+            duas = (f"Na pergunta {r['numero']} do checklist de {lista} a leitura achou mais de uma marca. Qual opção "
+                    f"vale: {r['opcoes'].split('campos:')[0].strip().rstrip(';')}?")
+            pergunta = f"{perg} Se a leitura achou mais de uma marca: {duas}" if perg else duas
+            bloq.append(inn(cid, lista_ids(MARCAS)))
+        r["revisao_pergunta"] = pergunta if bloq else ""
+        r["revisao_pergunta_expr"] = dumps(ou(*bloq)) if bloq else ""
         if "Fase 11 (23/10/2026)" not in r["fonte"]:
             r["fonte"] = r["fonte"].rstrip() + " Fase 11 (23/10/2026): leitura, revisao_expr e revisao_pergunta. " + FONTE_0009
+        if "Fase 13 (23/10/2026): revisao_pergunta_expr" not in r["fonte"] and r["revisao_pergunta_expr"]:
+            r["fonte"] = (r["fonte"].rstrip() + " Fase 13 (23/10/2026): revisao_pergunta_expr separa o destaque (falta de "
+                          "resposta) da pergunta que bloqueia (dúvida que muda a minuta); decisão do gestor, a confirmar "
+                          "com o dono do projeto (P34).")
     for (cid, s_, perg, tipo, opc, por_item, (ctexto, cexpr), dest, ef, regra, ex) in COMPL:
         if cid in ids:
             raise SystemExit(f"{cid} já existe")
@@ -265,13 +300,14 @@ def main():
                     "sugere_expr": dumps(ex) if ef == "SUGERE" else "",
                     "leitura": "Digitado pelo operador no sistema (complemento). " + LEITURA_TIPO[tipo]
                                + (" Por item: o operador indica os itens." if por_item == "S" else ""),
-                    "revisao_expr": "", "revisao_pergunta": "",
+                    "revisao_expr": "", "revisao_pergunta": "", "revisao_pergunta_expr": "",
                     "fonte": f"Sugestão {s_} (sugestoes_checklist.md), aceita pelo dono do projeto em 23/10/2026 (decisão 0009). {FONTE_0009} "
                              f"Pergunta, destinos e expressão INFERIDOS.", "status": "INFERIDO"})
     gravar_csv(pasta / "M11_checklist.csv", cols, m11, preservar=())
     log.append(f"M11: {len(m11)} linhas; complementos {len(COMPL)}; leitura em {sum(1 for r in m11 if r['leitura'])}; "
                f"revisao_expr em {sum(1 for r in m11 if r['revisao_expr'])}; revisao_pergunta em "
-               f"{sum(1 for r in m11 if r['revisao_pergunta'])}; SO_CONTROLE do comodato: {len(COMODATO)}")
+               f"{sum(1 for r in m11 if r['revisao_pergunta'])} (bloqueiam só com revisao_pergunta_expr: "
+               f"{sum(1 for r in m11 if r['revisao_pergunta_expr'])}); SO_CONTROLE do comodato: {len(COMODATO)}")
     Path(sys.argv[2]).write_text("\n".join(log) + "\n", encoding="utf-8")
     print("\n".join(log))
 
@@ -398,6 +434,24 @@ def casos(m11):
                 lst.append((dict(base, **{n: resposta_valida(r)}), False))
             if r["tipo_resposta"] in ("UNICA", "SIM_NAO"):
                 lst.append((dict(base, checklist={"marcas_multiplas": [r["id"]]}), True))
+        out[r["id"]] = lst
+    return out
+
+
+def casos_pergunta(m11):
+    """{id: [(dados, pergunta_dispara)]}: falta de resposta nunca faz a pergunta; duas marcas e os casos específicos com
+    pergunta fazem."""
+    out = {}
+    for r in m11:
+        if not r["revisao_pergunta_expr"]:
+            continue
+        cond = json.loads(r["condicional_expr"]) if r["condicional_expr"] else None
+        base = dados_condicional(cond)
+        lst = [(dict(base), False)]
+        if r["tipo_resposta"] in ("UNICA", "SIM_NAO") and r["efeito"] == "PREENCHE":
+            lst.append((dict(base, checklist={"marcas_multiplas": [r["id"]]}), True))
+        if ESPEC.get(r["id"], ("", None, ""))[2]:
+            lst += [(dict(base, **d), v) for d, v in CASOS_ESPECIFICOS.get(r["id"], [])]
         out[r["id"]] = lst
     return out
 

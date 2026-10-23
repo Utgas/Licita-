@@ -26,6 +26,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from f3_simular_wizard import CENARIOS, dec, derivar, efeitos, pai  # noqa: E402
 from jlogic import avaliar as jl  # noqa: E402
 from parametros import VALORES  # noqa: E402
+from f13_texto import montar_minuta  # noqa: E402
 
 DERIVADAS = {"WZ-09", "WZ-13", "WZ-18", "WZ-20", "WZ-24", "WZ-50"}
 ATRIB_CALC = {"perecivel", "tic", "valor_unidade_disputa", "tratamento_me_epp", "quantidade_cota"}
@@ -171,7 +172,8 @@ def aplica_texto(dep, r):
     return cond_texto(c, r)
 
 
-CHAVES_ESPERADO = ("blocos", "clausulas_m08", "validacoes_m10", "perguntas_sem_resposta", "bloqueios_grupo_alternativas")
+CHAVES_ESPERADO = ("blocos", "clausulas_m08", "validacoes_m10", "perguntas_sem_resposta", "bloqueios_grupo_alternativas",
+                   "texto_sem_lacuna")
 
 
 def sem_orfaos(blocos, lista):
@@ -194,6 +196,10 @@ def bloqueios_grupo(m, blocos, ativos):
         if r["grupo_alternativa"] and r["opcao"] and r["id"] in dentro:
             ops.setdefault(r["grupo_alternativa"].split(" ")[0], set()).add(r["opcao"])
     return sorted(g for g in ativos if len(ops.get(g, set())) != 1)
+
+
+def COM_MARCADOR(m):
+    return {r["id"] for r in m["M02"] if r.get("lacunas_mapa") or r.get("tabela_colunas")}
 
 
 def json_num(o):
@@ -409,7 +415,7 @@ def caminho_expr(m, ent):
     bloq = bloqueios_grupo(m, blocos, ativos)
     sets = [r["id"] for r in m["M08"] if r["condicao_expr"] and jl(json.loads(r["condicao_expr"]), d)]
     vals = [r["id"] for r in m["M10"] if r["condicao_expr"] and jl(json.loads(r["condicao_expr"]), d)]
-    extra = {"variaveis": {k: v for k, v in g.items() if k.startswith("VAR_")},
+    extra = {"dados": d, "variaveis": {k: v for k, v in g.items() if k.startswith("VAR_")},
              "preenchido_pelo_checklist": preenchido, "conflitos": conflitos, "sugestoes": sugestoes,
              "derivadas": {k: g.get(wzv(k)) for k in sorted(DERIVADAS)},
              "itens": [{a: it.get(a) for a in ("numero", "tratamento_me_epp", "valor_unidade_disputa", "cota_calculada",
@@ -425,9 +431,26 @@ def caminho_expr(m, ent):
 NOMES_CURTOS = {cod: nome.split(" ", 1)[1] for cod, nome in CODIGOS.items()}
 
 
+def com_texto(m, obt, extra):
+    """Fase 13: monta o texto (lacunas_mapa, tabela_colunas e marcadores do M08) e acrescenta texto_sem_lacuna: blocos
+    e cláusulas da minuta, na ordem, que saem sem nenhuma lacuna com as entradas do cenário."""
+    textos, lac, ins = montar_minuta(m["M02"], m["M08"], obt["blocos"], obt["clausulas_m08"], extra["dados"])
+    obt["texto_sem_lacuna"] = [k for k in textos if not lac[k]]
+    return textos, lac, ins
+
+
+def simular(m, ent):
+    """caminho das expressões com a montagem do texto (o que o motor entrega)."""
+    obt, extra = caminho_expr(m, ent)
+    com_texto(m, obt, extra)
+    return obt
+
+
 def comparar(esp, obt):
     dif = []
     for k in CHAVES_ESPERADO:
+        if k not in esp:
+            continue
         if esp.get(k) != obt.get(k):
             a, b = esp.get(k) or [], obt.get(k) or []
             dif.append(f"{k}: faltam {[x for x in a if x not in b][:10]}, sobram {[x for x in b if x not in a][:10]}"
@@ -444,7 +467,14 @@ def gerar(pasta):
         esp, ref = caminho_texto(m, cod)
         ent = montar_entrada(cod)
         obt, extra = caminho_expr(m, ent)
+        textos, lac, ins = com_texto(m, obt, extra)
+        # o caminho do texto não monta texto: texto_sem_lacuna vem do caminho das expressões com a montagem do f13
+        esp["texto_sem_lacuna"] = obt["texto_sem_lacuna"]
         dif = comparar(esp, obt)
+        sim_nao = [(t, f, v) for t, f, v in ins if any(str(x).strip().upper() in ("SIM", "NÃO", "NAO")
+                                                      for x in (v if isinstance(v, list) else [v]))]
+        if sim_nao:
+            dif.append(f"Sim/Não no texto: {sim_nao[:5]}")
         pre_esp = {wzv(k): v for k, v in VIA.get(cod, {}).get("wz", {}).items()}
         if extra["preenchido_pelo_checklist"] != pre_esp:
             dif.append(f"WZ preenchidas pelo checklist: {extra['preenchido_pelo_checklist']} x esperado {pre_esp}")
@@ -464,11 +494,15 @@ def gerar(pasta):
                              "pelas colunas _expr é conferida pelo f9_testes.py.",
                "entrada": ent, "esperado": esp,
                "referencia": dict(ref, preenchido_pelo_checklist=extra["preenchido_pelo_checklist"],
+                                  texto_montado={k: v for k, v in textos.items()
+                                                 if k.startswith("SET-") or k in COM_MARCADOR(m)},
+                                  lacunas_do_texto={k: v for k, v in lac.items() if v},
                                   sugestoes={k: v for k, v in extra["sugestoes"].items()},
                                   itens_calculados=extra["itens"])}
         (saida / f"{cod}.json").write_text(json.dumps(doc, ensure_ascii=False, indent=1, default=json_num) + "\n",
                                            encoding="utf-8")
-        print(f"{cod}: {len(esp['blocos'])} blocos, M08 {esp['clausulas_m08']}, M10 {esp['validacoes_m10']}, "
+        print(f"{cod}: {len(esp['blocos'])} blocos ({len(esp['texto_sem_lacuna'])} trechos sem lacuna), "
+              f"M08 {esp['clausulas_m08']}, M10 {esp['validacoes_m10']}, "
               f"sem resposta {len(esp['perguntas_sem_resposta'])}; preenchidas pelo checklist "
               f"{extra['preenchido_pelo_checklist']}" + (" | DIFERENÇAS: " + " || ".join(dif) if dif else ""))
     print(f"TOTAL DE DIFERENÇAS: {total}")
@@ -482,7 +516,8 @@ def reproduzir(pasta, prefixos=("C",)):
         doc = json.loads(f.read_text(encoding="utf-8"))
         if not doc["id"].startswith(prefixos):
             continue
-        obt, _ = caminho_expr(m, doc["entrada"])
+        obt, extra = caminho_expr(m, doc["entrada"])
+        com_texto(m, obt, extra)
         res[doc["id"]] = comparar(doc["esperado"], obt)
     return res
 

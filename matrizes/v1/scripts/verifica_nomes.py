@@ -80,27 +80,13 @@ def nomes_do_corpus(pasta_texto):
     return completos | isolados
 
 
-REPO_COLS = ("validacao", "comentario_validacao")
-AVISOS = []
-
-
 def textos_saida(caminhos):
     for c in caminhos:
         p = Path(c)
         arquivos = [p] if p.is_file() else sorted(x for x in p.rglob("*") if x.suffix in (".csv", ".md", ".py", ".txt", ".json"))
         for a in arquivos:
-            txt = a.read_text(encoding="utf-8-sig", errors="replace")
-            if a.suffix == ".csv" and REPO_COLS[0] in txt.split("\n", 1)[0]:
-                # validacao e comentario_validacao vêm do repositório (f12, P33): são registros de quem valida,
-                # não texto copiado do corpus, e não podem ser alterados aqui; ficam fora da busca e saem como aviso
-                linhas = list(csv.DictReader(txt.splitlines()))
-                for r in linhas:
-                    for c in REPO_COLS:
-                        if (r.get(c) or "").strip():
-                            AVISOS.append((a.name, r.get("id", ""), c, r[c]))
-                            r[c] = ""
-                txt = "\n".join(",".join(v or "" for v in r.values()) for r in linhas)
-            yield a, txt
+            # Fase 13: as colunas de validação vindas do repositório também entram na busca (dizem "dono do projeto")
+            yield a, a.read_text(encoding="utf-8-sig", errors="replace")
 
 
 def main():
@@ -136,14 +122,6 @@ def main():
         for m in re.finditer(r"(?<![\d./-])\d{3}\.\d{3}\.\d{3}-\d{2}(?![\d/])|(?<![\d./-])\d{11}(?![\d./-])", txt):
             achados += 1
             print(f"POSSÍVEL CPF em {arq.name}: {m.group(0)[:3]}********")
-    vistos = set()
-    for arq, rid, col, val in AVISOS:
-        t = norm(val)
-        if (arq, rid, col) in vistos:
-            continue
-        vistos.add((arq, rid, col))
-        if any(re.search(rf"\b{re.escape(w)}\b", t) for w in tokens | nomes):
-            print(f"AVISO (coluna do repositório, preservada; não conta como achado) em {arq} {rid} {col}: {mascara(t[:60])}")
     print(f"achados: {achados}")
     sys.exit(1 if achados else 0)
 

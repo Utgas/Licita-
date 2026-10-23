@@ -1,0 +1,2 @@
+TR-AII.03: a coluna lacunas não está na ordem do texto; o mapa segue o texto
+M02.lacunas_mapa: 106 blocos com marcador; marcadores por ação {'EQUIPE': 21, 'ESCOLHA': 31, 'MANTER': 7, 'OPCIONAL': 4, 'PREENCHER': 108, 'REMOVER': 3, 'TABELA': 8}; tabela_colunas: ['TR-1.1.1.TAB1', 'TR-1.1.1.TAB2', 'TR-1.1.1.TAB3', 'TR-1.1.TAB1', 'TR-5.2.TAB1']

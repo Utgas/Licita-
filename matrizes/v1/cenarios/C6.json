@@ -399,7 +399,205 @@
    "WZ-57",
    "WZ-58"
   ],
-  "bloqueios_grupo_alternativas": []
+  "bloqueios_grupo_alternativas": [],
+  "texto_sem_lacuna": [
+   "TR-CAB.05",
+   "TR-1",
+   "TR-1.1.1",
+   "TR-1.2",
+   "TR-1.4",
+   "TR-1.9",
+   "TR-2",
+   "TR-2.1",
+   "TR-3",
+   "TR-3.1",
+   "TR-4",
+   "TR-4.H01",
+   "TR-4.1",
+   "TR-4.H02",
+   "TR-4.2",
+   "TR-4.H04",
+   "TR-4.4",
+   "TR-4.5",
+   "TR-4.5.1",
+   "TR-4.7",
+   "TR-4.8",
+   "TR-4.9",
+   "TR-4.10",
+   "TR-4.11",
+   "TR-4.12",
+   "TR-4.14",
+   "TR-4.H06",
+   "TR-4.16",
+   "TR-4.H07",
+   "TR-4.24",
+   "TR-4.H08",
+   "TR-4.41",
+   "TR-4.41.1",
+   "TR-4.41.2",
+   "TR-4.41.3",
+   "TR-5",
+   "TR-5.H01",
+   "TR-5.2",
+   "TR-5.H02",
+   "TR-5.5",
+   "TR-6",
+   "TR-6.1",
+   "TR-6.2",
+   "TR-6.3",
+   "TR-6.4",
+   "TR-6.H01",
+   "TR-6.6",
+   "TR-6.H02",
+   "TR-6.7",
+   "TR-6.8",
+   "TR-6.9",
+   "TR-6.10",
+   "TR-6.11",
+   "TR-6.12",
+   "TR-6.H03",
+   "TR-6.13",
+   "TR-6.14",
+   "TR-6.16",
+   "TR-6.H04",
+   "TR-6.17",
+   "TR-6.17.1",
+   "TR-6.17.2",
+   "TR-6.17.3",
+   "TR-6.17.4",
+   "TR-6.17.5",
+   "TR-6.17.6",
+   "TR-6.17.7",
+   "TR-7",
+   "TR-7.1",
+   "TR-7.1.a",
+   "TR-7.1.b",
+   "TR-7.1.c",
+   "TR-7.1.d",
+   "TR-7.1.e",
+   "TR-7.1.f",
+   "TR-7.1.g",
+   "TR-7.1.h",
+   "TR-7.2",
+   "TR-7.2.1",
+   "TR-7.2.2",
+   "TR-7.2.3",
+   "TR-7.2.4",
+   "TR-7.3",
+   "TR-7.4",
+   "TR-7.5",
+   "TR-7.6",
+   "TR-7.8",
+   "TR-7.8.1",
+   "TR-7.8.2",
+   "TR-7.9",
+   "TR-7.9.1",
+   "TR-7.9.2",
+   "TR-7.9.3",
+   "TR-7.9.4",
+   "TR-7.9.5",
+   "TR-7.10",
+   "TR-7.11",
+   "TR-7.12",
+   "TR-7.12.1",
+   "TR-7.13",
+   "TR-7.14",
+   "TR-8",
+   "TR-8.H01",
+   "TR-8.1",
+   "TR-8.5",
+   "TR-8.6",
+   "TR-8.7",
+   "TR-8.8",
+   "TR-8.9",
+   "TR-8.H02",
+   "TR-8.10",
+   "TR-8.11",
+   "TR-8.12",
+   "TR-8.12.1",
+   "TR-8.12.2",
+   "TR-8.12.3",
+   "TR-8.12.4",
+   "TR-8.12.5",
+   "TR-8.12.6",
+   "TR-8.13",
+   "TR-8.14",
+   "TR-8.15",
+   "TR-8.15.1",
+   "TR-8.15.2",
+   "TR-8.16",
+   "TR-8.17",
+   "TR-8.18",
+   "TR-8.19",
+   "TR-8.H03",
+   "TR-8.20",
+   "TR-8.H04",
+   "TR-8.22",
+   "TR-8.23",
+   "TR-8.24",
+   "TR-8.25",
+   "TR-8.26",
+   "TR-8.H06",
+   "TR-8.38",
+   "TR-8.38.1",
+   "TR-8.38.2",
+   "TR-8.38.3",
+   "TR-8.38.4",
+   "TR-8.39",
+   "TR-8.H07",
+   "TR-8.42",
+   "TR-8.43",
+   "TR-8.44",
+   "TR-8.45",
+   "TR-8.46",
+   "TR-8.47",
+   "TR-9",
+   "TR-9.H01",
+   "TR-9.1",
+   "TR-9.H02",
+   "TR-9.3",
+   "TR-9.H03",
+   "TR-9.4",
+   "TR-9.H04",
+   "TR-9.5",
+   "TR-9.H05",
+   "TR-9.6",
+   "TR-9.7",
+   "TR-9.8",
+   "TR-9.9",
+   "TR-9.10",
+   "TR-9.11",
+   "TR-9.12",
+   "TR-9.13",
+   "TR-9.15",
+   "TR-9.H06",
+   "TR-9.16",
+   "TR-9.17",
+   "TR-9.18",
+   "TR-9.19",
+   "TR-9.20",
+   "TR-9.21",
+   "TR-9.22",
+   "TR-9.23",
+   "TR-9.H09",
+   "TR-9.36",
+   "TR-9.37",
+   "TR-9.38",
+   "TR-9.39",
+   "TR-9.40",
+   "TR-10",
+   "TR-10.5",
+   "TR-10.5.1",
+   "TR-10.5.2",
+   "TR-10.5.3",
+   "TR-10.5.4",
+   "TR-11",
+   "TR-11.4",
+   "TR-12",
+   "TR-12.1",
+   "TR-ASSIN.02",
+   "TR-ASSIN.03"
+  ]
  },
  "referencia": {
   "derivadas": {
@@ -421,6 +619,205 @@
   },
   "via_checklist": {},
   "preenchido_pelo_checklist": {},
+  "texto_montado": {
+   "TR-CAB.03": "[[LACUNA VAR_004]]",
+   "TR-CAB.04": "(Processo Administrativo n° [[LACUNA VAR_001]])",
+   "TR-1.1": "Aquisição de [[LACUNA VAR_008]], nos termos da tabela abaixo, conforme condições e exigências estabelecidas neste instrumento.",
+   "TR-1.1.TAB1": "ITEM | ESPECIFICAÇÃO | CATMAT | UNIDADE DE MEDIDA | QUANTIDADE | VALOR UNITÁRIO | VALOR TOTAL\n1 | [[LACUNA]] | 000000 | [[LACUNA]] | 10.000 | R$ 0,50 | R$ 5.000,00\n2 | [[LACUNA]] | 000000 | [[LACUNA]] | 3.000 | R$ 20,00 | R$ 60.000,00\n3 | [[LACUNA]] | 000000 | [[LACUNA]] | 15.000 | R$ 6,00 | R$ 90.000,00\n4 | Idem ao Item 3 – Cota reservada para ME/EPP em 25,00% | 000000 | [[LACUNA]] | 5.000 | R$ 6,00 | R$ 30.000,00\n5 | [[LACUNA]] | 000000 | [[LACUNA]] | 7 | R$ 15.000,00 | R$ 105.000,00\n6 | Idem ao Item 5 – Cota reservada para ME/EPP em 25,00% | 000000 | [[LACUNA]] | 2 | R$ 15.000,00 | R$ 30.000,00\n7 | [[LACUNA]] | 000000 | [[LACUNA]] | 3 | R$ 30.000,00 | R$ 90.000,00\n8 | Idem ao Item 7 – Cota reservada para ME/EPP em 25,00% | 000000 | [[LACUNA]] | 1 | R$ 30.000,00 | R$ 30.000,00\n9 | [[LACUNA]] | 000000 | [[LACUNA]] | 3 | R$ 2.000,00 | R$ 6.000,00\n10 | Idem ao Item 9 – Cota reservada para ME/EPP em 25,00% | 000000 | [[LACUNA]] | 1 | R$ 2.000,00 | R$ 2.000,00\n11 | [[LACUNA]] | 000000 | [[LACUNA]] | 3 | R$ 40.000,00 | R$ 120.000,00",
+   "TR-1.1.1.TAB1": "Órgão Gerenciador:\nitem | DESCRIÇÃO/ ESPECIF. | UNIDADE / DE / MEDIDA | REQUISIÇÃO / MÍNIMA | REQUISIÇÃO / Máxima | Quantidade / total\n |  |  |  |  | ",
+   "TR-1.1.1.TAB2": "Órgão Participante:\nItem | DESCRIÇÃO/ ESPECIF. | UNIDADE / DE / MEDIDA | REQUISIÇÃO / MÍNIMA | REQUISIÇÃO / Máxima | Quantidade / total\n |  |  |  |  | ",
+   "TR-1.1.1.TAB3": "Órgão Participante:\nItem | DESCRIÇÃO/ ESPECIF. | UNIDADE / DE / MEDIDA | REQUISIÇÃO / MÍNIMA | REQUISIÇÃO / Máxima | Quantidade / total\n |  |  |  |  | ",
+   "TR-1.5": "O prazo de vigência da contratação é de [[LACUNA VAR_034]] contados do(a) [[LACUNA VAR_035]], na forma do artigo 105 da Lei n° 14.133, de 2021.",
+   "TR-2.2": "O objeto da contratação está previsto no Plano de Contratações Anual [[LACUNA VAR_038]], conforme detalhamento a seguir:",
+   "TR-2.2.I": "ID PCA no PNCP: [[LACUNA VAR_039]];",
+   "TR-2.2.II": "Data de publicação no PNCP: [[LACUNA VAR_040]];",
+   "TR-2.2.III": "Id do item no PCA: [[LACUNA VAR_041]];",
+   "TR-2.2.IV": "Classe/Grupo: [[LACUNA VAR_042]];",
+   "TR-2.2.V": "Identificador da Futura Contratação: [[LACUNA VAR_043]];",
+   "TR-4.1.1": "[[LACUNA VAR_044]].",
+   "TR-4.2": "Na presente contratação será admitida a indicação da(s) seguinte(s) marca(s), característica(s) ou modelo(s), de acordo com as justificativas contidas nos Estudos Técnicos Preliminares: item 5: Marca de referência Y ou equivalente.",
+   "TR-4.5.1": "item 2.",
+   "TR-4.6": "As amostras poderão ser entregues no endereço [[LACUNA VAR_166]], no prazo limite de [[LACUNA VAR_167]], sendo que a empresa assume total responsabilidade pelo envio e por eventual atraso na entrega.",
+   "TR-4.9.1": "Itens [[LACUNA VAR_051]]: [[LACUNA VAR_051]].",
+   "TR-4.13": "Após a divulgação do resultado final do certame, as amostras entregues deverão ser recolhidas pelos fornecedores no prazo de [[LACUNA VAR_052]] dias, após o qual poderão ser descartadas pela Administração, sem direito a ressarcimento.",
+   "TR-5.2.TAB1": "Parcela | Composição da parcela | Prazo de entrega\n1ª | ... unidades do item ..., ... unidades do item ... | ... dias da Assinatura/da Ordem de Fornecimento/[...]\n2ª | ... unidades do item ..., ... unidades do item ... | ... dias da Assinatura/da Ordem de Fornecimento/[...]\n3ª | ... unidades do item ..., ... unidades do item ... | ... dias da Assinatura/da Ordem de Fornecimento/[...]\n[...] | ... unidades do item ..., ... unidades do item ... | ... dias da Assinatura/da Ordem de Fornecimento/[...]",
+   "TR-5.3": "Caso não seja possível a entrega na data assinalada, a empresa deverá comunicar as razões respectivas com pelo menos [[LACUNA VAR_063]] dias de antecedência para que qualquer pleito de prorrogação de prazo seja analisado, ressalvadas situações de caso fortuito e força maior.",
+   "TR-5.4": "Os bens deverão ser entregues no seguinte endereço [[LACUNA VAR_064]]",
+   "TR-5.4.1": "No caso de produtos perecíveis, o prazo de validade na data da entrega não poderá ser inferior a [[LACUNA VAR_065]].",
+   "TR-7.2.4.1": "Moratória, para as infrações descritas no item “d”, de [[LACUNA VAR_069]] por dia de atraso injustificado sobre o valor da parcela inadimplida, até o limite de [[LACUNA VAR_070]] dias",
+   "TR-7.2.4.3": "Compensatória, para as infrações descritas acima alíneas “e” a “h” de [[LACUNA VAR_071]] a [[LACUNA VAR_071]] do valor da contratação.",
+   "TR-7.2.4.4": "Compensatória, para a inexecução total do contrato prevista acima na alínea “c”, de [[LACUNA VAR_071]] a [[LACUNA VAR_071]] do valor da contratação.",
+   "TR-7.2.4.5": "Compensatória, para a infração descrita acima na alínea “b”, de [[LACUNA VAR_071]] a [[LACUNA VAR_071]] do valor da contratação.",
+   "TR-7.2.4.6": "Compensatória, em substituição à multa moratória para a infração descrita acima na alínea “d”, de [[LACUNA VAR_071]] a [[LACUNA VAR_071]] do valor da contratação.",
+   "TR-7.2.4.7": "Compensatória, para a infração descrita acima na alínea “a”, de [[LACUNA VAR_071]] a [[LACUNA VAR_071]] do valor da contratação.",
+   "TR-7.7": "A multa poderá ser recolhida administrativamente no prazo máximo de [[LACUNA VAR_073]] dias, a contar da data do recebimento da comunicação enviada pela autoridade competente.",
+   "TR-8.2": "Os bens poderão ser rejeitados, no todo ou em parte, inclusive antes do recebimento provisório, quando em desacordo com as especificações constantes no Termo de Referência e na proposta, devendo ser substituídos no prazo de [[LACUNA VAR_074]] dias, a contar da notificação da contratada, às suas custas, sem prejuízo da aplicação das penalidades.",
+   "TR-8.3": "O recebimento definitivo ocorrerá no prazo de [[LACUNA VAR_075]] dias úteis, a contar do recebimento da nota fiscal ou instrumento de cobrança equivalente pela Administração, após a verificação da qualidade e quantidade do material e consequente aceitação mediante termo detalhado.",
+   "TR-8.4": "Para as contratações decorrentes de despesas cujos valores não ultrapassem o limite de que trata o inciso II do art. 75 da Lei nº 14.133, de 2021, o prazo máximo para o recebimento definitivo será de até [[LACUNA VAR_076]] dias úteis.",
+   "TR-8.21": "No caso de atraso pelo Contratante, os valores devidos ao Contratado serão atualizados monetariamente entre o termo final do prazo de pagamento até a data de sua efetiva realização, mediante aplicação do índice [[LACUNA VAR_077]] de correção monetária.",
+   "TR-8.40": "Os preços inicialmente contratados são fixos e irreajustáveis no prazo de um ano contado da data do orçamento estimado, em [[LACUNA VAR_015]] (DD/MM/AAAA).",
+   "TR-8.41": "Após o interregno de um ano, e independentemente de pedido do Contratado, os preços iniciais serão reajustados, mediante a aplicação, pelo Contratante, do índice [[LACUNA VAR_078]], exclusivamente para as obrigações iniciadas e concluídas após a ocorrência da anualidade.",
+   "TR-9.1": "O fornecedor será selecionado por meio da realização de procedimento de LICITAÇÃO, na modalidade PREGÃO, sob a forma ELETRÔNICA, com adoção do critério de julgamento pelo MENOR PREÇO.",
+   "TR-9.3": "O fornecimento do objeto será parcelado.",
+   "TR-9.4.1": "Valores unitários: conforme [[LACUNA VAR_032]] deste Termo de Referência.",
+   "TR-10.1": "O custo estimado total da contratação, que corresponde ao valor máximo aceitável, é de [[LACUNA VAR_014]] [[LACUNA VAR_014]], conforme custos unitários apostos na [[LACUNA VAR_089]].",
+   "TR-12.1": "As informações contidas neste Termo de Referência não são classificadas como sigilosas.",
+   "TR-ASSIN.01": "[[LACUNA VAR_005]], [[LACUNA VAR_097]] de [[LACUNA VAR_097]] de [[LACUNA VAR_097]].",
+   "TR-ASSIN.02": "__________________________________",
+   "SET-02": "Os itens [[LACUNA VAR-122, VAR-128]] serão transportados, armazenados até a entrega e entregues nas condições de conservação indicadas pelo fabricante, observada a faixa de temperatura [[LACUNA VAR-122]] [e com registro contínuo da temperatura durante o transporte, apresentado no ato da entrega (VAR-129)]. [Para permanentes: o Contratado providenciará a logística especial de transporte e movimentação descrita em VAR-128.] O descumprimento das condições de conservação é motivo de recusa (TR-8.2)."
+  },
+  "lacunas_do_texto": {
+   "TR-CAB.03": [
+    "VAR_004"
+   ],
+   "TR-CAB.04": [
+    "VAR_001"
+   ],
+   "TR-1.1": [
+    "VAR_008"
+   ],
+   "TR-1.1.TAB1": [
+    "ESPECIFICAÇÃO do item 1",
+    "UNIDADE DE MEDIDA do item 1",
+    "ESPECIFICAÇÃO do item 2",
+    "UNIDADE DE MEDIDA do item 2",
+    "ESPECIFICAÇÃO do item 3",
+    "UNIDADE DE MEDIDA do item 3",
+    "UNIDADE DE MEDIDA da cota do item 3",
+    "ESPECIFICAÇÃO do item 4",
+    "UNIDADE DE MEDIDA do item 4",
+    "UNIDADE DE MEDIDA da cota do item 4",
+    "ESPECIFICAÇÃO do item 5",
+    "UNIDADE DE MEDIDA do item 5",
+    "UNIDADE DE MEDIDA da cota do item 5",
+    "ESPECIFICAÇÃO do item 6",
+    "UNIDADE DE MEDIDA do item 6",
+    "UNIDADE DE MEDIDA da cota do item 6",
+    "ESPECIFICAÇÃO do item 7",
+    "UNIDADE DE MEDIDA do item 7"
+   ],
+   "TR-1.1.1.TAB1": [
+    "tabela sem linhas estruturadas (VAR_029)"
+   ],
+   "TR-1.1.1.TAB2": [
+    "tabela sem linhas estruturadas (VAR_029)"
+   ],
+   "TR-1.1.1.TAB3": [
+    "tabela sem linhas estruturadas (VAR_029)"
+   ],
+   "TR-1.5": [
+    "VAR_034",
+    "VAR_035"
+   ],
+   "TR-2.2": [
+    "VAR_038"
+   ],
+   "TR-2.2.I": [
+    "VAR_039"
+   ],
+   "TR-2.2.II": [
+    "VAR_040"
+   ],
+   "TR-2.2.III": [
+    "VAR_041"
+   ],
+   "TR-2.2.IV": [
+    "VAR_042"
+   ],
+   "TR-2.2.V": [
+    "VAR_043"
+   ],
+   "TR-4.1.1": [
+    "VAR_044"
+   ],
+   "TR-4.6": [
+    "VAR_166",
+    "VAR_167"
+   ],
+   "TR-4.9.1": [
+    "VAR_051",
+    "VAR_051"
+   ],
+   "TR-4.13": [
+    "VAR_052"
+   ],
+   "TR-5.2.TAB1": [
+    "tabela sem linhas estruturadas (VAR_062)"
+   ],
+   "TR-5.3": [
+    "VAR_063"
+   ],
+   "TR-5.4": [
+    "VAR_064"
+   ],
+   "TR-5.4.1": [
+    "escolha validade (VAR_065)"
+   ],
+   "TR-7.2.4.1": [
+    "VAR_069",
+    "VAR_070"
+   ],
+   "TR-7.2.4.3": [
+    "VAR_071",
+    "VAR_071"
+   ],
+   "TR-7.2.4.4": [
+    "VAR_071",
+    "VAR_071"
+   ],
+   "TR-7.2.4.5": [
+    "VAR_071",
+    "VAR_071"
+   ],
+   "TR-7.2.4.6": [
+    "VAR_071",
+    "VAR_071"
+   ],
+   "TR-7.2.4.7": [
+    "VAR_071",
+    "VAR_071"
+   ],
+   "TR-7.7": [
+    "VAR_073"
+   ],
+   "TR-8.2": [
+    "VAR_074"
+   ],
+   "TR-8.3": [
+    "VAR_075"
+   ],
+   "TR-8.4": [
+    "VAR_076"
+   ],
+   "TR-8.21": [
+    "VAR_077"
+   ],
+   "TR-8.40": [
+    "VAR_015"
+   ],
+   "TR-8.41": [
+    "VAR_078"
+   ],
+   "TR-9.4.1": [
+    "escolha local_tabela (VAR_032)"
+   ],
+   "TR-10.1": [
+    "VAR_014",
+    "VAR_014",
+    "escolha local_valor (VAR_089)"
+   ],
+   "TR-ASSIN.01": [
+    "VAR_005",
+    "VAR_097",
+    "VAR_097",
+    "VAR_097"
+   ],
+   "SET-02": [
+    "[VAR-122 e VAR-128: itens e cuidados]",
+    "VAR-122 em mais de um marcador (P36)",
+    "trecho entre colchetes do texto proposto"
+   ]
+  },
   "sugestoes": {},
   "itens_calculados": [
    {

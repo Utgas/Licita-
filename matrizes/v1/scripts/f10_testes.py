@@ -321,7 +321,7 @@ def testes(pasta, M):
         for r in mm[mat]:
             if r["id"] == rid:
                 r[col] = r[col].replace(de, para, 1)
-        return any(sim.comparar(d["esperado"], sim.caminho_expr(mm, d["entrada"])[0]) for d in docs)
+        return any(sim.comparar(d["esperado"], sim.simular(mm, d["entrada"])) for d in docs)
     det = [detecta("M04", "WZ-11", "depende_de_expr", '"SIM"', '"NAO"'),
            detecta("M05", "VAR-113", "calculo_expr", '"COTA"', '"AMPLA"'),
            detecta("M11", "CK-C-12.3", "preenche_expr", "REMESSA_UNICA", "PARCELADA"),

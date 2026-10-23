@@ -64,7 +64,10 @@ def main():
     sug = sum(1 for r in m11 if r["sugere_expr"])
     cnd = sum(1 for r in m11 if r["condicional_expr"])
     o = ["# Licita+ | Matrizes v1", "",
-         "Estado em 23/10/2026: Fases 0 a 12 concluídas. A Fase 12 libera a garantia já prestada nos atestados (P25), "
+         "Estado em 23/10/2026: Fases 0 a 13 concluídas. A Fase 13 resolve o texto da minuta: cada marcador do M02 ligado "
+         "ao que o preenche (`lacunas_mapa`), tabelas montadas a partir dos itens (`tabela_colunas`), ponto e numeração "
+         "das cláusulas do M08, fim do 'Sim'/'Não' copiado para campos de texto e revisão do checklist que só destaca a "
+         "falta de resposta. A Fase 12 libera a garantia já prestada nos atestados (P25), "
          "estende a leitura do número a todos os 'Outro' de prazo e de garantia (P32) e passa a tomar a validação do M03 e "
          "do M04 do repositório (P33). A Fase 11 leva para as matrizes o lote 1 de respostas (decisão "
          "0008), a decisão de não mudar o checklist distribuído (decisão 0009) e as regras do simulador alinhadas ao motor "
@@ -76,12 +79,27 @@ def main():
     o += [f"| `{a}` | {d} | {n[a]} |" for a, d in ARQ]
     o += ["| `matrizes_v1.xlsx` | cópia de leitura e revisão: aba LEIA_ME e uma aba por CSV; colunas de revisão em amarelo no M03 e no M04 | |",
           f"| `cenarios/` | cenários de ouro C1 a C8 ({n_c}) e casos de reprodução R1 e R2 ({n_r}) em JSON, com entrada e esperado | |",
-          "| `perguntas_abertas.md` | decisões pendentes e adotadas, P01 a P33 | |",
+          "| `perguntas_abertas.md` | decisões pendentes e adotadas, P01 a P36 | |",
           "| `sugestoes_checklist.md` | lacunas, duplicidades e ambiguidades dos checklists, com redação proposta | |",
           "| `auditoria_matrizes_01_02.md` | auditoria das matrizes rascunho 01 e 02 (Fase 8) | |",
           "| `log_fase10_repo_leis.md` | arquivos do repositório auxiliar ctresb/leis (commit 15eb09b) cruzados com o M07 e uso de cada um | |",
           "| `logs/` | conferências, cobertura do checklist, comparação dos TRs, expressões, simulação, normas, testes | |",
           "| `scripts/` | scripts de análise que geram tudo acima | |", "",
+          "## O que mudou na Fase 13", "",
+          "- M02: colunas `lacunas_mapa` (106 blocos, todo marcador na ordem do texto) e `tabela_colunas` (TR-1.1.TAB1, "
+          "TR-1.1.1.TAB1 a TAB3, TR-5.2.TAB1), com a linha da cota reservada e o orçamento sigiloso (NE-004). Formato na "
+          "seção 'Texto da minuta'.",
+          "- M05: VAR-163 a VAR-176 (unidade da vigência, desdobramento de VAR-050, VAR-054, VAR-093 e VAR-096, colunas da "
+          "tabela do item 1.1 com quantidade principal e valores da linha e da cota); campos das tabelas VAR-029, VAR-051, "
+          "VAR-062, VAR-071, VAR-079 e VAR-091 na descrição; domínio da VAR-081. VAR-160 só calcula com VAR-057.",
+          "- M11: as 65 perguntas Sim/Não que copiavam a opção para variável de texto, tabela, lista ou número agora "
+          "levam o texto da caixa 'Resposta:' (`CK_x_texto`, 50), só ligam condição (11) ou deixam a variável para a equipe "
+          "(4); várias perguntas na mesma variável se acumulam, sem prevalência. Coluna `revisao_pergunta_expr`: a "
+          "pergunta ao operador e o bloqueio só com dúvida que muda a minuta; falta de resposta só destaca (P34).",
+          "- M08: colunas `inserir_apos`, `nivel` e `inserir_apos_alternativo`.",
+          "- Simulador: monta o texto (`f13_texto.py`); cada cenário ganhou `esperado.texto_sem_lacuna` e "
+          "`referencia.texto_montado`/`lacunas_do_texto`. VAL-037 descrita pela pergunta que bloqueia.",
+          "- Busca de nomes volta a incluir `validacao` e `comentario_validacao`.", "",
           "## O que mudou na Fase 12", "",
           "- P25: WZ-60 nova (atestado com garantia já prestada, só com ATESTADOS na WZ-38), SET-23, VAR-161 (prazo em "
           "meses), VAR-162 (justificativa no ETP), VAL-052 e VAL-053 (bloqueios), PAR-13 (12 meses). A VAL-029 barra "
@@ -207,11 +225,43 @@ def main():
           "`checklist.marcas_multiplas`, `checklist.resposta_unica_por_item` e `checklist.divergencias_leitura` e o "
           "número `CK_x_numero` lido do 'Outro' do prazo (P32).",
           "- `revisao_pergunta`: pergunta que o sistema faz ao operador quando a dúvida muda a minuta; vazia quando basta o "
-          "destaque. Pergunta sem resposta mantém a VAL-037 (bloqueio).",
+          "destaque.",
+          "- `revisao_pergunta_expr` (Fase 13): JSON Logic; verdadeira = a `revisao_pergunta` é feita e a minuta fica "
+          "bloqueada até a resposta (VAL-037). Só duas marcas em pergunta de uma opção, 'Outro' sem número legível, "
+          "resposta única para vários itens e as dúvidas específicas (S09). Pergunta sem resposta só fica destacada "
+          "(`revisao_expr`); quando ela decide bloco, já aparece como pergunta pendente do wizard.",
           "- Complementos do operador: linhas `CK-X-nn` (dois dígitos, a partir de 01), `checklist = COMPLEMENTO`, seção "
           "'COMPLEMENTO DO OPERADOR', número `X.nn`, variável `CK_X_nn`. Preenchidos no sistema, não existem no Word; ligados "
           "às mesmas variáveis e destinos das perguntas do checklist; sem opção pré-definida que não venha de norma ou de "
           "domínio do M05.",
+          "",
+          "### Texto da minuta (Fase 13)", "",
+          "- `M02.lacunas_mapa`: lista JSON, na ordem do texto, uma entrada por marcador da coluna `lacunas`: `marcador`, "
+          "`ocorrencia` (qual ocorrência no `texto_literal`, contada sem sobreposição), `fonte` (VAR_xxx, WZ_xx, CK_..., "
+          "itens.atributo ou null) e, quando precisa, `acao`, `campo`, `indice`, `formato`, `unidade`, `texto`, `opcoes`, "
+          "`grupo`, `quando`, `remove_antes`, `se_falso`, `estende_desde`, `estende_ate`, `lista_blocos`, "
+          "`juntar_restante`, `se_vazio` e `comentario`. Definição de cada chave no cabeçalho do `scripts/f13_lacunas.py`.",
+          "- Ações: PREENCHER (padrão), ESCOLHA (fica a opção do modelo cuja condição é verdadeira; marcadores do mesmo "
+          "`grupo` viram um trecho só, com os ' OU ' do meio), OPCIONAL (o trecho entra ou sai), TABELA (montada pela "
+          "`tabela_colunas`), REMOVER (instrução do modelo), MANTER (assinatura ou campo do fornecedor) e EQUIPE (fonte "
+          "null, motivo no `comentario`).",
+          "- Formatos: TEXTO, NUMERO_EXTENSO ('30 (trinta)'), PERCENTUAL_EXTENSO ('5% (cinco por cento)'), PERCENTUAL_2 "
+          "('25,00%'), MOEDA ('R$ 1.234,56'), MOEDA_POR_EXTENSO, DATA, DIA, MES_EXTENSO, ANO, LISTA_TEXTO ('a, b e c'), "
+          "LISTA_LINHAS, MINUSCULA, INICIAL_MINUSCULA, ITEM ('item 2') e POR_ITEM ('item 1: valor; item 3: valor').",
+          "- Cláusula do M08 com a mesma variável em mais de um marcador fica com lacuna nesses marcadores (P36); "
+          "cláusula PREENCHE_BLOCO não entra como texto, preenche o bloco.",
+          "- Séries de blocos-lista (`lista_blocos`, ex.: TR-4.1.1 a TR-4.1.3): cada bloco recebe um elemento; bloco sem "
+          "elemento sai; o último presente termina em '.', o anterior em '; e', os demais em ';'; o último bloco do modelo "
+          "junta os elementos que sobram.",
+          "- `M02.tabela_colunas`: JSON com `linhas` (itens ou a VAR da tabela), `colunas` (cabeçalho do modelo e o que "
+          "preenche), `orcamento_sigiloso` e, no TR-1.1.TAB1, `linha_cota` (quando entra, onde e com quais valores) e a "
+          "numeração das linhas.",
+          "- `M08.inserir_apos` (bloco do M02 depois do qual a cláusula entra, com os subitens dele), `M08.nivel` "
+          "(MESMO_NIVEL: item seguinte no nível do bloco; SUBITEM: último subitem do bloco; PREENCHE_BLOCO: preenche as "
+          "lacunas do bloco) e `M08.inserir_apos_alternativo` ('bloco (nivel)', em ordem, quando o bloco pode faltar). "
+          "Várias cláusulas no mesmo ponto entram na ordem do M08.",
+          "- Valor ausente vira lacuna marcada (`[[LACUNA ...]]`); o texto nunca recebe 'Sim' ou 'Não' de resposta do "
+          "checklist.",
           "",
           "### Regras do simulador (as mesmas do motor, Marco 1)", "",
           "- Valor ausente: conta (`+`, `-`, `*`, `/`, `%`) e comparação de ordem (`<=`, `>`) com valor ausente dão ausente "
@@ -229,7 +279,9 @@ def main():
           "- C1 a C8: gerados pelo `f10_simulador.py` (implementação independente do motor). `entrada` tem `wizard`, "
           "`checklist`, `itens` (com `respostas_por_item` quando a pergunta é por item), `variaveis` e `metadados`, todos "
           "fictícios. `esperado` tem `blocos` (M02, na ordem), `clausulas_m08`, `validacoes_m10`, "
-          "`perguntas_sem_resposta` e `bloqueios_grupo_alternativas`. O esperado vem do caminho do texto (liga/desliga e depende_de em texto, derivadas em "
+          "`perguntas_sem_resposta`, `bloqueios_grupo_alternativas` e `texto_sem_lacuna` (Fase 13: blocos e cláusulas "
+          "da minuta, na ordem, que saem sem nenhuma lacuna com as entradas do cenário, pela montagem do `f13_texto.py`). "
+          "O esperado vem do caminho do texto (liga/desliga e depende_de em texto, derivadas em "
           "Python); o teste reproduz pelo caminho das expressões. `referencia` é informativa.",
           "- R1 (TR 23/2026) e R2 (TR 58/2026): entrada anonimizada com as respostas tiradas do TR real "
           "(`origem_das_respostas`), itens fictícios, blocos que o TR real contém, `divergencias_conhecidas` ligadas ao M09 e, em "
@@ -240,7 +292,7 @@ def main():
     o += [f"- `Checklists/{k}`: SHA-256 `{v}`" for k, v in hashes.items()]
     o += ["", "Divisão de trabalho: o checklist traz os fatos técnicos (M11); o wizard fica com as decisões jurídicas (M04, "
           "`DECISAO_JURIDICA`). A tabela de atributos de item por checklist está em `sugestoes_checklist.md`.", "",
-          "## Testes de aceite (Fases 9 a 12)", "",
+          "## Testes de aceite (Fases 9 a 13)", "",
           f"Resultado completo em `logs/f9_testes.txt`. {falhas}.", ""]
     o += [f"- {l[6:]}" if l.startswith("OK") else f"- **FALHA** {l[6:]}" for l in principais]
     o += ["", "Outras conferências:", ""]

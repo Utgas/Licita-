@@ -249,8 +249,10 @@ V = [
      "O checklist está em versão diferente da mapeada. O M11 precisa ser refeito antes da leitura automática.", "M11",
      "README (hash dos dois docx)", "", "INFERIDO"),
     ("VAL-037", "Leitura automática do checklist com pendências", "BLOQUEIO", "CHECKLIST",
-     "SE a leitura do checklist preenchido registrar pergunta sem marcação clara, duas opções em pergunta UNICA ou resposta "
-     "fora da caixa", tem("checklist.leitura_pendencias"),
+     "SE houver pergunta do M11 com revisao_pergunta_expr verdadeira ainda sem resposta do operador (IDs em "
+     "checklist.leitura_pendencias): duas marcas em pergunta de uma opção, 'Outro' sem número legível, resposta única para "
+     "vários itens em regra por item ou resposta que contradiz outra e muda a minuta. Pergunta sem resposta só fica "
+     "destacada (revisao_expr) e não entra na lista (Fase 13, P34)", tem("checklist.leitura_pendencias"),
      "Algumas respostas do checklist não puderam ser lidas com segurança. Confirme-as antes de seguir.", "M11",
      "perguntas_abertas.md (leitura do checklist preenchido)", "", "INFERIDO"),
     ("VAL-038", "Valor do campo 'Valor (R$)' diferente do texto da estimativa no ETP", "BLOQUEIO", "IMPORTACAO",

@@ -15,7 +15,7 @@ OK    teste 3: M01 com 24 IDs únicos e no padrão
 OK    teste 3: M02 com 499 IDs únicos e no padrão
 OK    teste 3: M03 com 102 IDs únicos e no padrão
 OK    teste 3: M04 com 60 IDs únicos e no padrão
-OK    teste 3: M05 com 162 IDs únicos e no padrão
+OK    teste 3: M05 com 176 IDs únicos e no padrão
 OK    teste 3: M06 com 499 IDs únicos e no padrão
 OK    teste 3: M07 com 104 IDs únicos e no padrão
 OK    teste 3: M08 com 23 IDs únicos e no padrão
@@ -29,7 +29,7 @@ OK    teste 2: 102 notas (NE-001 a NE-102) ligadas a bloco existente do M02
 OK    teste 4: normas citadas de M00 a M11 presentes no M07 (104 normas): 0 faltando
 OK    teste 4: norma citada só em texto das matrizes, sem base nem conferência: 0
 OK    M07: status A_VERIFICAR só em norma não conferida
-OK    teste 5: fonte e status preenchidos e no domínio nas 1882 linhas de M00 a M11
+OK    teste 5: fonte e status preenchidos e no domínio nas 1896 linhas de M00 a M11
 OK    teste 6: incisos obrigatórios no M01 = ['I', 'IV', 'VI', 'VIII', 'XIII']
 OK    teste 7: nomes de pessoas nos arquivos de saída: 0 (nomes de pessoas identificados no corpus: 46; sobrenomes distintivos: 73)
 OK    teste 8: achados da seção 5 (lista reconstruída, 10) no M09 ou no M10: 1=1, 2=2, 3=2, 4=2, 5=4, 6=6, 7=1, 8=3, 9=2, 10=1
@@ -45,13 +45,13 @@ OK    M06: colunas de domínio fechado no domínio
 OK    M06: uma linha por bloco do M02 (499 de 499)
 OK    M11: toda pergunta tem destino ou é SO_CONTROLE com motivo na regra
 OK    M11: hash dos dois checklists da base confere com o registrado nas linhas: Checklist_Tecnico_Aquisicao_de_Materiais... 7c6d3cc9bf16; Checklist_Tecnico_Medicamentos_e_Materia... 6294e718c983
-OK    JSON Logic: 1358 expressões em todas as colunas *_expr, JSON válido, só operadores permitidos e variáveis conhecidas (parametros.* no M12)
+OK    JSON Logic: 1426 expressões em todas as colunas *_expr, JSON válido, só operadores permitidos e variáveis conhecidas (parametros.* no M12)
 OK    operadores fora da lista só em M04.calculo_expr e M05.calculo_expr e registrados na P31: ['%', '*', '+', '-', '/', 'reduce']
 OK    nenhum número de lei ou valor monetário dentro de expressão (números só 0 e 1 de contagem e opção literal do checklist; textos com dígito só se forem opção)
 OK    M04: depende_de_expr preenchida exatamente nas perguntas com condição em depende_de
 OK    M04: calculo_expr nas 6 derivadas: ['WZ-09', 'WZ-13', 'WZ-18', 'WZ-20', 'WZ-24', 'WZ-50']
 OK    M11: preenche_expr só em PREENCHE, sugere_expr só em SUGERE, condicional_expr em toda condicional (70)
-OK    M05: calculo_expr em 10 variáveis, ordem única e cada cálculo só lê atributo já calculado
+OK    M05: calculo_expr em 13 variáveis, ordem única e cada cálculo só lê atributo já calculado
 OK    M05: atributos de item catmat, quantidade, valor_unitario e numero presentes (achado do compilador)
 OK    M12: 13 parâmetros com fonte e status, todos usados por alguma regra
 OK    M11.revisao_expr: 260 expressões, 721 casos (cada uma dispara e não dispara)
@@ -72,6 +72,17 @@ OK    regras de montagem no simulador: com TR-1 desligado, 5 filhos saem; com du
 OK    números de processo trocados por PROC-xx no M00, no perguntas_abertas.md e nos scripts; entradas dos cenários sem número de processo nem UASG
 OK    VAL-033: mensagem ao usuário sem 'ETP-SS.CC'
 OK    README: lista de operadores igual à da Fase 10 (14 operadores)
+OK    M02.lacunas_mapa em todos os 106 blocos com marcador (182 marcadores)
+OK    M02.lacunas_mapa: todo marcador do texto_literal (coluna lacunas) aparece no mapa, na mesma ordem do texto e na mesma quantidade (ocorrência sem sobreposição)
+OK    M02.lacunas_mapa: fonte existe (VAR, WZ, CK ou atributo de item), ação e formato conhecidos, fonte null só com ação e EQUIPE sempre com motivo, condições só com operadores gerais
+OK    M02.tabela_colunas nas 5 tabelas que vêm dos itens ou de tabelas do wizard, com os cabeçalhos do modelo na ordem, fontes existentes, orçamento sigiloso (NE-004) e a linha de cota reservada com valor para cada coluna
+OK    M08: inserir_apos é bloco do M02, nivel MESMO_NIVEL, SUBITEM ou PREENCHE_BLOCO, alternativo quando o bloco pode faltar, nada entre o TR-5.12 e o TR-5.14
+OK    M11: nenhuma pergunta Sim/Não copia a opção para variável de texto, tabela, lista ou número (critério da Fase 13; antes, 65)
+OK    M11.revisao_pergunta_expr: 75 perguntas que bloqueiam, 176 casos (pergunta sem resposta nunca bloqueia; duas marcas e dúvidas específicas bloqueiam); revisao_expr continua destacando em 260
+OK    VAR-160: sem VAR-057 fica vazia (None); com 25% de 10 dá 2
+OK    montagem do texto: 23 casos fixos (escolha, opcional, extenso, moeda, data, série de lista com pontuação, tabela com cota e com sigilo, lacuna sem unidade)
+OK    cenários C1 a C8: esperado.texto_sem_lacuna em todos e nenhum texto da minuta com 'Sim' ou 'Não' vindo de resposta do checklist
+OK    controle negativo: com a cópia antiga da CK-P-16.6 para a VAR-150, o teste de Sim/Não acusa o 'acompanhado de Sim' da SET-19 em algum cenário
 OK    M02: condicao_expr preenchida em todos os blocos (499)
 OK    M08: 25 trechos de evidência conferidos letra a letra no texto do corpus
 OK    travessão (U+2014) fora das colunas literais e nos .md: 0
@@ -83,7 +94,7 @@ INFO  M01: 24 linhas | status {'INFERIDO': 24}
 INFO  M02: 499 linhas | status {'INFERIDO': 332, 'EXTRAIDO': 167}
 INFO  M03: 102 linhas | status {'INFERIDO': 102}
 INFO  M04: 60 linhas | status {'INFERIDO': 59, 'A_VERIFICAR': 1}
-INFO  M05: 162 linhas | status {'INFERIDO': 162}
+INFO  M05: 176 linhas | status {'INFERIDO': 176}
 INFO  M06: 499 linhas | status {'INFERIDO': 484, 'EXTRAIDO': 15}
 INFO  M07: 104 linhas | status {'EXTRAIDO': 96, 'A_VERIFICAR': 8}
 INFO  M08: 23 linhas | status {'A_VERIFICAR': 1, 'INFERIDO': 22}

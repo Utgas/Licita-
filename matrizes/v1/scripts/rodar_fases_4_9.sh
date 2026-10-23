@@ -2,6 +2,7 @@
 # Regenera as matrizes depois da Fase 3, na ordem das dependências (análise, não código do sistema).
 # Fase 10: f10_gerar_expr (colunas _expr novas), parametros (M12), f10_simulador e f10_reproducao (cenarios/).
 # Fase 11: f11_checklist (leitura, revisão e complementos do M11; comodato só controle).
+# Fase 13: f13_lacunas (M02.lacunas_mapa e M02.tabela_colunas).
 # O f10_proc.py (números de processo) roda uma vez à parte; a correspondência fica fora do pacote.
 # Uso: sh rodar_fases_4_9.sh <pasta_trabalho> <pasta_Documentos> <pasta_Matrizes_v1> [<matrizes/v1 do repositório>]
 # Com o 4º argumento, a validação do M03 e do M04 vem do repositório antes de tudo (Fase 12) e o teste confere.
@@ -20,6 +21,7 @@ python3 -I "$S/ck_gerar_M11.py" "$T/ck/ck_C.json" "$T/ck/ck_P.json" "$OUT" "$OUT
 python3 -I "$S/f1_gerar_M03.py" "$MODELO" "$T/f1_modelo.json" "$T/f1_blocos.json" "$OUT" "$OUT/M04_wizard.csv"
 python3 -I "$S/f6_gerar_expr.py" "$OUT" "$OUT/logs/f6_expr.txt"
 python3 -I "$S/f10_gerar_expr.py" "$OUT" "$OUT/logs/f10_expr.txt"
+python3 -I "$S/f13_lacunas.py" "$OUT" "$OUT/logs/f13_lacunas.txt"
 python3 -I "$S/f11_checklist.py" "$OUT" "$OUT/logs/f11_checklist.txt"
 python3 -I "$S/f4_gerar_M06.py" "$OUT"
 python3 -I "$S/f6_gerar_M09.py" "$OUT" "$T/f6_comparacao.json"

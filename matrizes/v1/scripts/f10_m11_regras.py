@@ -24,7 +24,9 @@ ATRIB_ITEM = {"VAR-112": "grupo", "VAR-113": "tratamento_me_epp", "VAR-114": "ex
               "VAR-120": "justificativa_excecao_me_epp", "VAR-121": "compatibilidade", "VAR-122": "faixa_temperatura",
               "VAR-123": "controle_especial", "VAR-124": "garantia_minima_meses", "VAR-153": "classe_pdm",
               "VAR-154": "tic", "VAR-155": "categoria", "VAR-156": "numero", "VAR-157": "catmat",
-              "VAR-158": "quantidade", "VAR-159": "valor_unitario"}
+              "VAR-158": "quantidade", "VAR-159": "valor_unitario", "VAR-160": "cota_calculada",
+              "VAR-172": "especificacao", "VAR-173": "unidade_medida", "VAR-174": "quantidade_principal",
+              "VAR-175": "valor_total", "VAR-176": "valor_total_cota"}
 
 
 def ckn(cid):
@@ -173,6 +175,72 @@ regra(P + "19.5", pre={"VAR_074": opcao_ou_texto(P + "19.5", mapa={"5 dias": 5, 
 regra(P + "20.1", sug={"WZ_58": sim_para(P + "20.1", "SIM")})
 regra(P + "21.4", pre={"WZ_17": sim_para(P + "21.4", "SIM")})
 
+# --------------------------------------------------------------------------- Fase 13: Sim/Não em variável que não é Sim/Não
+# Pergunta com opções Sim e Não cuja regra padrão copiaria a resposta ({"var": a própria pergunta}) para uma VAR de
+# texto, tabela, lista ou número. Cada caso tem uma decisão (achado do Marco 1: "licenças Sim necessárias"):
+#   ("DETALHE", gatilho): a VAR recebe o texto da caixa 'Resposta:' (CK_x_texto) só quando a resposta é o gatilho;
+#   ("CONDICAO", motivo): a resposta só liga ou desliga cláusula, bloco ou validação; não preenche a VAR;
+#   ("EQUIPE", motivo):   a VAR precisa de outra fonte (wizard ou equipe); a pergunta não preenche.
+# Várias perguntas na mesma VAR: nenhuma prevalece; os textos se acumulam na ordem do M11 (TEXTO: um parágrafo por
+# pergunta; LISTA e TABELA: uma entrada por pergunta), como a regra de junção do README.
+SN_DETALHE = [
+    ("CK-C-5.1", "VAR-100"), ("CK-C-5.3", "VAR-100"), ("CK-C-5.5", "VAR-100"), ("CK-C-9.8", "VAR-107"),
+    ("CK-C-12.4", "VAR-132"), ("CK-C-12.7", "VAR-131"), ("CK-C-15.4", "VAR-130"), ("CK-C-15.5", "VAR-135"),
+    ("CK-C-15.6", "VAR-135"), ("CK-C-15.7", "VAR-135"), ("CK-C-17.4", "VAR-085"), ("CK-C-19.1", "VAR-103"),
+    ("CK-C-19.2", "VAR-103"), ("CK-C-21.3", "VAR-147"),
+    ("CK-P-3.6", "VAR-109"), ("CK-P-5.1", "VAR-100"), ("CK-P-5.3", "VAR-100"), ("CK-P-5.5", "VAR-100"),
+    ("CK-P-5.6", "VAR-100"), ("CK-P-8.6", "VAR-131"), ("CK-P-8.7", "VAR-128"), ("CK-P-8.8", "VAR-143"),
+    ("CK-P-9.1", "VAR-064"), ("CK-P-9.4", "VAR-143"), ("CK-P-9.5", "VAR-143"), ("CK-P-10.1", "VAR-103"),
+    ("CK-P-10.2", "VAR-103"), ("CK-P-10.3", "VAR-105"), ("CK-P-10.4", "VAR-103"), ("CK-P-10.6", "VAR-103"),
+    ("CK-P-12.7", "VAR-138"), ("CK-P-13.8", "VAR-152"), ("CK-P-14.3", "VAR-140"), ("CK-P-14.5", "VAR-148"),
+    ("CK-P-14.6", "VAR-148"), ("CK-P-14.7", "VAR-149"), ("CK-P-15.1", "VAR-103"), ("CK-P-15.3", "VAR-142"),
+    ("CK-P-15.6", "VAR-142"), ("CK-P-15.8", "VAR-142"), ("CK-P-16.3", "VAR-135"), ("CK-P-16.4", "VAR-148"),
+    ("CK-P-16.4", "VAR-145"), ("CK-P-16.5", "VAR-105"), ("CK-P-16.6", "VAR-150"), ("CK-P-18.4", "VAR-085"),
+    ("CK-P-20.2", "VAR-144"), ("CK-P-21.2", "VAR-147"), ("CK-P-21.4", "VAR-044"),
+]
+SIM_NAO_DEST = {k: ("DETALHE", SIM) for k in SN_DETALHE}
+SIM_NAO_DEST[("CK-P-3.4", "VAR-109")] = ("DETALHE", NAO)  # a caixa só é pedida com 'Não' (o que fica de fora do fornecimento)
+for _k, _m in {
+    ("CK-C-5.6", "VAR-100"): "sem caixa de resposta; a 5.6 só entra na conferência com a 6.1 (VAL-023)",
+    ("CK-C-12.6", "VAR-131"): "sem caixa de resposta; Sim liga o agendamento (SET-09); o detalhe vem da 12.7",
+    ("CK-C-13.2", "VAR-129"): "sem caixa de resposta; Sim liga o registro de temperatura na SET-02 e na SET-03",
+    ("CK-C-14.5", "VAR-134"): "sem caixa de resposta; Sim liga o compromisso de substituição da SET-04 (decisão na WZ-57)",
+    ("CK-C-21.2", "VAR-106"): "sem caixa de resposta; Não vira providência prévia (WZ-47)",
+    ("CK-C-21.4", "VAR-106"): "sem caixa de resposta; fato de apoio do ETP, redigido pela equipe",
+    ("CK-P-8.5", "VAR-131"): "sem caixa de resposta; Sim liga o agendamento (SET-09); o detalhe vem da 8.6",
+    ("CK-P-9.1", "VAR-143"): "a caixa da 9.1 traz o local (VAR-064); o que falta definir é providência, não requisito do "
+                             "local",
+    ("CK-P-13.5", "VAR-139"): "a caixa só é pedida quando o equipamento pode ser retirado; Sim mantém o atendimento no "
+                              "local da SET-13",
+    ("CK-P-19.2", "VAR-075"): "a VAR-075 é número de dias úteis e vem da 19.3; a 19.2 diz só se o recebimento espera "
+                              "instalação, testes ou treinamento (SET-20)",
+    ("CK-P-21.3", "VAR-106"): "sem caixa de resposta; fato de apoio do ETP, redigido pela equipe",
+}.items():
+    SIM_NAO_DEST[_k] = ("CONDICAO", _m)
+for _k, _m in {
+    ("CK-P-11.1", "VAR-009"): "sem caixa de resposta; Sim marca WZ-08; as atividades da VAR-009 são escritas pela equipe "
+                              "no wizard",
+    ("CK-P-12.1", "VAR-009"): "sem caixa de resposta; Sim marca WZ-08; as atividades da VAR-009 são escritas pela equipe "
+                              "no wizard",
+    ("CK-P-16.2", "VAR-135"): "sem caixa de resposta; a conformidade Inmetro precisa de redação (norma e itens) pela "
+                              "equipe",
+    ("CK-C-12.7", "VAR-064"): "a restrição vai para a VAR-131; o endereço da VAR-064 vem do perfil da OM, da WZ-28 ou do "
+                              "complemento CK-X-01",
+}.items():
+    SIM_NAO_DEST[_k] = ("EQUIPE", _m)
+
+
+def opcoes_sim_nao(opcoes):
+    o = [x.strip() for x in opcoes.split("campos:")[0].split(";") if x.strip()]
+    return SIM in o and any(x.startswith(NAO) for x in o)
+
+
+def detalhe_expr(cid, gatilho, tipo):
+    n = ckn(cid)
+    cond = inn(gatilho, var(n, [])) if tipo == "MULTIPLA" else eq(n, gatilho)
+    return se(cond, var(n + "_texto"))
+
+
 # WZ citadas em destinos sem valor dito na regra (log): (pergunta, WZ, motivo)
 SEM_VALOR = {
     ("CK-C-3.4", "WZ-18"): "derivada da coluna marca_indicada; a regra não dá a marca, só aponta candidatos",
@@ -210,6 +278,10 @@ SEM_VALOR = {
 
 
 DERIVADAS = {"WZ-09", "WZ-13", "WZ-18", "WZ-20", "WZ-24", "WZ-50"}
+# VAR que guardam a própria opção Sim/Não (nenhuma hoje; a lista existe para o teste dizer por que aceita)
+SIM_NAO_OK = set()
+# comodato (S21): o f11_checklist.py apaga destinos e expressões dessas perguntas (SO_CONTROLE); a guarda não se aplica
+COMODATO_SO_CONTROLE = {f"CK-C-10.{n}" for n in range(1, 12)}
 SEM_PRE = {
     "CK-C-3.1": "a tabela anexa entra pela importação de itens (VAR-011); a VAL-048 lê a resposta",
     "CK-P-3.1": "o descritivo anexo entra pela importação de itens (VAR-011); a VAL-048 lê a resposta",
@@ -252,7 +324,17 @@ def regras_m11(m11):
             pre = dict(x["pre"])
             for d in destinos:
                 if d.startswith("VAR-") and d not in ATRIB_ITEM and d != "VAR-011" and d not in x["sem_padrao"]:
-                    pre.setdefault(d.replace("-", "_"), var(ckn(cid)))
+                    dv = d.replace("-", "_")
+                    dec = SIM_NAO_DEST.get((cid, d))
+                    if dec and dec[0] == "DETALHE":
+                        pre.setdefault(dv, detalhe_expr(cid, dec[1], r["tipo_resposta"]))
+                    elif dec:
+                        log.append(f"M11 {cid}: {d} não recebe a resposta Sim/Não (Fase 13, {dec[0]}): {dec[1]}")
+                    elif (opcoes_sim_nao(r["opcoes"]) and dv not in pre and d not in SIM_NAO_OK
+                          and cid not in COMODATO_SO_CONTROLE):
+                        raise SystemExit(f"{cid} -> {d}: resposta Sim/Não copiada para variável sem decisão (Fase 13)")
+                    else:
+                        pre.setdefault(dv, var(ckn(cid)))
             if x["sug"]:
                 raise SystemExit(f"{cid}: PREENCHE com sugestão")
         elif ef == "SUGERE":
