@@ -1,0 +1,5 @@
+# Sem conversão de fim de linha: o hash do pacote depende dos bytes exatos
+# das matrizes e do pacote, em qualquer sistema operacional.
+matrizes/**/*.csv -text
+regras/**/pacote.json -text
+regras/**/pacote.sha256 -text
