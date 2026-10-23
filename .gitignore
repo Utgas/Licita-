@@ -25,3 +25,7 @@ corpus/
 .DS_Store
 Thumbs.db
 ~$*
+
+# testes e certificados
+coverage/
+*.pem
