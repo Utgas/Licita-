@@ -16,15 +16,6 @@ import { type Globais, type Item, dadosDoItem, dadosGlobais } from "./contexto.t
 
 const PREFIXO_DE_ITEM = "tabela_itens.";
 
-/**
- * Cota igual a zero (decisão do Gabriel, 23/10/2026; docs/decisoes/0008): o item deve ficar sem cota, com alerta.
- * Enquanto a regra não entra na matriz, o motor só avisa e não muda o tratamento.
- * Os nomes abaixo são os do M05 (VAR-113 e VAR-118) e o valor COTA é o da VAR-113.
- */
-const ATRIBUTO_DO_TRATAMENTO = "tratamento_me_epp";
-const ATRIBUTO_DA_QUANTIDADE_DA_COTA = "quantidade_cota";
-const TRATAMENTO_COM_COTA = "COTA";
-
 /** De onde veio cada valor calculado (para rastrear o trecho da minuta até a regra). */
 export type Calculado = { regra: string; destino: string; item?: number; valor: Valor };
 
@@ -117,15 +108,5 @@ export function calcularM05(
     }
   }
 
-  const regraDaCota = m05.find((l) => l.nome === PREFIXO_DE_ITEM + ATRIBUTO_DA_QUANTIDADE_DA_COTA)?.id ?? ATRIBUTO_DA_QUANTIDADE_DA_COTA;
-  for (const item of itens) {
-    if (item[ATRIBUTO_DO_TRATAMENTO] === TRATAMENTO_COM_COTA && item[ATRIBUTO_DA_QUANTIDADE_DA_COTA] === 0) {
-      avisos.push({
-        codigo: "COTA_ZERO",
-        mensagem: `Item ${item.numero}: tratamento ${TRATAMENTO_COM_COTA} com quantidade da cota igual a zero. Pela decisão de 23/10/2026 o item fica sem cota, em ampla participação; a regra ainda não está na matriz, e o tratamento não foi alterado.`,
-        origem: { regra: regraDaCota, item: item.numero },
-      });
-    }
-  }
   return { itens, globais, calculados, avisos };
 }

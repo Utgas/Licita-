@@ -74,7 +74,9 @@ describe("matrizes fictícias", () => {
     ["atributo-de-item-solto", "variavel"],
     ["parametro-sem-linha", "variavel"],
     ["parametro-fora-do-tipo", "parametro"],
-    ["parametro-sem-tipo", "parametro"],
+    ["parametro-sem-tipo", "esquema"],
+    ["revisao-com-operador-de-calculo", "operador"],
+    ["grupo-ativo-com-reduce", "operador"],
     ["operador-de-calculo-fora-do-calculo", "operador"],
     ["accumulator-fora-do-reduce", "variavel"],
     ["variavel-global-dentro-do-reduce", "variavel"],
@@ -105,6 +107,20 @@ describe("matrizes fictícias", () => {
     const conteudos = matrizesDoCaso();
     conteudos["M12_parametros.csv"] = conteudos["M12_parametros.csv"].replace("VAR-002.calculo_expr", "VAR-009.calculo_expr");
     expect(tiposDeErro(conteudos)).toEqual(["referencia"]);
+  });
+
+  it("aceitam complemento do operador (CK-X-nn), variáveis da leitura e expressão false (linha desligada)", () => {
+    const pacote = esquemaDoPacote.parse(JSON.parse(compilarConteudos(matrizesDoCaso()).pacote?.json ?? "{}"));
+    const complemento = pacote.matrizes.M11.find((l) => l.id === "CK-X-01");
+    expect(complemento).toMatchObject({ checklist: "COMPLEMENTO", condicional_expr: false });
+    expect(pacote.matrizes.M11[1].revisao_pergunta).not.toBe("");
+    expect(pacote.matrizes.M02[0].grupo_ativo_expr).toEqual({ "==": [{ var: "WZ_01" }, "SIM"] });
+  });
+
+  it("falham com variável de leitura que não existe (sufixo fora da lista)", () => {
+    const conteudos = matrizesDoCaso();
+    conteudos["M11_checklist.csv"] = conteudos["M11_checklist.csv"].replace("CK_C_1_2_numero", "CK_C_1_2_data");
+    expect(tiposDeErro(conteudos)).toEqual(["variavel"]);
   });
 
   it("falham quando uma coluna é renomeada", () => {

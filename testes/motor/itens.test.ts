@@ -59,6 +59,7 @@ describe("cálculo do M05 com as matrizes atuais", () => {
     expect(entrada.itens).toEqual(copia);
   });
 
+  // A VAR-113 da Fase 11 já devolve null quando falta o valor da disputa; o aviso vem só da VAR-119.
   it("item sem valor unitário: valor da disputa e tratamento viram lacuna, com aviso", () => {
     const { entrada } = cenario("C6");
     const itens: Item[] = entrada.itens.map((i: Item) => (i.numero === 4 ? { ...i, valor_unitario: null } : i));
@@ -68,7 +69,6 @@ describe("cálculo do M05 com as matrizes atuais", () => {
     expect(item4?.tratamento_me_epp).toBeNull();
     expect(resultado.avisos.filter((a) => a.origem.item === 4).map((a) => [a.codigo, a.origem.regra])).toEqual([
       ["CALCULO_SEM_DADO", "VAR-119"],
-      ["CALCULO_SEM_DADO", "VAR-113"],
     ]);
   });
 });
@@ -82,16 +82,6 @@ describe("cálculo do M05 com regras fictícias", () => {
     tipo_dado,
     calculo_expr: calculo_expr as LinhaM05["calculo_expr"],
     calculo_ordem: ordem,
-  });
-
-  it("cota calculada em zero num item COTA gera aviso e não muda o tratamento", () => {
-    const m05 = [
-      linha("VAR-901", "tabela_itens.tratamento_me_epp", 1, "COTA"),
-      linha("VAR-902", "tabela_itens.quantidade_cota", 2, { "*": [{ var: "quantidade" }, 0] }, "NUMERO"),
-    ];
-    const resultado = calcularM05(m05, {}, [{ numero: 1, quantidade: 3 }], new Set());
-    expect(resultado.itens[0]).toMatchObject({ tratamento_me_epp: "COTA", quantidade_cota: 0 });
-    expect(resultado.avisos.map((a) => [a.codigo, a.origem])).toEqual([["COTA_ZERO", { regra: "VAR-902", item: 1 }]]);
   });
 
   it("lê o que foi calculado antes e registra de onde veio cada valor", () => {

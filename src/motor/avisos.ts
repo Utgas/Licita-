@@ -5,8 +5,6 @@
 export type CodigoDeAviso =
   /** Um cálculo do M05 encontrou valor ausente, texto no lugar de número ou divisão impossível: o resultado virou lacuna. */
   | "CALCULO_SEM_DADO"
-  /** Item com tratamento de cota e quantidade da cota calculada em zero (decisão do Gabriel de 23/10/2026). */
-  | "COTA_ZERO"
   /** A entrada trazia um valor diferente do calculado; vale o calculado. */
   | "VALOR_INFORMADO_SUBSTITUIDO";
 
