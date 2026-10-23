@@ -14,7 +14,6 @@ import { parse } from "csv-parse/sync";
 import { z } from "zod";
 import {
   STATUS,
-  TIPO_DE_PARAMETRO,
   VALIDACAO,
   VERSAO_DO_FORMATO,
   esquemaDoPacote,
@@ -89,7 +88,7 @@ export const MATRIZES = {
     noPacote: false,
   },
   M10: doEsquema("M10_validacoes.csv", "id", /^VAL-\d{3}$/, linhaM10),
-  M11: doEsquema("M11_checklist.csv", "id", /^CK-[CP]-(?:CAB\.\d{2}|\d+(?:\.\d+)*)$/, linhaM11),
+  M11: doEsquema("M11_checklist.csv", "id", /^CK-(?:[CP]-(?:CAB\.\d{2}|\d+(?:\.\d+)*)|X-\d{2})$/, linhaM11),
   M12: doEsquema("M12_parametros.csv", "id", /^PAR-\d{2}$/, linhaM12),
 } satisfies Record<string, Definicao>;
 
@@ -120,14 +119,13 @@ const OPERADORES = new Set<string>(OPERADORES_PERMITIDOS);
 const OPERADORES_SO_DE_CALCULO = new Set<string>(OPERADORES_DE_CALCULO);
 const VARIAVEIS_LIVRES = new Set(["itens", "textos_livres"]);
 const PREFIXOS_LIVRES = ["importacao.", "checklist."];
+const SUFIXOS_DE_RESPOSTA = ["_texto", "_numero"];
 /** Colunas básicas de cada item, descritas na VAR-011 do M05; as demais vêm das linhas "tabela_itens.*". */
 const COLUNAS_BASICAS_DO_ITEM = ["numero", "especificacao", "catmat", "unidade", "quantidade", "valor_unitario"];
 /** Lista dos itens do mesmo grupo, disponível no contexto de item (README das matrizes). */
 const ITENS_DO_GRUPO = "itens_do_grupo";
 /** Colunas do M11 cujo valor é um objeto {destino: expressão}. */
 const COLUNAS_POR_DESTINO = new Set(["preenche_expr", "sugere_expr"]);
-/** Tipo do valor declarado na fonte de cada linha do M12 ("Tipo do valor: numero."). */
-const TIPO_DECLARADO = /Tipo do valor: (\w+)\./;
 const NUMERO = /^-?\d+(?:\.\d+)?$/;
 
 export type TipoDeErro =
@@ -277,15 +275,11 @@ function conferirReferencias(
 }
 
 /**
- * Converte o valor de uma linha do M12 pelo tipo declarado na fonte ("Tipo do valor: numero.").
- * Número com ponto decimal, lista JSON ou texto; o que não se encaixa no tipo declarado é erro.
+ * Converte o valor de uma linha do M12 pela coluna tipo (numero, lista ou texto; o domínio é conferido no esquema).
+ * Número com ponto decimal, lista JSON ou texto; o que não se encaixa no tipo é erro.
  */
 function valorDoParametro(linha: Linha): { valor: ValorDeParametro } | { problema: string } {
-  const tipo = TIPO_DECLARADO.exec(linha.fonte)?.[1];
-  if (!tipo || !(TIPO_DE_PARAMETRO as readonly string[]).includes(tipo)) {
-    return { problema: `fonte sem "Tipo do valor: ${TIPO_DE_PARAMETRO.join(" | ")}."` };
-  }
-  const valor = linha.valor;
+  const { tipo, valor } = linha;
   if (tipo === "numero") {
     return NUMERO.test(valor) ? { valor: Number(valor) } : { problema: `valor "${valor}" não é número (use ponto decimal, sem unidade)` };
   }
@@ -347,7 +341,8 @@ function montarVocabulario(linhas: Record<NomeDaMatriz, Linha[]>, erros: Erro[])
   for (const linha of linhas.M05) registrar("M05", linha.id, variavelDoId(linha.id));
   for (const linha of linhas.M11) {
     registrar("M11", linha.id, variavelDoId(linha.id));
-    registrar("M11", linha.id, `${variavelDoId(linha.id)}_texto`);
+    // Sufixos da leitura do checklist: texto da caixa de resposta e número lido do "Outro".
+    for (const sufixo of SUFIXOS_DE_RESPOSTA) registrar("M11", linha.id, `${variavelDoId(linha.id)}${sufixo}`);
   }
   const item = new Set(COLUNAS_BASICAS_DO_ITEM);
   for (const linha of linhas.M05) {

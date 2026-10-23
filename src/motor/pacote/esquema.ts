@@ -56,6 +56,8 @@ export const linhaM02 = z.strictObject({
   tipo: texto,
   grupo_alternativa: texto,
   opcao: texto,
+  /** Quando o grupo de alternativas vale; null = sempre (mesmo valor em todo o grupo). */
+  grupo_ativo_expr: expressao,
   lacunas: texto,
   notas: texto,
   condicao_inclusao: texto,
@@ -190,7 +192,8 @@ export const linhaM10 = z.strictObject({
 
 export const linhaM11 = z.strictObject({
   id: texto,
-  checklist: z.enum(["CONSUMO", "PERMANENTES"]),
+  /** COMPLEMENTO: pergunta respondida pelo operador no sistema (CK-X-nn), não existe no Word. */
+  checklist: z.enum(["CONSUMO", "PERMANENTES", "COMPLEMENTO"]),
   secao: texto,
   numero: texto,
   pergunta: texto,
@@ -205,6 +208,12 @@ export const linhaM11 = z.strictObject({
   regra: texto,
   preenche_expr: expressoesPorDestino,
   sugere_expr: expressoesPorDestino,
+  /** Como ler a resposta do Word (texto para a leitura do Marco 2; o motor não executa). */
+  leitura: texto,
+  /** Verdadeira: resposta destacada para o operador revisar. */
+  revisao_expr: expressao,
+  /** Pergunta ao operador quando a dúvida muda a minuta; vazia quando basta o destaque. */
+  revisao_pergunta: texto,
   fonte: texto,
   status,
 });
@@ -214,6 +223,7 @@ export const linhaM12 = z.strictObject({
   nome: texto,
   /** Valor como está no CSV; o valor já tipado fica em `pacote.parametros`. */
   valor: texto,
+  tipo: z.enum(TIPO_DE_PARAMETRO),
   unidade: texto,
   base: texto,
   vigencia: texto,

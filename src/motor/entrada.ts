@@ -15,6 +15,38 @@ export type ItemDeEntrada = {
   [atributo: string]: Valor | Record<string, Valor> | undefined;
 };
 
+/**
+ * O que a leitura do checklist preenchido produz (Marco 2; nos testes, preenchido à mão).
+ * Descrição no README das matrizes (Fase 11, decisão 0009). As respostas em si vão em `checklist`, com os
+ * sufixos _texto (texto da caixa de resposta) e _numero (número lido do "Outro", por exemplo CK_C_12_1_numero).
+ */
+export type LeituraDoChecklist = {
+  /** Verdadeiro quando o checklist de consumo foi entregue. */
+  consumo?: boolean;
+  /** Verdadeiro quando o checklist de permanentes foi entregue. */
+  permanentes?: boolean;
+  /** IDs (CK-C-3.3...) das perguntas com mais de uma opção marcada. */
+  marcas_multiplas?: string[];
+  /** IDs das perguntas por item respondidas uma vez só para todos os itens. */
+  resposta_unica_por_item?: string[];
+  /** IDs das perguntas em que a leitura achou respostas divergentes (por exemplo, caixa e texto). */
+  divergencias_leitura?: string[];
+  /** Pendências da leitura (pergunta sem marcação clara, duas opções em UNICA, resposta fora da caixa): VAL-037. */
+  leitura_pendencias?: string[];
+  /** Perguntas que a leitura não achou respondidas. */
+  sem_resposta?: string[];
+  /** SHA-256 do modelo em branco do checklist usado e o registrado no M11: VAL-036. */
+  sha256_modelo?: string;
+  sha256_m11?: string;
+};
+
+export type Metadados = {
+  textos_livres?: Valor;
+  importacao?: Record<string, Valor>;
+  checklist?: LeituraDoChecklist;
+  [outro: string]: Valor | LeituraDoChecklist | undefined;
+};
+
 export type EntradaProcesso = {
   pacote: Pacote;
   /** SHA-256 do pacote.json, gravado ao lado dele (pacote.sha256). */
@@ -26,8 +58,13 @@ export type EntradaProcesso = {
   itens: ItemDeEntrada[];
   /** Variáveis do M05 informadas: VAR_057... */
   variaveis: Record<string, Valor>;
-  /** Metadados das expressões: textos_livres, importacao.*, checklist.* */
-  metadados?: Record<string, Valor>;
+  /** Metadados das expressões: textos_livres, importacao.* e checklist.* (leitura do Word). */
+  metadados?: Metadados;
+  /**
+   * Perguntas do checklist (IDs CK) cuja revisão o operador já confirmou: a resposta destacada foi conferida
+   * e vale como está. Pergunta ao operador sem confirmação bloqueia a minuta.
+   */
+  revisoes_confirmadas?: string[];
   /** Dados da OM (cabeçalho, endereços, foro); fictícios nos testes. */
   om?: Record<string, Valor>;
 };

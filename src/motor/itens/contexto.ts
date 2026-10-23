@@ -28,7 +28,7 @@ export function variaveisPorItem(m11: readonly LinhaM11[]): Set<string> {
 export function contextoDoItem(globais: Globais, item: Item, porItem: Set<string>): Record<string, Valor> {
   const contexto: Record<string, Valor> = {};
   for (const [chave, valor] of Object.entries(globais)) {
-    if (chave === "itens" || porItem.has(chave) || porItem.has(chave.replace(/_texto$/, ""))) continue;
+    if (chave === "itens" || porItem.has(chave) || porItem.has(chave.replace(/_(texto|numero)$/, ""))) continue;
     contexto[chave] = valor;
   }
   for (const [chave, valor] of Object.entries(item)) {
