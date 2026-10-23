@@ -31,6 +31,7 @@ import {
   linhaM12,
   type ValorDeParametro,
 } from "../src/motor/pacote/esquema.ts";
+import { variavelDoId } from "../src/motor/pacote/nomes.ts";
 import { COLUNAS_DE_CALCULO, OPERADORES_DE_CALCULO, OPERADORES_PERMITIDOS } from "../src/motor/pacote/operadores.ts";
 
 export const NOME_DO_PACOTE = "agu-tr-compras-2025-12";
@@ -170,10 +171,7 @@ function sha256(conteudo: string | Buffer): string {
   return createHash("sha256").update(conteudo).digest("hex");
 }
 
-/** Nome da variável de JSON Logic para um ID: WZ-23 -> WZ_23, CK-C-14.2 -> CK_C_14_2, VAR-001 -> VAR_001. */
-export function variavelDoId(id: string): string {
-  return id.replace(/[-.]/g, "_");
-}
+export { variavelDoId };
 
 function esquemaDaLinha(def: Definicao) {
   const forma: Record<string, z.ZodType> = {};
