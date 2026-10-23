@@ -34,3 +34,14 @@ As perguntas abertas das matrizes (`matrizes/v1/perguntas_abertas.md`) e as deci
 | M03, lote 3 (NE-003 a NE-017, 10 regras CONDICAO) | OK, seguindo o parecer do gestor | `validacao = OK` nas 10 linhas, com o comentário de que a aceitação seguiu o parecer |
 
 A validação do M03 e do M04 agora fica no repositório. Toda entrega nova do agente das matrizes precisa manter as colunas `validacao` e `comentario_validacao` como estão aqui.
+
+## Reprodução do R1 e do R2 (23/10/2026)
+
+| Tema | Resposta | Efeito |
+| --- | --- | --- |
+| Declaração de bem que não é de luxo (TR-1.4) | Não entra para bens permanentes; o Decreto 10.818/2021 trata de bens de consumo | Condição do TR-1.4 só para consumo; o TR 23 vira divergência "TR real" |
+| TR-11.3, TR-9.33.1 e TR-9.4 mantidos pelo TR real sem a situação que os justifica | Erro do TR real | Divergências registradas no M09 |
+| Garantia do TR 23 com redação própria | Diferença de redação do TR real; o sistema usa o modelo e a SET-13 | Divergência "TR real" |
+| Reserva de cota sem cota no TR 58 | Erro do TR real, como no TR 23 | Divergência registrada no M09 para o TR 58 |
+| SET-13 quando há garantia do bem | Mantida sempre que houver garantia | Nenhum |
+| Revisão do checklist (P34) | Pergunta sem resposta só destaca; bloqueia só a dúvida que muda a minuta | Confirmado |
