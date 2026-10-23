@@ -1,0 +1,49 @@
+# Cobertura do M11 nos dois sentidos
+
+## 1. Campos do M01 e perguntas de origem (direta ou pela variável do M05 que preenche o campo)
+ETP-01.01 Número do processo: 2 pergunta(s): CK-C-CAB.01, CK-P-CAB.01
+ETP-02.01 Descrição da necessidade da contratação: 12 pergunta(s): CK-C-1.3, CK-C-2.1, CK-C-2.2, CK-C-2.3, CK-C-2.4, CK-C-2.5, CK-P-1.3, CK-P-2.1, CK-P-2.2, CK-P-2.3, CK-P-2.4, CK-P-2.5
+ETP-03.01 Área requisitante: 8 pergunta(s): CK-C-CAB.02, CK-C-CAB.03, CK-C-1.1, CK-C-1.2, CK-P-CAB.02, CK-P-CAB.03, CK-P-1.1, CK-P-1.2
+ETP-03.02 Responsável pela área requisitante: 4 pergunta(s): CK-C-CAB.04, CK-C-1.4, CK-P-CAB.04, CK-P-1.4
+ETP-04.01 Requisitos da contratação: 42 pergunta(s): CK-C-1.2, CK-C-3.2, CK-C-3.3, CK-C-3.4, CK-C-5.7, CK-C-6.3, CK-C-6.4, CK-C-9.3, CK-C-9.5, CK-C-9.8, CK-C-11.3, CK-C-12.1 ...
+ETP-05.01 Levantamento de mercado e justificativa da solução: 17 pergunta(s): CK-C-5.1, CK-C-5.2, CK-C-5.3, CK-C-5.4, CK-C-5.5, CK-C-5.6, CK-C-5.9, CK-C-19.3, CK-P-5.1, CK-P-5.2, CK-P-5.3, CK-P-5.4 ...
+ETP-06.01 Descrição da solução como um todo: 15 pergunta(s): CK-C-5.8, CK-C-10.2, CK-C-10.3, CK-C-10.4, CK-C-10.5, CK-C-10.6, CK-C-10.11, CK-C-12.5, CK-P-3.4, CK-P-5.7, CK-P-8.2, CK-P-10.4 ...
+ETP-07.01 Memória de cálculo das quantidades: 13 pergunta(s): CK-C-4.1, CK-C-4.2, CK-C-4.3, CK-C-4.4, CK-C-4.5, CK-C-4.6, CK-C-4.7, CK-C-4.8, CK-P-4.1, CK-P-4.3, CK-P-4.4, CK-P-4.5 ...
+ETP-07.02 Tabela de itens: 9 pergunta(s): CK-C-1.5, CK-C-3.1, CK-C-3.2, CK-C-5.7, CK-P-1.5, CK-P-3.1, CK-P-3.2, CK-P-3.4, CK-P-3.6
+ETP-09.01 Justificativa do parcelamento: 13 pergunta(s): CK-C-8.1, CK-C-8.2, CK-C-8.3, CK-C-8.4, CK-C-11.1, CK-C-11.2, CK-C-11.3, CK-C-11.4, CK-P-7.1, CK-P-7.2, CK-P-7.3, CK-P-7.4 ...
+ETP-10.01 Contratações correlatas e/ou interdependentes: 8 pergunta(s): CK-C-19.1, CK-C-19.2, CK-P-9.7, CK-P-10.1, CK-P-10.2, CK-P-10.4, CK-P-10.6, CK-P-15.1
+ETP-12.01 Resultados pretendidos: 2 pergunta(s): CK-C-2.6, CK-P-2.6
+ETP-13.01 Providências prévias ao contrato: 16 pergunta(s): CK-C-13.5, CK-C-20.2, CK-C-20.3, CK-C-20.4, CK-C-20.5, CK-C-20.6, CK-C-20.7, CK-P-8.8, CK-P-9.1, CK-P-9.2, CK-P-9.3, CK-P-9.4 ...
+ETP-14.01 Impactos ambientais e medidas mitigadoras: 8 pergunta(s): CK-C-21.1, CK-C-21.2, CK-C-21.3, CK-C-21.4, CK-P-21.1, CK-P-21.2, CK-P-21.3, CK-P-21.4
+ETP-16.02 Nome, cargo e assinatura de cada responsável: 2 pergunta(s): CK-C-1.4, CK-P-1.4
+
+## 2. Campos do M01 sem fonte no checklist
+ETP-01.02 UASG e nome da OM (cabeçalho)
+ETP-01.03 Número e ano do ETP (cabeçalho)
+ETP-08.01 Valor (R$), campo do sistema
+ETP-08.02 Texto da estimativa do valor
+ETP-11.01 Previsão no Plano de Contratações Anual
+ETP-15.01 Declaração de viabilidade (texto do sistema)
+ETP-15.02 Justificativa da viabilidade
+ETP-16.01 Texto do sistema sobre assinaturas eletrônicas
+ETP-90.01 Seção livre criada pelo requisitante
+
+## 3. Perguntas sem destino (SO_CONTROLE, com o motivo)
+CK-C-CAB.05: Data do preenchimento: controla a versão das respostas e não entra na minuta.
+CK-C-9.7: Designação de quem avalia é ato interno; o TR não nomeia pessoas.
+CK-C-16.5: Designação de fiscal ou comissão é ato interno; o TR usa cargos, não nomes.
+CK-C-23: Declaração do responsável técnico: fica no processo, não entra na minuta.
+CK-P-CAB.05: Data do preenchimento: controla a versão das respostas.
+CK-P-11.6: Designação de quem valida a instalação é ato interno.
+CK-P-17.5: Designação de quem avalia é ato interno.
+CK-P-19.6: Designação de quem emite a aceitação é ato interno.
+CK-P-22.1: Observações sobre anexos: controle de completude do processo.
+CK-P-23: Declaração do responsável técnico: fica no processo, não entra na minuta.
+
+## 4. Totais
+perguntas: 276 (consumo 131, permanentes 145)
+efeito: {'PREENCHE': 164, 'SO_CONTROLE': 10, 'SUGERE': 42, 'JUSTIFICA': 50, 'ALERTA': 10}
+tipo_resposta: {'TEXTO': 71, 'TABELA': 2, 'MULTIPLA': 34, 'SIM_NAO': 107, 'UNICA': 61, 'NUMERO': 1}
+por_item = S: 57
+com condicional: 61 (implícitas: 23)
+campos do M01 com origem no checklist: 15 de 24

@@ -1,0 +1,84 @@
+TR_exemplos_ae4297a4_a494_4822_980f_6cbcc6b4571c_pdf: {('MISTO', 'ALTERADO'): 6, ('MISTO', 'AUSENTE'): 16, ('MISTO', 'IGUAL'): 4, ('PRETO', 'ALTERADO'): 2, ('PRETO', 'AUSENTE'): 57, ('PRETO', 'IGUAL'): 142, ('VERMELHO_ITALICO', 'ALTERADO'): 16, ('VERMELHO_ITALICO', 'AUSENTE'): 142, ('VERMELHO_ITALICO', 'IGUAL'): 17}; parágrafos novos: 40
+TR_exemplos_f518d222_2d93_4dd0_8068_55769fe133c5_pdf: {('MISTO', 'ALTERADO'): 6, ('MISTO', 'AUSENTE'): 16, ('MISTO', 'IGUAL'): 4, ('PRETO', 'ALTERADO'): 6, ('PRETO', 'AUSENTE'): 54, ('PRETO', 'IGUAL'): 141, ('VERMELHO_ITALICO', 'ALTERADO'): 19, ('VERMELHO_ITALICO', 'AUSENTE'): 94, ('VERMELHO_ITALICO', 'IGUAL'): 62}; parágrafos novos: 39
+
+Parágrafos novos (sem bloco correspondente no modelo) e classificação:
+TR 23/2026 p.1 item 1.1 (razão 0.378): PREENCHIMENTO TR-1.1 | 1.1. A presente contratação tem por objeto a aquisição de Ambulância de Suporte Avançado (Tipo “D”), para aten
+TR 23/2026 p.1 item 1.2 (razão 0.417): PROPRIO (fonte de recursos) | 1.2. A referida aquisição é viabilizada por meio de Recursos de Emenda Parlamentar, destinados ao fortalecimen
+TR 23/2026 p.1 item 1.6 (razão 0.487): PROPRIO (prevalência do descritivo complementar; ver VAL-002) | 1.6. Em caso de divergência entre a descrição do sistema e o Descritivo Complementar, prevalecerá o Descritivo
+TR 23/2026 p.1 item 3.1 (razão 0.537): PREENCHIMENTO TR-3.1 | 3.1. A descrição da solução como um todo encontra-se pormenorizada em tópico específico dos Estudos Técnicos P
+TR 23/2026 p.2 item 4.1.1 (razão 0.36): PREENCHIMENTO TR-4.1.1 (critério de sustentabilidade de veículo) | 4.1.1. Só será admitida a oferta de veículo que atenda aos limites máximos de ruídos e emissões fixados pelas 
+TR 23/2026 p.2 item 4.1.2 (razão 0.365): SET-05; SET-07 | 4.1.2. Só será admitida a oferta de equipamentos médicos integrados (Cardioversores, Ventiladores, etc.) que e
+TR 23/2026 p.2 item 4.2.1 (razão 0.424): PREENCHIMENTO TR-4.16 (justificativa) | 4.2.1. Justifica-se a vedação pela criticidade da Ambulância de Suporte Avançado (Tipo D), que exige responsab
+TR 23/2026 p.2 item 4.4.1 (razão 0.354): PREENCHIMENTO TR-4.41 (justificativa sem cota, VAR-120) | 4.4.1. A justificativa para a não reserva reside na natureza indivisível do objeto (veículo transformado), ond
+TR 23/2026 p.2 item 5.1 (razão 0.448): PREENCHIMENTO TR-5.1 | 5.1. A entrega do objeto será realizada de forma integral, em remessa única, após a emissão da Nota de Empenho
+TR 23/2026 p.2 item 5.2 (razão 0.458): PREENCHIMENTO TR-5.1 | 5.2. O prazo de entrega da ambulância é de 120 (cento e vinte) dias, contados do recebimento da Nota de Empenh
+TR 23/2026 p.2 item 5.4 (razão 0.33): PREENCHIMENTO TR-5.4; SET-09 | (trecho omitido: endereço de entrega ou dados orçamentários)
+TR 23/2026 p.3 item 5.5 (razão 0.41): PROPRIO (exigência própria de veículo: licenciamento) | 5.5. O veículo deverá ser entregue em perfeitas condições de uso, devidamente licenciado e emplacado no DETRAN
+TR 23/2026 p.3 item 5.6 (razão 0.464): SET-11; SET-19 | 5.6. Os equipamentos médicos embarcados deverão estar instalados, testados e acompanhados de seus manuais em p
+TR 23/2026 p.3 item 5.8 (razão 0.468): PREENCHIMENTO TR-5.9; SET-13 | 5.8. A garantia abrange a manutenção corretiva (peças e mão de obra) sem ônus para o Contratante, visando mant
+TR 23/2026 p.3 item 5.9 (razão 0.461): PREENCHIMENTO TR-5.12 | 5.9. Uma vez notificada, a Contratada deverá realizar o reparo em até 30 (trinta) dias.
+TR 23/2026 p.3 item 5.9.1 (razão 0.551): PREENCHIMENTO TR-5.14; SET-13 | 5.9.1. Caso o reparo ultrapasse esse prazo, a Contratada deverá disponibilizar veículo equivalente (Suporte Av
+TR 23/2026 p.3 item 5.11 (razão 0.431): PROPRIO (exigência própria de veículo: documentação no órgão de trânsito) | 5.11. A responsabilidade por eventuais divergências documentais entre a Nota Fiscal e os registros no DETRAN r
+TR 23/2026 p.3 item 6.12 (razão 0.589): ARTEFATO | 6.12. O fiscal técnico do contrato comunicará ao gestor do contrato, em tempo hábil, o término do contrato sob
+TR 23/2026 p.4 item 7.1 (razão 0.331): ARTEFATO | 7.1. Comete infração administrativa, nos termos da Lei nº 14.133, de 2021, o Contratado que: a) der causa à in
+TR 23/2026 p.4 item 7.2 (razão 0.415): ARTEFATO | 7.2. Serão aplicadas ao Contratado que incorrer nas infrações acima descritas as seguintes sanções: Câmara Nac
+TR 23/2026 p.5 item 7.2.4.7.1 (razão 0.424): PREENCHIMENTO TR-7.2.4.7.1; DV-05 | 7.2.4.7.1. Não apresentar site planning e projeto de infraestrutura e adequação da sala de exames, se for o ca
+TR 23/2026 p.5 item 7.2.4.7.2 (razão 0.465): PREENCHIMENTO TR-7.2.4.7.1 | 7.2.4.7.2. Não prestar garantia com assistência técnica corretamente, nos termos do tópico descritivo compleme
+TR 23/2026 p.5 item 7.2.4.7.3 (razão 0.457): PREENCHIMENTO TR-7.2.4.7.1 | 7.2.4.7.3. Não reparar corretamente eventuais danos causados no transporte do equipamento.
+TR 23/2026 p.5 item 7.9.3 (razão 0.352): ARTEFATO | 7.9.3. as circunstâncias agravantes ou atenuantes; 7.9.4.os danos que dela provierem para o Contratante; e Câm
+TR 23/2026 p.6 item 8.9 (razão 0.569): ARTEFATO | 8.9. As atividades de montagem, instalação e quaisquer outras necessárias para o funcionamento ou uso do bem c
+TR 23/2026 p.7 item 8.12.1 (razão 0.456): ARTEFATO | 8.12.1. o prazo de validade;
+TR 23/2026 p.7 item 8.12.2 (razão 0.394): ARTEFATO | 8.12.2. a data da emissão;
+TR 23/2026 p.7 item 8.25 (razão 0.587): ARTEFATO; DV-10 | 8.25. Independentemente do percentual de tributo inserido na planilha, quando houver, serão retidos na fonte, 
+TR 23/2026 p.8 item 8.36 (razão 0.564): ARTEFATO | 8.36. O reajuste será realizado por apostilamento. 9. FORMA E CRITÉRIOS DE SELEÇÃO DO FORNECEDOR E FORMA DE FO
+TR 23/2026 p.8 item 9.1 (razão 0.579): PREENCHIMENTO TR-9.1 | 9.1. O fornecedor será selecionado por meio da realização de procedimento de LICITAÇÃO, na modalidade (PREGÃO 
+TR 23/2026 p.9 item 9.12.1 (razão 0.406): SET-08 | 9.12.1. a Autorização de Funcionamento (AFE) vigente, emitida pela ANVISA, para os produtos abrangidos pela RD
+TR 23/2026 p.9 item 9.12.2 (razão 0.468): SET-06; DV-04 | 9.12.2. a Autorização de Funcionamento (AE) vigente, emitida pela ANVISA, para os produtos abrangidos pelo art
+TR 23/2026 p.10 item 9.30.1 (razão 0.535): PREENCHIMENTO TR-9.34.1 | 9.30.1. Para fins da comprovação de que trata este subitem, os atestados deverão dizer respeito a contratos ex
+TR 23/2026 p.11 item 9.30.1.1 (razão 0.424): PREENCHIMENTO TR-9.34.1.1; DV-09 | 9.30.1.1. Venda, entrega, instalação e garantia mínima de 12 (doze) meses prestada ao equipamento compatível c
+TR 23/2026 p.11 item 9.30.5 (razão 0.423): DV-08; SET-13 | 9.30.5. Declaração da CONTRATADA de que prestará garantia dos equipamentos pelo período mínimo de 36 (trinta e
+TR 23/2026 p.11 item 9.30.6 (razão 0.41): DV-08; SET-14 | 9.30.6. Declaração de que as peças de reposição estarão disponíveis no mercado para aquisição futura, por um p
+TR 23/2026 p.11 item 9.30.7 (razão 0.422): DV-08; SET-15 | 9.30.7. Declaração de assistência técnica prestada diretamente pelo fabricante, seu representante ou empresa a
+TR 23/2026 p.11 item 9.30.8 (razão 0.458): DV-08; SET-12 | 9.30.8. Declaração de fornecimento de treinamento de operação do equipamento;
+TR 23/2026 p.11 item 11.2 (razão 0.349): PREENCHIMENTO TR-11.2 | (trecho omitido: endereço de entrega ou dados orçamentários)
+TR 23/2026 p.12 item 12.1 (razão 0.276): ARTEFATO | 12.1. As informações contidas neste Termo de Referência não são classificadas como sigilosas. Rio de Janeiro, 
+TR 58/2026 p.1 item 1.1 (razão 0.577): PREENCHIMENTO TR-1.1; SET-11; SET-12; SET-13 | 1.1. Aquisição de materiais permanentes, Equipamentos Hospitalares com recursos provenientes de Emenda Parlame
+TR 58/2026 p.1 item 1.5 (razão 0.455): PROPRIO (prevalência do descritivo complementar; ver VAL-002) | 1.5. Em caso de divergência entre a descrição do sistema e o Descritivo Complementar em anexo, prevalecerá o D
+TR 58/2026 p.1 item 1.6 (razão 0.411): DV-07 | 1.6. O presente pregão não se destina à formação de ata de registro de preços, mas sim à contratação direta e 
+TR 58/2026 p.1 item 2.2 (razão 0.501): PREENCHIMENTO TR-2.3 | 2.2. O objeto da contratação está previsto no Plano de Contratações Anual 2026, conforme consta das informaçõe
+TR 58/2026 p.2 item 4.1.1 (razão 0.425): SET-05 | 4.1.1 Só será admitida a oferta de produto previamente notificado/registrado na ANVISA, conforme a Lei nº 6.36
+TR 58/2026 p.2 item 4.1.2 (razão 0.35): SET-07 | 4.1.2 Só será admitida a oferta de equipamentos, inclusive suas partes e acessórios, com finalidade médica, od
+TR 58/2026 p.3 item 4.16 (razão 0.551): ARTEFATO | 4.16. A garantia assegurará, qualquer que seja a modalidade escolhida, sob pena de não aceitação, o pagamento 
+TR 58/2026 p.4 item 4.26.1 (razão 0.386): PREENCHIMENTO TR-4.41 (justificativa sem cota, VAR-120) | 4.26.1. A presente contratação não comporta a reserva de cotas, tendo em vista que o processo envolve itens de
+TR 58/2026 p.4 item 4.27 (razão 0.481): PROPRIO (declara que não há margem de preferência; o modelo só traz o texto para quando há) | 4.27. O objeto da presente contratação não enquadra-se na margem de preferência. 5. MODELO DE EXECUÇÃO DO OBJE
+TR 58/2026 p.4 item 5.1 (razão 0.364): PREENCHIMENTO TR-5.1 | 5.1. O prazo de entrega dos bens é de 60 (sessenta) dias, contados da assinatura do contrato, em remessa única
+TR 58/2026 p.5 item 5.2 (razão 0.381): SET-02 | 5.2 A CONTRATADA deverá coordenar, responsabilizar-se e arcar com as despesas de logística, armazenagem, trans
+TR 58/2026 p.5 item 5.2.1 (razão 0.39): SET-02 | 5.2.1. Será de responsabilidade da CONTRATADA, caso necessário, a obtenção de autorizações ou licenças para o 
+TR 58/2026 p.5 item 5.2.2 (razão 0.437): SET-17 | 5.2.2. A CONTRATADA não poderá entregar em seu local de destino nenhum equipamento, sistema, software, partes,
+TR 58/2026 p.5 item 5.4.1 (razão 0.332): PREENCHIMENTO TR-5.4 | (trecho omitido: endereço de entrega ou dados orçamentários)
+TR 58/2026 p.5 item 5.4.2 (razão 0.467): PREENCHIMENTO TR-5.4 | (trecho omitido: endereço de entrega ou dados orçamentários)
+TR 58/2026 p.6 item 6.12 (razão 0.565): ARTEFATO | 6.12. O fiscal técnico do contrato comunicará ao gestor do contrato, em tempo hábil, o término do contrato sob
+TR 58/2026 p.7 item 7.1 (razão 0.396): ARTEFATO | 7.1. Comete infração administrativa, nos termos da Lei nº 14.133, de 2021, o Contratado que: a) der causa à in
+TR 58/2026 p.8 item 7.2.4.6 (razão 0.511): PREENCHIMENTO TR-7.2.4.6 | 7.2.4.6. Compensatória, em substituição à multa moratória para a infração descrita acima na alínea “d”, de 2% 
+TR 58/2026 p.9 item 7.2.4.7.1 (razão 0.424): PREENCHIMENTO TR-7.2.4.7.1 | 7.2.4.7.1. Não apresentar site planning e projeto de infraestrutura e adequação da sala de exames, se for o ca
+TR 58/2026 p.9 item 7.2.4.7.2 (razão 0.452): PREENCHIMENTO TR-7.2.4.7.1 | 7.2.4.7.2. Não prestar garantia com assistência técnica corretamente, nos termos do tópico específico do ETP; 
+TR 58/2026 p.9 item 7.2.4.7.3 (razão 0.457): PREENCHIMENTO TR-7.2.4.7.1 | 7.2.4.7.3. Não reparar corretamente eventuais danos causados no transporte do equipamento.
+TR 58/2026 p.10 item 8.9 (razão 0.579): ARTEFATO | 8.9. As atividades de montagem, instalação e quaisquer outras necessárias para o funcionamento ou uso do bem c
+TR 58/2026 p.11 item 8.12.1 (razão 0.456): ARTEFATO | 8.12.1. o prazo de validade;
+TR 58/2026 p.11 item 8.12.2 (razão 0.394): ARTEFATO | 8.12.2. a data da emissão;
+TR 58/2026 p.11 item 8.20 (razão 0.597): ARTEFATO | 8.20. O pagamento será efetuado no prazo de até 10 (dez) dias úteis contados da finalização da liquidação da d
+TR 58/2026 p.12 item 8.30 (razão 0.534): PREENCHIMENTO TR-8.40 (índice de reajuste) | 8.30. Após o interregno de um ano, e independentemente de pedido do Contratado, os preços iniciais serão reaju
+TR 58/2026 p.13 item 8.36 (razão 0.564): ARTEFATO | 8.36. O reajuste será realizado por apostilamento. 9. FORMA E CRITÉRIOS DE SELEÇÃO DO FORNECEDOR E FORMA DE FO
+TR 58/2026 p.14 item 9.24 (razão 0.466): ARTEFATO | 9.24. certidão negativa de falência expedida pelo distribuidor da sede do fornecedor; Câmara Nacional de Model
+TR 58/2026 p.15 item 9.32 (razão 0.38): DV-06 | 9.32. A contratada deverá apresentar a Declaração do Detentor de Registro (DDR), na forma da RDC 81, de 5 de n
+TR 58/2026 p.15 item 9.33 (razão 0.481): SET-06; DV-04 | 9.33. Autorização de Funcionamento (AE) vigente, emitida pela ANVISA, para os produtos abrangidos pelo art. 3º
+TR 58/2026 p.15 item 9.33.1 (razão 0.571): ARTEFATO | 9.33.1. Sociedades empresárias estrangeiras atenderão à exigência por meio da apresentação, no momento da assi
+TR 58/2026 p.16 item 9.34.1 (razão 0.402): PREENCHIMENTO TR-9.34.1.1 | 9.34.1. Fornecimento de equipamento médico-hospitalar compatível ou similar ao objeto da licitação, incluindo 
+TR 58/2026 p.16 item 9.34.2.1 (razão 0.424): DV-09 | 9.34.2.1. Venda, entrega, instalação e garantia mínima de 12 (doze) meses prestada ao equipamento compatível c
+TR 58/2026 p.16 item 9.34.6 (razão 0.423): DV-08; SET-13 | 9.34.6. Declaração da CONTRATADA de que prestará garantia dos equipamentos pelo período mínimo de 36 (trinta e
+TR 58/2026 p.16 item 9.34.7 (razão 0.41): DV-08; SET-14 | 9.34.7. Declaração de que as peças de reposição estarão disponíveis no mercado para aquisição futura, por um p
+TR 58/2026 p.16 item 9.34.8 (razão 0.422): DV-08; SET-15 | 9.34.8. Declaração de assistência técnica prestada diretamente pelo fabricante, seu representante ou empresa a
+TR 58/2026 p.16 item 9.34.9 (razão 0.507): DV-08; SET-12 | 9.34.9. Declaração de fornecimento de treinamento de operação do equipamento; Disposições gerais sobre habilit
+TR 58/2026 p.17 item 11.2 (razão 0.375): PREENCHIMENTO TR-11.2 | (trecho omitido: endereço de entrega ou dados orçamentários)
+TR 58/2026 p.17 item 12.2 (razão 0.307): PROPRIO (registra que as especificações vêm da OM demandante e a Base Administrativa consolida: a mesma divisão de trabalho entre checklist e wizard) | 12.2. Por fim, destaca-se que as especificações técnicas, descritivos, quantitativos e justificativas técnicas
+Totais por classe: {'PREENCHIMENTO': 31, 'PROPRIO': 7, 'SET-05': 2, 'SET-11': 1, 'ARTEFATO': 20, 'SET-08': 1, 'SET-06': 2, 'DV-08': 8, 'DV-07': 1, 'SET-07': 1, 'SET-02': 2, 'SET-17': 1, 'DV-06': 1, 'DV-09': 1}

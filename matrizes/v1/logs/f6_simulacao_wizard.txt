@@ -1,0 +1,33 @@
+== C1 pregão SRP gerenciador, consumo, não contínuo, contrato, entrega parcelada
+   blocos na minuta: 228 de 483; JSON Logic: 228 blocos; cláusulas setoriais: []; validações disparadas: ['VAL-005', 'VAL-047']; derivadas: WZ-09=SIM, WZ-13=NAO, WZ-18=NAO, WZ-20=NAO, WZ-24=SIM, WZ-50=POR_ITEM; tratamento ME/EPP: {'COTA': 1, 'EXCLUSIVO': 1}
+   grupos ativos: GA-01=A, GA-02=A, GA-03=A, GA-04=A, GA-05=A, GA-06=B, GA-07=A, GA-08=A, GA-09=A, GA-10=B
+   sem problemas
+== C2 dispensa por valor eletrônica, entrega imediata, sem SRP
+   blocos na minuta: 287 de 483; JSON Logic: 287 blocos; cláusulas setoriais: []; validações disparadas: ['VAL-005', 'VAL-047']; derivadas: WZ-09=NAO, WZ-18=NAO, WZ-20=NAO, WZ-50=POR_ITEM; tratamento ME/EPP: {}
+   grupos ativos: GA-01=A, GA-02=A, GA-03=B, GA-04=A, GA-05=A, GA-06=A, GA-07=A, GA-08=B, GA-09=A, GA-10=A, GA-11=B, GA-12=A, GA-13=A
+   sem problemas
+== C3 emergência sem dispensa eletrônica, instrumento de pequeno valor
+   blocos na minuta: 343 de 483; JSON Logic: 343 blocos; cláusulas setoriais: ['SET-13']; validações disparadas: ['VAL-005', 'VAL-025', 'VAL-040', 'VAL-047']; derivadas: WZ-09=SIM, WZ-18=NAO, WZ-50=POR_ITEM; tratamento ME/EPP: {}
+   grupos ativos: GA-01=A, GA-02=C, GA-03=A, GA-04=B, GA-05=B, GA-06=A, GA-07=B, GA-08=B, GA-09=A, GA-10=A, GA-11=A, GA-12=C, GA-13=C
+   sem problemas
+== C4 concorrência, técnica e preço, contínuo, contrato, antecipação por etapas
+   blocos na minuta: 344 de 483; JSON Logic: 344 blocos; cláusulas setoriais: ['SET-13']; validações disparadas: ['VAL-005', 'VAL-018', 'VAL-025', 'VAL-030', 'VAL-047']; derivadas: WZ-09=NAO, WZ-18=SIM, WZ-20=SIM, WZ-24=NAO, WZ-50=NAO_PARCELADO; tratamento ME/EPP: {'AMPLA': 1}
+   grupos ativos: GA-01=B, GA-02=B, GA-03=A, GA-04=B, GA-05=B, GA-06=B, GA-07=B, GA-08=A, GA-09=C, GA-10=A
+   sem problemas
+== C5 pregão maior desconto, pequeno valor contínuo, antecipação só com garantia adicional
+   blocos na minuta: 336 de 483; JSON Logic: 336 blocos; cláusulas setoriais: ['SET-06']; validações disparadas: ['VAL-005', 'VAL-011', 'VAL-047']; derivadas: WZ-09=SIM, WZ-18=NAO, WZ-20=NAO, WZ-24=NAO, WZ-50=POR_ITEM; tratamento ME/EPP: {'EXCLUSIVO': 2}
+   grupos ativos: GA-01=A, GA-02=B, GA-04=A, GA-05=B, GA-06=B, GA-07=A, GA-08=A, GA-09=B, GA-10=A, GA-11=A, GA-12=B, GA-13=B
+   sem problemas
+== C6 misto: itens exclusivos, itens com cota e um grupo, registro de preços por menor preço
+   blocos na minuta: 239 de 483; JSON Logic: 239 blocos; cláusulas setoriais: ['SET-02']; validações disparadas: ['VAL-005', 'VAL-015', 'VAL-018', 'VAL-040', 'VAL-047']; derivadas: WZ-09=SIM, WZ-13=SIM, WZ-18=SIM, WZ-20=SIM, WZ-24=SIM, WZ-50=POR_ITEM_E_GRUPO; tratamento ME/EPP: {'AMPLA': 1, 'COTA': 4, 'EXCLUSIVO': 2}
+   grupos ativos: GA-01=A, GA-02=A, GA-03=A, GA-04=A, GA-05=A, GA-06=B, GA-07=A, GA-08=A, GA-09=A, GA-10=B
+   sem problemas
+== C7 permanentes com instalação, treinamento, garantia de 36 meses, software e retirada do equipamento antigo
+   blocos na minuta: 226 de 483; JSON Logic: 226 blocos; cláusulas setoriais: ['SET-05', 'SET-11', 'SET-12', 'SET-13', 'SET-14', 'SET-16', 'SET-17', 'SET-18', 'SET-19', 'SET-20']; validações disparadas: ['VAL-001', 'VAL-025', 'VAL-026']; derivadas: WZ-09=NAO, WZ-18=NAO, WZ-20=NAO, WZ-24=NAO, WZ-50=POR_ITEM; tratamento ME/EPP: {'AMPLA': 1, 'EXCLUSIVO': 1}
+   grupos ativos: GA-01=A, GA-02=A, GA-03=B, GA-04=A, GA-05=A, GA-06=A, GA-07=B, GA-08=A, GA-09=A, GA-10=A
+   sem problemas
+== C8 consumo com comodato, temperatura, controle especial e respostas incoerentes no checklist
+   blocos na minuta: 216 de 483; JSON Logic: 216 blocos; cláusulas setoriais: ['SET-01', 'SET-02', 'SET-03', 'SET-04', 'SET-05', 'SET-06', 'SET-08', 'SET-09', 'SET-21', 'SET-22']; validações disparadas: ['VAL-004', 'VAL-010', 'VAL-011', 'VAL-020', 'VAL-022']; derivadas: WZ-09=SIM, WZ-13=NAO, WZ-18=NAO, WZ-20=NAO, WZ-24=SIM, WZ-50=POR_ITEM; tratamento ME/EPP: {'COTA': 1, 'EXCLUSIVO': 1}
+   grupos ativos: GA-01=A, GA-02=A, GA-03=A, GA-04=A, GA-05=A, GA-06=B, GA-07=A, GA-08=A, GA-09=A, GA-10=B
+   sem problemas
+TOTAL DE PROBLEMAS: 0

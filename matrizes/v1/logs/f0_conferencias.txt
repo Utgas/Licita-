@@ -1,0 +1,113 @@
+## 1. Paginação (rodapé 'X de N' x páginas do arquivo)
+VER 39f4f8bb-fab9-4793-bbba-6d8cc9196eab.pdf: 5 páginas no arquivo; rodapés lidos: 1/9 3/9 - - 9/9
+OK  Estudo Técnico Preliminar-2.pdf: 17 páginas no arquivo; rodapés lidos: 1/17 2/17 3/17 4/17 5/17 6/17 7/17 8/17 9/17 10/17 11/17 12/17 13/17 14/17 15/17 16/17 17/17
+OK  Outro-ETP160322_000058_2025 Controlado ASSINADO.pdf: 18 páginas no arquivo; rodapés lidos: 1/18 2/18 3/18 4/18 5/18 6/18 7/18 8/18 9/18 10/18 11/18 12/18 13/18 14/18 15/18 16/18 17/18 18/18
+OK  d4ef8f94-2e0a-4181-8d58-22ed3bdf305c.pdf: 9 páginas no arquivo; rodapés lidos: 1/9 2/9 3/9 4/9 5/9 6/9 7/9 8/9 9/9
+OK  ed187742-653c-42fc-9d8d-5370bf41e0bd.pdf: 9 páginas no arquivo; rodapés lidos: 1/9 2/9 3/9 4/9 5/9 6/9 7/9 8/9 9/9
+OK  fdace9da-5a69-42af-a2b8-90676067ddc7.pdf: 8 páginas no arquivo; rodapés lidos: 1/8 2/8 3/8 4/8 5/8 6/8 7/8 8/8
+VER Escopo Inicial Gerador de ETP e TR.pdf: 7 páginas no arquivo; rodapés lidos: - - - - - - -
+OK  08955b4e-c758-4ae0-95c3-8c23d6c9cbc2.pdf: 11 páginas no arquivo; rodapés lidos: 1/11 2/11 3/11 4/11 5/11 6/11 7/11 8/11 9/11 10/11 11/11
+OK  1e19dfeb-ac58-4ae4-aa3c-8114737d3f86.pdf: 20 páginas no arquivo; rodapés lidos: 1/20 2/20 3/20 4/20 5/20 6/20 7/20 8/20 9/20 10/20 11/20 12/20 13/20 14/20 15/20 16/20 17/20 18/20 19/20 20/20
+OK  4bcb2dfc-623c-44fa-a3c1-2ef2e28dbd08.pdf: 7 páginas no arquivo; rodapés lidos: 1/7 2/7 3/7 4/7 5/7 6/7 7/7
+OK  Outros-TR160242_000140_2025_assinado_MAJ.pdf: 17 páginas no arquivo; rodapés lidos: 1/17 2/17 3/17 4/17 5/17 6/17 7/17 8/17 9/17 10/17 11/17 12/17 13/17 14/17 15/17 16/17 17/17
+OK  Termo de Referência-3.pdf: 25 páginas no arquivo; rodapés lidos: 1/25 2/25 3/25 4/25 5/25 6/25 7/25 8/25 9/25 10/25 11/25 12/25 13/25 14/25 15/25 16/25 17/25 18/25 19/25 20/25 21/25 22/25 23/25 24/25 25/25
+VER ae4297a4-a494-4822-980f-6cbcc6b4571c.pdf: 14 páginas no arquivo; rodapés lidos: 1/13 2/13 3/13 4/13 5/13 6/13 7/13 8/13 9/13 10/13 11/13 12/13 13/13 -
+OK  f518d222-2d93-4dd0-8068-55769fe133c5.pdf: 18 páginas no arquivo; rodapés lidos: 1/18 2/18 3/18 4/18 5/18 6/18 7/18 8/18 9/18 10/18 11/18 12/18 13/18 14/18 15/18 16/18 17/18 18/18
+Obs.: rodapés '-' em páginas OCR sem número reconhecido foram conferidos na imagem.
+
+## 2. Versão do modelo AGU no rodapé dos TRs
+1e19dfeb-ac58-4ae4-aa3c-8114737d3f86.pdf: ABR/2025 (20 rodapés)
+Outros-TR160242_000140_2025_assinado_MAJ.pdf: NOV/2024 (17 rodapés)
+Termo de Referência-3.pdf: NOV/2024 (25 rodapés)
+ae4297a4-a494-4822-980f-6cbcc6b4571c.pdf: DEZ/2025 (13 rodapés)
+f518d222-2d93-4dd0-8068-55769fe133c5.pdf: DEZ/2025 (18 rodapés)
+
+## 3. Notas explicativas (comentários) do modelo AGU
+comentários: 102; ids de 1 a 140
+sem commentRangeStart ou commentRangeEnd: nenhum
+âncoras de comprimento zero (sem texto entre início e fim): ['7', '29', '49']
+rodapé contém 'Atualização: DEZ/2025': True
+parágrafos no corpo: 605; não vazios: 556; dentro de tabelas: 117
+
+## 4. Matriz 01: referências de 'Linhas' x parágrafos do docx DEZ/2025
+OK  [7-7] Objeto da Contratação -> início: 'Aquisição de [INSERIR OBJETO], [incluindo instalação, montagem INCLUIR'
+OK  [44-100] Estimativas de Consumo — Registro de Preços -> início: 'Estimativas de consumo individualizadas, do órgão gerenciador e órgão('
+OK  [101-104] Caracterização do Objeto -> início: 'Os bens objeto desta contratação são caracterizados como comuns, confo'
+OK  [105-111] Vigência da Contratação -> início: 'O prazo de vigência da contratação é de [indicar o prazo] contados do('
+OK  [125-129] Sustentabilidade -> início: 'Sustentabilidade'
+OK  [130-136] Indicação de Marcas ou Modelos -> início: 'Indicação de marcas ou modelos'
+OK  [136-152] Exigência de Amostra -> início: 'Da exigência de amostra'
+OK  [153-154] Carta de Solidariedade -> início: 'Da exigência de carta de solidariedade'
+OK  [155-170] Subcontratação -> início: 'Subcontratação'
+OK  [171-201] Garantia da Contratação -> início: 'Garantia da contratação'
+OK  [175-201] Cláusulas da garantia -> início: 'Em caso de opção pelo seguro-garantia, a parte adjudicatária deverá ap'
+VER [202-206] Cota ME/EPP -> início: 'Reserva de cotas para microempresas e empresas de pequeno porte:'
+OK  [207-208] Margem de Preferência -> início: 'Margem de Preferência:'
+OK  [210-231] Condições de Entrega -> início: 'Condições de Entrega'
+OK  [232-246] Garantia, Manutenção e Assistência Técnica -> início: 'Garantia, manutenção e assistência técnica'
+VER [248-252] Disposições gerais -> início: 'O contrato deverá ser executado fielmente pelas partes, de acordo com '
+OK  [254-261] Fiscalização técnica -> início: 'A execução do contrato deverá ser acompanhada e fiscalizada pelo(s) fi'
+OK  [262-269] Fiscalização administrativa -> início: 'Fiscalização Administrativa'
+OK  [270-278] Gestor do contrato -> início: 'Gestor do Contrato'
+VER [280-288] Infrações (tipificação) -> início: 'Comete infração administrativa, nos termos da Lei nº 14.133, de 2021, '
+VER [290-292] Sanções (tipo) -> início: 'Advertência, quando o Contratado der causa à inexecução parcial do con'
+OK  [297-301] Multa compensatória -> início: 'Compensatória, para as infrações descritas acima alíneas “e” a “h” de '
+VER [303-322] Cláusulas processuais -> início: 'A aplicação das sanções previstas neste Termo de Referência não exclui'
+OK  [324-333] Recebimento -> início: 'Recebimento'
+OK  [334-352] Liquidação -> início: 'Liquidação'
+OK  [353-384] Pagamento -> início: 'Prazo de pagamento'
+OK  [362-377] Antecipação de pagamento -> início: 'Antecipação de pagamento'
+OK  [378-384] Cessão de crédito -> início: 'Cessão de Crédito'
+OK  [385-393] Reajuste -> início: 'Reajuste'
+OK  [394-400] Forma de Seleção -> início: 'FORMA E CRITÉRIOS DE SELEÇÃO DO FORNECEDOR E FORMA DE FORNECIMENTO'
+OK  [401-403] Preços -> início: 'Critérios de aceitabilidade de preços'
+OK  [404-467] Habilitação -> início: 'Exigências de habilitação'
+OK  [475-479] Registro de Preços — alteração -> início: 'Em caso de Registro de Preços, os preços registrados poderão ser alter'
+OK  [519-532] Obrigações do Contratante -> início: 'OBRIGAÇÕES DO CONTRATANTE '
+OK  [534-565] Obrigações do Contratado -> início: 'O Contratado deve cumprir todas as obrigações constantes do Termo de R'
+intervalos com palavra do título no trecho referido: 30 de 35 (os marcados VER pedem leitura: o título usa sigla, plural ou sinônimo do texto do modelo)
+
+## 5. Matrizes 01 e 02: ocorrências
+01_Matriz_TR_AGU_Aquisicoes.md: 'nota' 0x; '~' 13x; 'media_1792606488039_644bd1c3.docx' 1x
+02_Matriz_ETP_Digital_Lei14133.md: 'nota' 0x; '~' 0x; 'media_1792606488039_644bd1c3.docx' 0x
+
+## 6. ETPs: títulos de seção
+39f4f8bb-fab9-4793-bbba-6d8cc9196eab.pdf: 10 títulos; números [1, 2, 3, 4, 5, 8, 9, 10, 11, 16]; seção 12 = []; última = 16. Responsáveis
+Estudo Técnico Preliminar-2.pdf: 17 títulos; números [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]; seção 12 = ['Justificativas pontuais']; última = 17. Responsáveis
+Outro-ETP160322_000058_2025 Controlado ASSINADO.pdf: 16 títulos; números [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]; seção 12 = ['Benefícios a serem alcançados com a contratação']; última = 16. Responsáveis
+d4ef8f94-2e0a-4181-8d58-22ed3bdf305c.pdf: 16 títulos; números [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]; seção 12 = ['Resultados Pretendidos']; última = 16. Responsáveis
+ed187742-653c-42fc-9d8d-5370bf41e0bd.pdf: 16 títulos; números [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]; seção 12 = ['Benefícios a serem alcançados com a contratação']; última = 16. Responsáveis
+fdace9da-5a69-42af-a2b8-90676067ddc7.pdf: 16 títulos; números [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]; seção 12 = ['Benefícios a serem alcançados com a contratação']; última = 16. Responsáveis
+08955b4e-c758-4ae0-95c3-8c23d6c9cbc2.pdf: 16 títulos; números [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]; seção 12 = ['Benefícios a serem alcançados com a contratação']; última = 16. Responsáveis
+4bcb2dfc-623c-44fa-a3c1-2ef2e28dbd08.pdf: 16 títulos; números [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]; seção 12 = ['Resultados Pretendidos']; última = 16. Responsáveis
+
+## 7. Códigos de 6 dígitos (padrão CATMAT) em comum
+ETP 99/2025: 10 códigos distintos
+ETP 151/2025: 8 códigos distintos
+ETP 801/2025: 9 códigos distintos
+ETP 330/2025: 9 códigos distintos
+TR 190/2025: 1 códigos distintos
+ETP 99/2025 x ETP 151/2025: 7 em comum
+ETP 99/2025 x ETP 801/2025: 8 em comum
+ETP 99/2025 x ETP 330/2025: 8 em comum
+ETP 99/2025 x TR 190/2025: 1 em comum
+ETP 151/2025 x ETP 801/2025: 6 em comum
+ETP 151/2025 x ETP 330/2025: 6 em comum
+ETP 151/2025 x TR 190/2025: 1 em comum
+ETP 801/2025 x ETP 330/2025: 8 em comum
+ETP 801/2025 x TR 190/2025: 0 em comum
+ETP 330/2025 x TR 190/2025: 0 em comum
+
+## 8. Citações de normas do regime anterior ou a conferir
+Lei 10.520/2002: 2 ocorrência(s): Outro-ETP160322_000058_2025 Controlado ASSINADO.pdf p.1; 4bcb2dfc-623c-44fa-a3c1-2ef2e28dbd08.pdf p.1
+Decreto 10.024/2019: 2 ocorrência(s): Estudo Técnico Preliminar-2.pdf p.2; 02_Matriz_ETP_Digital_Lei14133.md linha 44
+Lei 8.666/1993: 0 ocorrência(s): -
+Decreto 7.892/2013: 0 ocorrência(s): -
+IN SLTI/MP 01/2010: 8 ocorrência(s): 39f4f8bb-fab9-4793-bbba-6d8cc9196eab.pdf p.2; Estudo Técnico Preliminar-2.pdf p.16; d4ef8f94-2e0a-4181-8d58-22ed3bdf305c.pdf p.8; 1e19dfeb-ac58-4ae4-aa3c-8114737d3f86.pdf p.3; 4bcb2dfc-623c-44fa-a3c1-2ef2e28dbd08.pdf p.2; 4bcb2dfc-623c-44fa-a3c1-2ef2e28dbd08.pdf p.3; 4bcb2dfc-623c-44fa-a3c1-2ef2e28dbd08.pdf p.6; 02_Matriz_ETP_Digital_Lei14133.md linha 168
+
+## 9. Validade mínima na entrega: menções a 50% e 75%
+Estudo Técnico Preliminar-2.pdf: p.2: 50%, p.2: 50%
+Outro-ETP160322_000058_2025 Controlado ASSINADO.pdf: p.2: 50%
+d4ef8f94-2e0a-4181-8d58-22ed3bdf305c.pdf: p.2: 75%, p.2: 75%, p.3: 75%
+1e19dfeb-ac58-4ae4-aa3c-8114737d3f86.pdf: p.4: 75%, p.4: 75%
+Outros-TR160242_000140_2025_assinado_MAJ.pdf: p.3: 50%

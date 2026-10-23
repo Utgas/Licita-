@@ -1,0 +1,64 @@
+OK    M00_inventario.csv: UTF-8 com BOM, vírgula, todos os campos entre aspas
+OK    M01_etp_campos.csv: UTF-8 com BOM, vírgula, todos os campos entre aspas
+OK    M02_tr_blocos.csv: UTF-8 com BOM, vírgula, todos os campos entre aspas
+OK    M03_notas_explicativas.csv: UTF-8 com BOM, vírgula, todos os campos entre aspas
+OK    M04_wizard.csv: UTF-8 com BOM, vírgula, todos os campos entre aspas
+OK    M05_variaveis.csv: UTF-8 com BOM, vírgula, todos os campos entre aspas
+OK    M06_derivacao_etp_tr.csv: UTF-8 com BOM, vírgula, todos os campos entre aspas
+OK    M07_normas.csv: UTF-8 com BOM, vírgula, todos os campos entre aspas
+OK    M08_clausulas_setoriais.csv: UTF-8 com BOM, vírgula, todos os campos entre aspas
+OK    M09_desvios.csv: UTF-8 com BOM, vírgula, todos os campos entre aspas
+OK    M10_validacoes.csv: UTF-8 com BOM, vírgula, todos os campos entre aspas
+OK    M11_checklist.csv: UTF-8 com BOM, vírgula, todos os campos entre aspas
+OK    teste 3: M01 com 24 IDs únicos e no padrão
+OK    teste 3: M02 com 499 IDs únicos e no padrão
+OK    teste 3: M03 com 102 IDs únicos e no padrão
+OK    teste 3: M04 com 59 IDs únicos e no padrão
+OK    teste 3: M05 com 155 IDs únicos e no padrão
+OK    teste 3: M06 com 499 IDs únicos e no padrão
+OK    teste 3: M07 com 103 IDs únicos e no padrão
+OK    teste 3: M08 com 22 IDs únicos e no padrão
+OK    teste 3: M09 com 34 IDs únicos e no padrão
+OK    teste 3: M10 com 50 IDs únicos e no padrão
+OK    teste 3: M11 com 276 IDs únicos e no padrão
+OK    teste 3: referências cruzadas entre M00 e M11: 0 quebradas
+OK    teste 1: 556 de 556 parágrafos não vazios do modelo em exatamente um bloco do M02 (100.00%); blocos tirados das notas (TR-NE*) fora da conta: 9
+OK    teste 2: 102 notas (NE-001 a NE-102) ligadas a bloco existente do M02
+OK    teste 4: normas citadas de M00 a M11 presentes no M07 (103 normas): 0 faltando
+OK    teste 4: norma citada só em texto das matrizes, sem base nem conferência: 0
+OK    M07: status A_VERIFICAR só em norma não conferida
+OK    teste 5: fonte e status preenchidos e no domínio nas 1846 linhas de M00 a M11
+OK    teste 6: incisos obrigatórios no M01 = ['I', 'IV', 'VI', 'VIII', 'XIII']
+OK    teste 7: nomes de pessoas nos arquivos de saída: 0 (nomes de pessoas identificados no corpus: 46; sobrenomes distintivos: 73)
+OK    teste 8: achados da seção 5 (lista reconstruída, 10) no M09 ou no M10: 1=1, 2=2, 3=2, 4=2, 5=4, 6=6, 7=1, 8=3, 9=2, 10=1
+INFO  achados de 22/10/2026 citados no M09 ou no M10: {'2': 6, '3': 3, '4': 2, '6': 6} (o 1, nenhum arquivo novo é TR, está no M00; o 5, sem DFD do processo 65475.000677/2025-73, está na P10)
+OK    M04: colunas de domínio fechado no domínio
+OK    M03: colunas de domínio fechado no domínio
+OK    M05: colunas de domínio fechado no domínio
+OK    M07: colunas de domínio fechado no domínio
+OK    M08: colunas de domínio fechado no domínio
+OK    M10: colunas de domínio fechado no domínio
+OK    M11: colunas de domínio fechado no domínio
+OK    M06: colunas de domínio fechado no domínio
+OK    M06: uma linha por bloco do M02 (499 de 499)
+OK    M11: toda pergunta tem destino ou é SO_CONTROLE com motivo na regra
+OK    M11: hash dos dois checklists da base confere com o registrado nas linhas: Checklist_Tecnico_Aquisicao_de_Materiais... 7c6d3cc9bf16; Checklist_Tecnico_Medicamentos_e_Materia... 6294e718c983
+OK    JSON Logic: 651 expressões válidas, só operadores e variáveis conhecidos
+OK    M02: condicao_expr preenchida em todos os blocos (499)
+OK    M08: 23 trechos de evidência conferidos letra a letra no texto do corpus
+OK    travessão (U+2014) fora das colunas literais e nos .md: 0
+OK    simulação do wizard: 8 cenários, TOTAL DE PROBLEMAS: 0
+OK    controle negativo da simulação: 3 erros injetados (condição de bloco, liga_expr, cláusula setorial), detectados 3
+INFO  M00: 23 linhas | status {'INFERIDO': 7, 'A_VERIFICAR': 4, 'EXTRAIDO': 12}
+INFO  M01: 24 linhas | status {'INFERIDO': 23, 'A_VERIFICAR': 1}
+INFO  M02: 499 linhas | status {'INFERIDO': 332, 'EXTRAIDO': 167}
+INFO  M03: 102 linhas | status {'INFERIDO': 102}
+INFO  M04: 59 linhas | status {'INFERIDO': 57, 'A_VERIFICAR': 2}
+INFO  M05: 155 linhas | status {'INFERIDO': 155}
+INFO  M06: 499 linhas | status {'INFERIDO': 484, 'EXTRAIDO': 15}
+INFO  M07: 103 linhas | status {'EXTRAIDO': 95, 'A_VERIFICAR': 8}
+INFO  M08: 22 linhas | status {'A_VERIFICAR': 1, 'INFERIDO': 21}
+INFO  M09: 34 linhas | status {'EXTRAIDO': 29, 'INFERIDO': 1, 'A_VERIFICAR': 4}
+INFO  M10: 50 linhas | status {'INFERIDO': 49, 'A_VERIFICAR': 1}
+INFO  M11: 276 linhas | status {'INFERIDO': 276}
+FALHAS: 0

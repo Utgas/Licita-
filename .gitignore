@@ -1,0 +1,27 @@
+# dependências e build
+node_modules/
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# ambiente e segredos
+.env
+.env.*
+!.env.example
+.vercel/
+supabase/.temp/
+supabase/.branches/
+
+# documentos reais (corpus): nunca entram no repositório
+Documentos/
+corpus/
+*.pdf
+
+# temporários
+*.log
+.DS_Store
+Thumbs.db
+~$*

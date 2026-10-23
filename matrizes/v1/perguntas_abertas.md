@@ -1,0 +1,213 @@
+# Perguntas abertas: Licita+, Matrizes v1
+
+Arquivo vivo. Cada fase acrescenta itens. Cada item traz a situação, a opção que recomendo e o motivo. Conflitos entre fontes de níveis diferentes também entram aqui (seção 3 do prompt).
+
+Situação de cada item:
+
+- `ABERTA`: precisa de decisão ou de arquivo seu.
+- `ADOTADA PROVISORIAMENTE`: sigo com a recomendação até você dizer o contrário.
+- `RESOLVIDA`: você decidiu; a decisão está registrada no item.
+
+---
+
+## Fase 0: inventário
+
+### P01. Nome de arquivo com nomes de pessoas (RESOLVIDA)
+
+- **Decisão:** renomear. Feito na cópia de trabalho: o arquivo agora é `ETP exemplos/Outro-ETP160322_000058_2025 Controlado ASSINADO.pdf`, e o M00 e os scripts usam esse nome.
+- **Pendente do seu lado:** renomear também na sua pasta `Documentos`, para os caminhos da coluna `fonte` baterem com a base.
+
+### P02. Três TRs feitos sobre versões anteriores do modelo AGU (RESOLVIDA)
+
+- **Decisão:** as versões NOV/2024 e ABR/2025 não entram na base. Na Fase 6, só os TRs 23/2026 e 58/2026 são comparados com o DEZ/2025. Os TRs 117/2025, 140/2025 e 190/2025 entram só no M08, como evidência de prática, sem classificar diferença como desvio.
+
+### P03. Valores fora do domínio previsto no M00 (RESOLVIDA)
+
+- **Decisão:** aceitos `srp = NA` para documentos que não são contratação e `papel_srp = ?` para os ETPs 58/2025, 330/2025 e 67/2026.
+
+### P04. ETP 19/2026 incompleto (RESOLVIDA)
+
+- **Decisão:** o arquivo não será substituído. As seções que caem nas páginas ausentes (6, 7, 12, 13, 14 e o título da 15) ficam como `não lido` em definitivo no M01, nunca como omitidas.
+- **Por que não faz falta:** o ETP 19/2026 não tem TR par na base, então só pesa na estatística de 5 seções do M01, que passa a contar 7 ETPs nessas seções. O dado mais útil do arquivo, a divergência entre o campo Valor (R$ 3.317,00) e o texto da seção 8 (R$ 331.765,00), está numa página lida e foi conferido na imagem, não só no OCR.
+
+### P05. Não existe a pasta `Documentos/Normas` (RESOLVIDA, opção a)
+
+- **Decisão:** na Fase 5, situação e dispositivo de cada norma são conferidos só em planalto.gov.br, in.gov.br e gov.br, com URL e data.
+- **Limite já encontrado:** a ferramenta de leitura só alcança os primeiros 80.878 caracteres da página da Lei 14.133/2021 no Planalto (até o art. 36). Artigos posteriores ficam `A_VERIFICAR` até eu achar outra página oficial que os traga ou até o PDF oficial entrar na base. Por isso tirei do M01 uma citação ao art. 40, § 2º, que eu não consegui conferir.
+
+### P06. Numeração das seções do ETP Digital (RESOLVIDA)
+
+- **Decisão:** aceita. Seção identificada pelo nome e pelo ID estável `ETP-SS.CC`; número impresso tratado como posicional.
+
+### P07. Nome da seção 12 do ETP (RESOLVIDA)
+
+- **Decisão:** aceita. "Resultados Pretendidos" é o nome principal; "Benefícios a serem alcançados com a contratação" fica como variante.
+
+### P08. Pares ETP e TR (RESOLVIDA)
+
+- **Decisão:** aceita. A Fase 4 testa a derivação no par 117/2025 e usa 67/2026 x 23/2026 como caso de divergência ETP x TR.
+
+### P09. Gerenciador da IRP 134/2025 (ABERTA)
+
+- **Situação:** a resposta veio com o marcador sem preencher ("[SIM ou NÃO: o TR 190/2025 é da IRP 134/2025]"). Sigo tratando o TR 190/2025 como não confirmado.
+- **Recomendo:** responder SIM ou NÃO.
+- **Por quê:** se for, a base ganha um conjunto completo de gerenciador e participantes (TR 190/2025 e ETPs 99/2025, 151/2025 e 801/2025), o melhor caso de teste para a WZ-11 e para a consolidação das quantidades por órgão (TR-1.1.1.TAB1 a TAB3).
+
+### P10. DFD do processo do par 117/2025 (ABERTA)
+
+- **Situação (22/10/2026):** entraram três DFDs (18/2026, 710/2025 e o da PMPV) e os dois checklists técnicos. As origens que dependiam de DFD foram refeitas: o checklist passou a ser a entrada da área requisitante (M11) e as linhas deixaram de ser `A_VERIFICAR`. Nenhum DFD novo é do processo 65475.000677/2025-73, então a cadeia DFD, ETP e TR continua sem caso completo.
+- **Recomendo:** incluir, anonimizado, o DFD (ou o checklist preenchido) do processo 65475.000677/2025-73.
+- **Por quê:** é o único processo com ETP e TR na base; com a peça de origem, o M06 testaria a cadeia inteira.
+- **Atenção:** o DFD da PMPV traz nomes e CPF de pessoas. Nada disso foi copiado para as matrizes, mas o arquivo da base deveria ser anonimizado.
+
+### P11. Arquivo-fonte da matriz 01 (RESOLVIDA)
+
+- **Decisão:** aceita. O docx DEZ/2025 é tratado como fonte da matriz 01, e a troca entra na auditoria (Fase 8).
+
+---
+
+## Fases 1 a 3: M01 a M05
+
+### P12. Realce ciano como marca de conteúdo de registro de preços (ADOTADA PROVISORIAMENTE)
+
+- **Situação:** o modelo tem realce em 20 blocos: ciano em 13, amarelo em 5, verde em 2. Os 13 em ciano tratam de registro de preços (TR-1.1.1 e suas 3 tabelas, TR-9.H03, TR-9.4, TR-9.4.1, TR-10.5 a TR-10.5.4, TR-11.4). Nenhuma nota explica as cores.
+- **Recomendo:** usar o ciano só como indício, com status `INFERIDO` nas condições "SE registro de preços", e não usar amarelo nem verde em regra nenhuma.
+- **Por quê:** o padrão vale para 13 de 13 blocos, mas sem nota da AGU continua sendo inferência. O amarelo aparece, entre outros, nos itens TR-AI-5.5 a TR-AI-5.6, cuja nota (NE-098) cita a ON AGU 98, de 8 de agosto de 2025; parece marca de alteração recente, não de conteúdo.
+
+### P13. Órgão participante de IRP: o sistema gera só o ETP? (RESOLVIDA)
+
+- **Resposta (21/10/2026):** a OM conduz cerca de 140 pregões por ano, e só parte deles tem participação externa. Nesses, o participante faz o ETP e não faz TR; o TR é compilado pela OM gerenciadora. Às vezes o participante manda um TR pronto.
+- **Consequência no desenho:** o fluxo principal é o do pregão conduzido pela OM. Na WZ-11, PARTICIPANTE gera só o ETP, e a pergunta deixou de ser `A_VERIFICAR`. TR pronto enviado por participante entra no processo do gerenciador como fonte de dados (itens, quantidades, endereço), não como texto: a minuta continua saindo do modelo AGU carregado, porque esses TRs podem vir de versão anterior do modelo, como os três TRs de 2025 da base.
+
+### P14. Anexo I em contratação de pequeno valor sem fornecimento contínuo (ADOTADA PROVISORIAMENTE)
+
+- **Situação:** o Anexo I tem três redações de vigência (GA-12) e três de extinção (GA-13). A vigência A (TR-AI-2.1, art. 105) não tem nota e serve a qualquer contrato por escopo. A extinção A (TR-AI-5.1 a TR-AI-5.3.2) tem nota que a destina à compra com entrega imediata (NE-096). As opções B e C são para pequeno valor de fornecimento contínuo e para emergência. Nenhuma nota cobre o pequeno valor (art. 95, I) sem fornecimento contínuo e sem entrega imediata, por exemplo uma entrega parcelada em quatro meses.
+- **Recomendo:** usar a opção A nos dois grupos, com status `INFERIDO` e alerta na minuta.
+- **Por quê:** a extinção A trata de contrato que termina quando as obrigações são cumpridas, o que descreve um contrato por escopo; B e C exigem fornecimento contínuo ou emergência, que o caso não tem.
+
+### P15. Estimativa de valor sem redação indicada: técnica e preço e contratação direta (ADOTADA PROVISORIAMENTE)
+
+- **Situação:** as notas da seção 10 só indicam a redação para menor preço (TR-10.1, NE-074 nota 3; TR-10.3 com sigilo, NE-077) e para maior desconto (TR-10.2, NE-076). O critério técnica e preço, que o item 9.1 oferece, e a contratação direta não têm redação indicada. O modelo também não traz critérios de pontuação técnica.
+- **Recomendo:** (a) nesses casos, usar TR-10.1, ou TR-10.3 com orçamento sigiloso, com status `INFERIDO`; (b) no técnica e preço, o wizard avisa que os critérios de pontuação precisam ser escritos pelo usuário, e o sistema não os gera.
+- **Por quê:** TR-10.1 só declara o valor estimado, o que serve a qualquer critério. Gerar critérios de pontuação sem fonte seria preencher por dedução.
+
+### P16. Obrigações do Decreto 12.174/2024 no Anexo I (ABERTA, conferido em parte na Fase 5)
+
+- **Situação:** os itens TR-AI-4.1.22 a TR-AI-4.1.26 estão em vermelho itálico. A NE-095 só diz que vêm do art. 2º do Decreto 12.174/2024, sem dizer quando suprimi-los. Criei a WZ-51 para essa decisão, com padrão SIM e status `A_VERIFICAR`.
+- **Fase 5 (22/10/2026):** a página do Portal de Compras (gov.br) descreve o decreto como norma que "dispõe sobre as garantias trabalhistas a serem observadas na execução dos contratos administrativos" e só dá exemplos de serviços com dedicação exclusiva de mão de obra. O texto do decreto no planalto.gov.br não pôde ser aberto pela ferramenta (fora da lista de acesso). O alcance em compras continua sem conferência (M07, `NAO_CONFERIDA`).
+- **Recomendo:** manter o padrão SIM e pedir à assessoria jurídica a regra de supressão em compras; se puder, inclua o PDF do decreto na base.
+- **Por quê:** são obrigações de proteção ao trabalho. Manter quando não se aplicam custa pouco; suprimir quando se aplicam pode deixar o instrumento sem cláusula exigida.
+
+### P17. Textos prontos que estão dentro das notas, fora do corpo do modelo (RESOLVIDA)
+
+- **Situação:** três notas trazem texto para inserir no TR: NE-016 nota 3 (subcontratação obrigatória de ME/EPP, com itens numerados 4.24 a 4.29), NE-071 nota 4 (atestados de potencial subcontratado) e NE-094 nota 3 (cláusula de LGPD, que remete ao modelo de serviços, ausente da base). O M02 cobre só o corpo do modelo, então esses textos estão só no M03.
+- **Recomendo:** na revisão do M02, acrescentar blocos condicionais para a NE-016 nota 3 e a NE-071 nota 4, copiados literalmente da nota, com IDs novos (ex.: `TR-NE016.01`) e numeração recalculada na minuta. Deixar a LGPD de fora até o modelo de serviços entrar na base.
+- **Por quê:** sem esses blocos, o wizard pergunta (WZ-08, WZ-22) mas não tem o texto que a própria AGU manda inserir. A LGPD dependeria de texto que eu não li.
+- **Decisão (21/10/2026):** aceita. O M02 ganhou TR-NE016.01 a TR-NE016.08 (WZ-22 = SIM_EXIGIDA_ME_EPP) e TR-NE071.01 (WZ-38 = ATESTADO_POTENCIAL_SUBCONTRATADO), com formatação `NOTA_EXPLICATIVA`.
+
+### P18. Inconsistências internas do modelo AGU (ADOTADA PROVISORIAMENTE)
+
+- **Situação:**
+  1. A NE-099 manda usar "a redação do item 12.4", que não existe no Anexo I. A nota está ancorada no TR-AI-5.7, que trata do art. 75, VIII.
+  2. A NE-069, nota 2, remete a uma nota sobre "vistoria", que não existe neste modelo.
+  3. A NE-016, nota 3, numera os itens sugeridos como 4.24 a 4.29, números que o corpo já usa (garantia da contratação).
+  4. NE-057 e NE-058 têm texto idêntico, ancorado no mesmo trecho.
+  5. NE-089 e NE-090 tratam do mesmo item (TR-AI-3.1.10).
+  6. No parágrafo 108, o número "1.6.1" está digitado no texto, e o Word exibe "1.7. 1.6.1". O bloco TR-1.7 guarda o texto literal, com "1.6.1".
+- **Recomendo:** manter o texto literal no M02 e no M03 (regra 3); mapear a NE-099 para o TR-AI-5.7 (`INFERIDO`); registrar as duplicatas; na minuta, tratar o "1.6.1" digitado como numeração e não imprimi-lo, regra aplicada só a esse parágrafo.
+- **Por quê:** a regra 3 proíbe corrigir o texto da AGU, mas o "1.6.1" é numeração manual, não conteúdo; imprimi-lo geraria item com dois números. Os seis pontos entram na auditoria (Fase 8).
+
+### P19. Seção adicional do ETP, "Justificativas pontuais" (ABERTA)
+
+- **Situação:** só o ETP 117/2025 tem essa seção, numerada 12, o que desloca as seguintes. Não sei se o ETP Digital permite criar seção livre ou se era um recurso que deixou de existir. No M01 ela é o campo ETP-90.01, `A_VERIFICAR`.
+- **Recomendo:** conferir nas telas do ETP Digital. Se for seção livre, manter ETP-90.01 como opcional e sem texto padrão; se não existir, retirar.
+- **Por quê:** o sistema não deve propor seção que o ETP Digital não aceita.
+
+### P20. Formatação que não basta para decidir a inclusão (ADOTADA PROVISORIAMENTE)
+
+- **Situação:** (a) TR-5.3, TR-5.4, TR-7.2.4.1 e TR-7.2.4.3 a TR-7.2.4.6 estão inteiros em vermelho itálico, mas o conteúdo cabe em qualquer compra (aviso de atraso, local de entrega, multas). Marquei como `EU` (variável e sempre incluído), não `OP`. O TR-6.5 (reunião inicial), também inteiro em vermelho itálico e sem nota, ficou opcional (WZ-31). (b) O TR-ASSIN.03 ("Identificação e assinatura do servidor (ou equipe) responsável") está em preto, portanto invariável pela regra 4, mas funciona como rótulo a preencher.
+- **Recomendo:** aceitar (a). Em (b), manter o texto em preto e acrescentar abaixo dele o cargo de cada responsável (VAR-098), sem substituir o rótulo.
+- **Por quê:** em (a), a formatação diz que o texto é variável, não que é opcional, e toda compra tem prazo e local de entrega e multas compensatórias (art. 156, citado na NE-036). Em (b), a regra 4 manda seguir a formatação.
+
+### P21. Validade mínima na entrega sem valor padrão (RESOLVIDA)
+
+- **Situação:** o item 5.4.1 deixa a validade mínima em aberto. No corpus aparecem 50% e 75% do prazo total, e o ETP 99/2025 se contradiz ("até no máximo 75% de vida útil" e "mínimo de 75%", DV-19).
+- **Decisão (21/10/2026 e 22/10/2026):** sem valor sugerido. A validade vem da CK-C-14.2, item a item, com as opções do próprio checklist: 12 meses, 75% do prazo total, dois terços do prazo total ou outro critério (VAR-117). O wizard não propõe número; item perecível sem validade bloqueia (VAL-007) e "Outro critério" sem descrição também (VAL-008). A matriz 02 fixava 50% como padrão; isso foi descartado (auditoria).
+
+---
+
+## Fases 4 a 9 e checklists técnicos (22/10/2026)
+
+### P22. Decisões por item (ajuste 1) (ADOTADA PROVISORIAMENTE)
+
+- **Situação:** o tratamento de ME/EPP, o grupo, a amostra, a marca e a validade passaram a ser atributos de cada item (VAR-011 e VAR-112 a VAR-124). Quatro escolhas de desenho não estão escritas no modelo nem nas notas.
+- **Recomendo:**
+  1. Unidade de disputa: o item isolado, ou o grupo inteiro (o grupo é "considerado como item", NE-022). O Decreto 8.538/2015, conferido no planalto.gov.br, fala em "itens ou lotes" de até R$ 80.000,00 (art. 6º).
+  2. Quantidade da cota: parte inteira de quantidade × percentual / 100; se der zero em algum item da unidade, a unidade fica AMPLA (não há cota de fração).
+  3. Exceção sobre item que seria EXCLUSIVO: permitida só com a hipótese do art. 10 do decreto e alerta (VAL-017, `A_VERIFICAR`).
+  4. Validade: coluna por item (VAR-117); a VAR-065 só existe quando todos os perecíveis têm o mesmo critério.
+- **Por quê:** são as leituras que reproduzem a NE-003 e a NE-022 sem inventar número. A 2 e a 3 merecem confirmação da assessoria jurídica.
+
+### P23. Especificação das matrizes M06 a M10 e achados da seção 5 (ABERTA)
+
+- **Situação:** o texto original do prompt não está mais disponível nesta sessão; o `attachment.txt` reenviado em 22/10/2026 é a lista de tarefas, não o prompt. As colunas do M06 ao M10 e a lista dos achados da seção 5 foram reconstruídas a partir do registro das Fases 0 a 3 (logs/f0_conferencias.txt e perguntas P01 a P11). O README descreve o que foi reconstruído.
+- **Recomendo:** reenviar o prompt original, ou só as seções que descrevem M06 a M10 e a seção 5, para eu conferir colunas e achados.
+- **Por quê:** o teste 8 depende da lista exata de achados; hoje ele usa a lista reconstruída (10 achados).
+
+### P24. Comodato numa aquisição (ABERTA)
+
+- **Situação:** o checklist de consumo tem uma seção inteira sobre comodato (10.1 a 10.11) e o TR 117/2025 usa "consignação com comodato", mas o modelo AGU e as notas não tratam do assunto. Criei a WZ-56 e o SET-01, ambos `A_VERIFICAR`.
+- **Recomendo:** a assessoria jurídica decidir se o comodato entra como obrigação acessória da compra (cláusula no TR, como no SET-01) ou como instrumento próprio.
+- **Por quê:** o custo do equipamento vai embutido no preço do material e afeta a competição; é decisão jurídica, não técnica.
+
+### P25. Atestado que exige "garantia mínima de 12 meses prestada" (ABERTA)
+
+- **Situação:** os TRs 23/2026 e 58/2026 exigem atestado de contrato com garantia mínima de 12 meses prestada (DV-09). A NE-071 veda limitação de tempo ou de época nos atestados; não está claro se a duração da garantia atestada entra na vedação.
+- **Recomendo:** a assessoria jurídica responder. Até lá, o sistema não oferece essa característica de atestado.
+- **Por quê:** se for vedada, a exigência restringe a habilitação sem base; se não for, falta a justificativa técnica no ETP.
+
+### P26. Leitura por máquina do checklist preenchido no Word (ABERTA, depende da revisão do checklist)
+
+- **Como seria a leitura (sem código):**
+  1. Abrir o docx preenchido e percorrer os parágrafos e as tabelas na ordem do documento, como o `ck_ler.py` faz com o modelo em branco.
+  2. Identificar cada pergunta pelo número digitado no começo do parágrafo ("14.2.") e conferir o enunciado com o do M11 (texto literal). Enunciado diferente indica outra versão do checklist (VAL-036).
+  3. Ler as opções: o "☐" trocado por "☒", "☑" ou "X" marca a opção; a opção cujo marcador continua "☐" está desmarcada.
+  4. Ler a resposta na tabela de uma célula que vem logo depois de "Resposta:" e, nas tabelas com rótulo (ex.: "Itens | Faixa de temperatura"), cada célula pelo rótulo.
+  5. Nas perguntas por item (por_item = S), ligar a resposta aos itens da tabela de itens pelo número do item.
+  6. Gravar as respostas como `CK_C_14_2` e similares (convenção do jlogic.py) e mostrar tudo ao usuário para confirmação antes de gerar a minuta.
+- **O que torna a leitura incerta:**
+  - marca diferente das previstas (realce, negrito, opção apagada, "x" no meio do texto, ✓);
+  - duas opções marcadas numa pergunta UNICA, ou nenhuma numa pergunta obrigatória;
+  - resposta escrita fora da caixa (no parágrafo seguinte, em comentário ou na caixa da pergunta de baixo);
+  - "Outro" marcado sem especificação; opção com lacuna dentro do texto ("Outro: ______ meses");
+  - pergunta renumerada, apagada ou com o enunciado editado; numeração automática do Word aplicada por cima da digitada;
+  - controle de alterações não aceito (texto inserido e apagado convivem no arquivo);
+  - itens citados por descrição, faixa ("1 a 5") ou "todos", em vez de número;
+  - checklist impresso e escaneado (só OCR, sem estrutura).
+- **Recomendo:** cada incerteza vira pendência na leitura (VAL-037), e a pendência bloqueia a geração até o usuário confirmar. Na revisão do checklist, trocar "☐" por caixa de seleção do Word e cada resposta por controle de conteúdo com marca igual ao ID do M11 (sugestoes_checklist.md, S19).
+- **Por quê:** com âncoras de texto, a leitura funciona enquanto o usuário não mexe no formulário; com controles de conteúdo, a âncora deixa de depender do texto.
+
+### P27. Condições que não cabem em JSON Logic (ADOTADA PROVISORIAMENTE)
+
+- **Situação:** o M02, o M04, o M08 e o M10 têm as condições em JSON Logic (condicao_expr, liga_expr, desliga_expr). Ficaram fora:
+  1. Nove regras do M10 que comparam texto livre, contam itens por grupo ou comparam a minuta com o modelo ou o ETP com o TR: VAL-002, VAL-003, VAL-014, VAL-034, VAL-035, VAL-042, VAL-043, VAL-044 e VAL-045 (condicao_expr vazia).
+  2. Ligações de trecho dentro de um bloco, que o JSON Logic de bloco inteiro não representa: WZ-08 (trecho opcional de TR-1.1), WZ-24 (linha de cota em TR-1.1.TAB1), WZ-33 (trecho entre colchetes de TR-7.2.4.7), WZ-40 (trecho de TR-12.1 e colunas de valor de TR-1.1.TAB1) e WZ-43 (trecho de assistência técnica de TR-AI-4.1.1). Os "Preenche ..." do M04 preenchem lacunas e não são condição.
+  3. Atributos calculados antes da avaliação: tratamento_me_epp e valor_unidade_disputa (soma por grupo), tic (lista de classes da OM) e a WZ-50 (contagem de unidades de disputa).
+- **Recomendo:** (1) e (3) como funções do sistema que rodam antes do JSON Logic e gravam o resultado em atributo; (2) dividir esses blocos em sub-blocos com ID próprio numa versão 2 do M02.
+- **Por quê:** o JSON Logic padrão não tem agregação por grupo nem comparação de textos; forçar operadores próprios tiraria a portabilidade das expressões.
+
+### P28. Lista de classes de TIC para o alerta de escopo (ABERTA)
+
+- **Situação:** o VAL-001 usa o atributo tic de cada item, calculado pela classe ou PDM do DFD (VAR-153, VAR-154). Não há na base lista oficial de classes de TIC.
+- **Recomendo:** a OM manter a lista (classes e PDM que ela trata como TIC) como parâmetro do sistema; até lá, o alerta usa só as perguntas 15.3 e 15.5 do checklist de permanentes.
+- **Por quê:** inventar a lista seria preencher por dedução.
+
+### P29. Origem CHECKLIST no M05 e variáveis novas (ADOTADA PROVISORIAMENTE)
+
+- **Situação:** o domínio de origem do M05 era DFD, WIZARD, SISTEMA e PESQUISA_PRECOS. Com o checklist como entrada, acrescentei CHECKLIST e criei 31 variáveis (VAR-125 a VAR-155): 28 para o texto das cláusulas setoriais e 3 atributos de item (classe_pdm, tic, categoria).
+- **Recomendo:** aceitar. A VAR-011 (tabela de itens) continua com origem DFD, porque o DFD do Compras.gov é a fonte mais estruturada; o checklist só anexa a tabela.
+- **Por quê:** cada lacuna das cláusulas precisa de variável com origem e validação, como as do modelo AGU.
+
+### P30. Checklist em revisão e M11 (INFORMATIVA)
+
+- **Situação:** o M11 foi feito sobre as versões dos docx cujo SHA-256 está no README. Qualquer mudança no checklist exige refazer o M11 (rodar `ck_ler.py` e `ck_gerar_M11.py`). As sugestões para a revisão estão em sugestoes_checklist.md.
