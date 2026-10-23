@@ -8,6 +8,7 @@ import {
   variavelDoId,
   type TipoDeErro,
 } from "../../scripts/compilar-regras.ts";
+import { esquemaDoPacote } from "../../src/motor/pacote/esquema.ts";
 
 const FIXTURES = path.join(import.meta.dirname, "fixtures");
 
@@ -70,10 +71,40 @@ describe("matrizes fictícias", () => {
     ["operador-fora-da-lista", "operador"],
     ["variavel-desconhecida", "variavel"],
     ["atributo-de-item-desconhecido", "variavel"],
+    ["atributo-de-item-solto", "variavel"],
+    ["parametro-sem-linha", "variavel"],
+    ["parametro-fora-do-tipo", "parametro"],
+    ["parametro-sem-tipo", "parametro"],
+    ["operador-de-calculo-fora-do-calculo", "operador"],
+    ["accumulator-fora-do-reduce", "variavel"],
+    ["variavel-global-dentro-do-reduce", "variavel"],
+    ["ordem-de-calculo", "ordem"],
+    ["destino-desconhecido", "variavel"],
   ])("falham com %s", (caso, tipo) => {
     const resultado = compilarConteudos(matrizesDoCaso(caso));
     expect(resultado.erros.map((e) => e.tipo)).toEqual([tipo]);
     expect(resultado.pacote).toBeUndefined();
+  });
+
+  it("levam os parâmetros do M12 ao pacote, com o tipo declarado na fonte", () => {
+    const pacote = JSON.parse(compilarConteudos(matrizesDoCaso()).pacote?.json ?? "{}");
+    expect(pacote.parametros).toEqual({ lista_ficticia: [], limite_ficticio: 100.5, marcador_ficticio: "1.000" });
+  });
+
+  it("geram pacote que o esquema do motor aceita, com expressões em JSON e calculo_ordem em número", () => {
+    const pacote = esquemaDoPacote.parse(JSON.parse(compilarConteudos(matrizesDoCaso()).pacote?.json ?? "{}"));
+    const valorDoGrupo = pacote.matrizes.M05.find((l) => l.id === "VAR-003");
+    expect(valorDoGrupo?.calculo_ordem).toBe(1);
+    expect(valorDoGrupo?.calculo_expr).toMatchObject({ reduce: expect.any(Array) });
+    expect(pacote.matrizes.M11[0].preenche_expr).toHaveProperty("itens.perecivel");
+    expect(pacote.matrizes.M11[0].sugere_expr).toBeNull();
+  });
+
+  it("aceitam a citação de coluna de um ID, como VAR-002.calculo_expr", () => {
+    expect(tiposDeErro(matrizesDoCaso())).toEqual([]);
+    const conteudos = matrizesDoCaso();
+    conteudos["M12_parametros.csv"] = conteudos["M12_parametros.csv"].replace("VAR-002.calculo_expr", "VAR-009.calculo_expr");
+    expect(tiposDeErro(conteudos)).toEqual(["referencia"]);
   });
 
   it("falham quando uma coluna é renomeada", () => {
@@ -102,7 +133,7 @@ describe("matrizes fictícias", () => {
     it("passam quando tudo está validado", () => {
       const conteudos = matrizesDoCaso();
       for (const arquivo of ["M03_notas_explicativas.csv", "M04_wizard.csv"]) {
-        conteudos[arquivo] = conteudos[arquivo].replace(/"INFERIDO","",""/, '"INFERIDO","OK",""');
+        conteudos[arquivo] = conteudos[arquivo].replace(/"INFERIDO","",""/g, '"INFERIDO","OK",""');
       }
       expect(tiposDeErro(conteudos, true)).toEqual([]);
     });
