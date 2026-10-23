@@ -23,3 +23,14 @@ As perguntas abertas das matrizes (`matrizes/v1/perguntas_abertas.md`) e as deci
 | P28 (classes de TIC) | Não é prioridade; processos de TIC são raros na OM | PAR-12 fica vazio; o alerta usa só as perguntas do checklist |
 | Prazo de expurgo | 30 dias após "concluído" | Trava do Marco 2 resolvida |
 | Formato do checklist | Formulário no sistema e Word | Trava do Marco 2 resolvida |
+
+## Respostas seguintes (23/10/2026)
+
+| Tema | Resposta | Efeito |
+| --- | --- | --- |
+| P25 (atestado com garantia mínima prestada) | Permitido, com justificativa no ETP. A garantia exigida pode ser de 12 meses ou mais | A característica passa a ser oferecida, com justificativa obrigatória; a VAL-029 não pode bloqueá-la |
+| P32.1 ("Outro" que deveria ser número) | O sistema lê o número escrito; o que não conseguir ler fica destacado | Mesma regra da S20 para CK-C-16.3, CK-P-19.5, CK-P-19.3, CK-P-13.7 e CK-P-13.1 |
+| P32.2 (perguntas "Quem…") | Destacar sempre | Princípio geral: na dúvida, destacar para o operador |
+| M03, lote 3 (NE-003 a NE-017, 10 regras CONDICAO) | OK, seguindo o parecer do gestor | `validacao = OK` nas 10 linhas, com o comentário de que a aceitação seguiu o parecer |
+
+A validação do M03 e do M04 agora fica no repositório. Toda entrega nova do agente das matrizes precisa manter as colunas `validacao` e `comentario_validacao` como estão aqui.
