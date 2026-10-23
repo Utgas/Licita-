@@ -69,6 +69,9 @@ _P = [
     ("classes_tic", "[]", "lista", "classes de material (texto da classe e PDM, como no DFD)",
      "lista mantida pela OM (VAR-154); o sistema não traz lista própria", "",
      "Sem valor na base: a OM cadastra. Lista vazia faz todo item sair com tic = N.", "A_VERIFICAR"),
+    ("garantia_atestado_minima_meses", "12", "numero", "meses",
+     "resposta da P25 (decisão 0008, 23/10/2026): garantia já prestada nos atestados de 12 meses ou mais", "23/10/2026",
+     "Valor literal da resposta registrada na decisão 0008 do repositório. Usado na VAL-052.", "EXTRAIDO"),
 ]
 
 

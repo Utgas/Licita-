@@ -134,6 +134,30 @@ for cid in ("CK-C-12.1", "CK-P-8.1"):
           "O prazo de entrega marcado como 'Outro' não está escrito como número de dias (ex.: '45 dias'). Qual é o prazo "
           "de entrega, em dias corridos?")
 
+# P32.1 (resposta de 23/10/2026): a mesma leitura do número vale para os outros 'Outro' de prazo e de garantia
+def espec_mais(cid, texto, expr, pergunta=""):
+    t0, e0, p0 = ESPEC.get(cid, ("", None, ""))
+    ESPEC[cid] = ((t0 + " " + texto).strip(), ou(e0, expr) if e0 is not None else expr,
+                  (p0 + " " + pergunta).strip() if p0 and pergunta else (p0 or pergunta))
+
+
+for cid, outro, unid, perg in (
+        ("CK-C-16.3", "Outro", "dias", "Qual é o prazo para substituir o produto recusado, em dias?"),
+        ("CK-P-19.5", "Outro", "dias", "Qual é o prazo de correção ou substituição, em dias?"),
+        ("CK-P-19.3", "Outro", "dias úteis", "Qual é o prazo para os testes e a avaliação definitiva, em dias úteis?"),
+        ("CK-P-13.7", "Outro", "dias úteis", "Qual é o prazo para restabelecer o funcionamento, em dias úteis?"),
+        ("CK-P-13.1", "Outro: ______ meses", "meses", "Se houver 'Outro' sem número de meses legível: qual é a garantia "
+                                                      "mínima de cada item, em meses?")):
+    n = ckn(cid)
+    espec_mais(cid, f"'Outro' (P32.1): número seguido de '{unid}' vira o número em {n}_numero e é o valor; qualquer outra "
+                    f"coisa deixa {n}_numero vazio, destaca a resposta e faz a pergunta ao operador.",
+               e(eq(n, outro), vazio(n + "_numero")),
+               f"O 'Outro' desta pergunta não traz um número legível. {perg}")
+espec_mais("CK-P-19.3", "A opção '30 dias' está em dias corridos e o prazo de recebimento definitivo é contado em dias "
+                        "úteis: não é convertida, fica destacada e vira pergunta.", eq("CK_P_19_3", "30 dias"),
+           "A opção '30 dias' está em dias corridos, mas o prazo de recebimento definitivo é em dias úteis. Qual é o prazo "
+           "em dias úteis?")
+
 # --------------------------------------------------------------------------- complementos (S10 a S18)
 CONSUMO, PERMANENTES = tem("checklist.consumo"), tem("checklist.permanentes")
 COMPL = [
@@ -312,6 +336,8 @@ CASOS_ESPECIFICOS = {
     "CK-C-14.2": [({"CK_C_14_2": "12 meses", "checklist": {"resposta_unica_por_item": ["CK-C-14.2"]}}, True),
                   ({"CK_C_14_2": "12 meses"}, False)],
     "CK-P-13.1": [({"CK_P_13_1": "36 meses", "checklist": {"resposta_unica_por_item": ["CK-P-13.1"]}}, True),
+                  ({"CK_P_13_1": "Outro: ______ meses"}, True),
+                  ({"CK_P_13_1": "Outro: ______ meses", "CK_P_13_1_numero": 48}, False),
                   ({"CK_P_13_1": "36 meses"}, False)],
     "CK-C-9.7": [({"CK_C_9_7": "[RESPONSÁVEL]"}, True), ({}, False)],
     "CK-C-8.2": [({"CK_C_8_2": SIM, "itens": [{"numero": 1}]}, True),
@@ -322,6 +348,12 @@ CASOS_ESPECIFICOS = {
     "CK-C-12.1": [({"CK_C_12_1": "Outro", "CK_C_12_1_texto": "conforme a necessidade"}, True),
                   ({"CK_C_12_1": "Outro", "CK_C_12_1_texto": "45 dias", "CK_C_12_1_numero": 45}, False),
                   ({"CK_C_12_1": "15 dias"}, False)],
+    "CK-C-16.3": [({"CK_C_16_3": "Outro", "CK_C_16_3_texto": "imediato"}, True),
+                  ({"CK_C_16_3": "Outro", "CK_C_16_3_numero": 3}, False), ({"CK_C_16_3": "2 dias"}, False)],
+    "CK-P-19.5": [({"CK_P_19_5": "Outro"}, True), ({"CK_P_19_5": "Outro", "CK_P_19_5_numero": 15}, False)],
+    "CK-P-19.3": [({"CK_P_19_3": "Outro"}, True), ({"CK_P_19_3": "30 dias"}, True),
+                  ({"CK_P_19_3": "Outro", "CK_P_19_3_numero": 20}, False), ({"CK_P_19_3": "5 dias úteis"}, False)],
+    "CK-P-13.7": [({"CK_P_13_7": "Outro"}, True), ({"CK_P_13_7": "Outro", "CK_P_13_7_numero": 3}, False)],
     "CK-P-8.1": [({"CK_P_8_1": "Outro", "CK_P_8_1_texto": "a combinar"}, True),
                  ({"CK_P_8_1": "Outro", "CK_P_8_1_numero": 75}, False)],
 }

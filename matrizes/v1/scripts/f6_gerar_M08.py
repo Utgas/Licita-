@@ -358,6 +358,22 @@ S = [
          base="NE-011 notas 7 e 8 (destinação ambiental dos resíduos; Lei 12.305/2010, Política Nacional de Resíduos Sólidos)",
          evid="Sem evidência no corpus.",
          obs="", status="INFERIDO"),
+    dict(id="SET-23", tema="Atestado com garantia técnica já prestada a equipamento compatível (P25)",
+         documento="TR", origem="CK-P-18.1; CK-P-18.3 (fatos de apoio); decisão na WZ-60",
+         condicao="SE a equipe exigir que os atestados comprovem garantia já prestada a equipamento compatível (WZ-60 = SIM)",
+         expr=eq("WZ_60", "SIM"),
+         ponto="TR: qualificação técnica, depois das características dos atestados (TR-9.34 e subitens)",
+         texto="Os atestados deverão comprovar também a prestação de garantia técnica a equipamento compatível com o objeto, "
+               "pelo prazo mínimo de [VAR-161] meses, conforme justificativa constante do Estudo Técnico Preliminar.",
+         vars_="VAR-161; VAR-162", wz="WZ-60; WZ-38",
+         base="NE-071 (atestados sem limitação de tempo ou de época); resposta da P25 em 23/10/2026: a duração da garantia "
+              "já prestada é permitida, com justificativa no ETP, e pode ser de 12 meses ou mais",
+         evid=f"{TR23} p.11: '9.30.1.1. Venda, entrega, instalação e garantia mínima de 12 (doze) meses prestada ao "
+              f"equipamento compatível com o objeto'; {TR58} p.16: '9.34.2.1. Venda, entrega, instalação e garantia mínima de "
+              f"12 (doze) meses prestada ao equipamento'",
+         obs="A exigência fica fora da VAL-029 (que barra período ou época do contrato atestado) e depende de justificativa "
+             "no ETP (VAL-053) e de prazo de 12 meses ou mais (VAL-052).",
+         status="INFERIDO"),
 ]
 
 

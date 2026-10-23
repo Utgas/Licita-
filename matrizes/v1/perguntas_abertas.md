@@ -170,12 +170,14 @@ Situação de cada item:
 - **Lote 1 de respostas (decisão 0008, 23/10/2026):** o comodato fica fora do sistema por enquanto. Um estudo jurídico futuro pode trazer uma pergunta sim/não com justificativa padrão com lacunas, sujeita à validação do dono do projeto.
 - **Como ficou desligado, sem apagar linhas:** a condição passou a ser `false` e o motivo está no texto da própria linha, que começa por "DESLIGADA": WZ-56 (`depende_de` e `depende_de_expr`; a pergunta não é oferecida), SET-01 (`condicao` e `condicao_expr`; a cláusula nunca entra) e VAL-027 (o alerta de comodato sem decisão perderia o sentido). No M11, as perguntas 10.1 a 10.11 do consumo viraram `SO_CONTROLE`, sem destino nem expressão, com a regra antiga guardada no texto (S21). A SET-12 deixou de ler a CK-C-10.8. Para religar, basta trocar `false` pela condição anterior, escrita no texto.
 
-### P25. Atestado que exige "garantia mínima de 12 meses prestada" (ABERTA)
+### P25. Atestado que exige "garantia mínima de 12 meses prestada" (RESOLVIDA, 23/10/2026)
 
 - **Situação:** os TRs 23/2026 e 58/2026 exigem atestado de contrato com garantia mínima de 12 meses prestada (DV-09). A NE-071 veda limitação de tempo ou de época nos atestados; não está claro se a duração da garantia atestada entra na vedação.
 - **Recomendo:** a assessoria jurídica responder. Até lá, o sistema não oferece essa característica de atestado.
 - **Por quê:** se for vedada, a exigência restringe a habilitação sem base; se não for, falta a justificativa técnica no ETP.
 - **Lote 1 de respostas (decisão 0008, 23/10/2026):** pendente de esclarecimento. Continua aberta; o sistema não oferece essa característica de atestado (nenhuma opção da WZ-38 nem bloco a gera).
+- **Resposta (decisão 0008, respostas seguintes, 23/10/2026):** permitido, com justificativa no ETP; a garantia exigida pode ser de 12 meses ou mais.
+- **Como entrou:** pergunta nova WZ-60 (só quando a WZ-38 tem ATESTADOS), cláusula SET-23 com o prazo na VAR-161, justificativa na VAR-162, VAL-052 (prazo vazio ou menor que 12 meses, PAR-13) e VAL-053 (sem justificativa). A VAL-029 continua barrando o período ou a época do contrato atestado ("últimos", "período mínimo" sem tratar de garantia) e deixou de barrar a duração da garantia já prestada. DV-09 atualizado.
 
 ### P26. Leitura por máquina do checklist preenchido no Word (ABERTA para o Marco 2; checklist congelado, decisão 0009)
 
@@ -241,7 +243,7 @@ Situação de cada item:
 - **Por quê:** sem esses operadores, o motor teria de calcular ME/EPP e quantidade da cota em código, que é exatamente o que o projeto proíbe.
 - **Decisão (23/10/2026):** os seis operadores ficam aceitos só em `M04.calculo_expr` e `M05.calculo_expr`, e o contexto de item fica como está no README. A VAR-085 continua lista: a VAL-029 passou a usar `some` sobre a `VAR_085` e procura "período mínimo", "Período mínimo", "últimos" e "Últimos" em cada item (`{"var": ""}` é o próprio item da lista). O PAR-05 passou a valor numérico (30, dias corridos); a VAL-020 e a condicional da CK-C-12.2 comparam a VAR-060, que recebe o prazo da CK-C-12.1 em número.
 
-### P32. Fase 11: o que o motor e o compilador precisam oferecer para a leitura do checklist e as regras novas (ABERTA)
+### P32. Fase 11: o que o motor e o compilador precisam oferecer para a leitura do checklist e as regras novas (RESPONDIDA em parte, 23/10/2026)
 
 - **Leitura do Word (função do motor, não expressão):**
   1. `CK_x_numero`: número lido do texto escrito no "Outro" do prazo de entrega (CK-C-12.1 e CK-P-8.1), quando o texto é número seguido de "dias" (ex.: "45 dias" vira 45); qualquer outra coisa deixa vazio (S20). Sem isso, a VAR-060 fica vazia no "Outro" e a pergunta ao operador resolve.
@@ -255,3 +257,9 @@ Situação de cada item:
 - **Outros "Outro" que ainda copiam texto para variável NUMERO:** CK-C-16.3 e CK-P-19.5 (VAR-074), CK-P-19.3 (VAR-075), CK-P-13.7 (VAR-067) e "Outro: ______ meses" da CK-P-13.1 (garantia). A S20 cobre só o prazo de entrega; até decisão, o motor trata esses casos como lacuna com alerta (passo 4 do Marco 1). Estender a leitura `_numero` a eles depende do dono do projeto.
 - **Recomendo:** implementar 1 a 4 na leitura do Marco 2 e ajustar o compilador agora, no Marco 1.
 - **Por quê:** ler número em texto livre e comparar nomes não cabem em JSON Logic sem operador novo, e a decisão 0009 manda deixar a regra no M11, não no código.
+- **Respostas de 23/10/2026:** (1) o sistema lê o número escrito em todos os "Outro" de prazo e de garantia: CK-C-16.3, CK-P-19.5, CK-P-19.3, CK-P-13.7 e CK-P-13.1 passaram a usar `CK_x_numero`, com destaque e pergunta quando o número não é legível; na CK-P-19.3, a opção "30 dias" (corridos) não vira dias úteis e também vira pergunta. (2) As perguntas "Quem..." ficam destacadas sempre; princípio geral: na dúvida, destacar para o operador. Continuam com o motor e o compilador: a leitura dos itens 1 a 4 e o ajuste do compilador.
+
+### P33. Validação no repositório (INFORMATIVA)
+
+- **Decisão (23/10/2026):** as colunas `validacao` e `comentario_validacao` do M03 e do M04 passam a ser mantidas no repositório (`matrizes/v1/`). Toda entrega nova parte delas.
+- **Como fica:** o `rodar_fases_4_9.sh` recebe a pasta `matrizes/v1` do repositório como 4º argumento; o `f12_validacao_repo.py` copia as duas colunas para os CSV locais antes de regenerar, os geradores preservam essas colunas, e o teste compara linha a linha com o repositório. Linha validada no repositório que deixou de existir para a execução com erro.

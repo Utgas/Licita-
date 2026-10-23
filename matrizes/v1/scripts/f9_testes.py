@@ -62,6 +62,7 @@ def ler(p):
 
 def main():
     pasta, modelo_json, docs, texto, saida = map(Path, sys.argv[1:6])
+    repo = Path(sys.argv[6]) if len(sys.argv) > 6 else None
     modelo = json.load(open(modelo_json, encoding="utf-8"))
     out, falhas = [], 0
 
@@ -284,6 +285,21 @@ def main():
     shutil.rmtree(tmp)
     reg(all(det), f"controle negativo da simulação: 3 erros injetados (condição de bloco, liga_expr, cláusula setorial), "
         f"detectados {sum(det)}")
+    # ------------------------------------------------------------ validação do repositório (Fase 12)
+    if repo:
+        dif, n_val = [], 0
+        for k in ("M03", "M04"):
+            r_rows = {r["id"]: r for r in ler(repo / ARQS[k])}
+            l_rows = {r["id"]: r for r in M[k]}
+            for i, r in r_rows.items():
+                for c in ("validacao", "comentario_validacao"):
+                    if r.get(c, "") != l_rows.get(i, {}).get(c, ""):
+                        dif.append(f"{k}:{i}.{c}")
+                n_val += 1 if r.get("validacao") else 0
+        reg(not dif, f"validacao e comentario_validacao do M03 e do M04 iguais aos do repositório ({n_val} linhas "
+            f"validadas lá)" + (f" | {dif[:8]}" if dif else ""))
+    else:
+        out.append("INFO  validação do repositório não conferida (rode com o 4º argumento do rodar_fases_4_9.sh)")
     # ------------------------------------------------------------ resumo
     for k in ARQS:
         out.append(f"INFO  {k}: {len(M[k])} linhas | status {dict(Counter(r['status'] for r in M[k]))}")

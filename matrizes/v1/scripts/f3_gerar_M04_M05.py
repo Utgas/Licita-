@@ -78,6 +78,7 @@ PRE = {
     "WZ-57": DJ + "; fatos de apoio: CK-C-14.4; CK-C-14.5",
     "WZ-58": DJ + "; fatos de apoio: CK-P-2.4; CK-P-20.1; CK-P-20.2; CK-P-20.3",
     "WZ-59": DJ + "; fatos de apoio: CK-P-11.2; CK-P-11.7; CK-P-12.8; CK-P-14.2; CK-P-18.6",
+    "WZ-60": DJ + "; fatos de apoio: CK-P-18.1; CK-P-18.3",
 }
 
 # id, pergunta, documento, tipo, opcoes, depende, liga, desliga, justificativa, coerencia, fundamento, status_extra
@@ -420,6 +421,13 @@ W = [
      "S se SIM: motivo técnico das perguntas 11.2, 11.7, 12.8, 14.2 e 18.6 do checklist de permanentes",
      "Restringe a competição (VAL-030); exigência dirigida à habilitação passa pela carta de solidariedade (WZ-21, NE-014)",
      "M08 SET-15; NE-014", ""),
+    ("WZ-60", "Os atestados deverão comprovar garantia técnica já prestada a equipamento compatível com o objeto, com prazo "
+     "mínimo?", "TR", "SIM_NAO", "SIM; NAO", "WZ-38 contém ATESTADOS", "SIM: SET-23", "NAO: SET-23",
+     "S se SIM: justificativa técnica no ETP (VAR-162) e prazo mínimo da garantia prestada (VAR-161), de 12 meses ou mais "
+     "(VAL-052 e VAL-053)",
+     "Permitido pela resposta da P25 (23/10/2026): a duração da garantia já prestada não é a limitação de tempo ou de época "
+     "que a NE-071 veda; o período ou a época do contrato atestado continuam barrados (VAL-029)",
+     "NE-071; M08 SET-23; P25", ""),
 ]
 
 # id, nome, descricao, tipo, validacao, obrigatoria, origem, usada_em
@@ -649,6 +657,9 @@ def main():
     saida = Path(sys.argv[3])
     wz_ids = {w[0] for w in W}
     var_ids = {v[0] for v in V}
+    # VAR acrescentadas pelo f10_gerar_expr (NOVAS_M05), que roda depois deste script
+    from f10_gerar_expr import NOVAS_M05
+    var_ids |= {v["id"] for v in NOVAS_M05}
     validos = set(lista) | m01 | wz_ids | var_ids | {f"NE-{k:03d}" for k in range(1, 103)}
     # IDs das matrizes das Fases 6 e 7 e do M11, quando já geradas (a conferência final é o teste 3 da Fase 9)
     for nome in ("M08_clausulas_setoriais.csv", "M10_validacoes.csv", "M11_checklist.csv"):
@@ -678,6 +689,8 @@ def main():
                  "e do M01, com 'A..B' para faixa na ordem do M02. Campos INFERIDOS: todos, exceto os IDs citados. "
                  "pre_preenchida_por: perguntas dos checklists técnicos (M11) que respondem ou apoiam a WZ (22/10/2026); "
                  "liga_expr e desliga_expr: JSON Logic gerado pelo f6_gerar_expr.py a partir de liga_blocos e desliga_blocos.")
+        if wid == "WZ-60":
+            fonte += " Pergunta criada na Fase 12 (23/10/2026) pela resposta da P25 (característica de atestado permitida)."
         if wid in ("WZ-56", "WZ-57", "WZ-58", "WZ-59"):
             fonte += " Pergunta criada na Fase 6 para as cláusulas setoriais do M08 (numeração a partir de WZ-56)."
         if wid == "WZ-11":

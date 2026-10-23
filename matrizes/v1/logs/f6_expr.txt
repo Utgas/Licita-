@@ -21,4 +21,4 @@ PARCIAL WZ-44 liga_blocos: 'Preenche TR-AI-1.1' (não vira condição de bloco i
 PARCIAL WZ-45 liga_blocos: 'Preenche TR-AI-8.1' (não vira condição de bloco inteiro)
 PARCIAL WZ-54 liga_blocos: 'preenche a escolha em TR-9.26' (não vira condição de bloco inteiro)
 M02 condicao_expr: {'false': 18, 'true': 180, 'expressao': 301}; condicionais sem condição de ligar: []
-M04: liga_expr em 45 perguntas; desliga_expr em 44
+M04: liga_expr em 46 perguntas; desliga_expr em 45

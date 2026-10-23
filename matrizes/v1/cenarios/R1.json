@@ -30,7 +30,8 @@
    "WZ_40": "NAO",
    "WZ_43": "CONTRATO",
    "WZ_54": "DOIS_ULTIMOS_EXERCICIOS",
-   "WZ_55": "SIM"
+   "WZ_55": "SIM",
+   "WZ_60": "SIM"
   },
   "checklist": {},
   "itens": [
@@ -46,7 +47,8 @@
    }
   ],
   "variaveis": {
-   "VAR_099": "DEZ/2025"
+   "VAR_099": "DEZ/2025",
+   "VAR_161": 12
   },
   "metadados": {}
  },
@@ -74,7 +76,8 @@
   "WZ_40": "TR 23/2026, item 10.1: valor estimado divulgado",
   "WZ_43": "TR 23/2026, item 1.4: 'assinatura do contrato ou instrumento equivalente'",
   "WZ_54": "TR 23/2026, item 9.23: 'dos dois últimos exercícios sociais'",
-  "WZ_55": "TR 23/2026, item 9.29: declaração de profissional contábil"
+  "WZ_55": "TR 23/2026, item 9.29: declaração de profissional contábil",
+  "WZ_60": "TR 23/2026, item 9.30.1.1: 'garantia mínima de 12 (doze) meses prestada ao equipamento' (P25)"
  },
  "esperado": {
   "blocos": [
@@ -272,13 +275,16 @@
    "SET-09",
    "SET-11",
    "SET-12",
-   "SET-13"
+   "SET-13",
+   "SET-23"
   ],
   "validacoes_m10": [
    "VAL-043",
    "VAL-041",
    "VAL-042",
-   "VAL-028",
+   "VAL-052",
+   "VAL-053",
+   "VAL-029",
    "VAL-044",
    "VAL-045",
    "VAL-005"
@@ -442,12 +448,12 @@
   },
   {
    "dv": "DV-09",
-   "classificacao": "TR real",
+   "classificacao": "permitido (P25): não é divergência; a exigência entra pela WZ-60 e pela SET-23, com justificativa no ETP (VAL-053)",
    "tipo": "A_CONFERIR",
    "local": "TR 23/2026 p.11, item 9.30.1.1; TR 58/2026 p.16, item 9.34.2.1",
-   "descricao": "O atestado deve comprovar 'garantia mínima de 12 (doze) meses prestada ao equipamento'. A NE-071 veda limitação de tempo ou de época nos atestados; não está claro se a duração da garantia atestada entra nessa vedação.",
-   "referencia": "NE-071; TR-9.34",
-   "tratamento_no_sistema": "VAL-028; perguntas_abertas.md"
+   "descricao": "O atestado deve comprovar 'garantia mínima de 12 (doze) meses prestada ao equipamento'. A NE-071 veda limitação de tempo ou de época nos atestados; não estava claro se a duração da garantia atestada entra nessa vedação. Resposta da P25 (23/10/2026): permitida, com justificativa no ETP, de 12 meses ou mais.",
+   "referencia": "NE-071; TR-9.34; WZ-60; SET-23",
+   "tratamento_no_sistema": "WZ-60, SET-23, VAL-052 e VAL-053; a VAL-029 não barra a duração da garantia (P25)"
   },
   {
    "dv": "DV-10",
@@ -522,13 +528,15 @@
   },
   "blocos_simulados": 237,
   "clausulas_m08_simuladas": [
-   "SET-13"
+   "SET-13",
+   "SET-23"
   ],
   "bloqueios_grupo_alternativas_simulados": [],
   "validacoes_m10_simuladas": [
    "VAL-005",
    "VAL-025",
-   "VAL-039"
+   "VAL-039",
+   "VAL-053"
   ],
   "derivadas_simuladas": {
    "WZ-09": "NAO",

@@ -275,10 +275,13 @@ def testes(pasta, M):
     v29 = json.loads(next(r for r in M["M10"] if r["id"] == "VAL-029")["condicao_expr"])
     casos = [(["atestado pelo período mínimo de 12 meses"], True), (["Período mínimo de execução"], True),
              (["contratos dos últimos 3 anos"], True), (["Últimos exercícios"], True),
-             (["fornecimento e instalação de equipamento compatível"], False), ([], False), (None, False)]
+             (["fornecimento e instalação de equipamento compatível"], False), ([], False), (None, False),
+             (["garantia técnica prestada pelo período mínimo de 12 meses"], False),
+             (["Garantia mínima de 12 meses prestada ao equipamento"], False),
+             (["garantia prestada nos últimos 2 anos"], True)]
     erros29 = [str(x) for x, esp in casos if bool(avaliar(v29, {"VAR_085": x} if x is not None else {})) != esp]
     reg("some" in json.dumps(v29) and not erros29, "VAL-029: some sobre a VAR_085 (lista) acha 'período mínimo' e "
-        "'últimos', com e sem inicial maiúscula, em cada item; 7 casos" + (f" | erra em {erros29}" if erros29 else ""))
+        "'últimos', com e sem inicial maiúscula, em cada item, sem barrar a duração da garantia já prestada (P25); 10 casos" + (f" | erra em {erros29}" if erros29 else ""))
     p05 = next(r for r in m12 if r["id"] == "PAR-05")
     reg(re.fullmatch(r"\d+", p05["valor"]) and p05["unidade"] == "dias corridos",
         f"PAR-05: valor numérico ({p05['valor']}) com unidade '{p05['unidade']}'")

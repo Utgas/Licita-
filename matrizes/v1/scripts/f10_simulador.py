@@ -136,6 +136,10 @@ def cond_texto(t, r):
     m = re.fullmatch(r"(WZ-\d{2}) respondida", t)
     if m:
         return not vazio(r.get(m.group(1)))
+    m = re.fullmatch(r"(WZ-\d{2}) contém ([A-Z0-9_]+)", t)
+    if m:
+        v = r.get(m.group(1)) or ""
+        return m.group(2) in (v.split(";") if isinstance(v, str) else v)
     m = re.fullmatch(r"(WZ-\d{2}) diferente de ([A-Z0-9_]+)", t)
     if m:
         return r.get(m.group(1)) != m.group(2)

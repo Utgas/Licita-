@@ -1,2 +1,12 @@
 nomes de pessoas identificados no corpus: 46; sobrenomes distintivos: 73
+AVISO (coluna do repositório, preservada; não conta como achado) em M03_notas_explicativas.csv NE-003 comentario_validacao: ACEITO PELO G*** EM 23/10/2026, NO CHAT DE GESTAO, COM BA
+AVISO (coluna do repositório, preservada; não conta como achado) em M03_notas_explicativas.csv NE-004 comentario_validacao: ACEITO PELO G*** EM 23/10/2026, NO CHAT DE GESTAO, COM BA
+AVISO (coluna do repositório, preservada; não conta como achado) em M03_notas_explicativas.csv NE-005 comentario_validacao: ACEITO PELO G*** EM 23/10/2026, NO CHAT DE GESTAO, COM BA
+AVISO (coluna do repositório, preservada; não conta como achado) em M03_notas_explicativas.csv NE-007 comentario_validacao: ACEITO PELO G*** EM 23/10/2026, NO CHAT DE GESTAO, COM BA
+AVISO (coluna do repositório, preservada; não conta como achado) em M03_notas_explicativas.csv NE-011 comentario_validacao: ACEITO PELO G*** EM 23/10/2026, NO CHAT DE GESTAO, COM BA
+AVISO (coluna do repositório, preservada; não conta como achado) em M03_notas_explicativas.csv NE-012 comentario_validacao: ACEITO PELO G*** EM 23/10/2026, NO CHAT DE GESTAO, COM BA
+AVISO (coluna do repositório, preservada; não conta como achado) em M03_notas_explicativas.csv NE-013 comentario_validacao: ACEITO PELO G*** EM 23/10/2026, NO CHAT DE GESTAO, COM BA
+AVISO (coluna do repositório, preservada; não conta como achado) em M03_notas_explicativas.csv NE-014 comentario_validacao: ACEITO PELO G*** EM 23/10/2026, NO CHAT DE GESTAO, COM BA
+AVISO (coluna do repositório, preservada; não conta como achado) em M03_notas_explicativas.csv NE-016 comentario_validacao: ACEITO PELO G*** EM 23/10/2026, NO CHAT DE GESTAO, COM BA
+AVISO (coluna do repositório, preservada; não conta como achado) em M03_notas_explicativas.csv NE-017 comentario_validacao: ACEITO PELO G*** EM 23/10/2026, NO CHAT DE GESTAO, COM BA
 achados: 0

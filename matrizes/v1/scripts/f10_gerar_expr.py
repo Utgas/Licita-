@@ -57,6 +57,9 @@ def cond_simples(t):
     m = re.fullmatch(r"(WZ-\d{2}) respondida", t)
     if m:
         return tem(wz(m.group(1)))
+    m = re.fullmatch(r"(WZ-\d{2}) contém ([A-Z0-9_]+)", t)
+    if m:
+        return inn(m.group(2), var(wz(m.group(1)), []))
     m = re.fullmatch(r"(WZ-\d{2}) diferente de ([A-Z0-9_]+)", t)
     if m:
         return ne(wz(m.group(1)), m.group(2))
@@ -183,6 +186,14 @@ NOVAS_M05 = [
      "descricao": "Coluna da VAR-011: valor unitário de referência do item, da pesquisa de preços",
      "tipo_dado": "MOEDA", "validacao": "maior que zero; vem da pesquisa de preços, nunca calculado pelo sistema",
      "obrigatoria": "S", "origem": "PESQUISA_PRECOS", "usada_em": "TR-1.1.TAB1; VAR-119"},
+    {"id": "VAR-161", "nome": "garantia_atestado_meses",
+     "descricao": "Prazo mínimo, em meses, da garantia técnica já prestada que os atestados devem comprovar (WZ-60)",
+     "tipo_dado": "NUMERO", "validacao": "inteiro de 12 ou mais (PAR-13, resposta da P25); obrigatório com WZ-60 = SIM",
+     "obrigatoria": "CONDICIONAL", "origem": "WIZARD", "usada_em": "SET-23; VAL-052"},
+    {"id": "VAR-162", "nome": "justificativa_garantia_atestado",
+     "descricao": "Justificativa técnica, no ETP, da exigência de garantia já prestada nos atestados (WZ-60)",
+     "tipo_dado": "TEXTO", "validacao": "obrigatória com WZ-60 = SIM; fatos técnicos, sem texto padrão",
+     "obrigatoria": "CONDICIONAL", "origem": "WIZARD", "usada_em": "ETP-04.01; SET-23; VAL-053"},
     {"id": "VAR-160", "nome": "tabela_itens.cota_calculada",
      "descricao": "Coluna da VAR-011: parte inteira de quantidade x VAR-057 / 100, calculada para todo item quando há "
                   "percentual de cota; decide se a unidade de disputa pode ter cota (VAR-113), dá a quantidade reservada "
@@ -247,7 +258,7 @@ def main():
     # M05
     m05 = ler_csv(pasta / "M05_variaveis.csv")
     ids5 = {r["id"] for r in m05}
-    for n in NOVAS_M05:
+    for n in sorted(NOVAS_M05, key=lambda x: x["id"]):
         if n["id"] in ids5:
             raise SystemExit(f"M05: {n['id']} já existe")
         m05.append(dict(n, fonte=FONTE_NOVA, status="INFERIDO"))

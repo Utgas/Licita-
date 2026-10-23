@@ -111,7 +111,8 @@ regra(C + "14.4", sug={"WZ_57": sim_para(C + "14.4", "SIM"), "VAR_133": se(r_eq(
 regra(C + "15.2", pre={"itens.controle_especial": se(r_eq(C + "15.2", SIM), "S")})
 regra(C + "15.3", sug={"WZ_39": sim_para(C + "15.3", "SIM"), "WZ_38": sim_para(C + "15.3", ["REQUISITO_DE_LEI_ESPECIAL"]),
                        "VAR_136": sim_para(C + "15.3", ["AE para itens controlados"])})
-regra(C + "16.3", pre={"VAR_074": opcao_ou_texto(C + "16.3", mapa={"2 dias": 2, "5 dias": 5, "10 dias": 10})})
+regra(C + "16.3", pre={"VAR_074": opcao_ou_texto(C + "16.3", mapa={"2 dias": 2, "5 dias": 5, "10 dias": 10},
+                                                      sufixo_outro="_numero")})
 regra(C + "17.1", sug={"WZ_38": sim_para(C + "17.1", ["ATESTADOS"])})
 regra(C + "17.5", pre={"WZ_39": se(tem(ckn(C + "17.5")), "SIM")})
 regra(C + "18.1", sug={"WZ_29": sim_para(C + "18.1", "SIM")})
@@ -150,10 +151,12 @@ regra(P + "11.7", sug={"WZ_59": sim_para(P + "11.7", "SIM", NAO)})
 regra(P + "12.1", pre={"WZ_08": sim_para(P + "12.1", "SIM")})
 regra(P + "12.8", sug={"WZ_59": sim_para(P + "12.8", "SIM", NAO)})
 regra(P + "13.1", pre={"itens.garantia_minima_meses": opcao_ou_texto(
-    P + "13.1", outro="Outro: ______ meses", mapa={"12 meses": 12, "24 meses": 24, "36 meses": 36})},
+    P + "13.1", outro="Outro: ______ meses", mapa={"12 meses": 12, "24 meses": 24, "36 meses": 36},
+    sufixo_outro="_numero")},
     sem_padrao=("VAR-066",))
 regra(P + "13.7", pre={"VAR_067": opcao_ou_texto(P + "13.7", mapa={"2 dias úteis": 2, "5 dias úteis": 5,
-                                                                     "10 dias úteis": 10})})
+                                                                     "10 dias úteis": 10},
+                                                     sufixo_outro="_numero")})
 regra(P + "14.1", sug={"WZ_08": sim_para(P + "14.1", "SIM")})
 regra(P + "14.2", sug={"WZ_59": sim_para(P + "14.2", "SIM")})
 regra(P + "16.5", pre={"WZ_47": sim_para(P + "16.5", "SIM")})
@@ -162,8 +165,11 @@ regra(P + "17.2", pre={"itens.exige_amostra": se(tem(ckn(P + "17.2")), "S", se(r
 regra(P + "18.1", sug={"WZ_38": sim_para(P + "18.1", ["ATESTADOS"])})
 regra(P + "18.5", sug={"WZ_38": sim_para(P + "18.5", ["REGISTRO_ENTIDADE_PROFISSIONAL"])})
 regra(P + "18.6", sug={"WZ_59": sim_para(P + "18.6", "SIM")})
-regra(P + "19.3", pre={"VAR_075": opcao_ou_texto(P + "19.3")})
-regra(P + "19.5", pre={"VAR_074": opcao_ou_texto(P + "19.5", mapa={"5 dias": 5, "10 dias": 10, "30 dias": 30})})
+# P32.1 (23/10/2026): número também no 'Outro'; '30 dias' (corridos) não vira dias úteis: fica vazio e vai para revisão
+regra(P + "19.3", pre={"VAR_075": opcao_ou_texto(P + "19.3", mapa={"2 dias úteis": 2, "5 dias úteis": 5, "8 dias úteis": 8,
+                                                                     "15 dias úteis": 15}, sufixo_outro="_numero")})
+regra(P + "19.5", pre={"VAR_074": opcao_ou_texto(P + "19.5", mapa={"5 dias": 5, "10 dias": 10, "30 dias": 30},
+                                                     sufixo_outro="_numero")})
 regra(P + "20.1", sug={"WZ_58": sim_para(P + "20.1", "SIM")})
 regra(P + "21.4", pre={"WZ_17": sim_para(P + "21.4", "SIM")})
 

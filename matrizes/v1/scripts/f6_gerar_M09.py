@@ -112,8 +112,10 @@ D = [
      "SET-12; SET-13; SET-14; SET-15 (obrigações na seção 5); WZ-38 só para atestado", "", "INFERIDO", "comparação f6"),
     ("DV-09", f"{TR23}; {TR58}", "TR 23/2026 p.11, item 9.30.1.1; TR 58/2026 p.16, item 9.34.2.1", "A_CONFERIR",
      "O atestado deve comprovar 'garantia mínima de 12 (doze) meses prestada ao equipamento'. A NE-071 veda limitação de "
-     "tempo ou de época nos atestados; não está claro se a duração da garantia atestada entra nessa vedação.",
-     "NE-071; TR-9.34", "VAL-028; perguntas_abertas.md", "", "A_VERIFICAR", "comparação f6"),
+     "tempo ou de época nos atestados; não estava claro se a duração da garantia atestada entra nessa vedação. Resposta "
+     "da P25 (23/10/2026): permitida, com justificativa no ETP, de 12 meses ou mais.",
+     "NE-071; TR-9.34; WZ-60; SET-23", "WZ-60, SET-23, VAL-052 e VAL-053; a VAL-029 não barra a duração da garantia (P25)",
+     "", "INFERIDO", "comparação f6"),
     ("DV-10", TR23, "p.7, item 8.25; p.9, item 9.18", "MARCA_DE_EDICAO",
      "Marcas de comentário do editor no texto final ('[A5]' e '[A8]').", "M02", "VAL-044", "", "EXTRAIDO", "comparação f6"),
     ("DV-11", f"{ETP67}; {TR23}", "ETP 67/2026 p.1, p.3 a p.6; TR 23/2026 p.1 e p.11", "DIVERGENCIA_ETP_TR",

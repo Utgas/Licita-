@@ -24,6 +24,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from f10_simulador import DERIVADAS, aplica_texto, caminho_expr, carregar, json_num, vazio  # noqa: E402
 
+# classificação das divergências do M09 que não são erro do TR real
+CLASSIF_DV = {"DV-09": "permitido (P25): não é divergência; a exigência entra pela WZ-60 e pela SET-23, com justificativa "
+                       "no ETP (VAL-053)"}
+
 CASOS = {
     "R1": {
         "doc": "TR 23/2026", "chave": "TR_exemplos_ae4297a4_a494_4822_980f_6cbcc6b4571c_pdf",
@@ -54,6 +58,7 @@ CASOS = {
             "WZ_43": ("CONTRATO", "item 1.4: 'assinatura do contrato ou instrumento equivalente'"),
             "WZ_54": ("DOIS_ULTIMOS_EXERCICIOS", "item 9.23: 'dos dois últimos exercícios sociais'"),
             "WZ_55": ("SIM", "item 9.29: declaração de profissional contábil"),
+            "WZ_60": ("SIM", "item 9.30.1.1: 'garantia mínima de 12 (doze) meses prestada ao equipamento' (P25)"),
         },
         "itens": [{"numero": 1, "quantidade": 1, "valor_unitario": 400000.00, "categoria": "PERMANENTE",
                    "garantia_minima_meses": 12, "exige_amostra": "N", "controle_especial": "N", "classe_pdm": ""}],
@@ -91,6 +96,7 @@ CASOS = {
             "WZ_49": ("SIM", "item 2.2: previsto no Plano de Contratações Anual"),
             "WZ_54": ("DOIS_ULTIMOS_EXERCICIOS", "item 9.25"),
             "WZ_55": ("SIM", "item 9.31"),
+            "WZ_60": ("SIM", "item 9.34.2.1: 'garantia mínima de 12 (doze) meses prestada ao equipamento' (P25)"),
         },
         "itens": [{"numero": 1, "quantidade": 2, "valor_unitario": 350000.00, "categoria": "PERMANENTE",
                    "garantia_minima_meses": 12, "exige_amostra": "N", "controle_especial": "N", "classe_pdm": ""},
@@ -121,7 +127,8 @@ def main():
         for r in dvs:
             vals += [v for v in re.findall(r"VAL-\d{3}", r["tratamento_no_sistema"]) if v not in vals]
         entrada = {"wizard": {k: v for k, (v, _) in c["wizard"].items()}, "checklist": {},
-                   "itens": c["itens"], "variaveis": {"VAR_099": "DEZ/2025"}, "metadados": {}}
+                   "itens": c["itens"], "variaveis": {"VAR_099": "DEZ/2025", "VAR_161": 12},
+                   "metadados": {}}
         resp_txt = {k.replace("_", "-"): (";".join(v) if isinstance(v, list) else v) for k, v in entrada["wizard"].items()}
         sem = [r["id"] for r in m["M04"] if r["id"] not in DERIVADAS and aplica_texto(r["depende_de"], resp_txt)
                and vazio(resp_txt.get(r["id"]))]
@@ -141,7 +148,8 @@ def main():
             "esperado": {"blocos": presentes, "clausulas_m08": sets, "validacoes_m10": vals,
                          "perguntas_sem_resposta": sem, "bloqueios_grupo_alternativas": []},
             "blocos_nao_comparados": nao_comp,
-            "divergencias_conhecidas": [{"dv": r["id"], "classificacao": "TR real", "tipo": r["tipo"], "local": r["local"],
+            "divergencias_conhecidas": [{"dv": r["id"], "classificacao": CLASSIF_DV.get(r["id"], "TR real"),
+                                         "tipo": r["tipo"], "local": r["local"],
                                          "descricao": r["descricao"], "referencia": r["referencia"],
                                          "tratamento_no_sistema": r["tratamento_no_sistema"]} for r in dvs],
             "referencia": {"diferencas_simulacao": dif, "blocos_simulados": len(sim),

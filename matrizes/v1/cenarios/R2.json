@@ -32,7 +32,8 @@
    "WZ_43": "CONTRATO",
    "WZ_49": "SIM",
    "WZ_54": "DOIS_ULTIMOS_EXERCICIOS",
-   "WZ_55": "SIM"
+   "WZ_55": "SIM",
+   "WZ_60": "SIM"
   },
   "checklist": {},
   "itens": [
@@ -68,7 +69,8 @@
    }
   ],
   "variaveis": {
-   "VAR_099": "DEZ/2025"
+   "VAR_099": "DEZ/2025",
+   "VAR_161": 12
   },
   "metadados": {}
  },
@@ -98,7 +100,8 @@
   "WZ_43": "TR 58/2026, item 5.1: 'contados da assinatura do contrato'",
   "WZ_49": "TR 58/2026, item 2.2: previsto no Plano de Contratações Anual",
   "WZ_54": "TR 58/2026, item 9.25",
-  "WZ_55": "TR 58/2026, item 9.31"
+  "WZ_55": "TR 58/2026, item 9.31",
+  "WZ_60": "TR 58/2026, item 9.34.2.1: 'garantia mínima de 12 (doze) meses prestada ao equipamento' (P25)"
  },
  "esperado": {
   "blocos": [
@@ -348,7 +351,8 @@
    "SET-12",
    "SET-14",
    "SET-15",
-   "SET-17"
+   "SET-17",
+   "SET-23"
   ],
   "validacoes_m10": [
    "VAL-043",
@@ -558,14 +562,16 @@
   },
   "blocos_simulados": 277,
   "clausulas_m08_simuladas": [
-   "SET-13"
+   "SET-13",
+   "SET-23"
   ],
   "bloqueios_grupo_alternativas_simulados": [
    "GA-03"
   ],
   "validacoes_m10_simuladas": [
    "VAL-005",
-   "VAL-039"
+   "VAL-039",
+   "VAL-053"
   ],
   "derivadas_simuladas": {
    "WZ-09": "NAO",

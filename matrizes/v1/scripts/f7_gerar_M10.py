@@ -204,12 +204,16 @@ V = [
      "Quantitativo mínimo em atestado deve ser objetivo e limitado às parcelas de maior relevância (NE-071). Confira o "
      "percentual com a equipe administrativa.", "VAR-085; WZ-38; TR-9.34", "NE-071", "", "INFERIDO"),
     ("VAL-029", "Atestado com limitação de tempo ou de época", "BLOQUEIO", "WIZARD",
-     "SE algum item da lista de características dos atestados (VAR-085) contiver 'período mínimo' ou 'últimos' "
-     "(também com inicial maiúscula)",
-     {"some": [var("VAR_085", []), ou(*(inn(t, var("")) for t in ("período mínimo", "Período mínimo", "últimos",
-                                                                   "Últimos")))]},
-     "A NE-071 veda limitação de tempo ou de época nos atestados. Retire a limitação.", "VAR-085; TR-9.34",
-     "NE-071", "M09: ETP 117/2025 (atestado 'pelo período mínimo de 12 meses')", "INFERIDO"),
+     "SE algum item da lista de características dos atestados (VAR-085) contiver 'últimos' (época), ou contiver 'período "
+     "mínimo' sem tratar de garantia (período do contrato atestado), com ou sem inicial maiúscula. A duração da garantia "
+     "técnica já prestada não é barrada: é permitida pela resposta da P25 (23/10/2026) e entra pela WZ-60 e pela SET-23",
+     {"some": [var("VAR_085", []), ou(inn("últimos", var("")), inn("Últimos", var("")),
+                                      e(ou(inn("período mínimo", var("")), inn("Período mínimo", var(""))),
+                                        nao(ou(inn("garantia", var("")), inn("Garantia", var(""))))))]},
+     "A NE-071 veda limitação de tempo ou de época nos atestados (período mínimo do contrato atestado, contratos dos "
+     "últimos anos). Retire a limitação. Se a intenção é exigir garantia técnica já prestada, use a WZ-60.",
+     "VAR-085; TR-9.34; WZ-60", "NE-071; P25", "M09: ETP 117/2025 (atestado 'pelo período mínimo de 12 meses', DV-12)",
+     "INFERIDO"),
     ("VAL-030", "Execução por fabricante, rede credenciada ou carta de solidariedade", "ALERTA", "WIZARD",
      "SE WZ-59 = SIM OU WZ-21 = SIM", ou(eq("WZ_59", "SIM"), eq("WZ_21", "SIM")),
      "A exigência restringe a competição. Registre a justificativa técnica (checklist de permanentes, 11.2, 11.7, 12.8, 14.2 e "
@@ -313,6 +317,16 @@ V = [
      "dele) fica sem cota, em ampla participação. Confira o percentual ou a composição do grupo.",
      "VAR-113; VAR-118; VAR-160; VAR-057; WZ-24", "NE-022; decisão do dono do projeto de 23/10/2026 (decisão 0008 do repositório)",
      "", "INFERIDO"),
+    ("VAL-052", "Garantia já prestada nos atestados abaixo de 12 meses ou sem prazo", "BLOQUEIO", "WIZARD",
+     "SE WZ-60 = SIM E o prazo da garantia prestada (VAR-161) estiver vazio ou for menor que o mínimo (PAR-13, 12 meses)",
+     e(eq("WZ_60", "SIM"), ou(vazio("VAR_161"), {">": [var("parametros.garantia_atestado_minima_meses"), var("VAR_161")]})),
+     "Informe o prazo mínimo da garantia já prestada que os atestados devem comprovar: 12 meses ou mais (resposta da P25).",
+     "WZ-60; VAR-161; SET-23", "P25 (decisão 0008, 23/10/2026)", "", "INFERIDO"),
+    ("VAL-053", "Garantia já prestada nos atestados sem justificativa no ETP", "BLOQUEIO", "WIZARD",
+     "SE WZ-60 = SIM E a justificativa técnica (VAR-162) estiver vazia",
+     e(eq("WZ_60", "SIM"), vazio("VAR_162")),
+     "A exigência de garantia já prestada nos atestados precisa de justificativa técnica no ETP (resposta da P25).",
+     "WZ-60; VAR-162; ETP-04.01", "P25 (decisão 0008, 23/10/2026); NE-071", "", "INFERIDO"),
 ]
 
 

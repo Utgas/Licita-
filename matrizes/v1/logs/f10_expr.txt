@@ -2,7 +2,7 @@ M02: grupo_ativo_expr em 131 blocos de 13 grupos
 M04 WZ-09: depende_de só cita dado (VAR-011 (colunas perecivel e validade_minima, VAR-116 e VAR-117)); pergunta derivada, sem condição
 M04 WZ-18: depende_de só cita dado (VAR-011 (coluna marca_indicada, VAR-115)); pergunta derivada, sem condição
 M04 WZ-50: depende_de só cita dado (VAR-011 (coluna grupo, VAR-112)); pergunta derivada, sem condição
-M04: depende_de_expr em 25 de 59; calculo_expr em 6
+M04: depende_de_expr em 26 de 60; calculo_expr em 6
 M05 VAR-031 (julgamento_por_grupo): ordem 8; global; mesmo cálculo da WZ-13
 M05 VAR-049 (amostra_itens): ordem 9; global; números dos itens com exige_amostra = S
 M05 VAR-065 (validade_minima_entrega): ordem 10; global; validade comum aos perecíveis, vazia se os critérios forem diferentes

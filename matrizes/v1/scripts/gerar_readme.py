@@ -64,7 +64,9 @@ def main():
     sug = sum(1 for r in m11 if r["sugere_expr"])
     cnd = sum(1 for r in m11 if r["condicional_expr"])
     o = ["# Licita+ | Matrizes v1", "",
-         "Estado em 23/10/2026: Fases 0 a 11 concluídas. A Fase 11 leva para as matrizes o lote 1 de respostas (decisão "
+         "Estado em 23/10/2026: Fases 0 a 12 concluídas. A Fase 12 libera a garantia já prestada nos atestados (P25), "
+         "estende a leitura do número a todos os 'Outro' de prazo e de garantia (P32) e passa a tomar a validação do M03 e "
+         "do M04 do repositório (P33). A Fase 11 leva para as matrizes o lote 1 de respostas (decisão "
          "0008), a decisão de não mudar o checklist distribuído (decisão 0009) e as regras do simulador alinhadas ao motor "
          "(Marco 1). Na Fase 10 as regras que o motor executa ficaram todas em JSON "
          "Logic (dependências do wizard, condições e preenchimento do checklist, atributos calculados), com os parâmetros "
@@ -74,12 +76,20 @@ def main():
     o += [f"| `{a}` | {d} | {n[a]} |" for a, d in ARQ]
     o += ["| `matrizes_v1.xlsx` | cópia de leitura e revisão: aba LEIA_ME e uma aba por CSV; colunas de revisão em amarelo no M03 e no M04 | |",
           f"| `cenarios/` | cenários de ouro C1 a C8 ({n_c}) e casos de reprodução R1 e R2 ({n_r}) em JSON, com entrada e esperado | |",
-          "| `perguntas_abertas.md` | decisões pendentes e adotadas, P01 a P32 | |",
+          "| `perguntas_abertas.md` | decisões pendentes e adotadas, P01 a P33 | |",
           "| `sugestoes_checklist.md` | lacunas, duplicidades e ambiguidades dos checklists, com redação proposta | |",
           "| `auditoria_matrizes_01_02.md` | auditoria das matrizes rascunho 01 e 02 (Fase 8) | |",
           "| `log_fase10_repo_leis.md` | arquivos do repositório auxiliar ctresb/leis (commit 15eb09b) cruzados com o M07 e uso de cada um | |",
           "| `logs/` | conferências, cobertura do checklist, comparação dos TRs, expressões, simulação, normas, testes | |",
           "| `scripts/` | scripts de análise que geram tudo acima | |", "",
+          "## O que mudou na Fase 12", "",
+          "- P25: WZ-60 nova (atestado com garantia já prestada, só com ATESTADOS na WZ-38), SET-23, VAR-161 (prazo em "
+          "meses), VAR-162 (justificativa no ETP), VAL-052 e VAL-053 (bloqueios), PAR-13 (12 meses). A VAL-029 barra "
+          "'últimos' e 'período mínimo' sem tratar de garantia; não barra a duração da garantia prestada.",
+          "- P32.1: CK-C-16.3, CK-P-19.5, CK-P-19.3, CK-P-13.7 e CK-P-13.1 leem o número do 'Outro' (`CK_x_numero`), com "
+          "destaque e pergunta ao operador; '30 dias' corridos na CK-P-19.3 não vira dias úteis.",
+          "- Validação: `validacao` e `comentario_validacao` do M03 e do M04 vêm do repositório (4º argumento do "
+          "`rodar_fases_4_9.sh`, `f12_validacao_repo.py`) e o teste confere linha a linha (P33).", "",
           "## O que mudou na Fase 11", "",
           f"- M11: colunas `leitura`, `revisao_expr` e `revisao_pergunta` ({sum(1 for r in m11 if r['revisao_expr'])} "
           f"expressões de revisão, {sum(1 for r in m11 if r['revisao_pergunta'])} perguntas ao operador) e "
@@ -230,7 +240,7 @@ def main():
     o += [f"- `Checklists/{k}`: SHA-256 `{v}`" for k, v in hashes.items()]
     o += ["", "Divisão de trabalho: o checklist traz os fatos técnicos (M11); o wizard fica com as decisões jurídicas (M04, "
           "`DECISAO_JURIDICA`). A tabela de atributos de item por checklist está em `sugestoes_checklist.md`.", "",
-          "## Testes de aceite (Fases 9 a 11)", "",
+          "## Testes de aceite (Fases 9 a 12)", "",
           f"Resultado completo em `logs/f9_testes.txt`. {falhas}.", ""]
     o += [f"- {l[6:]}" if l.startswith("OK") else f"- **FALHA** {l[6:]}" for l in principais]
     o += ["", "Outras conferências:", ""]
@@ -262,7 +272,7 @@ def main():
           "# Fase 6, comparação dos TRs 23/2026 e 58/2026 com o modelo (alguns minutos; só se o M02 mudar)",
           "python3 -I scripts/f6_comparar_trs.py OUT/M02_tr_blocos.csv T/text/<TR 23/2026> T/text/<TR 58/2026> T/f6_comparacao.json",
           "# Todas as matrizes, na ordem das dependências, testes incluídos",
-          "sh scripts/rodar_fases_4_9.sh T DOC OUT",
+          "sh scripts/rodar_fases_4_9.sh T DOC OUT REPO/matrizes/v1",
           "# Fase 10, uma vez: números de processo (a correspondência fica fora do pacote)",
           "python3 -I scripts/f10_proc.py OUT FORA_DO_PACOTE/correspondencia_processos.csv scripts/f0_gerar_M00.py scripts/f9_testes.py",
           "python3 -I scripts/gerar_readme.py OUT DOC",

@@ -3,16 +3,16 @@
     "M00_inventario.csv": "fadea60ca9f6ee78ef42aa52e4d8c97f7c6e84d0d13ec6d287b516c0e08c245e",
     "M01_etp_campos.csv": "ae2ee3a5645dddbf828e1c5d26a64522043c36a0e344005f199ecbee9faae12c",
     "M02_tr_blocos.csv": "37d78cd02981cb2df642c5e64fc1af5a1f1dfbef9a617169b66b1aae8dfedc00",
-    "M03_notas_explicativas.csv": "d25939059cbbe113c7d202f75bf9501f2068c066c720e08a100bf96911b0c291",
-    "M04_wizard.csv": "0de9431130d79452be9126b505b1f7c8bb864c0a9a65d3f18289296b773e9a51",
-    "M05_variaveis.csv": "ae0386759a99d90b5bc637eff55f8ec2361d54928ee54982757df6aa8f40e0f3",
+    "M03_notas_explicativas.csv": "9c289804aa6541b42da2a9e1ba547cee8c93a7976f24b6635eade293b585d4cb",
+    "M04_wizard.csv": "3b2f0e7dfb1ca23572bf942577630c3aab9034c9d3e94803696be05f45ca53bb",
+    "M05_variaveis.csv": "fa8577d18d4484825b0b301d197b03e0b69e9592b01a1e7e0bb61b28f5333535",
     "M06_derivacao_etp_tr.csv": "0b565de9cd8c11156c8a64392ddd04247679c513742648e3c535581f550e0934",
     "M07_normas.csv": "5b5f537d5af4e158a76d5daac9f0068a770bd5180704868c0d3ca1a454b0cb58",
-    "M08_clausulas_setoriais.csv": "3427ec61a1c14e07e5dfb47a0424a633324bbc532d25f836758eafc73e0de688",
-    "M09_desvios.csv": "2d8f4163b30194cbc0d7f9da579d73774ca561b330ac33bcee39f0796b7eee33",
-    "M10_validacoes.csv": "0710ad091a3e9fe86d18fd25db121ac216751c999497c166bfb08a08bf17b434",
-    "M11_checklist.csv": "105604beda30d3e12f8b7b76fa3d646f6685d90381a2a0a5c408134bb3526318",
-    "M12_parametros.csv": "96b5560256c0d5dedc1e06b0bd5cd00a31c031387f1cad5fca3fbe0a08c0ca4b"
+    "M08_clausulas_setoriais.csv": "fe1490bc7be9a16b17aa947994282de289bd6c9face8bc0a8a28230c71169f2d",
+    "M09_desvios.csv": "dc6228007abae359a0131d281f062bb779396b4104b1c1e4254804c01b1901db",
+    "M10_validacoes.csv": "5485330614fecb8e8435422db4b57511c0192bb94cb53898a61d43045ce95798",
+    "M11_checklist.csv": "d8c95aee71fe87ab275e5b79e9316b7a32c8d9ce1514bfa88e02b385c3d76c1d",
+    "M12_parametros.csv": "15782e14d0d657966effbf66b7dadf1b30dd07d8c87fc3f24c93766568fbe025"
   },
   "matrizes": {
     "M01": [
@@ -21738,7 +21738,7 @@
         "afeta": "WZ-24, WZ-50, WZ-05, VAL-016, VAL-017",
         "bloco_ancora": "TR-1.1.TAB1",
         "citacoes": "art. 18, §1º, inciso VIII, da Lei nº 14.133, de 2021; art. 9º, inciso VII, da Instrução Normativa SEGES nº 58, de 8 de agosto de 2022; art. 47, inciso II, da Lei n. 14.133, de 2021; artigo 47, § 1º, da Lei n. 14.133, de 2021; artigo 48, inciso I, da Lei Complementar nº 123, de 14 de dezembro de 2006; artigo 6º do Decreto nº 8.538, de 06 de outubro de 2015; Decreto nº 10.306/2020; Decreto nº 9.983, de 22 de agosto de 2019; art. 3º, inciso II, do Decreto nº 10.306/2020; artigo 19, §3º, da Lei nº 14.133/2021",
-        "comentario_validacao": "",
+        "comentario_validacao": "Aceito pelo dono do projeto em 23/10/2026, no chat de gestão, com base no parecer do gestor (conferência da regra com o texto da nota).",
         "fonte": "TR exemplos/modelo-de-termo-de-referencia-compras-lei-no-14-133-dez-25.docx, word/comments.xml, comentário w:id 6; âncora em word/document.xml, parágrafos 8 a 14 (blocos TR-1.1.TAB1). trecho_ancorado, texto_integral e citacoes EXTRAIDOS; natureza, regra_derivada e afeta INFERIDOS da leitura da nota.",
         "id": "NE-003",
         "natureza": "CONDICAO",
@@ -21746,13 +21746,13 @@
         "status": "INFERIDO",
         "texto_integral": "Nota Explicativa 1: A tabela acima é meramente ilustrativa, podendo ser livremente alterada conforme o caso concreto.\n\nNota Explicativa 2: A justificativa para o parcelamento ou não do objeto deve constar do Estudo Técnico Preliminar (art. 18, §1º, inciso VIII, da Lei nº 14.133, de 2021, e art. 9º, inciso VII, da Instrução Normativa SEGES nº 58, de 8 de agosto de 2022). Os serviços, como regra, devem atender ao parcelamento quando for tecnicamente viável e economicamente vantajoso (art. 47, inciso II, da Lei n. 14.133, de 2021). Devem também ser observadas as regras do artigo 47, § 1º, da Lei n. 14.133, de 2021, que trata de aspectos a serem considerados na aplicação do princípio do parcelamento.\n\nNota Explicativa 3: O parcelamento não é ponto verificado usualmente em contratações diretas, já que estas não são feitas em regime competitivo. No entanto, no caso de se tratar de dispensa de pequeno valor feita pelo sistema de dispensa eletrônica ou qualquer outro caso de dispensa submetida a algum regime competitivo, a análise sobre o parcelamento deverá ocorrer nos moldes acima.\n\nNota Explicativa 4: Em contratação de itens de valor correspondente a até R$ 80.000,00 deve ser garantida a participação exclusiva de Microempresa e Empresa de Pequeno Porte (ME e EPP), conforme artigo 48, inciso I, da Lei Complementar nº 123, de 14 de dezembro de 2006, e artigo 6º do Decreto nº 8.538, de 06 de outubro de 2015).\n\nNota Explicativa 5: Building Information Modelling – BIM: O Decreto nº 10.306/2020 trata da utilização do Building Information Modelling (BIM) na execução direta ou indireta de obras e serviços de engenharia realizados pelos órgãos e pelas entidades da administração pública federal, conforme Estratégia BIM BR, instituída pelo Decreto nº 9.983, de 22 de agosto de 2019.  Building Information Modelling - BIM ou Modelagem da Informação da Construção corresponde ao “conjunto de tecnologias e processos integrados que permite a criação, a utilização e a atualização de modelos digitais de uma construção, de modo colaborativo, que sirva a todos os participantes do empreendimento, em qualquer etapa do ciclo de vida da construção” (art. 3º, inciso II, do Decreto nº 10.306/2020).\nDe acordo com o artigo 2º do referido Decreto, alguns Ministérios, Secretarias e Autarquias foram desde logo vinculados à ação de disseminação do BIM. Desse modo, se for o caso, deverá a Administração efetuar o planejamento da contratação com base nas diretrizes estabelecidas no Decreto nº 10.306/2020, em especial por conta da previsão do artigo 19, §3º, da Lei nº 14.133/2021, que estabelece que, nas licitações de obras e serviços de engenharia e arquitetura, sempre que adequada ao objeto contratual, será preferencialmente adotada a Modelagem da Informação da Construção (Building Information Modelling - BIM) ou tecnologias e processos integrados similares ou mais avançados que venham a substituí-la.",
         "trecho_ancorado": "ITEM ESPECIFICAÇÃO CATMAT UNIDADE DE MEDIDA QUANTIDADE VALOR UNITÁRIO VALOR TOTAL",
-        "validacao": ""
+        "validacao": "OK"
       },
       {
         "afeta": "WZ-40",
         "bloco_ancora": "TR-1.1.TAB1",
         "citacoes": "",
-        "comentario_validacao": "",
+        "comentario_validacao": "Aceito pelo dono do projeto em 23/10/2026, no chat de gestão, com base no parecer do gestor (conferência da regra com o texto da nota).",
         "fonte": "TR exemplos/modelo-de-termo-de-referencia-compras-lei-no-14-133-dez-25.docx, word/comments.xml, comentário w:id 7; âncora em word/document.xml, parágrafo 14 (blocos TR-1.1.TAB1). trecho_ancorado, texto_integral e citacoes EXTRAIDOS; natureza, regra_derivada e afeta INFERIDOS da leitura da nota. Observação: Âncora de comprimento zero (posição na célula 'VALOR TOTAL').",
         "id": "NE-004",
         "natureza": "CONDICAO",
@@ -21760,13 +21760,13 @@
         "status": "INFERIDO",
         "texto_integral": "Nota Explicativa: Não preencher as colunas relativas ao \"valor unitário\" e ao \"valor total\" quando o orçamento for sigiloso.",
         "trecho_ancorado": "(âncora sem trecho: posição logo após '...VALOR TOTAL')",
-        "validacao": ""
+        "validacao": "OK"
       },
       {
         "afeta": "WZ-06",
         "bloco_ancora": "TR-1.2",
         "citacoes": "Orientação Normativa AGU nº 54/2014; art. 6º, incisos XIII e XIV, da Lei n.º 14.133, de 2021",
-        "comentario_validacao": "",
+        "comentario_validacao": "Aceito pelo dono do projeto em 23/10/2026, no chat de gestão, com base no parecer do gestor (conferência da regra com o texto da nota).",
         "fonte": "TR exemplos/modelo-de-termo-de-referencia-compras-lei-no-14-133-dez-25.docx, word/comments.xml, comentário w:id 9; âncora em word/document.xml, parágrafo 101 (blocos TR-1.2). trecho_ancorado, texto_integral e citacoes EXTRAIDOS; natureza, regra_derivada e afeta INFERIDOS da leitura da nota.",
         "id": "NE-005",
         "natureza": "CONDICAO",
@@ -21774,7 +21774,7 @@
         "status": "INFERIDO",
         "texto_integral": "Nota Explicativa 1: Sobre a natureza do objeto, deve-se ter em mente o disposto na Orientação Normativa AGU nº 54/2014: \"Compete ao agente ou setor técnico da administração declarar que o objeto licitatório é de natureza comum para efeito de utilização da modalidade pregão e definir se o objeto corresponde a obra ou serviço de engenharia, sendo atribuição do órgão jurídico analisar o devido enquadramento da modalidade licitatória aplicável\". \n\nNota Explicativa 2: Deve a Administração atentar para as definições de bens comuns e especiais, constantes do art. 6º, incisos XIII e XIV, da Lei n.º 14.133, de 2021, respectivamente. ",
         "trecho_ancorado": "objeto desta contratação são caracterizados como comuns, conforme justificativa constante do Estudo Técnico Preliminar.",
-        "validacao": ""
+        "validacao": "OK"
       },
       {
         "afeta": "WZ-07",
@@ -21794,7 +21794,7 @@
         "afeta": "WZ-14, WZ-15, WZ-04",
         "bloco_ancora": "TR-1.5",
         "citacoes": "art. 105 da Lei nº 14.133, de 2021; art. 106 da Lei nº 14.133, de 2021; art. 75, VIII, da Lei nº 14.133, de 2021; Lei nº 4.320, de 17 de março 1964; Decreto nº 93.872, de 23 de dezembro de 1986; art. 30, §2º do Decreto nº 93.872, de 1986; art. 6º, XV da Lei nº 14.133, de 2021; art. 106, I da Lei nº 14.133, de 2021; artigo 107 da Lei nº 14.133, de 2021; art. 75, inciso VIII, da Lei n.º 14.133, de 2021; art. 75, §1º, da Lei n.º 14.133, de 2021; Orientação Normativa 87/2024; incisos I e II do art. 75 da Lei nº 14.133, de 2021; arts. 106 e 107, da Lei nº 14.133, de 2021; §1º do art. 75 da Lei n. 14.133/2021; Art. 75, § 1º, inciso I, da Lei nº 14.133, de 2021",
-        "comentario_validacao": "",
+        "comentario_validacao": "Aceito pelo dono do projeto em 23/10/2026, no chat de gestão, com base no parecer do gestor (conferência da regra com o texto da nota).",
         "fonte": "TR exemplos/modelo-de-termo-de-referencia-compras-lei-no-14-133-dez-25.docx, word/comments.xml, comentário w:id 12; âncora em word/document.xml, parágrafos 105 a 107 (blocos TR-1.5, TR-1.5.OU, TR-1.6). trecho_ancorado, texto_integral e citacoes EXTRAIDOS; natureza, regra_derivada e afeta INFERIDOS da leitura da nota.",
         "id": "NE-007",
         "natureza": "CONDICAO",
@@ -21802,7 +21802,7 @@
         "status": "INFERIDO",
         "texto_integral": "Nota Explicativa 1: Enquadramento da contratação para fins de vigência: há três tipos de contratação para aquisição de bens, no que tange à vigência:  \na) fornecimento não-contínuo, quando se trata de uma entrega de bens sem que haja uma demanda de caráter permanente. Uma vez finalizada a entrega, resolve-se a necessidade que deu azo ao contrato. Esse tipo de fornecimento tem o art. 105 da Lei nº 14.133, de 2021, como fundamento e parte apenas de créditos do exercício corrente, salvo se inscritos no Plano Plurianual. \nb) fornecimento contínuo, quando a entrega dos bens é uma necessidade permanente. É o caso, por exemplo, de unidades hospitalares que cotidianamente demandam insumos de saúde específicos para seu próprio funcionamento contínuo. Nessas situações, findo o contrato, haverá sua substituição por um novo e assim, sucessivamente, pois a necessidade em si é permanente. Contratações dessa natureza são atendidas pelo art. 106 da Lei nº 14.133, de 2021. \nc) Por fim, caso se trate de contratação emergencial, a vigência é regida pelo art. 75, VIII, da Lei nº 14.133, de 2021, estando limitada a um ano da emergência, não sendo passível de prorrogação. \nIncumbe à área que elabora o Termo de Referência enquadrar a contratação como não-contínua ou contínua (ou emergencial, se for o caso). Reputando-a contínua, deve apor a justificativa para tal enquadramento, conforme orientações no item específico abaixo. \n\nNota Explicativa 2: Prazo de Vigência e Empenho - art. 105 da Lei nº 14.133, de 2021 – Fornecimento Não-Contínuo: Em caso de fornecimento não contínuo, o prazo de vigência deve ser o suficiente para a entrega do objeto e adoção das providências previstas no contrato, sendo a contratação limitada pelos respectivos créditos orçamentários.  \nUma contratação que não tenha previsão no Plano Plurianual deve ter a sua integralidade empenhada antes ou de modo concomitante à celebração, conforme Lei nº 4.320, de 17 de março 1964, e Decreto nº 93.872, de 23 de dezembro de 1986, e a partir de tal empenho ter a vigência necessária prevista, utilizando-se de restos a pagar, se for o caso (art. 30, §2º do Decreto nº 93.872, de 1986).\nJá a contratação prevista no Plano Plurianual pode ter empenhos em anos distintos, considerando a despesa de cada exercício, apenas quanto ao período abrangido pelo PPA. \n\nNota Explicativa 3: Prazo de Vigência – arts. 106 e 107 - Fornecimento Contínuo - A definição de fornecimento contínuo consta no art. 6º, XV da Lei nº 14.133, de 2021, sendo as “compras realizadas pela Administração Pública para a manutenção da atividade administrativa, decorrentes de necessidades permanentes ou prolongadas”. \nA utilização do prazo de vigência plurianual no caso de fornecimento contínuo é condicionada ao ateste de maior vantagem econômica, a ser feita pela autoridade competente no processo respectivo, conforme art. 106, I da Lei nº 14.133, de 2021. \nDe acordo com o artigo 107 da Lei nº 14.133, de 2021, será possível que contratos de fornecimento contínuo sejam prorrogados por até 10 anos, desde que haja previsão no aviso de dispensa ou no próprio contrato de que a autoridade competente ateste que as condições e os preços permanecem vantajosos para a Administração, permitida a negociação com o contratado ou a extinção contratual sem ônus para qualquer das partes. \n\nNota Explicativa 4: Prazo de Vigência – art. 75, inciso VIII – Dispensa Emergencial: Independentemente de se tratar de fornecimento de natureza contínua ou não, a dispensa emergencial ou por calamidade baseada no art. 75, inciso VIII, da Lei n.º 14.133, de 2021, é limitada a um ano, sem a possibilidade de prorrogação. Inobstante se possa arguir a possibilidade de celebrar o contrato em prazo menor e prorrogar sua vigência até o limite de um ano, recomenda-se, por cautela, face à redação literal, já firmar o contrato por um prazo estimado, considerando a inviabilidade de prorrogação. \nDeve-se atentar, por fim, para a vedação de recontratação de empresa já contratada com base no disposto neste inciso e para a necessidade de se adotarem as providências necessárias para a conclusão do processo licitatório, sem prejuízo de apuração de responsabilidade dos agentes públicos que deram causa à situação emergencial, conforme previsão legal.  \n\nNota Explicativa 5: Vigência X Valores para fins de Dispensa de pequeno valor: Atentar para o disposto no art. 75, §1º, da Lei n.º 14.133, de 2021, segundo o qual serão observados para os fins de aferição dos valores para a dispensa do art. 75, I e II, o “somatório do que for despendido no exercício financeiro pela respectiva unidade gestora”. Desse modo, o referencial temporal passa a ser o gasto efetivo no período anual.  \nDeve-se observar o quanto foi efetivamente despendido no exercício financeiro com objetos na mesma natureza (75, §1º, II) pela Unidade Gestora e então somar com o que se espera gastar, efetivamente, com o contrato. Tal somatório não pode ultrapassar o limite de dispensa para que seja possível o seu uso. Tal cálculo permite, por exemplo, contratos de cinco anos com valor total muito maior do que o limite para dispensa, desde que o dispêndio anual não o seja. \nNesse sentido, a recente Orientação Normativa 87/2024 consigna que: \n\"Para fins de dispensa de licitação em razão do valor (incisos I e II do art. 75 da Lei nº 14.133, de 2021) destinada a contratos de fornecimento ou serviço continuado com vigência plurianual, nos termos dos arts. 106 e 107, da Lei nº 14.133, de 2021, será considerado valor da contratação o montante equivalente ao período de 1 (um) ano de vigência contratual, na forma do §1º do art. 75 da Lei n. 14.133/2021. Referência: Art. 75, § 1º, inciso I, da Lei nº 14.133, de 2021.\"",
         "trecho_ancorado": "O prazo de vigência da contratação é de [indicar o prazo] contados do(a) [indicar o termo inicial da vigência], na forma do artigo 105 da Lei n° 14.133, de 2021. OU O prazo de vigência da contratação ",
-        "validacao": ""
+        "validacao": "OK"
       },
       {
         "afeta": "",
@@ -21850,7 +21850,7 @@
         "afeta": "WZ-17",
         "bloco_ancora": "TR-4.H01",
         "citacoes": "art. 7º da IN Seges/ME nº 81, de 2022; art. 7º da Instrução Normativa Seges/ME nº 58, de 2022; Portaria SEGES/ME nº 8.678, de 19 de julho de 2021; artigo 8º, §1º, III, da Portaria SEGES/ME nº 8.678, de 2021; parágrafo único do artigo 11 da Instrução Normativa SEGES/ME nº 73, de 2022; Art. 9º, II, da Instrução Normativa SEGES/ME nº 58, de 2022; Parecer n. 00001/2021/CNS/CGU/AGU; DESPACHO n. 00525/2021/GAB/CGU/AGU; Lei 12.305/2010; §1º do art. 9º da Instrução Normativa SEGES/ME nº 58, de 2022; artigo 9, inciso XII, da Instrução Normativa SEGES/ME nº 58, de 2022; artigo 7º, XI, da Lei nº 12.305, de 2010",
-        "comentario_validacao": "",
+        "comentario_validacao": "Aceito pelo dono do projeto em 23/10/2026, no chat de gestão, com base no parecer do gestor (conferência da regra com o texto da nota).",
         "fonte": "TR exemplos/modelo-de-termo-de-referencia-compras-lei-no-14-133-dez-25.docx, word/comments.xml, comentário w:id 18; âncora em word/document.xml, parágrafo 125 (blocos TR-4.H01). trecho_ancorado, texto_integral e citacoes EXTRAIDOS; natureza, regra_derivada e afeta INFERIDOS da leitura da nota.",
         "id": "NE-011",
         "natureza": "CONDICAO",
@@ -21858,13 +21858,13 @@
         "status": "INFERIDO",
         "texto_integral": "Nota Explicativa 1: O Termo de Referência e os Estudos Técnicos Preliminares deverão estar alinhados com o Plano Diretor de Logística Sustentável, Plano de Contratações Anual, além de outros instrumentos de planejamento da Administração, de acordo com o art. 7º da IN Seges/ME nº 81, de 2022, e art. 7º da Instrução Normativa Seges/ME nº 58, de 2022. \nNota Explicativa 2: Nos termos da Portaria SEGES/ME nº 8.678, de 19 de julho de 2021, o  Plano Diretor de Logística Sustentável é  instrumento de governança, vinculado ao planejamento estratégico do órgão ou entidade, ou instrumento equivalente, e às leis orçamentárias, que estabelece a estratégia das contratações e da logística no âmbito do órgão ou entidade, considerando objetivos e ações referentes a critérios e a práticas de sustentabilidade, nas dimensões econômica, social, ambiental e cultural.\nDestaque-se ainda que, de acordo com o artigo 8º, §1º, III, da Portaria SEGES/ME nº 8.678, de 2021, o Plano Diretor de Logística Sustentável deverá nortear a elaboração dos anteprojetos, dos projetos básicos ou dos termos de referência de cada contratação. \nNota Explicativa 3: Os preceitos do desenvolvimento sustentável devem ser observados na fase preparatória da contratação, em suas dimensões econômica, social, ambiental e cultural, no mínimo, com base nos planos de gestão de logística sustentável dos órgãos e das entidades, conforme prevê o parágrafo único do artigo 11 da Instrução Normativa SEGES/ME nº 73, de 2022.\nNota Explicativa 4: Os critérios e práticas de sustentabilidade deverão ser registrados no sistema de ETP Digital, conforme previsão do Art. 9º, II, da Instrução Normativa SEGES/ME nº 58, de 2022. \nSoma-se a essa previsão, o Parecer n. 00001/2021/CNS/CGU/AGU, da Consultoria –Geral da União aprovado nos termos do DESPACHO n. 00525/2021/GAB/CGU/AGU (NUP: 00688.000723/2019-45) que consolidou o entendimento de que a “administração pública é obrigada a adotar critérios e práticas de sustentabilidade socioambiental e de acessibilidade nas contratações públicas, nas fases de planejamento, seleção de fornecedor, execução contratual, fiscalização e na gestão dos resíduos sólidos.” \nDessa forma, a sustentabilidade deve ser considerada pelo gestor público: a) na fase de planejamento da contratação, b) na elaboração das minutas, com consulta ao Guia, c) na fase de execução contratual e d) na adequada destinação ambiental dos resíduos decorrentes dos serviços prestados, levando em conta as diretrizes estabelecidas pela Lei 12.305/2010 - Política Nacional de Resíduos Sólidos. Ainda que não constante do termo de referência, destaque-se que as contratações mediante pregão eletrônico deverão estar alinhadas com o Plano de Gestão e Logística Sustentável do órgão.\nNota Explicativa 5: A impossibilidade de adoção de critérios e práticas de sustentabilidade nas contratações públicas deverá ser justificada pelo gestor competente nos Estudos Técnicos Preliminares ou nos autos do processo administrativo, com a indicação das pertinentes razões de fato e/ou direito, conforme o Parecer n. 00001/2021/CNS/CGU/AGU e previsão do §1º do art. 9º da Instrução Normativa SEGES/ME nº 58, de 2022, que dispõe sobre a elaboração dos Estudos Técnicos Preliminares - ETP.   \nSe houver justificativa nos autos para a não-adoção de critérios de sustentabilidade (e apenas nesse caso), deverá haver a supressão dos dispositivos específicos acima. \nNota Explicativa 6: Aos agentes da administração pública federal encarregados de realizar contratações públicas, recomenda-se que, no exercício de suas atribuições funcionais, consultem o Guia Nacional de Contratações Sustentáveis da Advocacia-Geral da União, disponibilizado pela Consultoria-Geral da União e no site da AGU. \nNota Explicativa 7: De acordo com o Guia Nacional de Contratações Sustentáveis da AGU, a inclusão de critérios de sustentabilidade deve ser feita de modo claro e objetivo. Deve-se evitar a transcrição literal e automática das previsões legais ou normativas, sem efetuar o exame da incidência real e efetiva delas na contratação em apreço.\nAssim, uma vez exigido qualquer requisito ambiental na especificação do objeto e/ou edital, e/ou contrato, deve ser prevista a forma objetiva de comprovação. É preciso saber quais critérios de sustentabilidade devem ser incluídos nos artefatos da contratação, como fazer essas exigências e de que forma as pretendidas contratadas devem comprovar o cumprimento desses critérios de sustentabilidade exigidos pela Administração. (artigo 9, inciso XII, da Instrução Normativa SEGES/ME nº 58, de 2022, que dispõe sobre a elaboração dos Estudos Técnicos Preliminares - ETP)\nNota Explicativa 8: Nas aquisições e contratações governamentais, deve ser dada prioridade para produtos reciclados e recicláveis e para bens, serviços e obras que considerem critérios compatíveis com padrões de consumo sustentáveis (artigo 7º, XI, da Lei nº 12.305, de 2010 – Política Nacional de Resíduos Sólidos). Deve-se observar, também, a regulamentação a ser editada a luz da nova legislação.\nNota Explicativa 9: Recomenda-se, igualmente, consulta ao Catálogo de Materiais Sustentáveis (CATMAT Sustentável), bem como consulta prévia ao site governamental https://doacoes.gov.br/, solução desenvolvida pelo Ministério da Gestão e da Inovação em Serviços Públicos, que oferta bens móveis e serviços para a administração pública, disponibilizados pelos próprios órgãos de governo ou oferecidos por particulares de forma não onerosa, otimizando a gestão do recurso público com consumo consciente e sustentável.",
         "trecho_ancorado": "Sustentabilidade",
-        "validacao": ""
+        "validacao": "OK"
       },
       {
         "afeta": "WZ-18, VAL-018",
         "bloco_ancora": "TR-4.2",
         "citacoes": "art. 41, inciso I, alíneas a, b, c e d da Lei nº 14.133, de 2021; art. 42 da Lei n.º 14.133, de 2021; art. 43 da Lei nº 14.133, de 2021; art. 9º, inciso I, alínea b, da IN Seges/ME nº 81, de 2022; Portaria SEGES/ME n. 938, de 2022",
-        "comentario_validacao": "",
+        "comentario_validacao": "Aceito pelo dono do projeto em 23/10/2026, no chat de gestão, com base no parecer do gestor (conferência da regra com o texto da nota).",
         "fonte": "TR exemplos/modelo-de-termo-de-referencia-compras-lei-no-14-133-dez-25.docx, word/comments.xml, comentário w:id 19; âncora em word/document.xml, parágrafo 131 (blocos TR-4.2). trecho_ancorado, texto_integral e citacoes EXTRAIDOS; natureza, regra_derivada e afeta INFERIDOS da leitura da nota.",
         "id": "NE-012",
         "natureza": "CONDICAO",
@@ -21872,13 +21872,13 @@
         "status": "INFERIDO",
         "texto_integral": "Nota Explicativa 1: Marca - Excepcionalmente será permitida a indicação de uma ou mais marcas ou modelos, desde que justificada tecnicamente no processo, nas hipóteses descritas no art. 41, inciso I, alíneas a, b, c e d da Lei nº 14.133, de 2021.\n\nNota Explicativa 2: Similaridade - Quando necessária a indicação, no edital ou aviso de contratação direta, de marca como referência de qualidade ou facilitação da descrição do objeto, ela deverá ser seguida das expressões “ou equivalente”, “ou similar” e “ou de melhor qualidade”, hipótese em que a Administração poderá exigir que o interessado comprove desempenho, qualidade e produtividade compatíveis com o produto similar ou equivalente à marca de referência mencionada, por meio dos procedimentos de prova de qualidade estabelecidos no art. 42 da Lei n.º 14.133, de 2021. \nDeve a Administração, ainda, observar o princípio da padronização considerada a compatibilidade de especificações estéticas, técnicas ou de desempenho, nos termos do art. 43 da Lei nº 14.133, de 2021, e do art. 9º, inciso I, alínea b, da IN Seges/ME nº 81, de 2022. Também deverá ser observada a Portaria SEGES/ME n. 938, de 2022, que institui o catálogo eletrônico de padronização de compras, serviços e obras, no âmbito da Administração Pública federal direta, autárquica e fundacional.",
         "trecho_ancorado": "Na presente contratação será admitida a indicação da(s) seguinte(s) marca(s), característica(s) ou modelo(s), de acordo com as justificativas contidas nos Estudos Técnicos Preliminares: (...)",
-        "validacao": ""
+        "validacao": "OK"
       },
       {
         "afeta": "WZ-20, WZ-05, VAL-012, VAL-013",
         "bloco_ancora": "TR-4.H04",
         "citacoes": "artigo 17, §3º, artigo 41, inciso II, e artigo 42, §2º, todos da Lei nº 14.133, de 2021; artigo 29, §1º, da Instrução Normativa SEGES/ME nº 73, de 2022",
-        "comentario_validacao": "",
+        "comentario_validacao": "Aceito pelo dono do projeto em 23/10/2026, no chat de gestão, com base no parecer do gestor (conferência da regra com o texto da nota).",
         "fonte": "TR exemplos/modelo-de-termo-de-referencia-compras-lei-no-14-133-dez-25.docx, word/comments.xml, comentário w:id 20; âncora em word/document.xml, parágrafos 136 a 152 (blocos TR-4.H04, TR-4.4, TR-4.5, TR-4.5.1, TR-4.5.2, TR-4.5.3, TR-4.6, TR-4.7, TR-4.8, TR-4.9, TR-4.9.1, TR-4.9.2, TR-4.10, TR-4.11, TR-4.12, TR-4.13, TR-4.14). trecho_ancorado, texto_integral e citacoes EXTRAIDOS; natureza, regra_derivada e afeta INFERIDOS da leitura da nota.",
         "id": "NE-013",
         "natureza": "CONDICAO",
@@ -21886,13 +21886,13 @@
         "status": "INFERIDO",
         "texto_integral": "Nota Explicativa 1: No contexto de contratações diretas, só se poderia cogitar de um procedimento de amostra no caso de dispensa eletrônica, a partir do que for possível pelo sistema respectivo. A Administração deverá avaliar, portanto, no caso de contratações diretas, a pertinência de manter ou não as disposições do TR acerca da oferta de amostras. \n\nNota Explicativa  2: A possibilidade de exigência de amostra, exame de conformidade e prova de conceito tem previsão no artigo 17, §3º, artigo 41, inciso II, e artigo 42, §2º, todos da Lei nº 14.133, de 2021, e no artigo 29, §1º, da Instrução Normativa SEGES/ME nº 73, de 2022. A justificativa para a exigência deve constar do ETP, devendo o TR disciplinar a forma como essa etapa ocorrerá, bem como os critérios a serem adotados para a avaliação.\n\nNota Explicativa 3: A exigência de prova de conceito, amostra, protótipo, testes e outras formas de avaliação de conformidade do objeto é excepcional. Eventual exigência nesse sentido deve ser ponderada pela Administração à luz do caso concreto, mediante justificativa. O insucesso em contratações pretéritas pode justificar essa previsão. Há itens de baixa qualidade que simplesmente não funcionam como deveriam, embora possuam descrição técnica semelhante à de objetos de boa qualidade. O julgamento pelo menor preço pode atrair o fornecimento de bens de pouca qualidade, devendo a Administração adotar cautelas para não adquirir material imprestável e, mais importante, evitar repetidamente contratar nessas condições.",
         "trecho_ancorado": "Da exigência de amostra Havendo o aceite da proposta quanto ao valor, o interessado classificado provisoriamente em primeiro lugar deverá apresentar amostra, que terá data, local e horário de sua real",
-        "validacao": ""
+        "validacao": "OK"
       },
       {
         "afeta": "WZ-21, VAL-030",
         "bloco_ancora": "TR-4.H05",
         "citacoes": "",
-        "comentario_validacao": "",
+        "comentario_validacao": "Aceito pelo dono do projeto em 23/10/2026, no chat de gestão, com base no parecer do gestor (conferência da regra com o texto da nota).",
         "fonte": "TR exemplos/modelo-de-termo-de-referencia-compras-lei-no-14-133-dez-25.docx, word/comments.xml, comentário w:id 21; âncora em word/document.xml, parágrafos 153 a 154 (blocos TR-4.H05, TR-4.15). trecho_ancorado, texto_integral e citacoes EXTRAIDOS; natureza, regra_derivada e afeta INFERIDOS da leitura da nota.",
         "id": "NE-014",
         "natureza": "CONDICAO",
@@ -21900,7 +21900,7 @@
         "status": "INFERIDO",
         "texto_integral": "Nota Explicativa: Em razão de seu potencial de restringir a competitividade do certame, a exigência de carta de solidariedade somente se justificará em situações excepcionais e devidamente motivadas.",
         "trecho_ancorado": "Da exigência de carta de solidariedade Em caso de fornecedor, revendedor ou distribuidor, será exigida do licitante/interessado provisoriamente classificado em primeiro lugar, nos termos do edital ou ",
-        "validacao": ""
+        "validacao": "OK"
       },
       {
         "afeta": "WZ-22, WZ-08",
@@ -21920,7 +21920,7 @@
         "afeta": "WZ-22, WZ-08",
         "bloco_ancora": "TR-4.17",
         "citacoes": "art. 48, inciso II, da Lei Complementar n. 123, de 2006; art. 7º, do Decreto n.º 8.538, de 2015; art. 48, II, da Lei Complementar n. 123, de 2006; § 1º do art. 4º do Decreto nº 8.538, de 2015",
-        "comentario_validacao": "",
+        "comentario_validacao": "Aceito pelo dono do projeto em 23/10/2026, no chat de gestão, com base no parecer do gestor (conferência da regra com o texto da nota). Ressalva: a cláusula de subcontratação de ME/EPP da nota 3 não está no corpo do modelo; o sistema não a gera, e se usada é redigida à mão.",
         "fonte": "TR exemplos/modelo-de-termo-de-referencia-compras-lei-no-14-133-dez-25.docx, word/comments.xml, comentário w:id 23; âncora em word/document.xml, parágrafos 158 a 170 (blocos TR-4.17, TR-4.18, TR-4.18.1, TR-4.18.2, TR-4.18.3, TR-4.19, TR-4.19.1, TR-4.19.2, TR-4.19.3, TR-4.20, TR-4.21, TR-4.22, TR-4.23). trecho_ancorado, texto_integral e citacoes EXTRAIDOS; natureza, regra_derivada e afeta INFERIDOS da leitura da nota. Observação: A nota 3 traz itens numerados 4.24 a 4.29 que não correspondem à numeração do corpo do modelo (P17, P18).",
         "id": "NE-016",
         "natureza": "CONDICAO",
@@ -21928,13 +21928,13 @@
         "status": "INFERIDO",
         "texto_integral": "Nota Explicativa 1: Havendo a necessidade de inclusão de outras especificações técnicas quanto à subcontratação, deverão ser inseridas nestes itens.\n\nNota Explicativa 2: A subcontratação parcial é permitida e deverá ser analisada pela Administração com base nas informações dos estudos preliminares, em cada caso concreto. Caso admitida no Termo de Referência, deve-se estabelecer com detalhamento seus limites e condições, inclusive especificando quais parcelas do objeto poderão ser subcontratadas.\n\nNota Explicativa 3: Nas contratações para aquisição de bens vinculada à prestação de serviços acessórios, é possível à Administração exigir do futuro contratado a subcontratação de microempresas ou empresas de pequeno porte, nos termos do art. 48, inciso II, da Lei Complementar n. 123, de 2006, e do art. 7º, do Decreto n.º 8.538, de 2015. Nesse caso, recomenda-se a inclusão, neste item do Termo de Referência, das disposições a seguir: \n\n4.24.Deverá haver subcontratação de microempresas ou empresas de pequeno porte (art. 48, II, da Lei Complementar n. 123, de 2006, e art. 7º, do Decreto n.º 8.538, de 2015), com observância das seguintes disposições específicas:\n\n4.25.A subcontratação deverá observar o percentual mínimo de XX% (xxxxx por cento) e o máximo de XX% (xxxxx por cento) do valor da contratação, abrangendo as seguintes parcelas do objeto:\n    4.25.1[...]; e\n    4.25.2[...].\n\n4.26.O Contratado deverá apresentar, ao longo da vigência contratual, sempre que solicitada, a documentação de regularidade fiscal das microempresas e empresas de pequeno porte subcontratadas, sob pena de rescisão, aplicando-se o prazo para regularização previsto no § 1º do art. 4º do Decreto nº 8.538, de 2015;\n\n4.27.O Contratado deverá a substituir a subcontratada, no prazo máximo de trinta dias, na hipótese de extinção da subcontratação, mantendo o percentual originalmente subcontratado até a sua execução total, notificando o Contratante, sob pena de rescisão, sem prejuízo das sanções cabíveis, ou a demonstrar a inviabilidade da substituição, hipótese em que ficará responsável pela execução da parcela originalmente subcontratada; e\n\n4.28.O Contratado será responsável pela padronização, pela compatibilidade, pelo gerenciamento centralizado e pela qualidade da subcontratação.\n\n4.29.Os empenhos e pagamentos referentes às parcelas subcontratadas serão destinados diretamente às microempresas e empresas de pequeno porte subcontratadas.",
         "trecho_ancorado": "É permitida a subcontratação parcial do objeto, até o limite de XX% (xxxxx por cento) do valor total do contrato, nas seguintes condições: É vedada a subcontratação completa ou da parcela principal da",
-        "validacao": ""
+        "validacao": "OK"
       },
       {
         "afeta": "WZ-23, WZ-35, WZ-14, WZ-53",
         "bloco_ancora": "TR-4.H07",
         "citacoes": "art. 98 da Lei nº 14.133, de 2021; art. 145, § 2º, da Lei nº 14.133, de 2021; art. 96, §1º, da Lei nº 14.133, de 2021; §3º do art. 96 da Lei nº 14.133, de 2021; alínea “a”, do Anexo VII-F, da Instrução Normativa SEGES/MP nº 05, de 2017",
-        "comentario_validacao": "",
+        "comentario_validacao": "Aceito pelo dono do projeto em 23/10/2026, no chat de gestão, com base no parecer do gestor (conferência da regra com o texto da nota).",
         "fonte": "TR exemplos/modelo-de-termo-de-referencia-compras-lei-no-14-133-dez-25.docx, word/comments.xml, comentário w:id 24; âncora em word/document.xml, parágrafo 171 (blocos TR-4.H07). trecho_ancorado, texto_integral e citacoes EXTRAIDOS; natureza, regra_derivada e afeta INFERIDOS da leitura da nota.",
         "id": "NE-017",
         "natureza": "CONDICAO",
@@ -21942,7 +21942,7 @@
         "status": "INFERIDO",
         "texto_integral": "Nota Explicativa 1: Neste momento, a área técnica competente deverá indicar se será, ou não, exigida a garantia de execução do objeto para a contratação. \n\nNota Explicativa 2: O percentual da garantia será de: \na) até 5% (cinco por cento) do valor inicial do contrato, para contratações em geral, conforme art. 98 da Lei nº 14.133, de 2021; \nb) até 10% (dez por cento) do valor inicial do contrato, nos casos de alta complexidade técnica e riscos envolvidos, caso em que deverá haver justificativa específica nos autos, conforme art. 98 da Lei nº 14.133, de 2021; \nc) deverá ser acrescido de garantia adicional aos percentuais citados anteriormente, em casos de previsão de antecipação de pagamento, nos termos do art. 145, § 2º, da Lei nº 14.133, de 2021. \nd) nos casos de contratos que impliquem a entrega de bens pela Administração, dos quais o contratado ficará depositário, o valor desses bens deverá ser acrescido ao valor da garantia calculado de acordo com os itens anteriores. \n\nNota explicativa 3: Nos casos de fornecimentos contínuos com duração até um ano, a garantia será calculada com base no valor total do contrato. Se de duração superior a um ano, o será com base no valor anual. Nos demais casos (serviços ou fornecimentos não-contínuos), o será com base no valor inicial.\n\nNota explicativa 4: O art. 96, §1º, da Lei nº 14.133, de 2021, estabelece as modalidades de garantia da execução contratual, que incluem caução, seguro-garantia, fiança bancária e título de capitalização. A escolha entre essas quatro modalidades de garantia é uma prerrogativa do contratado. \nPara a modalidade de seguro-garantia, o §3º do art. 96 da Lei nº 14.133, de 2021, impõe que a prestação da garantia ocorra antes da assinatura do contrato, no prazo mínimo de um mês, a ser estabelecido em edital,  contado da homologação da licitação. A mesma regra deverá ser aplicada, por analogia, às contratações diretas precedidas de dispensa eletrônica. \nPara as demais modalidades, prevalece o disposto no item 3.1, alínea “a”, do Anexo VII-F, da Instrução Normativa SEGES/MP nº 05, de 2017, que fixa o prazo de 10 dias, prorrogáveis por igual período, a critério do órgão contratante, contado da assinatura do contrato para prestação da garantia. ",
         "trecho_ancorado": "Garantia da contratação",
-        "validacao": ""
+        "validacao": "OK"
       },
       {
         "afeta": "WZ-23",
@@ -28434,6 +28434,76 @@
         "status": "INFERIDO",
         "tipo_resposta": "SIM_NAO",
         "validacao": ""
+      },
+      {
+        "calculo_expr": null,
+        "coerencia": "Permitido pela resposta da P25 (23/10/2026): a duração da garantia já prestada não é a limitação de tempo ou de época que a NE-071 veda; o período ou a época do contrato atestado continuam barrados (VAL-029)",
+        "comentario_validacao": "",
+        "depende_de": "WZ-38 contém ATESTADOS",
+        "depende_de_expr": {
+          "in": [
+            "ATESTADOS",
+            {
+              "var": [
+                "WZ_38",
+                []
+              ]
+            }
+          ]
+        },
+        "desliga_blocos": "NAO: SET-23",
+        "desliga_expr": {
+          "merge": [
+            {
+              "if": [
+                {
+                  "==": [
+                    {
+                      "var": "WZ_60"
+                    },
+                    "NAO"
+                  ]
+                },
+                [
+                  "SET-23"
+                ],
+                []
+              ]
+            }
+          ]
+        },
+        "documento": "TR",
+        "exige_justificativa": "S se SIM: justificativa técnica no ETP (VAR-162) e prazo mínimo da garantia prestada (VAR-161), de 12 meses ou mais (VAL-052 e VAL-053)",
+        "fonte": "Desenho a partir das alternativas do M02 e das regras do M03 (Fase 3); liga_blocos e desliga_blocos usam IDs do M02 e do M01, com 'A..B' para faixa na ordem do M02. Campos INFERIDOS: todos, exceto os IDs citados. pre_preenchida_por: perguntas dos checklists técnicos (M11) que respondem ou apoiam a WZ (22/10/2026); liga_expr e desliga_expr: JSON Logic gerado pelo f6_gerar_expr.py a partir de liga_blocos e desliga_blocos. Pergunta criada na Fase 12 (23/10/2026) pela resposta da P25 (característica de atestado permitida). Fase 10 (23/10/2026): depende_de_expr em JSON Logic, tradução do texto da própria linha feita pelo f10_gerar_expr.py; convenções no README e na P31.",
+        "fundamento": "NE-071; M08 SET-23; P25",
+        "id": "WZ-60",
+        "liga_blocos": "SIM: SET-23",
+        "liga_expr": {
+          "merge": [
+            {
+              "if": [
+                {
+                  "==": [
+                    {
+                      "var": "WZ_60"
+                    },
+                    "SIM"
+                  ]
+                },
+                [
+                  "SET-23"
+                ],
+                []
+              ]
+            }
+          ]
+        },
+        "opcoes": "SIM; NAO",
+        "pergunta": "Os atestados deverão comprovar garantia técnica já prestada a equipamento compatível com o objeto, com prazo mínimo?",
+        "pre_preenchida_por": "DECISAO_JURIDICA (equipe administrativa); fatos de apoio: CK-P-18.1; CK-P-18.3",
+        "status": "INFERIDO",
+        "tipo_resposta": "SIM_NAO",
+        "validacao": ""
       }
     ],
     "M05": [
@@ -31118,6 +31188,34 @@
         "tipo_dado": "NUMERO",
         "usada_em": "VAR-113; VAR-118; VAL-051",
         "validacao": "inteiro maior ou igual a zero; vazia sem VAR-057 ou sem quantidade"
+      },
+      {
+        "calculo_expr": null,
+        "calculo_ordem": null,
+        "descricao": "Prazo mínimo, em meses, da garantia técnica já prestada que os atestados devem comprovar (WZ-60)",
+        "fonte": "Linha criada na Fase 10 (23/10/2026): atributo de item já usado nas expressões do M10 (achado do compilador do Marco 0) ou no calculo_expr do M05; descrição a partir da VAR-011.",
+        "id": "VAR-161",
+        "nome": "garantia_atestado_meses",
+        "obrigatoria": "CONDICIONAL",
+        "origem": "WIZARD",
+        "status": "INFERIDO",
+        "tipo_dado": "NUMERO",
+        "usada_em": "SET-23; VAL-052",
+        "validacao": "inteiro de 12 ou mais (PAR-13, resposta da P25); obrigatório com WZ-60 = SIM"
+      },
+      {
+        "calculo_expr": null,
+        "calculo_ordem": null,
+        "descricao": "Justificativa técnica, no ETP, da exigência de garantia já prestada nos atestados (WZ-60)",
+        "fonte": "Linha criada na Fase 10 (23/10/2026): atributo de item já usado nas expressões do M10 (achado do compilador do Marco 0) ou no calculo_expr do M05; descrição a partir da VAR-011.",
+        "id": "VAR-162",
+        "nome": "justificativa_garantia_atestado",
+        "obrigatoria": "CONDICIONAL",
+        "origem": "WIZARD",
+        "status": "INFERIDO",
+        "tipo_dado": "TEXTO",
+        "usada_em": "ETP-04.01; SET-23; VAL-053",
+        "validacao": "obrigatória com WZ-60 = SIM; fatos técnicos, sem texto padrão"
       }
     ],
     "M06": [
@@ -41303,6 +41401,30 @@
         "tema": "Logística reversa e recolhimento pelo fornecedor",
         "texto_proposto": "O Contratado recolherá, sem ônus para o Contratante, [VAR-147: materiais e situações], dando a eles destinação ambientalmente adequada.",
         "variaveis": "VAR-147; VAR-106"
+      },
+      {
+        "base_no_modelo": "NE-071 (atestados sem limitação de tempo ou de época); resposta da P25 em 23/10/2026: a duração da garantia já prestada é permitida, com justificativa no ETP, e pode ser de 12 meses ou mais",
+        "condicao": "SE a equipe exigir que os atestados comprovem garantia já prestada a equipamento compatível (WZ-60 = SIM)",
+        "condicao_expr": {
+          "==": [
+            {
+              "var": "WZ_60"
+            },
+            "SIM"
+          ]
+        },
+        "documento": "TR",
+        "evidencia_corpus": "TR 23/2026 (TR exemplos/ae4297a4-a494-4822-980f-6cbcc6b4571c.pdf) p.11: '9.30.1.1. Venda, entrega, instalação e garantia mínima de 12 (doze) meses prestada ao equipamento compatível com o objeto'; TR 58/2026 (TR exemplos/f518d222-2d93-4dd0-8068-55769fe133c5.pdf) p.16: '9.34.2.1. Venda, entrega, instalação e garantia mínima de 12 (doze) meses prestada ao equipamento'",
+        "fonte": "Checklists (fonte principal): CK-P-18.1; CK-P-18.3 (fatos de apoio); decisão na WZ-60. Base no modelo: NE-071 (atestados sem limitação de tempo ou de época); resposta da P25 em 23/10/2026: a duração da garantia já prestada é permitida, com justificativa no ETP, e pode ser de 12 meses ou mais. Evidência de redação no corpus: trecho e página citados em evidencia_corpus (EXTRAIDO). texto_proposto, condicao e ponto_insercao INFERIDOS.",
+        "id": "SET-23",
+        "observacao": "A exigência fica fora da VAL-029 (que barra período ou época do contrato atestado) e depende de justificativa no ETP (VAL-053) e de prazo de 12 meses ou mais (VAL-052).",
+        "origem_checklist": "CK-P-18.1; CK-P-18.3 (fatos de apoio); decisão na WZ-60",
+        "perguntas_wz": "WZ-60; WZ-38",
+        "ponto_insercao": "TR: qualificação técnica, depois das características dos atestados (TR-9.34 e subitens)",
+        "status": "INFERIDO",
+        "tema": "Atestado com garantia técnica já prestada a equipamento compatível (P25)",
+        "texto_proposto": "Os atestados deverão comprovar também a prestação de garantia técnica a equipamento compatível com o objeto, pelo prazo mínimo de [VAR-161] meses, conforme justificativa constante do Estudo Técnico Preliminar.",
+        "variaveis": "VAR-161; VAR-162"
       }
     ],
     "M10": [
@@ -42584,10 +42706,10 @@
         "tipo": "ALERTA"
       },
       {
-        "achado": "M09: ETP 117/2025 (atestado 'pelo período mínimo de 12 meses')",
-        "afeta": "VAR-085; TR-9.34",
-        "base": "NE-071",
-        "condicao": "SE algum item da lista de características dos atestados (VAR-085) contiver 'período mínimo' ou 'últimos' (também com inicial maiúscula)",
+        "achado": "M09: ETP 117/2025 (atestado 'pelo período mínimo de 12 meses', DV-12)",
+        "afeta": "VAR-085; TR-9.34; WZ-60",
+        "base": "NE-071; P25",
+        "condicao": "SE algum item da lista de características dos atestados (VAR-085) contiver 'últimos' (época), ou contiver 'período mínimo' sem tratar de garantia (período do contrato atestado), com ou sem inicial maiúscula. A duração da garantia técnica já prestada não é barrada: é permitida pela resposta da P25 (23/10/2026) e entra pela WZ-60 e pela SET-23",
         "condicao_expr": {
           "some": [
             {
@@ -42598,22 +42720,6 @@
             },
             {
               "or": [
-                {
-                  "in": [
-                    "período mínimo",
-                    {
-                      "var": ""
-                    }
-                  ]
-                },
-                {
-                  "in": [
-                    "Período mínimo",
-                    {
-                      "var": ""
-                    }
-                  ]
-                },
                 {
                   "in": [
                     "últimos",
@@ -42629,6 +42735,54 @@
                       "var": ""
                     }
                   ]
+                },
+                {
+                  "and": [
+                    {
+                      "or": [
+                        {
+                          "in": [
+                            "período mínimo",
+                            {
+                              "var": ""
+                            }
+                          ]
+                        },
+                        {
+                          "in": [
+                            "Período mínimo",
+                            {
+                              "var": ""
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "!": [
+                        {
+                          "or": [
+                            {
+                              "in": [
+                                "garantia",
+                                {
+                                  "var": ""
+                                }
+                              ]
+                            },
+                            {
+                              "in": [
+                                "Garantia",
+                                {
+                                  "var": ""
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             }
@@ -42636,7 +42790,7 @@
         },
         "fonte": "Regra desenhada na Fase 7 a partir das matrizes M01 a M09 e M11, com a base indicada na coluna base. condicao_expr em JSON Logic (convenções em jlogic.py e no README).",
         "id": "VAL-029",
-        "mensagem": "A NE-071 veda limitação de tempo ou de época nos atestados. Retire a limitação.",
+        "mensagem": "A NE-071 veda limitação de tempo ou de época nos atestados (período mínimo do contrato atestado, contratos dos últimos anos). Retire a limitação. Se a intenção é exigir garantia técnica já prestada, use a WZ-60.",
         "momento": "WIZARD",
         "regra": "Atestado com limitação de tempo ou de época",
         "status": "INFERIDO",
@@ -43269,6 +43423,84 @@
         "regra": "Cota calculada em zero: item em ampla participação",
         "status": "INFERIDO",
         "tipo": "ALERTA"
+      },
+      {
+        "achado": "",
+        "afeta": "WZ-60; VAR-161; SET-23",
+        "base": "P25 (decisão 0008, 23/10/2026)",
+        "condicao": "SE WZ-60 = SIM E o prazo da garantia prestada (VAR-161) estiver vazio ou for menor que o mínimo (PAR-13, 12 meses)",
+        "condicao_expr": {
+          "and": [
+            {
+              "==": [
+                {
+                  "var": "WZ_60"
+                },
+                "SIM"
+              ]
+            },
+            {
+              "or": [
+                {
+                  "!": [
+                    {
+                      "var": "VAR_161"
+                    }
+                  ]
+                },
+                {
+                  ">": [
+                    {
+                      "var": "parametros.garantia_atestado_minima_meses"
+                    },
+                    {
+                      "var": "VAR_161"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "fonte": "Regra desenhada na Fase 7 a partir das matrizes M01 a M09 e M11, com a base indicada na coluna base. condicao_expr em JSON Logic (convenções em jlogic.py e no README).",
+        "id": "VAL-052",
+        "mensagem": "Informe o prazo mínimo da garantia já prestada que os atestados devem comprovar: 12 meses ou mais (resposta da P25).",
+        "momento": "WIZARD",
+        "regra": "Garantia já prestada nos atestados abaixo de 12 meses ou sem prazo",
+        "status": "INFERIDO",
+        "tipo": "BLOQUEIO"
+      },
+      {
+        "achado": "",
+        "afeta": "WZ-60; VAR-162; ETP-04.01",
+        "base": "P25 (decisão 0008, 23/10/2026); NE-071",
+        "condicao": "SE WZ-60 = SIM E a justificativa técnica (VAR-162) estiver vazia",
+        "condicao_expr": {
+          "and": [
+            {
+              "==": [
+                {
+                  "var": "WZ_60"
+                },
+                "SIM"
+              ]
+            },
+            {
+              "!": [
+                {
+                  "var": "VAR_162"
+                }
+              ]
+            }
+          ]
+        },
+        "fonte": "Regra desenhada na Fase 7 a partir das matrizes M01 a M09 e M11, com a base indicada na coluna base. condicao_expr em JSON Logic (convenções em jlogic.py e no README).",
+        "id": "VAL-053",
+        "mensagem": "A exigência de garantia já prestada nos atestados precisa de justificativa técnica no ETP (resposta da P25).",
+        "momento": "WIZARD",
+        "regra": "Garantia já prestada nos atestados sem justificativa no ETP",
+        "status": "INFERIDO",
+        "tipo": "BLOQUEIO"
       }
     ],
     "M11": [
@@ -48629,7 +48861,7 @@
         "efeito": "PREENCHE",
         "fonte": "Checklists/Checklist_Tecnico_Medicamentos_e_Materiais_de_Consumo_em_Saude_REVISAO__1_.docx, word/document.xml, parágrafos 398 a 400 (SHA-256 6294e718c983...). secao, numero, pergunta, opcoes e orientacao EXTRAIDOS. tipo_resposta, condicional implícita, por_item, destinos, efeito e regra INFERIDOS. Fase 10 (23/10/2026): preenche_expr em JSON Logic, tradução do texto da própria linha feita pelo f10_gerar_expr.py; convenções no README e na P31. Fase 11 (23/10/2026): leitura, revisao_expr e revisao_pergunta. Decisão 0009 (23/10/2026): o checklist distribuído não muda; leitura, revisão e complementos ficam no M11. Sugestão de origem em sugestoes_checklist.md.",
         "id": "CK-C-16.3",
-        "leitura": "Uma opção. Duas ou mais marcas: resposta vazia, ID em checklist.marcas_multiplas e destaque. Texto escrito ao lado de 'Outro' em CK_x_texto.",
+        "leitura": "Uma opção. Duas ou mais marcas: resposta vazia, ID em checklist.marcas_multiplas e destaque. Texto escrito ao lado de 'Outro' em CK_x_texto. 'Outro' (P32.1): número seguido de 'dias' vira o número em CK_C_16_3_numero e é o valor; qualquer outra coisa deixa CK_C_16_3_numero vazio, destaca a resposta e faz a pergunta ao operador.",
         "numero": "16.3",
         "opcoes": "2 dias; 5 dias; 10 dias; Outro; campos: Prazo escolhido / justificativa, se necessário",
         "orientacao": "",
@@ -48674,7 +48906,7 @@
                 ]
               },
               {
-                "var": "CK_C_16_3_texto"
+                "var": "CK_C_16_3_numero"
               },
               null
             ]
@@ -48684,26 +48916,49 @@
         "revisao_expr": {
           "or": [
             {
-              "in": [
-                "CK-C-16.3",
+              "and": [
                 {
-                  "var": [
-                    "checklist.marcas_multiplas",
-                    []
+                  "==": [
+                    {
+                      "var": "CK_C_16_3"
+                    },
+                    "Outro"
+                  ]
+                },
+                {
+                  "!": [
+                    {
+                      "var": "CK_C_16_3_numero"
+                    }
                   ]
                 }
               ]
             },
             {
-              "!": [
+              "or": [
                 {
-                  "var": "CK_C_16_3"
+                  "in": [
+                    "CK-C-16.3",
+                    {
+                      "var": [
+                        "checklist.marcas_multiplas",
+                        []
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "!": [
+                    {
+                      "var": "CK_C_16_3"
+                    }
+                  ]
                 }
               ]
             }
           ]
         },
-        "revisao_pergunta": "Na pergunta 16.3 do checklist de consumo a leitura não achou uma opção única. Qual opção vale: 2 dias; 5 dias; 10 dias; Outro?",
+        "revisao_pergunta": "O 'Outro' desta pergunta não traz um número legível. Qual é o prazo para substituir o produto recusado, em dias?",
         "secao": "16. RECEBIMENTO E ACEITAÇÃO",
         "status": "INFERIDO",
         "sugere_expr": null,
@@ -54619,7 +54874,7 @@
         "efeito": "PREENCHE",
         "fonte": "Checklists/Checklist_Tecnico_Aquisicao_de_Materiais_Permanentes_em_Saude_ATUALIZADO_SEM_19_3__2_.docx, word/document.xml, parágrafos 458 a 461 (SHA-256 7c6d3cc9bf16...). secao, numero, pergunta, opcoes e orientacao EXTRAIDOS. tipo_resposta, condicional implícita, por_item, destinos, efeito e regra INFERIDOS. Fase 10 (23/10/2026): preenche_expr em JSON Logic, tradução do texto da própria linha feita pelo f10_gerar_expr.py; convenções no README e na P31. Fase 11 (23/10/2026): leitura, revisao_expr e revisao_pergunta. Decisão 0009 (23/10/2026): o checklist distribuído não muda; leitura, revisão e complementos ficam no M11. Sugestão de origem em sugestoes_checklist.md.",
         "id": "CK-P-13.1",
-        "leitura": "Uma opção. Duas ou mais marcas: resposta vazia, ID em checklist.marcas_multiplas e destaque. Texto escrito ao lado de 'Outro' em CK_x_texto. Por item (S07). Se o Word trouxer uma resposta só, sem indicar itens, ela vale para todos os itens do checklist (consumo ou permanentes), o ID entra em checklist.resposta_unica_por_item e a resposta fica destacada pedindo confirmação item a item.",
+        "leitura": "Uma opção. Duas ou mais marcas: resposta vazia, ID em checklist.marcas_multiplas e destaque. Texto escrito ao lado de 'Outro' em CK_x_texto. Por item (S07). Se o Word trouxer uma resposta só, sem indicar itens, ela vale para todos os itens do checklist (consumo ou permanentes), o ID entra em checklist.resposta_unica_por_item e a resposta fica destacada pedindo confirmação item a item. 'Outro' (P32.1): número seguido de 'meses' vira o número em CK_P_13_1_numero e é o valor; qualquer outra coisa deixa CK_P_13_1_numero vazio, destaca a resposta e faz a pergunta ao operador.",
         "numero": "13.1",
         "opcoes": "12 meses; 24 meses; 36 meses; Outro: ______ meses",
         "orientacao": "Informe por item quando os prazos forem diferentes.",
@@ -54664,7 +54919,7 @@
                 ]
               },
               {
-                "var": "CK_P_13_1_texto"
+                "var": "CK_P_13_1_numero"
               },
               null
             ]
@@ -54674,12 +54929,35 @@
         "revisao_expr": {
           "or": [
             {
-              "in": [
-                "CK-P-13.1",
+              "or": [
                 {
-                  "var": [
-                    "checklist.resposta_unica_por_item",
-                    []
+                  "in": [
+                    "CK-P-13.1",
+                    {
+                      "var": [
+                        "checklist.resposta_unica_por_item",
+                        []
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "and": [
+                    {
+                      "==": [
+                        {
+                          "var": "CK_P_13_1"
+                        },
+                        "Outro: ______ meses"
+                      ]
+                    },
+                    {
+                      "!": [
+                        {
+                          "var": "CK_P_13_1_numero"
+                        }
+                      ]
+                    }
                   ]
                 }
               ]
@@ -54708,7 +54986,7 @@
             }
           ]
         },
-        "revisao_pergunta": "A garantia mínima veio numa resposta só e foi aplicada a todos os itens permanentes. Confirme ou corrija a garantia de cada item, em meses.",
+        "revisao_pergunta": "A garantia mínima veio numa resposta só e foi aplicada a todos os itens permanentes. Confirme ou corrija a garantia de cada item, em meses. O 'Outro' desta pergunta não traz um número legível. Se houver 'Outro' sem número de meses legível: qual é a garantia mínima de cada item, em meses?",
         "secao": "13. GARANTIA DO EQUIPAMENTO",
         "status": "INFERIDO",
         "sugere_expr": null,
@@ -54965,7 +55243,7 @@
         "efeito": "PREENCHE",
         "fonte": "Checklists/Checklist_Tecnico_Aquisicao_de_Materiais_Permanentes_em_Saude_ATUALIZADO_SEM_19_3__2_.docx, word/document.xml, parágrafos 493 a 496 (SHA-256 7c6d3cc9bf16...). secao, numero, pergunta, opcoes e orientacao EXTRAIDOS. tipo_resposta, condicional implícita, por_item, destinos, efeito e regra INFERIDOS. Fase 10 (23/10/2026): preenche_expr em JSON Logic, tradução do texto da própria linha feita pelo f10_gerar_expr.py; convenções no README e na P31. Fase 11 (23/10/2026): leitura, revisao_expr e revisao_pergunta. Decisão 0009 (23/10/2026): o checklist distribuído não muda; leitura, revisão e complementos ficam no M11. Sugestão de origem em sugestoes_checklist.md.",
         "id": "CK-P-13.7",
-        "leitura": "Uma opção. Duas ou mais marcas: resposta vazia, ID em checklist.marcas_multiplas e destaque. Texto escrito ao lado de 'Outro' em CK_x_texto.",
+        "leitura": "Uma opção. Duas ou mais marcas: resposta vazia, ID em checklist.marcas_multiplas e destaque. Texto escrito ao lado de 'Outro' em CK_x_texto. 'Outro' (P32.1): número seguido de 'dias úteis' vira o número em CK_P_13_7_numero e é o valor; qualquer outra coisa deixa CK_P_13_7_numero vazio, destaca a resposta e faz a pergunta ao operador.",
         "numero": "13.7",
         "opcoes": "2 dias úteis; 5 dias úteis; 10 dias úteis; Outro",
         "orientacao": "Justifique prazos reduzidos em razão do impacto assistencial.",
@@ -55010,7 +55288,7 @@
                 ]
               },
               {
-                "var": "CK_P_13_7_texto"
+                "var": "CK_P_13_7_numero"
               },
               null
             ]
@@ -55020,26 +55298,49 @@
         "revisao_expr": {
           "or": [
             {
-              "in": [
-                "CK-P-13.7",
+              "and": [
                 {
-                  "var": [
-                    "checklist.marcas_multiplas",
-                    []
+                  "==": [
+                    {
+                      "var": "CK_P_13_7"
+                    },
+                    "Outro"
+                  ]
+                },
+                {
+                  "!": [
+                    {
+                      "var": "CK_P_13_7_numero"
+                    }
                   ]
                 }
               ]
             },
             {
-              "!": [
+              "or": [
                 {
-                  "var": "CK_P_13_7"
+                  "in": [
+                    "CK-P-13.7",
+                    {
+                      "var": [
+                        "checklist.marcas_multiplas",
+                        []
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "!": [
+                    {
+                      "var": "CK_P_13_7"
+                    }
+                  ]
                 }
               ]
             }
           ]
         },
-        "revisao_pergunta": "Na pergunta 13.7 do checklist de permanentes a leitura não achou uma opção única. Qual opção vale: 2 dias úteis; 5 dias úteis; 10 dias úteis; Outro?",
+        "revisao_pergunta": "O 'Outro' desta pergunta não traz um número legível. Qual é o prazo para restabelecer o funcionamento, em dias úteis?",
         "secao": "13. GARANTIA DO EQUIPAMENTO",
         "status": "INFERIDO",
         "sugere_expr": null,
@@ -56926,7 +57227,7 @@
         "efeito": "PREENCHE",
         "fonte": "Checklists/Checklist_Tecnico_Aquisicao_de_Materiais_Permanentes_em_Saude_ATUALIZADO_SEM_19_3__2_.docx, word/document.xml, parágrafos 703 a 706 (SHA-256 7c6d3cc9bf16...). secao, numero, pergunta, opcoes e orientacao EXTRAIDOS. tipo_resposta, condicional implícita, por_item, destinos, efeito e regra INFERIDOS. Fase 10 (23/10/2026): preenche_expr em JSON Logic, tradução do texto da própria linha feita pelo f10_gerar_expr.py; convenções no README e na P31. Fase 11 (23/10/2026): leitura, revisao_expr e revisao_pergunta. Decisão 0009 (23/10/2026): o checklist distribuído não muda; leitura, revisão e complementos ficam no M11. Sugestão de origem em sugestoes_checklist.md.",
         "id": "CK-P-19.3",
-        "leitura": "Uma opção. Duas ou mais marcas: resposta vazia, ID em checklist.marcas_multiplas e destaque. Texto escrito ao lado de 'Outro' em CK_x_texto.",
+        "leitura": "Uma opção. Duas ou mais marcas: resposta vazia, ID em checklist.marcas_multiplas e destaque. Texto escrito ao lado de 'Outro' em CK_x_texto. 'Outro' (P32.1): número seguido de 'dias úteis' vira o número em CK_P_19_3_numero e é o valor; qualquer outra coisa deixa CK_P_19_3_numero vazio, destaca a resposta e faz a pergunta ao operador. A opção '30 dias' está em dias corridos e o prazo de recebimento definitivo é contado em dias úteis: não é convertida, fica destacada e vira pergunta.",
         "numero": "19.3",
         "opcoes": "2 dias úteis; 5 dias úteis; 8 dias úteis; 15 dias úteis; 30 dias; Outro",
         "orientacao": "Justifique quando houver necessidade de período maior.",
@@ -56940,15 +57241,49 @@
                   {
                     "var": "CK_P_19_3"
                   },
+                  "2 dias úteis"
+                ]
+              },
+              2,
+              {
+                "==": [
+                  {
+                    "var": "CK_P_19_3"
+                  },
+                  "5 dias úteis"
+                ]
+              },
+              5,
+              {
+                "==": [
+                  {
+                    "var": "CK_P_19_3"
+                  },
+                  "8 dias úteis"
+                ]
+              },
+              8,
+              {
+                "==": [
+                  {
+                    "var": "CK_P_19_3"
+                  },
+                  "15 dias úteis"
+                ]
+              },
+              15,
+              {
+                "==": [
+                  {
+                    "var": "CK_P_19_3"
+                  },
                   "Outro"
                 ]
               },
               {
-                "var": "CK_P_19_3_texto"
+                "var": "CK_P_19_3_numero"
               },
-              {
-                "var": "CK_P_19_3"
-              }
+              null
             ]
           }
         },
@@ -56956,26 +57291,61 @@
         "revisao_expr": {
           "or": [
             {
-              "in": [
-                "CK-P-19.3",
+              "or": [
                 {
-                  "var": [
-                    "checklist.marcas_multiplas",
-                    []
+                  "and": [
+                    {
+                      "==": [
+                        {
+                          "var": "CK_P_19_3"
+                        },
+                        "Outro"
+                      ]
+                    },
+                    {
+                      "!": [
+                        {
+                          "var": "CK_P_19_3_numero"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "==": [
+                    {
+                      "var": "CK_P_19_3"
+                    },
+                    "30 dias"
                   ]
                 }
               ]
             },
             {
-              "!": [
+              "or": [
                 {
-                  "var": "CK_P_19_3"
+                  "in": [
+                    "CK-P-19.3",
+                    {
+                      "var": [
+                        "checklist.marcas_multiplas",
+                        []
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "!": [
+                    {
+                      "var": "CK_P_19_3"
+                    }
+                  ]
                 }
               ]
             }
           ]
         },
-        "revisao_pergunta": "Na pergunta 19.3 do checklist de permanentes a leitura não achou uma opção única. Qual opção vale: 2 dias úteis; 5 dias úteis; 8 dias úteis; 15 dias úteis; 30 dias; Outro?",
+        "revisao_pergunta": "O 'Outro' desta pergunta não traz um número legível. Qual é o prazo para os testes e a avaliação definitiva, em dias úteis? A opção '30 dias' está em dias corridos, mas o prazo de recebimento definitivo é em dias úteis. Qual é o prazo em dias úteis?",
         "secao": "19. RECEBIMENTO E ACEITAÇÃO TÉCNICA",
         "status": "INFERIDO",
         "sugere_expr": null,
@@ -57022,7 +57392,7 @@
         "efeito": "PREENCHE",
         "fonte": "Checklists/Checklist_Tecnico_Aquisicao_de_Materiais_Permanentes_em_Saude_ATUALIZADO_SEM_19_3__2_.docx, word/document.xml, parágrafos 713 a 715 (SHA-256 7c6d3cc9bf16...). secao, numero, pergunta, opcoes e orientacao EXTRAIDOS. tipo_resposta, condicional implícita, por_item, destinos, efeito e regra INFERIDOS. Fase 10 (23/10/2026): preenche_expr em JSON Logic, tradução do texto da própria linha feita pelo f10_gerar_expr.py; convenções no README e na P31. Fase 11 (23/10/2026): leitura, revisao_expr e revisao_pergunta. Decisão 0009 (23/10/2026): o checklist distribuído não muda; leitura, revisão e complementos ficam no M11. Sugestão de origem em sugestoes_checklist.md.",
         "id": "CK-P-19.5",
-        "leitura": "Uma opção. Duas ou mais marcas: resposta vazia, ID em checklist.marcas_multiplas e destaque. Texto escrito ao lado de 'Outro' em CK_x_texto.",
+        "leitura": "Uma opção. Duas ou mais marcas: resposta vazia, ID em checklist.marcas_multiplas e destaque. Texto escrito ao lado de 'Outro' em CK_x_texto. 'Outro' (P32.1): número seguido de 'dias' vira o número em CK_P_19_5_numero e é o valor; qualquer outra coisa deixa CK_P_19_5_numero vazio, destaca a resposta e faz a pergunta ao operador.",
         "numero": "19.5",
         "opcoes": "5 dias; 10 dias; 30 dias; Outro",
         "orientacao": "",
@@ -57067,7 +57437,7 @@
                 ]
               },
               {
-                "var": "CK_P_19_5_texto"
+                "var": "CK_P_19_5_numero"
               },
               null
             ]
@@ -57077,26 +57447,49 @@
         "revisao_expr": {
           "or": [
             {
-              "in": [
-                "CK-P-19.5",
+              "and": [
                 {
-                  "var": [
-                    "checklist.marcas_multiplas",
-                    []
+                  "==": [
+                    {
+                      "var": "CK_P_19_5"
+                    },
+                    "Outro"
+                  ]
+                },
+                {
+                  "!": [
+                    {
+                      "var": "CK_P_19_5_numero"
+                    }
                   ]
                 }
               ]
             },
             {
-              "!": [
+              "or": [
                 {
-                  "var": "CK_P_19_5"
+                  "in": [
+                    "CK-P-19.5",
+                    {
+                      "var": [
+                        "checklist.marcas_multiplas",
+                        []
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "!": [
+                    {
+                      "var": "CK_P_19_5"
+                    }
+                  ]
                 }
               ]
             }
           ]
         },
-        "revisao_pergunta": "Na pergunta 19.5 do checklist de permanentes a leitura não achou uma opção única. Qual opção vale: 5 dias; 10 dias; 30 dias; Outro?",
+        "revisao_pergunta": "O 'Outro' desta pergunta não traz um número legível. Qual é o prazo de correção ou substituição, em dias?",
         "secao": "19. RECEBIMENTO E ACEITAÇÃO TÉCNICA",
         "status": "INFERIDO",
         "sugere_expr": null,
@@ -58075,6 +58468,18 @@
         "usado_em": "VAR-154.calculo_expr",
         "valor": "[]",
         "vigencia": ""
+      },
+      {
+        "base": "resposta da P25 (decisão 0008, 23/10/2026): garantia já prestada nos atestados de 12 meses ou mais",
+        "fonte": "Valor literal da resposta registrada na decisão 0008 do repositório. Usado na VAL-052. Tipo do valor: numero.",
+        "id": "PAR-13",
+        "nome": "garantia_atestado_minima_meses",
+        "status": "EXTRAIDO",
+        "tipo": "numero",
+        "unidade": "meses",
+        "usado_em": "VAL-052.condicao_expr",
+        "valor": "12",
+        "vigencia": "23/10/2026"
       }
     ]
   },
@@ -58082,6 +58487,7 @@
   "parametros": {
     "classes_tic": [],
     "divisor_percentual": 100,
+    "garantia_atestado_minima_meses": 12,
     "garantia_padrao_meses": 12,
     "limite_exclusivo_me_epp": 80000,
     "marcador_decreto_pregao_eletronico_anterior": "10.024",
