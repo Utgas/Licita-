@@ -808,7 +808,7 @@
    "TR-AII.04": "Local-UF, ........ de ................... de 20.... .",
    "TR-AII.05": "__________________________________________",
    "TR-AII.06": "(Nome e Cargo do Representante Legal)",
-   "SET-13": "Durante a garantia estão incluídos, sem custo adicional, [[LACUNA VAR-139]]. O atendimento será [[LACUNA VAR-139]] e começará em até [[LACUNA VAR-140]] após a abertura do chamado. A garantia conta a partir de [[LACUNA VAR-141]]. [Equipamento substituto: VAR-152, em complemento a TR-5.14.]"
+   "SET-13": "Durante a garantia estão incluídos, sem custo adicional, [[LACUNA CK_P_13_4]]. O atendimento será [[LACUNA CK_P_13_5]] e começará em até [[LACUNA CK_P_13_6]] após a abertura do chamado. A garantia conta a partir de [[LACUNA CK_P_13_3]]."
   },
   "lacunas_do_texto": {
    "TR-CAB.03": [
@@ -984,11 +984,10 @@
     "equipe: ......."
    ],
    "SET-13": [
-    "VAR-139 em mais de um marcador (P36)",
-    "VAR-139 em mais de um marcador (P36)",
-    "VAR-140",
-    "VAR-141",
-    "trecho entre colchetes do texto proposto"
+    "CK_P_13_4",
+    "escolha local_atendimento (CK_P_13_5)",
+    "CK_P_13_6",
+    "CK_P_13_3"
    ]
   },
   "sugestoes": {},

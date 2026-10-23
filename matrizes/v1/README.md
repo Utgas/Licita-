@@ -1,6 +1,6 @@
 # Licita+ | Matrizes v1
 
-Estado em 23/10/2026: Fases 0 a 13 concluídas. A Fase 13 resolve o texto da minuta: cada marcador do M02 ligado ao que o preenche (`lacunas_mapa`), tabelas montadas a partir dos itens (`tabela_colunas`), ponto e numeração das cláusulas do M08, fim do 'Sim'/'Não' copiado para campos de texto e revisão do checklist que só destaca a falta de resposta. A Fase 12 libera a garantia já prestada nos atestados (P25), estende a leitura do número a todos os 'Outro' de prazo e de garantia (P32) e passa a tomar a validação do M03 e do M04 do repositório (P33). A Fase 11 leva para as matrizes o lote 1 de respostas (decisão 0008), a decisão de não mudar o checklist distribuído (decisão 0009) e as regras do simulador alinhadas ao motor (Marco 1). Na Fase 10 as regras que o motor executa ficaram todas em JSON Logic (dependências do wizard, condições e preenchimento do checklist, atributos calculados), com os parâmetros no M12 e os cenários de ouro e de reprodução em `cenarios/`. Antes, na mesma data, a tarefa extra da Fase 10 conferiu o M07 com o repositório auxiliar ctresb/leis e fechou a P16.
+Estado em 23/10/2026: Fases 0 a 14 concluídas. A Fase 14 leva para as matrizes as respostas às P34 a P37 e à reprodução do R1 e do R2: cotas no fim da tabela de itens, mapa de marcadores no M08, valor padrão marcado, um texto por motivo de revisão e esperado do R1 e do R2 conferido nos TRs reais. A Fase 13 resolve o texto da minuta: cada marcador do M02 ligado ao que o preenche (`lacunas_mapa`), tabelas montadas a partir dos itens (`tabela_colunas`), ponto e numeração das cláusulas do M08, fim do 'Sim'/'Não' copiado para campos de texto e revisão do checklist que só destaca a falta de resposta. A Fase 12 libera a garantia já prestada nos atestados (P25), estende a leitura do número a todos os 'Outro' de prazo e de garantia (P32) e passa a tomar a validação do M03 e do M04 do repositório (P33). A Fase 11 leva para as matrizes o lote 1 de respostas (decisão 0008), a decisão de não mudar o checklist distribuído (decisão 0009) e as regras do simulador alinhadas ao motor (Marco 1). Na Fase 10 as regras que o motor executa ficaram todas em JSON Logic (dependências do wizard, condições e preenchimento do checklist, atributos calculados), com os parâmetros no M12 e os cenários de ouro e de reprodução em `cenarios/`. Antes, na mesma data, a tarefa extra da Fase 10 conferiu o M07 com o repositório auxiliar ctresb/leis e fechou a P16.
 
 ## Arquivos
 
@@ -15,18 +15,26 @@ Estado em 23/10/2026: Fases 0 a 13 concluídas. A Fase 13 resolve o texto da min
 | `M06_derivacao_etp_tr.csv` | derivação ETP para TR por bloco, com o teste no par 117/2025 e o caso 67/2026 x 23/2026 | 499 |
 | `M07_normas.csv` | normas e orientações citadas nas matrizes, com origem e situação conferida quando possível | 104 |
 | `M08_clausulas_setoriais.csv` | cláusulas setoriais de saúde que o modelo não traz, com fonte no checklist e evidência no corpus | 23 |
-| `M09_desvios.csv` | desvios encontrados nos documentos da base e nas matrizes rascunho, com o tratamento no sistema | 35 |
+| `M09_desvios.csv` | desvios encontrados nos documentos da base e nas matrizes rascunho, com o tratamento no sistema | 41 |
 | `M10_validacoes.csv` | validações e alertas, com condição em JSON Logic quando cabe | 53 |
 | `M11_checklist.csv` | uma linha por pergunta dos dois checklists técnicos, com tipo, condicional, destino e efeito, e as mesmas regras em JSON Logic | 285 |
 | `M12_parametros.csv` | valores numéricos, limites e marcadores usados pelas regras, com base, vigência e onde são usados | 13 |
 | `matrizes_v1.xlsx` | cópia de leitura e revisão: aba LEIA_ME e uma aba por CSV; colunas de revisão em amarelo no M03 e no M04 | |
 | `cenarios/` | cenários de ouro C1 a C8 (8) e casos de reprodução R1 e R2 (2) em JSON, com entrada e esperado | |
-| `perguntas_abertas.md` | decisões pendentes e adotadas, P01 a P36 | |
+| `perguntas_abertas.md` | decisões pendentes e adotadas, P01 a P39 | |
 | `sugestoes_checklist.md` | lacunas, duplicidades e ambiguidades dos checklists, com redação proposta | |
 | `auditoria_matrizes_01_02.md` | auditoria das matrizes rascunho 01 e 02 (Fase 8) | |
 | `log_fase10_repo_leis.md` | arquivos do repositório auxiliar ctresb/leis (commit 15eb09b) cruzados com o M07 e uso de cada um | |
 | `logs/` | conferências, cobertura do checklist, comparação dos TRs, expressões, simulação, normas, testes | |
 | `scripts/` | scripts de análise que geram tudo acima | |
+
+## O que mudou na Fase 14
+
+- P35: no `tabela_colunas` do TR-1.1.TAB1, os itens ficam com o próprio número e as linhas de cota vão para o fim da tabela, com os números seguintes ao último item e 'Cota reservada para ME/EPP do item n'.
+- P36: coluna `M08.lacunas_mapa` (22 cláusulas, 57 marcadores), no formato do M02; quando a mesma VAR aparece em vários marcadores, cada um vai para a pergunta do checklist que dá aquela parte, e o resto fica com a equipe. Texto das cláusulas sem mudança.
+- P37: `padrao: true` nas opções que entram sem valor informado (TR-1.7 e TR-AI-3.1.8.1), listadas em `logs/f13_lacunas.txt`.
+- M11: coluna `revisao_motivos` (um texto por motivo: SEM_RESPOSTA, MARCAS_MULTIPLAS, OUTRO_ILEGIVEL, DIVERGENCIA, RESPOSTA_UNICA_POR_ITEM, CONTRADICAO, NOME_DE_PESSOA); as colunas de revisão anteriores viraram resumo dela.
+- Reprodução: DV-36 a DV-41 no M09; TR-1.4 só para consumo; no R1 e no R2, blocos que a comparação achou por engano saem do esperado (`correcoes_da_comparacao`).
 
 ## O que mudou na Fase 13
 
@@ -121,6 +129,7 @@ Reconstruída do registro das Fases 0 a 3, porque o prompt original não estava 
 - `leitura`: como ler a resposta do Word e qual prevalece em duplicidade (texto).
 - `revisao_expr`: JSON Logic, só com operadores gerais; verdadeira = resposta destacada para o operador revisar. Avaliada no fim, com os mesmos dados das validações do M10. Usa os metadados de leitura `checklist.marcas_multiplas`, `checklist.resposta_unica_por_item` e `checklist.divergencias_leitura` e o número `CK_x_numero` lido do 'Outro' do prazo (P32).
 - `revisao_pergunta`: pergunta que o sistema faz ao operador quando a dúvida muda a minuta; vazia quando basta o destaque.
+- `revisao_motivos` (Fase 14): JSON, uma entrada por motivo `{motivo, expr, texto, bloqueia}`; motivos fixos SEM_RESPOSTA, MARCAS_MULTIPLAS, OUTRO_ILEGIVEL, DIVERGENCIA, RESPOSTA_UNICA_POR_ITEM, CONTRADICAO e NOME_DE_PESSOA. `revisao_expr` é o 'or' de todas as `expr`; `revisao_pergunta_expr`, o 'or' das que bloqueiam; `revisao_pergunta`, os textos das que bloqueiam, separados por ' | '. Bloqueia só a dúvida que muda a minuta (P34).
 - `revisao_pergunta_expr` (Fase 13): JSON Logic; verdadeira = a `revisao_pergunta` é feita e a minuta fica bloqueada até a resposta (VAL-037). Só duas marcas em pergunta de uma opção, 'Outro' sem número legível, resposta única para vários itens e as dúvidas específicas (S09). Pergunta sem resposta só fica destacada (`revisao_expr`); quando ela decide bloco, já aparece como pergunta pendente do wizard.
 - Complementos do operador: linhas `CK-X-nn` (dois dígitos, a partir de 01), `checklist = COMPLEMENTO`, seção 'COMPLEMENTO DO OPERADOR', número `X.nn`, variável `CK_X_nn`. Preenchidos no sistema, não existem no Word; ligados às mesmas variáveis e destinos das perguntas do checklist; sem opção pré-definida que não venha de norma ou de domínio do M05.
 
@@ -129,7 +138,9 @@ Reconstruída do registro das Fases 0 a 3, porque o prompt original não estava 
 - `M02.lacunas_mapa`: lista JSON, na ordem do texto, uma entrada por marcador da coluna `lacunas`: `marcador`, `ocorrencia` (qual ocorrência no `texto_literal`, contada sem sobreposição), `fonte` (VAR_xxx, WZ_xx, CK_..., itens.atributo ou null) e, quando precisa, `acao`, `campo`, `indice`, `formato`, `unidade`, `texto`, `opcoes`, `grupo`, `quando`, `remove_antes`, `se_falso`, `estende_desde`, `estende_ate`, `lista_blocos`, `juntar_restante`, `se_vazio` e `comentario`. Definição de cada chave no cabeçalho do `scripts/f13_lacunas.py`.
 - Ações: PREENCHER (padrão), ESCOLHA (fica a opção do modelo cuja condição é verdadeira; marcadores do mesmo `grupo` viram um trecho só, com os ' OU ' do meio), OPCIONAL (o trecho entra ou sai), TABELA (montada pela `tabela_colunas`), REMOVER (instrução do modelo), MANTER (assinatura ou campo do fornecedor) e EQUIPE (fonte null, motivo no `comentario`).
 - Formatos: TEXTO, NUMERO_EXTENSO ('30 (trinta)'), PERCENTUAL_EXTENSO ('5% (cinco por cento)'), PERCENTUAL_2 ('25,00%'), MOEDA ('R$ 1.234,56'), MOEDA_POR_EXTENSO, DATA, DIA, MES_EXTENSO, ANO, LISTA_TEXTO ('a, b e c'), LISTA_LINHAS, MINUSCULA, INICIAL_MINUSCULA, ITEM ('item 2') e POR_ITEM ('item 1: valor; item 3: valor').
-- Cláusula do M08 com a mesma variável em mais de um marcador fica com lacuna nesses marcadores (P36); cláusula PREENCHE_BLOCO não entra como texto, preenche o bloco.
+- `M08.lacunas_mapa` (Fase 14): mesmo formato; marcador = trecho entre colchetes de primeiro nível do `texto_proposto`. Cláusula PREENCHE_BLOCO não entra como texto: preenche o bloco.
+- `padrao: true` (Fase 14, P37) na opção que dá valor sem ter sido informado; a revisão mostra esses valores.
+- Chaves acrescentadas na Fase 14: `alternativas` (fontes de reserva, em ordem), `inicial_minuscula`, `inicial_maiuscula`, `filtro_item` e o formato NUMEROS_DOS_ITENS ('1, 3 e 5').
 - Séries de blocos-lista (`lista_blocos`, ex.: TR-4.1.1 a TR-4.1.3): cada bloco recebe um elemento; bloco sem elemento sai; o último presente termina em '.', o anterior em '; e', os demais em ';'; o último bloco do modelo junta os elementos que sobram.
 - `M02.tabela_colunas`: JSON com `linhas` (itens ou a VAR da tabela), `colunas` (cabeçalho do modelo e o que preenche), `orcamento_sigiloso` e, no TR-1.1.TAB1, `linha_cota` (quando entra, onde e com quais valores) e a numeração das linhas.
 - `M08.inserir_apos` (bloco do M02 depois do qual a cláusula entra, com os subitens dele), `M08.nivel` (MESMO_NIVEL: item seguinte no nível do bloco; SUBITEM: último subitem do bloco; PREENCHE_BLOCO: preenche as lacunas do bloco) e `M08.inserir_apos_alternativo` ('bloco (nivel)', em ordem, quando o bloco pode faltar). Várias cláusulas no mesmo ponto entram na ordem do M08.
@@ -158,7 +169,7 @@ Versões mapeadas no M11 (qualquer mudança no checklist exige refazer o M11; ve
 
 Divisão de trabalho: o checklist traz os fatos técnicos (M11); o wizard fica com as decisões jurídicas (M04, `DECISAO_JURIDICA`). A tabela de atributos de item por checklist está em `sugestoes_checklist.md`.
 
-## Testes de aceite (Fases 9 a 13)
+## Testes de aceite (Fases 9 a 14)
 
 Resultado completo em `logs/f9_testes.txt`. FALHAS: 0.
 
@@ -170,7 +181,7 @@ Resultado completo em `logs/f9_testes.txt`. FALHAS: 0.
 - teste 3: M06 com 499 IDs únicos e no padrão
 - teste 3: M07 com 104 IDs únicos e no padrão
 - teste 3: M08 com 23 IDs únicos e no padrão
-- teste 3: M09 com 35 IDs únicos e no padrão
+- teste 3: M09 com 41 IDs únicos e no padrão
 - teste 3: M10 com 53 IDs únicos e no padrão
 - teste 3: M11 com 285 IDs únicos e no padrão
 - teste 3: M12 com 13 IDs únicos e no padrão
@@ -179,7 +190,7 @@ Resultado completo em `logs/f9_testes.txt`. FALHAS: 0.
 - teste 2: 102 notas (NE-001 a NE-102) ligadas a bloco existente do M02
 - teste 4: normas citadas de M00 a M11 presentes no M07 (104 normas): 0 faltando
 - teste 4: norma citada só em texto das matrizes, sem base nem conferência: 0
-- teste 5: fonte e status preenchidos e no domínio nas 1896 linhas de M00 a M11
+- teste 5: fonte e status preenchidos e no domínio nas 1902 linhas de M00 a M11
 - teste 6: incisos obrigatórios no M01 = ['I', 'IV', 'VI', 'VIII', 'XIII']
 - teste 7: nomes de pessoas nos arquivos de saída: 0 (nomes de pessoas identificados no corpus: 46; sobrenomes distintivos: 73)
 - teste 8: achados da seção 5 (lista reconstruída, 10) no M09 ou no M10: 1=1, 2=2, 3=2, 4=2, 5=4, 6=6, 7=1, 8=3, 9=2, 10=1
@@ -233,9 +244,17 @@ Outras conferências:
 - M11: nenhuma pergunta Sim/Não copia a opção para variável de texto, tabela, lista ou número (critério da Fase 13; antes, 65)
 - M11.revisao_pergunta_expr: 75 perguntas que bloqueiam, 176 casos (pergunta sem resposta nunca bloqueia; duas marcas e dúvidas específicas bloqueiam); revisao_expr continua destacando em 260
 - VAR-160: sem VAR-057 fica vazia (None); com 25% de 10 dá 2
+- TR-1.1.TAB1 (P35): itens 1, 2 e 3 com o próprio número; cotas dos itens 1 e 3 no fim, como 4 e 5, com 'Cota reservada para ME/EPP do item n'
 - montagem do texto: 23 casos fixos (escolha, opcional, extenso, moeda, data, série de lista com pontuação, tabela com cota e com sigilo, lacuna sem unidade)
 - cenários C1 a C8: esperado.texto_sem_lacuna em todos e nenhum texto da minuta com 'Sim' ou 'Não' vindo de resposta do checklist
 - controle negativo: com a cópia antiga da CK-P-16.6 para a VAR-150, o teste de Sim/Não acusa o 'acompanhado de Sim' da SET-19 em algum cenário
+- M08.lacunas_mapa: todo marcador do texto_proposto (colchetes de primeiro nível) aparece no mapa, na ordem (57 marcadores; cláusulas com a mesma VAR em vários marcadores cobertas: ['SET-01', 'SET-02', 'SET-03', 'SET-07', 'SET-08', 'SET-09', 'SET-10', 'SET-11', 'SET-12', 'SET-13', 'SET-14', 'SET-16', 'SET-17', 'SET-18', 'SET-20']); fontes existem; EQUIPE com motivo
+- M08: SET-12 montada com uma pergunta por marcador (CK-P-12.2 a 12.6), sem repetir texto; SET-09 com a restrição no marcador dela e setor e antecedência com a equipe
+- P37: toda opção que entra sem valor informado tem padrao: true e está no log (['M02 TR-1.7', 'M02 TR-AI-3.1.8.1'])
+- M11.revisao_motivos: 452 motivos em 260 perguntas, só motivos fixos; revisao_expr, revisao_pergunta_expr e revisao_pergunta iguais ao resumo dos motivos; sem resposta, nome de pessoa e divergência com prevalência nunca bloqueiam (P34)
+- M11.revisao_motivos: casos à mão de 7 perguntas (CK-C-12.1 sem resposta não vira 'Outro não é número'; CK-C-14.1 e 14.2 idem) e todo motivo de toda pergunta dispara e não dispara em algum caso
+- R1 e R2: blocos achados por engano pela comparação saem do esperado (título do modelo, opção B de GA-01, GA-02 e GA-06, Anexo I), TR-5.1 entra; DV-36 a DV-41 do M09 em divergencias_conhecidas como 'TR real'
+- TR-1.4 (bem que não é de luxo): consumo e ambos entram, permanente não ([True, True, False])
 - M02: condicao_expr preenchida em todos os blocos (499)
 - M08: 25 trechos de evidência conferidos letra a letra no texto do corpus
 - travessão (U+2014) fora das colunas literais e nos .md: 0
@@ -247,8 +266,7 @@ Outras conferências:
 
 - P09. Gerenciador da IRP 134/2025 (ABERTA)
 - P26. Leitura por máquina do checklist preenchido no Word (ABERTA para o Marco 2; checklist congelado, decisão 0009)
-- P35. Numeração da linha de cota reservada na tabela do item 1.1 (ABERTA)
-- P36. Marcadores do texto das cláusulas do M08 (ABERTA)
+- P38. Partes de cláusula do M08 que nenhuma pergunta do checklist dá (ABERTA)
 
 ## Revisão no xlsx
 

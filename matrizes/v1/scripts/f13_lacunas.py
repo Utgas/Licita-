@@ -17,12 +17,19 @@ lacunas_mapa (JSON, lista na ordem do texto; uma entrada por marcador da coluna 
   campo       caminho dentro do valor (TABELA guardada como objeto, ex.: VAR_091 campo "fonte_recursos");
   indice      posição na lista (0 = primeiro elemento); com lista_blocos, o motor ajusta a pontuação final da série
               (';', '; e', '.') e omite o bloco sem elemento (se_vazio = OMITE_BLOCO);
+  padrao      (na opção) true quando a opção dá um valor que entra sem ter sido informado (P37); listado no log;
+  alternativas  outras fontes, em ordem, usadas quando a fonte está vazia;
+  inicial_minuscula / inicial_maiuscula  ajuste da primeira letra do valor (opção do checklist no meio ou no início da
+              frase);
+  filtro_item JSON Logic avaliado em cada item (formato NUMEROS_DOS_ITENS);
   formato     TEXTO (padrão), NUMERO_EXTENSO ("30 (trinta)"), PERCENTUAL_EXTENSO ("5% (cinco por cento)"),
               PERCENTUAL_2 ("25,00%"), MOEDA ("R$ 1.234,56"), MOEDA_POR_EXTENSO ("(mil duzentos e trinta e quatro
               reais e cinquenta e seis centavos)"), DATA ("DD/MM/AAAA"), DIA, MES_EXTENSO, ANO, LISTA_TEXTO
               ("a, b e c"), LISTA_LINHAS (uma por linha), MINUSCULA (código em minúsculas), INICIAL_MINUSCULA (opção do
               checklist no meio da frase: 'Dois terços' -> 'dois terços'), ITEM ("item 2"), POR_ITEM
-              ("item 1: valor; item 3: valor", da lista de itens);
+              ("item 1: valor; item 3: valor", da lista de itens), NUMEROS_DOS_ITENS ("1, 3 e 5": itens com o atributo
+              preenchido ou com filtro_item verdadeiro);
+  M08.lacunas_mapa (Fase 14): mesmo formato; marcador = trecho entre colchetes de primeiro nível do texto_proposto.
   unidade     VAR com a unidade do número (DIAS, MESES ou ANOS), escrita depois dele, no singular quando o número é 1;
   texto       modelo da saída com {valor} (valor já formatado); padrão "{valor}";
   opcoes      [{"quando": JSON Logic, "texto": modelo}]: vale a primeira verdadeira; nenhuma verdadeira = lacuna;
@@ -124,10 +131,13 @@ M = {
                P("[indicar o termo inicial da vigência]", "VAR_035")],
     "TR-1.7": [P("[...]", "VAR_036", comentario="por que o fornecimento é contínuo (fatos do checklist)"),
                OP("[...]", "VAR_036", "base_vantagem", []),
-               OP("[o Estudo Técnico Preliminar]", None, "base_vantagem", [o(True, "o Estudo Técnico Preliminar")]),
+               OP("[o Estudo Técnico Preliminar]", None, "base_vantagem",
+                  [dict(o(True, "o Estudo Técnico Preliminar"), padrao=True)],
+                  comentario="padrão aceito na P37: o sistema gera o ETP do processo; a equipe troca na revisão se "
+                             "preferir texto próprio ou nota técnica"),
                OP("[os termos da Nota Técnica .../...]", None, "base_vantagem", [],
                   comentario="o sistema gera o ETP do processo, então a vantagem da vigência plurianual remete a ele; "
-                             "texto próprio ou nota técnica são trocados pela equipe na revisão")],
+                             "texto próprio ou nota técnica são trocados pela equipe na revisão; aceito na P37")],
     "TR-1.8": [P("[indicar o prazo, limitado a um ano da ocorrência da emergência ou calamidade]", "VAR_034",
                  formato=EXT, unidade="VAR_163"),
                P("[indicar o termo inicial da vigência]", "VAR_035")],
@@ -311,8 +321,9 @@ M = {
     "TR-AI-2.8": [P("..............................(máximo de um ano)", "VAR_034", formato=EXT, unidade="VAR_163"),
                   P("............................. (data da ocorrência da emergência ou da calamidade)", "VAR_035")],
     "TR-AI-3.1.8.1": [OP("XXXXXXX", "VAR_094", "prazo_decisao",
-                         [o(tem("VAR_094"), "{valor}"), o(True, "1 (um) mês")],
-                         comentario="sem prazo informado vale um mês (NE-087)")],
+                         [o(tem("VAR_094"), "{valor}"), dict(o(True, "1 (um) mês"), padrao=True)],
+                         comentario="sem prazo informado vale um mês (NE-087; art. 123, parágrafo único, da Lei nº "
+                                    "14.133, de 2021, citado na nota); aceito na P37")],
     "TR-AI-3.1.9": [P("XXXXXX", "VAR_095")],
     "TR-AI-4.1.1": [OPC("e da relação da rede de assistência técnica autorizada", "WZ_43",
                         eq("WZ_43", "SUBSTITUTIVO_PEQUENO_VALOR"), remove_antes=", ",
@@ -336,11 +347,13 @@ SIGILOSO = eq("WZ_40", "SIM")
 TABELAS = {
     "TR-1.1.TAB1": {
         "linhas": "itens", "ordem": "numero",
-        "numeracao": "SEQUENCIAL: as linhas são numeradas 1, 2, 3... na ordem dos itens; a linha de cota recebe o número "
-                     "seguinte ao do item de origem, como no modelo ('2 | Idem ao Item 1'), e as demais linhas seguem; "
-                     "as referências a número de item no TR (amostras, padrões) usam o número da tabela (P35)",
+        "numeracao": "ITENS_E_COTAS_NO_FIM (P35, decisão do dono do projeto, 23/10/2026): cada item de ampla "
+                     "participação fica com o próprio número (VAR-156), sem renumeração; as linhas de cota vão todas "
+                     "para o fim da tabela, depois do último item, na ordem dos itens de origem, e recebem os números "
+                     "seguintes ao maior número de item (ex.: itens 1 a 5, cotas 6 e 7). As referências a número de item "
+                     "no TR (amostras, padrões) continuam com o número do item.",
         "colunas": [
-            {"cabecalho": "ITEM", "valor": "numero_na_tabela"},
+            {"cabecalho": "ITEM", "fonte": "itens.numero", "comentario": "número do item (VAR-156), sem renumerar"},
             {"cabecalho": "ESPECIFICAÇÃO", "fonte": "itens.especificacao",
              "complementos": [
                  {"fonte": "itens.marca_indicada", "rotulo": "Marca ou modelo de referência"},
@@ -363,18 +376,20 @@ TABELAS = {
                                        "a célula traz a opção 'SIGILOSO' do próprio modelo"},
         "linha_cota": {
             "quando": COTA,
-            "posicao": "logo abaixo do item de origem",
-            "valores": {"ITEM": "numero_na_tabela",
-                        "ESPECIFICAÇÃO": "Idem ao Item {numero_na_tabela do item de origem} – Cota reservada para ME/EPP "
-                                         "em {VAR_057:PERCENTUAL_2}",
+            "posicao": "FIM_DA_TABELA: depois do último item de ampla participação, na ordem dos itens de origem",
+            "numero": "maior número de item + 1, + 2... (uma linha de cota por item com cota)",
+            "valores": {"ITEM": "numero da linha de cota",
+                        "ESPECIFICAÇÃO": "Cota reservada para ME/EPP do item {itens.numero do item de origem}",
                         "CATMAT": "itens.catmat", "UNIDADE DE MEDIDA": "itens.unidade_medida",
                         "QUANTIDADE": "itens.quantidade_cota", "VALOR UNITÁRIO": "itens.valor_unitario",
                         "VALOR TOTAL": "itens.valor_total_cota"},
             "regra": "entra para cada item com tratamento COTA (VAR-113) e quantidade reservada maior que zero (VAR-118); "
                      "a linha de origem fica com a quantidade principal (VAR-174 = quantidade menos a cota) e a da cota "
-                     "com a VAR-118. Texto da célula do modelo, sem '(ver nota explicativa)'. Item sem cota não tem linha "
-                     "de cota; cota zero fica em ampla (VAL-051)",
-            "base": "TR-1.1.TAB1, linha 2 do modelo; NE-022; VAR-057, VAR-113, VAR-118"},
+                     "com a VAR-118. A célula cita o item de origem (P35), no lugar do 'Idem ao Item 1 – ... XX,XX%' do "
+                     "modelo; o percentual da cota está no TR-4.41. Item sem cota não tem linha de cota; cota zero fica "
+                     "em ampla (VAL-051)",
+            "base": "TR-1.1.TAB1 do modelo (linha 'Idem ao Item 1 – Cota reservada'); P35 (decisão 0008); NE-022; "
+                    "VAR-113, VAR-118"},
         "sem_itens": "lacuna: a tabela não é montada sem a lista de itens",
     },
 }
@@ -411,6 +426,178 @@ TABELAS["TR-5.2.TAB1"] = {
                           "o complemento CK-X-02 traz texto livre, que não monta a tabela e fica como lacuna para a equipe",
     "sem_linhas": "lacuna",
 }
+
+
+# -------------------------------------------------------------------- M08 (Fase 14, P36): mapa das cláusulas
+# Marcador do M08 = trecho entre colchetes de primeiro nível do texto_proposto (o de dentro, como o [VAR-143] da SET-17,
+# é tratado no texto do de fora). A cláusula não é reescrita: o mapa diz o que preenche cada marcador. Quando a mesma VAR
+# aparece em vários marcadores, cada um vai para a pergunta do checklist que dá aquela parte; o que nenhuma pergunta
+# dá fica com a equipe. Cada entrada: (trecho que o marcador contém, para conferir, entrada do mapa sem 'marcador').
+def M8(confere, d):
+    return (confere, d)
+
+
+TEXTO_UNICO = ("a VAR-{v} chega como um texto só (caixa de resposta do checklist), sem separar esta parte; o texto entra "
+               "inteiro no marcador de {onde}")
+M08_MAPA = {
+    "SET-01": [M8("itens que dependem", dict(fonte="VAR_125", campo="itens")),
+               M8("quantidade e descrição", dict(fonte="VAR_125", campo="equipamento")),
+               M8("VAR-126", dict(fonte="VAR_126", formato="LISTA_TEXTO")),
+               M8("VAR-127", dict(fonte="VAR_127"))],
+    "SET-02": [M8("itens e cuidados", dict(fonte="itens.faixa_temperatura", formato="NUMEROS_DOS_ITENS",
+                                           comentario="itens com faixa de temperatura (VAR-122); os cuidados de "
+                                                      "permanentes (VAR-128) entram no trecho 'Para permanentes'")),
+               M8("[VAR-122]", dict(fonte="itens.faixa_temperatura", formato="POR_ITEM")),
+               M8("registro contínuo", dict(fonte="CK_C_13_2", acao="OPCIONAL", quando=eq("CK_C_13_2", "Sim"),
+                                            texto="e com registro contínuo da temperatura durante o transporte, "
+                                                  "apresentado no ato da entrega", remove_antes=" ",
+                                            comentario="trecho do próprio marcador, sem a remissão '(VAR-129)'; entra com "
+                                                       "a CK-C-13.2 = Sim")),
+               M8("Para permanentes", dict(fonte="VAR_128", acao="OPCIONAL", quando=tem("VAR_128"),
+                                           texto="O Contratado providenciará a logística especial de transporte e "
+                                                 "movimentação descrita a seguir: {valor}.", remove_antes=" ",
+                                           comentario="trecho do próprio marcador; a remissão 'descrita em VAR-128' vira o "
+                                                      "texto da VAR-128 (CK-P-8.7 ou CK-C-13.3)"))],
+    "SET-03": [M8("VAR-130: itens", dict(fonte=None, acao="EQUIPE",
+                                         comentario=TEXTO_UNICO.format(v="130", onde="documentos"))),
+               M8("documentos exigidos", dict(fonte="VAR_130", comentario="CK-C-13.4 e caixa da CK-C-15.4"))],
+    "SET-04": [M8("VAR-133", dict(fonte="VAR_133")),
+               M8("VAR-134", dict(fonte=None, acao="REMOVER",
+                                  comentario="a VAR-134 não recebe mais a resposta Sim/Não (Fase 13); o compromisso de "
+                                             "substituição já está no texto da cláusula"))],
+    "SET-06": [M8("itens com controle especial", dict(fonte="itens.controle_especial", formato="NUMEROS_DOS_ITENS",
+                                                      filtro_item=eq("controle_especial", "S")))],
+    "SET-07": [M8("VAR-135: itens", dict(fonte=None, acao="EQUIPE",
+                                         comentario=TEXTO_UNICO.format(v="135", onde="requisitos"))),
+               M8("na proposta ou na entrega", dict(fonte=None, acao="EQUIPE",
+                                                    comentario="escolha da equipe: o checklist não diz quando a "
+                                                               "comprovação é exigida")),
+               M8("requisito por item", dict(fonte="VAR_135"))],
+    "SET-08": [M8("distribuição ou comércio", dict(fonte=None, acao="EQUIPE",
+                                                   comentario="a VAR-136 traz as autorizações exigidas (licença "
+                                                              "sanitária, AFE, AE), não a atividade")),
+               M8("vigilância sanitária ou Anvisa", dict(fonte=None, acao="EQUIPE",
+                                                         comentario="o órgão expedidor depende da autorização; a "
+                                                                    "VAR-136 não o separa"))],
+    "SET-09": [M8("setor de recebimento", dict(fonte=None, acao="EQUIPE",
+                                               comentario="o setor de recebimento vem com o endereço de entrega (VAR-064, "
+                                                          "TR-5.4); o checklist não o separa")),
+               M8("[VAR-131]", dict(fonte=None, acao="EQUIPE",
+                                    comentario="antecedência do agendamento: o checklist só pergunta se há agendamento "
+                                               "(CK-C-12.6, CK-P-8.5)")),
+               M8("horário, veículo", dict(fonte="VAR_131", comentario="caixa da CK-C-12.7 ou da CK-P-8.6"))],
+    "SET-10": [M8("VAR-132: itens", dict(fonte=None, acao="EQUIPE",
+                                         comentario=TEXTO_UNICO.format(v="132", onde="prazo"))),
+               M8("prazo informado", dict(fonte="VAR_132", comentario="caixa da CK-C-12.4 (itens, prazo e motivo)"))],
+    "SET-11": [M8("VAR-137: itens", dict(fonte=None, acao="EQUIPE",
+                                         comentario="o checklist pergunta as atividades para o equipamento, sem separar "
+                                                    "por item")),
+               M8("montagem, instalação", dict(fonte="CK_P_11_3", formato="LISTA_TEXTO", inicial_minuscula=True)),
+               M8("certificados, laudos", dict(fonte="CK_P_11_4")),
+               M8("critérios objetivos", dict(fonte="CK_P_11_5"))],
+    "SET-12": [M8("público e quantidade", dict(fonte="CK_P_12_2")),
+               M8("conteúdo mínimo [VAR-138]", dict(fonte="CK_P_12_3")),
+               M8("carga horária mínima [VAR-138]", dict(fonte="CK_P_12_4")),
+               M8("formato: prática", dict(fonte="CK_P_12_5", formato="LISTA_TEXTO", inicial_minuscula=True)),
+               M8("antes da utilização", dict(fonte="CK_P_12_6", inicial_minuscula=True))],
+    "SET-13": [M8("VAR-139: serviços", dict(fonte="CK_P_13_4", formato="LISTA_TEXTO", inicial_minuscula=True)),
+               M8("no local de instalação", dict(fonte="CK_P_13_5", acao="ESCOLHA", grupo="local_atendimento",
+                                                 opcoes=[o(eq("CK_P_13_5", "Sim"), "no local de instalação")],
+                                                 comentario="texto do próprio marcador com a CK-P-13.5 = Sim; com 'Não' "
+                                                            "ou 'Depende do defeito', a equipe redige")),
+               M8("[VAR-140]", dict(fonte="CK_P_13_6", inicial_minuscula=True,
+                                    comentario="prazo máximo para início do atendimento (opção da CK-P-13.6)")),
+               M8("[VAR-141]", dict(fonte="CK_P_13_3", inicial_minuscula=True)),
+               M8("Equipamento substituto", dict(fonte="VAR_152", acao="OPCIONAL", quando=tem("VAR_152"),
+                                                 texto="Equipamento substituto: {valor}.", remove_antes=" ",
+                                                 comentario="trecho do próprio marcador, sem a remissão ao TR-5.14; "
+                                                            "entra com a caixa da CK-P-13.8"))],
+    "SET-14": [M8("VAR-148: periodicidade]", dict(fonte="CK_P_14_5_texto")),
+               M8("periodicidade e comprovação", dict(fonte="CK_P_14_6_texto")),
+               M8("VAR-149", dict(fonte="VAR_149")),
+               M8("[VAR-140]", dict(fonte="CK_P_14_3_texto", alternativas=["CK_P_13_6"],
+                                    comentario="prazo do atendimento presencial (caixa da CK-P-14.3); sem ela, o prazo "
+                                               "de início do atendimento (CK-P-13.6)"))],
+    "SET-15": [M8("VAR-009", dict(fonte="VAR_009", formato="LISTA_TEXTO", inicial_maiuscula=True))],
+    "SET-16": [M8("módulos e tipo de licença", dict(fonte="CK_P_15_3_texto")),
+               M8("atualizações de software", dict(fonte="CK_P_15_6", acao="ESCOLHA", grupo="atualizacoes",
+                                                   opcoes=[o(eq("CK_P_15_6", "Sim"), "atualizações de software ou "
+                                                             "firmware durante a garantia, sem custo adicional")],
+                                                   comentario="texto do próprio marcador com a CK-P-15.6 = Sim"))],
+    "SET-17": [M8("[VAR-143]. ", dict(fonte="VAR_143")),
+               M8("Se CK-P-9.5 = Sim", dict(fonte="CK_P_9_5_texto", acao="OPCIONAL", quando=eq("CK_P_9_5", "Sim"),
+                                            texto="o Contratado apresentará levantamento técnico do local (site "
+                                                  "planning) com o conteúdo {valor}, no prazo definido pela equipe.",
+                                            inicial_maiuscula=True, remove_antes=" ",
+                                            comentario="trecho do próprio marcador; o [VAR-143] de dentro vira a caixa da "
+                                                       "CK-P-9.5"))],
+    "SET-18": [M8("equipamento e local", dict(fonte=None, acao="EQUIPE",
+                                              comentario="o checklist não pede o equipamento a retirar nem o local")),
+               M8("descontaminação", dict(fonte="VAR_144", comentario="CK-P-20.3 e caixa da CK-P-20.2"))],
+    "SET-19": [M8("VAR-150", dict(fonte="VAR_150", acao="ESCOLHA", grupo="manuais",
+                                  opcoes=[o(e(eq("CK_P_16_6", "Sim"), tem("VAR_150")),
+                                            "manuais de operação, manutenção e segurança e demais documentos técnicos "
+                                            "({valor})"),
+                                          o(eq("CK_P_16_6", "Sim"),
+                                            "manuais de operação, manutenção e segurança e demais documentos técnicos")],
+                                  comentario="texto do próprio marcador com a CK-P-16.6 = Sim; outros documentos da "
+                                             "caixa (VAR-150) entre parênteses"))],
+    "SET-20": [M8("[VAR-146]. ", dict(fonte="CK_C_16_1", alternativas=["CK_P_19_1"], formato="LISTA_TEXTO",
+                                      inicial_minuscula=True)),
+               M8("instalação, testes e treinamento", dict(fonte="CK_P_19_2_texto",
+                                                           comentario="etapas da caixa da CK-P-19.2; no consumo, equipe")),
+               M8("[VAR-145]", dict(fonte="VAR_145", formato="LISTA_TEXTO")),
+               M8("situações de recusa", dict(fonte="CK_C_16_2", alternativas=["CK_P_19_4"]))],
+    "SET-21": [M8("VAR-074", dict(fonte="VAR_074", formato="NUMERO_EXTENSO", texto="{valor} dias")),
+               M8("VAR-151", dict(fonte="VAR_151", formato="LISTA_TEXTO", inicial_minuscula=True))],
+    "SET-22": [M8("materiais e situações", dict(fonte="VAR_147"))],
+    "SET-23": [M8("VAR-161", dict(fonte="VAR_161", formato="NUMERO_EXTENSO"))],
+}
+
+
+def marcadores_m08(texto):
+    """trechos entre colchetes de primeiro nível, na ordem."""
+    out, nivel, ini = [], 0, 0
+    for i, ch in enumerate(texto):
+        if ch == "[":
+            if nivel == 0:
+                ini = i
+            nivel += 1
+        elif ch == "]" and nivel:
+            nivel -= 1
+            if nivel == 0:
+                out.append(texto[ini:i + 1])
+    return out
+
+
+def montar_m08(m08, erros):
+    for r in m08:
+        marc = marcadores_m08(r["texto_proposto"])
+        ent = M08_MAPA.get(r["id"], [])
+        if len(ent) != len(marc):
+            erros.append(f"{r['id']}: {len(marc)} marcadores x {len(ent)} entradas no mapa")
+            r["lacunas_mapa"] = ""
+            continue
+        if not marc:
+            r["lacunas_mapa"] = ""
+            continue
+        t, cursor, saida = r["texto_proposto"], 0, []
+        for mk, (confere, d) in zip(marc, ent):
+            p0 = t.find(mk, cursor)
+            if confere not in t[max(0, p0 - 40):p0 + len(mk) + 2]:
+                erros.append(f"{r['id']}: marcador '{mk[:40]}' não contém '{confere}'")
+            p = t.find(mk, cursor)
+            ps = posicoes(t, mk)
+            y = {"marcador": mk, "ocorrencia": ps.index(p) + 1, "fonte": d.get("fonte")}
+            y.update({k: v for k, v in d.items() if k != "fonte"})
+            if y["fonte"] is None and y.get("acao", "PREENCHER") == "PREENCHER":
+                erros.append(f"{r['id']}: fonte null sem ação")
+            saida.append(y)
+            cursor = p + len(mk)
+        r["lacunas_mapa"] = json.dumps(saida, ensure_ascii=False, separators=(",", ":"))
+        if "Fase 14 (23/10/2026): lacunas_mapa" not in r["fonte"]:
+            r["fonte"] = (r["fonte"].rstrip() + " Fase 14 (23/10/2026): lacunas_mapa INFERIDO (P36, decisão do gestor), "
+                          "sem mudar o texto_proposto.")
 
 
 # -------------------------------------------------------------------- conferência
@@ -504,9 +691,25 @@ def main():
     k = cols.index("lacunas") + 1
     cols = cols[:k] + ["lacunas_mapa", "tabela_colunas"] + cols[k:]
     erros, log = montar(m02)
+    m08 = ler_csv(pasta / "M08_clausulas_setoriais.csv")
+    cols8 = [c for c in m08[0] if c != "lacunas_mapa"]
+    k8 = cols8.index("texto_proposto") + 1
+    cols8 = cols8[:k8] + ["lacunas_mapa"] + cols8[k8:]
+    montar_m08(m08, erros)
     if erros:
         raise SystemExit("f13_lacunas:\n" + "\n".join(erros))
     gravar_csv(pasta / "M02_tr_blocos.csv", cols, m02, preservar=())
+    gravar_csv(pasta / "M08_clausulas_setoriais.csv", cols8, m08, preservar=())
+    n8 = sum(len(json.loads(r["lacunas_mapa"])) for r in m08 if r["lacunas_mapa"])
+    log.append(f"M08.lacunas_mapa: {sum(1 for r in m08 if r['lacunas_mapa'])} cláusulas com marcador, {n8} marcadores")
+    # P37: toda opção que dá valor padrão (sem ter sido informado) fica marcada com padrao: true
+    for nome, linhas_ in (("M02", m02), ("M08", m08)):
+        for r in linhas_:
+            for x in json.loads(r.get("lacunas_mapa") or "[]"):
+                for op in x.get("opcoes", []):
+                    if op.get("padrao"):
+                        log.append(f"padrao: {nome} {r['id']} '{x['marcador'][:50]}' -> '{op['texto']}' "
+                                   f"({x.get('comentario', '')[:120]})")
     Path(sys.argv[2]).write_text("\n".join(log) + "\n", encoding="utf-8")
     print(log[-1])
 

@@ -206,6 +206,55 @@ D = [
      "entram quando há item ou grupo com cota. Classificado pelo dono do projeto em 23/10/2026 como erro do TR real (decisão 0008).",
      "TR-4.H08; TR-4.41; WZ-24; VAR-113", "Blocos ligados só pela WZ-24 = SIM (derivada da VAR-113); sem cota, não entram. "
      "No caso de reprodução R1, a diferença é do tipo 'TR real'.", "", "EXTRAIDO", "comparação f6; decisão 0008"),
+    # Fase 14: respostas do dono do projeto sobre a reprodução do R1 e do R2 (decisão 0008, seção 'Reprodução')
+    ("DV-36", TR23, "p.1, item 1.7", "CLAUSULA_SEM_PERTINENCIA",
+     "Mantém a declaração do modelo '1.7. O objeto desta contratação não se enquadra como bem de luxo, conforme Decreto nº "
+     "10.818, de 27 de setembro de 2021.' numa aquisição de bem permanente. O bloco TR-1.4 só entra para bens de consumo "
+     "(NE-006). Classificado pelo dono do projeto em 23/10/2026: para permanentes, não entra (decisão 0008, reprodução).",
+     "TR-1.4; WZ-07; NE-006", "TR-1.4 só com WZ-07 = CONSUMO ou AMBOS. No caso de reprodução R1, a diferença é do tipo "
+     "'TR real'.", "", "EXTRAIDO", "comparação f6; decisão 0008"),
+    ("DV-37", f"{TR23}; {TR58}", "TR 23/2026 p.12, item 11.3; TR 58/2026 p.17, item 11.3", "CLAUSULA_SEM_PERTINENCIA",
+     "TR 23/2026 e TR 58/2026 mantêm o item do modelo '11.3. A dotação relativa aos exercícios financeiros subsequentes "
+     "será indicada após aprovação da Lei Orçamentária respectiva e liberação dos créditos correspondentes, mediante "
+     "apostilamento.' em fornecimento não contínuo. O bloco TR-11.3 só entra em fornecimento contínuo com vigência "
+     "plurianual (NE-079). Classificado pelo dono do projeto em 23/10/2026 como erro do TR real (decisão 0008).",
+     "TR-11.3; WZ-14; NE-079", "TR-11.3 só com WZ-14 = CONTINUO. Nos casos de reprodução R1 e R2, a diferença é do tipo "
+     "'TR real'.", "", "EXTRAIDO", "comparação f6; decisão 0008"),
+    ("DV-38", TR23, "p.11, item 9.31", "INCONSISTENCIA_INTERNA",
+     "Mantém o subitem do modelo sobre sociedades empresárias estrangeiras ('9.31. Sociedades empresárias estrangeiras "
+     "atenderão à exigência por meio da apresentação, no momento da assinatura do contrato ou...') sem o item que ele "
+     "complementa (registro ou inscrição na entidade profissional competente, TR-9.33). Classificado pelo dono do projeto "
+     "em 23/10/2026 como erro do TR real (decisão 0008).",
+     "TR-9.33.1; TR-9.33; WZ-38", "Filho sem o pai não entra (regra do motor): TR-9.33.1 depende do TR-9.33 (WZ-38 com "
+     "REGISTRO_ENTIDADE_PROFISSIONAL). No caso de reprodução R1, a diferença é do tipo 'TR real'.", "", "EXTRAIDO",
+     "comparação f6; decisão 0008"),
+    ("DV-39", TR58, "p.13, subtítulo 'Critérios de aceitabilidade de preços' e itens 9.4 e 9.4.1", "CLAUSULA_SEM_PERTINENCIA",
+     "Mantém '9.4. Em se tratando de contratação para registro de preços, caso adotado o critério de julgamento de menor "
+     "preço ou de maior desconto por grupo de itens, o critério de aceitabilidade de preços unitários máximos será:' e o "
+     "9.4.1 num pregão sem registro de preços ('não se destina à formação de ata de registro de preços', item 1.6). "
+     "Classificado pelo dono do projeto em 23/10/2026 como erro do TR real (decisão 0008).",
+     "TR-9.H03; TR-9.4; TR-9.4.1; WZ-10; WZ-13; NE-055", "Blocos só com registro de preços, grupo de itens e menor preço "
+     "ou maior desconto (WZ-13 derivada). No caso de reprodução R2, a diferença é do tipo 'TR real'.", "", "EXTRAIDO",
+     "comparação f6; decisão 0008"),
+    ("DV-40", TR23, "p.3, subtítulo 'Garantia, Manutenção e Assistência Técnica' e itens 5.7 a 5.10",
+     "TEXTO_PRETO_ALTERADO",
+     "Troca os itens de garantia contratual do modelo (TR-5.6 a TR-5.17) por redação própria de garantia técnica: '5.7. O "
+     "prazo de garantia técnica é de, no mínimo, 12 (doze) meses, ou o prazo do fabricante, se superior, contado do "
+     "recebimento definitivo.', '5.8. A garantia abrange a manutenção corretiva (peças e mão de obra) sem ônus para o "
+     "Contratante...', '5.9. Uma vez notificada, a Contratada deverá realizar o reparo em até 30 (trinta) dias.' e 5.10. "
+     "Classificado pelo dono do projeto em 23/10/2026 como diferença de redação do TR real; o sistema usa o texto do "
+     "modelo (GA-07 B) e a SET-13 (decisão 0008).",
+     "TR-5.6; TR-5.17; GA-07; WZ-29; SET-13", "Com WZ-29 = SIM a minuta traz o GA-07 B do modelo e a SET-13. No caso de "
+     "reprodução R1, os blocos TR-5.7 a TR-5.17 da minuta são diferença do tipo 'TR real'.", "", "EXTRAIDO",
+     "comparação f6; decisão 0008"),
+    ("DV-41", TR58, "p.4, subtítulo 'Reserva de cotas para microempresas e empresas de pequeno porte:' e itens 4.26 e "
+                    "4.26.1", "CLAUSULA_SEM_PERTINENCIA",
+     "Mantém o subtítulo de reserva de cotas e o item do modelo alterado para negar a cota: '4.26. Na presente licitação, "
+     "não será realizada a reserva de cota de até 25% (vinte e cinco por cento) do objeto para a...', com justificativa "
+     "no 4.26.1. Mesmo caso da DV-35. Classificado pelo dono do projeto em 23/10/2026 como erro do TR real "
+     "(decisão 0008).",
+     "TR-4.H08; TR-4.41; WZ-24; VAR-113", "Blocos ligados só pela WZ-24 = SIM (derivada da VAR-113); sem cota, não "
+     "entram. No caso de reprodução R2, a diferença é do tipo 'TR real'.", "", "EXTRAIDO", "comparação f6; decisão 0008"),
 ]
 
 

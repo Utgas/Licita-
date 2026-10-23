@@ -264,25 +264,41 @@ Situação de cada item:
 - **Decisão (23/10/2026):** as colunas `validacao` e `comentario_validacao` do M03 e do M04 passam a ser mantidas no repositório (`matrizes/v1/`). Toda entrega nova parte delas.
 - **Como fica:** o `rodar_fases_4_9.sh` recebe a pasta `matrizes/v1` do repositório como 4º argumento; o `f12_validacao_repo.py` copia as duas colunas para os CSV locais antes de regenerar, os geradores preservam essas colunas, e o teste compara linha a linha com o repositório. Linha validada no repositório que deixou de existir para a execução com erro.
 
-### P34. Revisão do checklist: o que só destaca e o que bloqueia (A CONFIRMAR com o dono do projeto)
+### P34. Revisão do checklist: o que só destaca e o que bloqueia (CONFIRMADA, 23/10/2026)
 
 - **Decisão do gestor (23/10/2026, Fase 13):** pergunta sem resposta só fica destacada; a pergunta ao operador, que bloqueia a minuta, só aparece com dúvida que muda a minuta: duas marcas em pergunta de uma opção, "Outro" sem número legível, resposta única para vários itens em regra por item, e grupos de itens que parecem trocados com a seção 11 (CK-C-8.2). A falta de resposta que decide um bloco já aparece como pergunta pendente do wizard.
 - **Como entrou:** coluna nova `M11.revisao_pergunta_expr` (75 perguntas). `revisao_expr` continua sendo o destaque (260 perguntas). `revisao_pergunta` só existe onde há `revisao_pergunta_expr`. A VAL-037 passou a descrever o bloqueio só pela pergunta que bloqueia.
 - **Ponto para confirmar:** divergências com regra de prevalência (13.5 x 20.1, 5.5/5.6 x 6.1, cabeçalho x seção 1) e contradições que não mudam a minuta (12.2, 7.2, 11.2, 11.4) ficaram só com destaque, porque a regra já diz qual resposta vale ou porque a resposta não vai ao texto. Se o dono do projeto quiser que essas também bloqueiem, basta acrescentar a condição na `revisao_pergunta_expr`.
+- **Resposta (decisão 0008, reprodução):** confirmada pelo dono do projeto. Fase 14: cada motivo de revisão tem texto próprio (`M11.revisao_motivos`), e só bloqueiam os que mudam a minuta.
 
-### P35. Numeração da linha de cota reservada na tabela do item 1.1 (ABERTA)
+### P35. Numeração da linha de cota reservada na tabela do item 1.1 (RESOLVIDA, 23/10/2026)
 
 - **O que o modelo mostra:** a linha "Idem ao Item 1 – Cota reservada para ME/EPP em XX,XX%" logo abaixo do item 1, com o número 2.
 - **O que adotei (INFERIDO):** a linha de cota entra logo abaixo do item de origem, com o número seguinte, e as linhas seguintes são renumeradas; a linha de origem fica com a quantidade principal (quantidade menos a cota, VAR-174). As referências a número de item no TR (amostras, padrões) passam a usar o número da tabela.
 - **Pergunta:** no Compras.gov.br a OM numera assim (cota logo abaixo, renumerando) ou mantém o número do DFD e põe as cotas no fim da lista? A resposta muda a `tabela_colunas` do TR-1.1.TAB1 e a VAR-049.
+- **Resposta (decisão 0008):** as linhas de cota vão todas para o fim da tabela, depois do último item de ampla participação; os itens não são renumerados; cada linha de cota recebe o número seguinte ao último item e cita o item de origem ("Cota reservada para ME/EPP do item 3").
+- **Como entrou (Fase 14):** `tabela_colunas` do TR-1.1.TAB1 (`numeracao`, `linha_cota.posicao` e `valores`); a coluna ITEM vem do número do item (VAR-156). A única referência à posição da cota é a própria tabela do modelo (linha "2 | Idem ao Item 1 – Cota reservada..." logo abaixo do item 1); nenhum outro texto do modelo, nota ou regra cita a posição. O percentual "XX,XX%" da célula do modelo saiu da linha de cota, como no exemplo da resposta; ele continua no TR-4.41.
 
-### P36. Marcadores do texto das cláusulas do M08 (ABERTA)
+### P36. Marcadores do texto das cláusulas do M08 (RESOLVIDA, 23/10/2026)
 
 - **Problema:** o texto proposto do M08 usa `[VAR-xxx: dica]` e, em algumas cláusulas, a mesma variável aparece em vários marcadores com partes diferentes (SET-09: três vezes a VAR-131; SET-12: cinco vezes a VAR-138; SET-11, SET-13, SET-14 e SET-20 também). O motor preenche cada marcador com o valor inteiro da variável, e o texto repete. Há ainda trechos entre colchetes que não são variável ("[na proposta ou na entrega]" na SET-07; "[Para permanentes: ...]" na SET-02; "[Se CK-P-9.5 = Sim: ...]" na SET-17).
 - **Opções:** (a) dar ao M08 um mapa como o `lacunas_mapa` do M02, com campo por marcador e trechos opcionais com condição; (b) reescrever essas cláusulas com uma variável por marcador e criar as variáveis que faltam. Nos dois casos a redação continua INFERIDO e passa pela revisão.
+- **Resposta (decisão do gestor):** opção (a). Fase 14: coluna `M08.lacunas_mapa`, no formato do M02, em todas as cláusulas com marcador (22 cláusulas, 57 marcadores), sem mudar o texto. Com a mesma VAR em vários marcadores, cada marcador vai para a pergunta do checklist que dá aquela parte (ex.: SET-12, CK-P-12.2 a 12.6); quando nenhuma pergunta dá a parte, fica com a equipe e o motivo está no mapa (ver P38).
 
-### P37. Escolhas por padrão no texto e pendências fora das lacunas (INFORMATIVA)
+### P37. Escolhas por padrão no texto e pendências fora das lacunas (RESOLVIDA, 23/10/2026)
 
 - **Escolhas por padrão (INFERIDO, a confirmar na revisão):** TR-1.7 remete ao Estudo Técnico Preliminar (o sistema gera o ETP; nota técnica ou texto próprio são trocados pela equipe); TR-AI-3.1.8.1 sem prazo informado fica com "1 (um) mês" (NE-087); TR-9.4.1 com tabela no TR aponta o item 1.1 (onde está a tabela de preços).
 - **Fica com a equipe (fonte null, motivo no mapa):** margem de preferência (TR-4.42), artigo e lei das autorizações (TR-9.14 e TR-9.35), até a norma estar conferida no M07; texto da subcontratação de ME/EPP da nota 3 da NE-016; número e ano do certame no Anexo II.
 - **Texto do modelo:** o TR-1.7 começa com "1.6.1" dentro do próprio texto (numeração do modelo); a tabela do item 1.1 não tem coluna nem linha de grupo para itens agrupados.
+- **Resposta:** aceitos o "1 (um) mês" do TR-AI-3.1.8.1 e a remissão do TR-1.7 ao ETP, com a condição de todo valor padrão ficar marcado. Fase 14: `"padrao": true` na opção do mapa (M02 e M08) e lista em `logs/f13_lacunas.txt`; hoje são essas duas.
+
+### P38. Partes de cláusula do M08 que nenhuma pergunta do checklist dá (ABERTA)
+
+- **O que ficou com a equipe no M08.lacunas_mapa:** setor de recebimento e antecedência do agendamento (SET-09); itens da entrega com documentos (SET-03), dos requisitos (SET-07), da entrega emergencial (SET-10) e da instalação (SET-11), porque a caixa de resposta traz itens e conteúdo num texto só; "[na proposta ou na entrega]" (SET-07); atividade e órgão expedidor da autorização (SET-08); equipamento e local da desinstalação (SET-18); etapas antes do recebimento definitivo no consumo (SET-20).
+- **Pergunta:** essas partes continuam como lacuna para a equipe na revisão, ou viram complementos do operador (CK-X-10 em diante), como os da decisão 0009? Os complementos tirariam essas lacunas da minuta sem mudar o checklist distribuído.
+
+### P39. Reprodução do R1 e do R2 depois das respostas (INFORMATIVA)
+
+- **Conferido nos TRs reais (Fase 14):** os dois TRs usam a opção A do GA-01 (TR-1.2, "comuns") e do GA-02 (TR-1.5, art. 105); o TR 58/2026 usa a opção A do GA-06 (TR-5.1, remessa única), e o TR 23/2026 também, com redação própria. Nenhum dos dois tem o Anexo I do modelo (a seção 13 do TR Digital traz "(Não se aplica)" no TR 23 e "Minuta já nos autos" no TR 58); os blocos TR-AI casaram com itens do corpo (vigência, regularidade fiscal, prorrogação, garantia da contratação, subcontratação). Nenhum dos dois tem o título do modelo (TR-CAB.02): a comparação casou o rodapé "Modelo de Termo de Referência – Aquisições – Licitação e Contratação Direta" que o TR Digital imprime em toda página. Esses blocos saíram do esperado, com o motivo em `correcoes_da_comparacao`; o TR-5.1 entrou.
+- **Divergências novas no M09:** DV-36 (TR-1.4 em bem permanente, TR 23), DV-37 (TR-11.3 em fornecimento não contínuo, TR 23 e TR 58), DV-38 (subitem de sociedades estrangeiras sem o item de registro, TR 23), DV-39 (critério de aceitabilidade de registro de preços sem registro de preços, TR 58), DV-40 (garantia com redação própria, TR 23) e DV-41 (reserva de cota sem cota, TR 58). Todas "TR real".
+- **SET-13:** mantida sempre que houver garantia do bem (WZ-29 = SIM), como respondido.

@@ -186,17 +186,29 @@ def formatar(v, fmt, unidade=None):
     return s
 
 
+def ajusta_inicial(s, x):
+    if x.get("inicial_minuscula"):
+        return s[:1].lower() + s[1:]
+    if x.get("inicial_maiuscula"):
+        return s[:1].upper() + s[1:]
+    return s
+
+
 class Montagem:
     def __init__(self, dados):
         self.d = dados
         self.inseridos = []  # (trecho, fonte, valor)
 
     def valor(self, x):
-        """valor bruto da fonte da entrada (com campo e índice), ou None."""
+        """valor bruto da fonte da entrada (com campo e índice), ou None; fontes alternativas em ordem."""
         f = x.get("fonte")
         if not f or f.startswith("itens."):
             return None
         v = self.d.get(f)
+        for alt in x.get("alternativas", []):
+            if not vazio(v):
+                break
+            v = self.d.get(alt)
         if x.get("campo"):
             v = pega(v, x["campo"]) if isinstance(v, dict) else None
         if "indice" in x:
@@ -212,6 +224,14 @@ class Montagem:
 
     def render(self, trecho, x):
         """texto da entrada PREENCHER (ou o {valor} dos modelos); None = sem valor."""
+        if x.get("formato") == "NUMEROS_DOS_ITENS":
+            attr = x["fonte"].split(".", 1)[1]
+            nums = [it.get("numero") for it in self.d.get("itens", [])
+                    if (verdadeiro(avaliar(x["filtro_item"], it)) if x.get("filtro_item") else not vazio(it.get(attr)))]
+            if not nums:
+                return None
+            self.inseridos += [(trecho, x["fonte"], n) for n in nums]
+            return lista_texto(nums)
         if x.get("formato") == "POR_ITEM":
             attr = x["fonte"].split(".", 1)[1]
             partes = [f"item {texto_valor(it.get('numero'))}: {texto_valor(it.get(attr))}"
@@ -230,12 +250,14 @@ class Montagem:
             uni = self.d.get(x["unidade"])
             if vazio(uni):
                 return None
+        if isinstance(v, list) and x.get("inicial_minuscula"):
+            v = [ajusta_inicial(e_, x) if isinstance(e_, str) else e_ for e_ in v]
         try:
             s = formatar(v, x.get("formato"), uni)
         except (ValueError, KeyError, ArithmeticError):
             return None
         self.inseridos.append((trecho, x["fonte"], v))
-        return s
+        return ajusta_inicial(s, x)
 
     def opcao(self, x, trecho):
         for op in x.get("opcoes", []):
@@ -301,8 +323,8 @@ class Montagem:
             elif acao == "OPCIONAL":
                 if verdadeiro(avaliar(x["quando"], self.d)):
                     if "texto" in x:
-                        s = self.render(r["id"], x)
-                        t = x["texto"].replace("{valor}", s) if s is not None else None
+                        s = self.render(r["id"], dict(x, inicial_maiuscula=False)) if "{valor}" in x["texto"] else ""
+                        t = ajusta_inicial(x["texto"].replace("{valor}", s), x) if s is not None else None
                     else:
                         t = x["marcador"][1:-1] if x["marcador"].startswith("[") else x["marcador"]
                     if t is None:
@@ -355,40 +377,38 @@ class Montagem:
         linhas, lac = [" | ".join(cab)], []
         if tc["linhas"] == "itens":
             sig = verdadeiro(avaliar(tc["orcamento_sigiloso"]["quando"], self.d))
-            n = 0
             itens = sorted(self.d.get("itens", []), key=lambda i: i.get("numero") or 0)
             if not itens:
                 return r["texto_literal"], ["tabela sem itens"], False
-            for it in itens:
-                n += 1
-                orig = n
-                cel = [str(n)]
-                for col in tc["colunas"][1:]:
-                    s, ok = self.celula(it, col, sig)
+            lc = tc["linha_cota"]
+            cotas = []
+            for it in itens:  # itens com o próprio número (P35: sem renumerar)
+                cel = []
+                for col in tc["colunas"]:
+                    s_, ok = self.celula(it, col, sig)
                     if not ok:
                         lac.append(f"{col['cabecalho']} do item {it.get('numero')}")
-                    cel.append(s)
+                    cel.append(s_)
                 linhas.append(" | ".join(cel))
-                lc = tc["linha_cota"]
                 if verdadeiro(avaliar(lc["quando"], it)):
-                    n += 1
-                    pct = self.d.get("VAR_057")
-                    esp = (f"Idem ao Item {orig} – Cota reservada para ME/EPP em {formatar(pct, 'PERCENTUAL_2')}"
-                           if not vazio(pct) else "[[LACUNA VAR_057]]")
-                    cel = [str(n), esp]
-                    for cabc in cab[2:]:
-                        f = lc["valores"][cabc]
-                        if sig and cabc in tc["orcamento_sigiloso"]["colunas"]:
-                            cel.append("SIGILOSO")
-                            continue
-                        v = it.get(f.split(".", 1)[1])
-                        fmt = next(c.get("formato") for c in tc["colunas"] if c["cabecalho"] == cabc)
-                        if vazio(v):
-                            lac.append(f"{cabc} da cota do item {it.get('numero')}")
-                            cel.append("[[LACUNA]]")
-                        else:
-                            cel.append(formatar(v, fmt))
-                    linhas.append(" | ".join(cel))
+                    cotas.append(it)
+            n = max((dec(i.get("numero")) for i in itens if not vazio(i.get("numero"))), default=Decimal(0))
+            for it in cotas:  # P35: cotas no fim, números seguintes ao maior número de item
+                n += 1
+                cel = [num_txt(n), f"Cota reservada para ME/EPP do item {texto_valor(it.get('numero'))}"]
+                for cabc in cab[2:]:
+                    f = lc["valores"][cabc]
+                    if sig and cabc in tc["orcamento_sigiloso"]["colunas"]:
+                        cel.append("SIGILOSO")
+                        continue
+                    v = it.get(f.split(".", 1)[1])
+                    fmt = next(c.get("formato") for c in tc["colunas"] if c["cabecalho"] == cabc)
+                    if vazio(v):
+                        lac.append(f"{cabc} da cota do item {it.get('numero')}")
+                        cel.append("[[LACUNA]]")
+                    else:
+                        cel.append(formatar(v, fmt))
+                linhas.append(" | ".join(cel))
             return "\n".join(linhas), lac, False
         fonte = self.d.get(tc["linhas"])
         if not isinstance(fonte, list) or not fonte or not all(isinstance(x, dict) for x in fonte):
@@ -398,29 +418,11 @@ class Montagem:
 
     # ---------------------------------------------------------------- cláusulas do M08
     def clausula(self, r):
-        lac = []
-        # a mesma VAR em mais de um marcador da cláusula: o valor inteiro repetiria o texto (P36); fica lacuna
-        contagem = {}
-        for mm in re.finditer(r"\[(VAR-\d{3})(?:[^\][]*)\]", r["texto_proposto"]):
-            contagem[mm.group(1)] = contagem.get(mm.group(1), 0) + 1
-
-        def troca(m):
-            vs = re.findall(r"VAR-\d{3}", m.group(0))
-            if len(set(vs)) > 1:
-                lac.append(m.group(0))
-                return "[[LACUNA " + ", ".join(vs) + "]]"
-            if contagem.get(vs[0], 0) > 1:
-                lac.append(f"{vs[0]} em mais de um marcador (P36)")
-                return f"[[LACUNA {vs[0]}]]"
-            v = self.d.get(vs[0].replace("-", "_"))
-            if vazio(v):
-                lac.append(vs[0])
-                return f"[[LACUNA {vs[0]}]]"
-            self.inseridos.append((r["id"], vs[0], v))
-            return texto_valor(v)
-        t = re.sub(r"\[(VAR-\d{3})(?:[^\][]*)\]", troca, r["texto_proposto"])
-        if "[" in t.replace("[[LACUNA", ""):
-            lac.append("trecho entre colchetes do texto proposto")
+        """Fase 14: o M08 tem lacunas_mapa no formato do M02; marcador fora do mapa fica como lacuna."""
+        t, lac, _ = self.bloco({"id": r["id"], "texto_literal": r["texto_proposto"],
+                                "lacunas_mapa": r.get("lacunas_mapa", "")})
+        if not r.get("lacunas_mapa") and "[" in t:
+            lac = lac + ["trecho entre colchetes sem mapa"]
         return t, lac
 
 

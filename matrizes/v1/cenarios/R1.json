@@ -81,13 +81,10 @@
  },
  "esperado": {
   "blocos": [
-   "TR-CAB.02",
    "TR-1",
    "TR-1.2",
-   "TR-1.3",
    "TR-1.4",
    "TR-1.5",
-   "TR-1.6",
    "TR-1.9",
    "TR-2",
    "TR-2.1",
@@ -100,6 +97,7 @@
    "TR-4.H08",
    "TR-4.41",
    "TR-5",
+   "TR-5.1",
    "TR-5.3",
    "TR-5.H02",
    "TR-5.6",
@@ -264,10 +262,7 @@
    "TR-10.1",
    "TR-11.1",
    "TR-11.2",
-   "TR-11.3",
-   "TR-AI-2.1",
-   "TR-AI-2.3",
-   "TR-AI-4.1.7.3"
+   "TR-11.3"
   ],
   "clausulas_m08": [
    "SET-07",
@@ -409,6 +404,20 @@
   "TR-AI-8",
   "TR-AII.01"
  ],
+ "correcoes_da_comparacao": {
+  "removidos_do_esperado": {
+   "TR-CAB.02": "o TR real não tem o título do modelo; a comparação casou o rodapé que o TR Digital imprime em toda página ('Modelo de Termo de Referência – Aquisições – Licitação e Contratação Direta - Lei nº 14.133, de 2021')",
+   "TR-1.3": "GA-01: o TR real usa a opção A (TR-1.2), p.1, item 1.3: 'caracterizados como comuns'; a comparação casou a opção B, de texto quase igual",
+   "TR-1.6": "GA-02: o TR real usa a opção A (TR-1.5), p.1, item 1.4: '...na forma do artigo 105 da Lei n° 14.133, de 2021'; a comparação casou a opção B com o mesmo parágrafo",
+   "TR-AI-2.1": "o TR real não tem o Anexo I do modelo (a seção 13 'ANEXO I' do TR Digital traz '(Não se aplica)'); a comparação casou o bloco com o item 1.4 (vigência) do corpo",
+   "TR-AI-2.3": "o TR real não tem o Anexo I do modelo (a seção 13 'ANEXO I' do TR Digital traz '(Não se aplica)'); a comparação casou o bloco com o item 1.4 (vigência) do corpo",
+   "TR-AI-4.1.7.3": "o TR real não tem o Anexo I do modelo (a seção 13 'ANEXO I' do TR Digital traz '(Não se aplica)'); a comparação casou o bloco com o item 9.18 (regularidade fiscal) do corpo"
+  },
+  "acrescentados_ao_esperado": {
+   "TR-5.1": "GA-06: o TR real usa a opção A (remessa única) com redação própria em dois itens, p.2, itens 5.1 ('de forma integral, em remessa única') e 5.2 (prazo de entrega); abaixo do limiar da comparação"
+  },
+  "nota": "Fase 14: conferidos no texto do TR real (pedido de 23/10/2026)."
+ },
  "divergencias_conhecidas": [
   {
    "dv": "DV-01",
@@ -481,28 +490,57 @@
    "descricao": "Mantém o subtítulo 'Reserva de cotas para microempresas e empresas de pequeno porte' e o item 4.4 do modelo, alterado para negar a cota: '4.4. Na presente licitação, não será realizada a reserva de cota de até 25% para microempresas e empresas de pequeno porte.', com justificativa no 4.4.1. No modelo, os blocos TR-4.H08 e TR-4.41 só entram quando há item ou grupo com cota. Classificado pelo dono do projeto em 23/10/2026 como erro do TR real (decisão 0008).",
    "referencia": "TR-4.H08; TR-4.41; WZ-24; VAR-113",
    "tratamento_no_sistema": "Blocos ligados só pela WZ-24 = SIM (derivada da VAR-113); sem cota, não entram. No caso de reprodução R1, a diferença é do tipo 'TR real'."
+  },
+  {
+   "dv": "DV-36",
+   "classificacao": "TR real",
+   "tipo": "CLAUSULA_SEM_PERTINENCIA",
+   "local": "p.1, item 1.7",
+   "descricao": "Mantém a declaração do modelo '1.7. O objeto desta contratação não se enquadra como bem de luxo, conforme Decreto nº 10.818, de 27 de setembro de 2021.' numa aquisição de bem permanente. O bloco TR-1.4 só entra para bens de consumo (NE-006). Classificado pelo dono do projeto em 23/10/2026: para permanentes, não entra (decisão 0008, reprodução).",
+   "referencia": "TR-1.4; WZ-07; NE-006",
+   "tratamento_no_sistema": "TR-1.4 só com WZ-07 = CONSUMO ou AMBOS. No caso de reprodução R1, a diferença é do tipo 'TR real'."
+  },
+  {
+   "dv": "DV-37",
+   "classificacao": "TR real",
+   "tipo": "CLAUSULA_SEM_PERTINENCIA",
+   "local": "TR 23/2026 p.12, item 11.3; TR 58/2026 p.17, item 11.3",
+   "descricao": "TR 23/2026 e TR 58/2026 mantêm o item do modelo '11.3. A dotação relativa aos exercícios financeiros subsequentes será indicada após aprovação da Lei Orçamentária respectiva e liberação dos créditos correspondentes, mediante apostilamento.' em fornecimento não contínuo. O bloco TR-11.3 só entra em fornecimento contínuo com vigência plurianual (NE-079). Classificado pelo dono do projeto em 23/10/2026 como erro do TR real (decisão 0008).",
+   "referencia": "TR-11.3; WZ-14; NE-079",
+   "tratamento_no_sistema": "TR-11.3 só com WZ-14 = CONTINUO. Nos casos de reprodução R1 e R2, a diferença é do tipo 'TR real'."
+  },
+  {
+   "dv": "DV-38",
+   "classificacao": "TR real",
+   "tipo": "INCONSISTENCIA_INTERNA",
+   "local": "p.11, item 9.31",
+   "descricao": "Mantém o subitem do modelo sobre sociedades empresárias estrangeiras ('9.31. Sociedades empresárias estrangeiras atenderão à exigência por meio da apresentação, no momento da assinatura do contrato ou...') sem o item que ele complementa (registro ou inscrição na entidade profissional competente, TR-9.33). Classificado pelo dono do projeto em 23/10/2026 como erro do TR real (decisão 0008).",
+   "referencia": "TR-9.33.1; TR-9.33; WZ-38",
+   "tratamento_no_sistema": "Filho sem o pai não entra (regra do motor): TR-9.33.1 depende do TR-9.33 (WZ-38 com REGISTRO_ENTIDADE_PROFISSIONAL). No caso de reprodução R1, a diferença é do tipo 'TR real'."
+  },
+  {
+   "dv": "DV-40",
+   "classificacao": "TR real",
+   "tipo": "TEXTO_PRETO_ALTERADO",
+   "local": "p.3, subtítulo 'Garantia, Manutenção e Assistência Técnica' e itens 5.7 a 5.10",
+   "descricao": "Troca os itens de garantia contratual do modelo (TR-5.6 a TR-5.17) por redação própria de garantia técnica: '5.7. O prazo de garantia técnica é de, no mínimo, 12 (doze) meses, ou o prazo do fabricante, se superior, contado do recebimento definitivo.', '5.8. A garantia abrange a manutenção corretiva (peças e mão de obra) sem ônus para o Contratante...', '5.9. Uma vez notificada, a Contratada deverá realizar o reparo em até 30 (trinta) dias.' e 5.10. Classificado pelo dono do projeto em 23/10/2026 como diferença de redação do TR real; o sistema usa o texto do modelo (GA-07 B) e a SET-13 (decisão 0008).",
+   "referencia": "TR-5.6; TR-5.17; GA-07; WZ-29; SET-13",
+   "tratamento_no_sistema": "Com WZ-29 = SIM a minuta traz o GA-07 B do modelo e a SET-13. No caso de reprodução R1, os blocos TR-5.7 a TR-5.17 da minuta são diferença do tipo 'TR real'."
   }
  ],
  "referencia": {
   "diferencas_simulacao": {
    "no_tr_e_fora_da_simulacao": [
-    "TR-CAB.02",
-    "TR-1.3",
     "TR-1.4",
-    "TR-1.6",
     "TR-4.H08",
     "TR-4.41",
     "TR-9.33.1",
-    "TR-11.3",
-    "TR-AI-2.1",
-    "TR-AI-2.3",
-    "TR-AI-4.1.7.3"
+    "TR-11.3"
    ],
    "na_simulacao_e_ausentes_no_tr": [
     "TR-CAB.03",
     "TR-CAB.04",
     "TR-1.1",
-    "TR-5.1",
     "TR-5.4",
     "TR-5.7",
     "TR-5.8",

@@ -800,8 +800,8 @@
    "TR-12.1": "As informações contidas neste Termo de Referência não são classificadas como sigilosas exceto o custo estimado da contratação, que possui caráter sigiloso até o julgamento das propostas.",
    "TR-ASSIN.01": "[[LACUNA VAR_005]], [[LACUNA VAR_097]] de [[LACUNA VAR_097]] de [[LACUNA VAR_097]].",
    "TR-ASSIN.02": "__________________________________",
-   "SET-11": "O Contratado executará, nos itens [[LACUNA VAR-137]], as atividades [[LACUNA VAR-137]], e entregará [[LACUNA VAR-145]]. A instalação será considerada concluída quando atendidos os critérios [[LACUNA VAR-137]].",
-   "SET-13": "Durante a garantia estão incluídos, sem custo adicional, [[LACUNA VAR-139]]. O atendimento será [[LACUNA VAR-139]] e começará em até [[LACUNA VAR-140]] após a abertura do chamado. A garantia conta a partir de [[LACUNA VAR-141]]. [Equipamento substituto: VAR-152, em complemento a TR-5.14.]"
+   "SET-11": "O Contratado executará, nos itens [[LACUNA EQUIPE]], as atividades [[LACUNA CK_P_11_3]], e entregará [[LACUNA CK_P_11_4]]. A instalação será considerada concluída quando atendidos os critérios [[LACUNA CK_P_11_5]].",
+   "SET-13": "Durante a garantia estão incluídos, sem custo adicional, [[LACUNA CK_P_13_4]]. O atendimento será [[LACUNA CK_P_13_5]] e começará em até [[LACUNA CK_P_13_6]] após a abertura do chamado. A garantia conta a partir de [[LACUNA CK_P_13_3]]."
   },
   "lacunas_do_texto": {
    "TR-CAB.03": [
@@ -1021,17 +1021,16 @@
     "VAR_097"
    ],
    "SET-11": [
-    "VAR-137 em mais de um marcador (P36)",
-    "VAR-137 em mais de um marcador (P36)",
-    "VAR-145",
-    "VAR-137 em mais de um marcador (P36)"
+    "equipe: [VAR-137: itens]",
+    "CK_P_11_3",
+    "CK_P_11_4",
+    "CK_P_11_5"
    ],
    "SET-13": [
-    "VAR-139 em mais de um marcador (P36)",
-    "VAR-139 em mais de um marcador (P36)",
-    "VAR-140",
-    "VAR-141",
-    "trecho entre colchetes do texto proposto"
+    "CK_P_13_4",
+    "escolha local_atendimento (CK_P_13_5)",
+    "CK_P_13_6",
+    "CK_P_13_3"
    ]
   },
   "sugestoes": {},

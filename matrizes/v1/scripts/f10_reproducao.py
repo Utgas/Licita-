@@ -28,6 +28,52 @@ from f10_simulador import DERIVADAS, aplica_texto, caminho_expr, carregar, json_
 CLASSIF_DV = {"DV-09": "permitido (P25): não é divergência; a exigência entra pela WZ-60 e pela SET-23, com justificativa "
                        "no ETP (VAL-053)"}
 
+# Fase 14: blocos que a comparação automática achou por engano (ou não achou) no TR real, conferidos no texto do TR.
+# remover: o bloco sai do esperado; acrescentar: o bloco entra no esperado (texto preenchido, abaixo do limiar).
+FALSO_ANEXO_I = ("o TR real não tem o Anexo I do modelo (a seção 13 'ANEXO I' do TR Digital traz '{x}'); a comparação "
+                 "casou o bloco com {y} do corpo")
+CAB02 = ("o TR real não tem o título do modelo; a comparação casou o rodapé que o TR Digital imprime em toda página "
+         "('Modelo de Termo de Referência – Aquisições – Licitação e Contratação Direta - Lei nº 14.133, de 2021')")
+CORRECOES = {
+    "R1": {
+        "remover": {
+            "TR-CAB.02": CAB02,
+            "TR-1.3": "GA-01: o TR real usa a opção A (TR-1.2), p.1, item 1.3: 'caracterizados como comuns'; a comparação "
+                      "casou a opção B, de texto quase igual",
+            "TR-1.6": "GA-02: o TR real usa a opção A (TR-1.5), p.1, item 1.4: '...na forma do artigo 105 da Lei n° 14.133, "
+                      "de 2021'; a comparação casou a opção B com o mesmo parágrafo",
+            "TR-AI-2.1": FALSO_ANEXO_I.format(x="(Não se aplica)", y="o item 1.4 (vigência)"),
+            "TR-AI-2.3": FALSO_ANEXO_I.format(x="(Não se aplica)", y="o item 1.4 (vigência)"),
+            "TR-AI-4.1.7.3": FALSO_ANEXO_I.format(x="(Não se aplica)", y="o item 9.18 (regularidade fiscal)"),
+        },
+        "acrescentar": {
+            "TR-5.1": "GA-06: o TR real usa a opção A (remessa única) com redação própria em dois itens, p.2, itens 5.1 "
+                      "('de forma integral, em remessa única') e 5.2 (prazo de entrega); abaixo do limiar da comparação",
+        },
+    },
+    "R2": {
+        "remover": {
+            "TR-CAB.02": CAB02,
+            "TR-1.3": "GA-01: o TR real usa a opção A (TR-1.2), p.1, item 1.2: 'caracterizados como comuns'; a comparação "
+                      "casou a opção B, de texto quase igual",
+            "TR-1.6": "GA-02: o TR real usa a opção A (TR-1.5), p.1, item 1.3: '...na forma do artigo 105 da Lei n° 14.133, "
+                      "de 2021'; a comparação casou a opção B com o mesmo parágrafo",
+            "TR-5.2": "GA-06: o TR real usa a opção A (TR-5.1), p.4, item 5.1: '...em remessa única'; a comparação casou a "
+                      "opção B com o item 5.4 (endereço de entrega)",
+            "TR-AI-1.2": FALSO_ANEXO_I.format(x="Minuta já nos autos", y="o item 5.12 (prorrogação de prazo)"),
+            "TR-AI-2.1": FALSO_ANEXO_I.format(x="Minuta já nos autos", y="o item 1.3 (vigência)"),
+            "TR-AI-2.3": FALSO_ANEXO_I.format(x="Minuta já nos autos", y="o item 1.3 (vigência)"),
+            "TR-AI-3.1.10": FALSO_ANEXO_I.format(x="Minuta já nos autos", y="o item 4.20.1 (garantia da contratação)"),
+            "TR-AI-4.1.7.3": FALSO_ANEXO_I.format(x="Minuta já nos autos", y="o item 9.20 (regularidade fiscal)"),
+            "TR-AI-5.11": FALSO_ANEXO_I.format(x="Minuta já nos autos", y="o item 4.9 (vedação de subcontratação)"),
+        },
+        "acrescentar": {
+            "TR-5.1": "GA-06: o TR real usa a opção A, p.4, item 5.1: 'O prazo de entrega dos bens é de 60 (sessenta) "
+                      "dias, contados da assinatura do contrato, em remessa única.'; texto preenchido, abaixo do limiar",
+        },
+    },
+}
+
 CASOS = {
     "R1": {
         "doc": "TR 23/2026", "chave": "TR_exemplos_ae4297a4_a494_4822_980f_6cbcc6b4571c_pdf",
@@ -118,7 +164,12 @@ def main():
     ordem = [r["id"] for r in m["M02"]]
     for cod, c in CASOS.items():
         cl = {x["bloco"]: x["classe"] for x in comp[c["chave"]]["comparacao"]}
-        presentes = [b for b in ordem if cl.get(b) in ("IGUAL", "ALTERADO")]
+        cor = CORRECOES[cod]
+        for b in list(cor["remover"]) + list(cor["acrescentar"]):
+            if b not in ordem:
+                raise SystemExit(f"{cod}: correção de bloco inexistente {b}")
+        presentes = [b for b in ordem if (cl.get(b) in ("IGUAL", "ALTERADO") and b not in cor["remover"])
+                     or b in cor["acrescentar"]]
         nao_comp = [b for b in ordem if b not in cl]
         sets = [r["id"] for r in m["M08"] if re.search(re.escape(c["doc"]) + r" \(", r["evidencia_corpus"])]
         dvs = [r for r in m09 if r["documento"].startswith(c["doc"]) or (c["doc"] in r["descricao"] or
@@ -148,6 +199,9 @@ def main():
             "esperado": {"blocos": presentes, "clausulas_m08": sets, "validacoes_m10": vals,
                          "perguntas_sem_resposta": sem, "bloqueios_grupo_alternativas": []},
             "blocos_nao_comparados": nao_comp,
+            "correcoes_da_comparacao": {"removidos_do_esperado": cor["remover"],
+                                        "acrescentados_ao_esperado": cor["acrescentar"],
+                                        "nota": "Fase 14: conferidos no texto do TR real (pedido de 23/10/2026)."},
             "divergencias_conhecidas": [{"dv": r["id"], "classificacao": CLASSIF_DV.get(r["id"], "TR real"),
                                          "tipo": r["tipo"], "local": r["local"],
                                          "descricao": r["descricao"], "referencia": r["referencia"],

@@ -536,6 +536,7 @@
    "TR-12.1",
    "TR-ASSIN.02",
    "TR-ASSIN.03",
+   "SET-02",
    "SET-05"
   ]
  },
@@ -558,7 +559,7 @@
    "TR-CAB.03": "[[LACUNA VAR_004]]",
    "TR-CAB.04": "(Processo Administrativo n° 00000.000000/0000-00)",
    "TR-1.1": "Aquisição de [[LACUNA VAR_008]], [[LACUNA VAR_009]], nos termos da tabela abaixo, conforme condições e exigências estabelecidas neste instrumento.",
-   "TR-1.1.TAB1": "ITEM | ESPECIFICAÇÃO | CATMAT | UNIDADE DE MEDIDA | QUANTIDADE | VALOR UNITÁRIO | VALOR TOTAL\n1 | [[LACUNA]] | 000000 | [[LACUNA]] | 5.000 | R$ 4,00 | R$ 20.000,00\n2 | [[LACUNA]] | 000000 | [[LACUNA]] | 600 | R$ 150,00 | R$ 90.000,00\n3 | Idem ao Item 2 – Cota reservada para ME/EPP em 25,00% | 000000 | [[LACUNA]] | 200 | R$ 150,00 | R$ 30.000,00",
+   "TR-1.1.TAB1": "ITEM | ESPECIFICAÇÃO | CATMAT | UNIDADE DE MEDIDA | QUANTIDADE | VALOR UNITÁRIO | VALOR TOTAL\n1 | [[LACUNA]] | 000000 | [[LACUNA]] | 5.000 | R$ 4,00 | R$ 20.000,00\n2 | [[LACUNA]] | 000000 | [[LACUNA]] | 600 | R$ 150,00 | R$ 90.000,00\n3 | Cota reservada para ME/EPP do item 2 | 000000 | [[LACUNA]] | 200 | R$ 150,00 | R$ 30.000,00",
    "TR-1.1.1.TAB1": "Órgão Gerenciador:\nitem | DESCRIÇÃO/ ESPECIF. | UNIDADE / DE / MEDIDA | REQUISIÇÃO / MÍNIMA | REQUISIÇÃO / Máxima | Quantidade / total\n |  |  |  |  | ",
    "TR-1.5": "O prazo de vigência da contratação é de [[LACUNA VAR_034]] contados do(a) [[LACUNA VAR_035]], na forma do artigo 105 da Lei n° 14.133, de 2021.",
    "TR-2.2": "O objeto da contratação está previsto no Plano de Contratações Anual [[LACUNA VAR_038]], conforme detalhamento a seguir:",
@@ -592,13 +593,13 @@
    "TR-12.1": "As informações contidas neste Termo de Referência não são classificadas como sigilosas.",
    "TR-ASSIN.01": "[[LACUNA VAR_005]], [[LACUNA VAR_097]] de [[LACUNA VAR_097]] de [[LACUNA VAR_097]].",
    "TR-ASSIN.02": "__________________________________",
-   "SET-02": "Os itens [[LACUNA VAR-122, VAR-128]] serão transportados, armazenados até a entrega e entregues nas condições de conservação indicadas pelo fabricante, observada a faixa de temperatura [[LACUNA VAR-122]] [e com registro contínuo da temperatura durante o transporte, apresentado no ato da entrega (VAR-129)]. [Para permanentes: o Contratado providenciará a logística especial de transporte e movimentação descrita em VAR-128.] O descumprimento das condições de conservação é motivo de recusa (TR-8.2).",
-   "SET-03": "A entrega dos itens [[LACUNA VAR-130]] será acompanhada de [[LACUNA VAR-130]], sem os quais o recebimento provisório não será feito.",
-   "SET-04": "Em caráter excepcional, nas situações [[LACUNA VAR-133]], poderá ser aceito item com validade remanescente inferior à exigida no subitem de validade mínima, desde que o Contratado apresente compromisso escrito de substituir, sem ônus para o Contratante, o produto que não for consumido antes do vencimento [[LACUNA VAR-134]].",
+   "SET-02": "Os itens 1 serão transportados, armazenados até a entrega e entregues nas condições de conservação indicadas pelo fabricante, observada a faixa de temperatura item 1: 2 a 8 °C. O descumprimento das condições de conservação é motivo de recusa (TR-8.2).",
+   "SET-03": "A entrega dos itens [[LACUNA EQUIPE]] será acompanhada de Certificado de análise, sem os quais o recebimento provisório não será feito.",
+   "SET-04": "Em caráter excepcional, nas situações [[LACUNA VAR_133]], poderá ser aceito item com validade remanescente inferior à exigida no subitem de validade mínima, desde que o Contratado apresente compromisso escrito de substituir, sem ônus para o Contratante, o produto que não for consumido antes do vencimento.",
    "SET-05": "Só será admitida a oferta de produto com registro ou notificação vigente na Anvisa. O produto entregue deverá corresponder ao registro ou à notificação informados na proposta.",
-   "SET-09": "A entrega será previamente agendada com [[LACUNA VAR-131]], com antecedência mínima de [[LACUNA VAR-131]], observadas as seguintes restrições: [[LACUNA VAR-131]].",
-   "SET-21": "O Contratado substituirá, no prazo de [[LACUNA VAR-074]], o produto entregue nas seguintes situações: Recall.",
-   "SET-22": "O Contratado recolherá, sem ônus para o Contratante, [[LACUNA VAR-147]], dando a eles destinação ambientalmente adequada."
+   "SET-09": "A entrega será previamente agendada com [[LACUNA EQUIPE]], com antecedência mínima de [[LACUNA EQUIPE]], observadas as seguintes restrições: [[LACUNA VAR_131]].",
+   "SET-21": "O Contratado substituirá, no prazo de [[LACUNA VAR_074]], o produto entregue nas seguintes situações: recall.",
+   "SET-22": "O Contratado recolherá, sem ônus para o Contratante, [[LACUNA VAR_147]], dando a eles destinação ambientalmente adequada."
   },
   "lacunas_do_texto": {
    "TR-CAB.03": [
@@ -717,29 +718,22 @@
     "VAR_097",
     "VAR_097"
    ],
-   "SET-02": [
-    "[VAR-122 e VAR-128: itens e cuidados]",
-    "VAR-122 em mais de um marcador (P36)",
-    "trecho entre colchetes do texto proposto"
-   ],
    "SET-03": [
-    "VAR-130 em mais de um marcador (P36)",
-    "VAR-130 em mais de um marcador (P36)"
+    "equipe: [VAR-130: itens]"
    ],
    "SET-04": [
-    "VAR-133",
-    "VAR-134"
+    "VAR_133"
    ],
    "SET-09": [
-    "VAR-131 em mais de um marcador (P36)",
-    "VAR-131 em mais de um marcador (P36)",
-    "VAR-131 em mais de um marcador (P36)"
+    "equipe: [VAR-131: setor de recebimento]",
+    "equipe: [VAR-131]",
+    "VAR_131"
    ],
    "SET-21": [
-    "VAR-074"
+    "VAR_074"
    ],
    "SET-22": [
-    "VAR-147"
+    "VAR_147"
    ]
   },
   "sugestoes": {

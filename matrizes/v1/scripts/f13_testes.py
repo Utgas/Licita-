@@ -229,18 +229,33 @@ def testes(pasta, M):
     t, lac, _ = bloco("TR-1.5", {"VAR_034": 12})
     if "[[LACUNA" not in t:
         falhas.append("TR-1.5 sem unidade deveria ficar com lacuna")
-    # tabela do item 1.1 com cota e com orçamento sigiloso
-    itens = [{"numero": 1, "especificacao": "Item A", "unidade_medida": "unidade", "catmat": "000000",
-              "quantidade_principal": 75, "valor_unitario": 10, "valor_total": 750, "tratamento_me_epp": "COTA",
-              "quantidade_cota": 25, "valor_total_cota": 250}]
-    t, lac, _ = bloco("TR-1.1.TAB1", {"itens": itens, "VAR_057": 25, "WZ_40": "NAO"})
-    if ("1 | Item A | 000000 | unidade | 75 | R$ 10,00 | R$ 750,00" not in t or
-            "2 | Idem ao Item 1 – Cota reservada para ME/EPP em 25,00% | 000000 | unidade | 25 | R$ 10,00 | R$ 250,00"
-            not in t or lac):
-        falhas.append(f"TR-1.1.TAB1 com cota: {t} | {lac}")
-    t, lac, _ = bloco("TR-1.1.TAB1", {"itens": itens, "VAR_057": 25, "WZ_40": "SIM"})
-    if t.count("SIGILOSO") != 4:
+    # tabela do item 1.1: cotas no fim, sem renumerar os itens (P35), e orçamento sigiloso
+    def it_(n, cota):
+        base = {"numero": n, "especificacao": f"Item {n}", "unidade_medida": "unidade", "catmat": "000000",
+                "valor_unitario": 10}
+        if cota:
+            return dict(base, quantidade_principal=75, valor_total=750, tratamento_me_epp="COTA", quantidade_cota=25,
+                        valor_total_cota=250)
+        return dict(base, quantidade_principal=100, valor_total=1000, tratamento_me_epp="AMPLA")
+    itens = [it_(1, True), it_(2, False), it_(3, True)]
+    t, lac, _ = bloco("TR-1.1.TAB1", {"itens": itens, "WZ_40": "NAO"})
+    linhas = t.splitlines()
+    esperado_tab = ["ITEM | ESPECIFICAÇÃO | CATMAT | UNIDADE DE MEDIDA | QUANTIDADE | VALOR UNITÁRIO | VALOR TOTAL",
+                    "1 | Item 1 | 000000 | unidade | 75 | R$ 10,00 | R$ 750,00",
+                    "2 | Item 2 | 000000 | unidade | 100 | R$ 10,00 | R$ 1.000,00",
+                    "3 | Item 3 | 000000 | unidade | 75 | R$ 10,00 | R$ 750,00",
+                    "4 | Cota reservada para ME/EPP do item 1 | 000000 | unidade | 25 | R$ 10,00 | R$ 250,00",
+                    "5 | Cota reservada para ME/EPP do item 3 | 000000 | unidade | 25 | R$ 10,00 | R$ 250,00"]
+    cota_ok = linhas == esperado_tab and not lac
+    if not cota_ok:
+        falhas.append(f"TR-1.1.TAB1 com cota: {linhas} | {lac}")
+    t, lac, _ = bloco("TR-1.1.TAB1", {"itens": [it_(7, True)], "WZ_40": "SIM"})
+    if t.count("SIGILOSO") != 4 or "8 | Cota reservada para ME/EPP do item 7" not in t:
         falhas.append(f"TR-1.1.TAB1 sigiloso: {t}")
+    tc = json.loads(por_id["TR-1.1.TAB1"]["tabela_colunas"])
+    reg(cota_ok and tc["linha_cota"]["posicao"].startswith("FIM_DA_TABELA") and tc["colunas"][0].get("fonte") ==
+        "itens.numero", "TR-1.1.TAB1 (P35): itens 1, 2 e 3 com o próprio número; cotas dos itens 1 e 3 no fim, como 4 e 5, "
+        "com 'Cota reservada para ME/EPP do item n'")
     # série de lista: dois elementos em três blocos
     tx, lc, _ = montar_minuta(m02, M["M08"], ["TR-4.1.1", "TR-4.1.2", "TR-4.1.3"], [],
                               {"VAR_044": ["critério A", "critério B"], "parametros": sim.VALORES})

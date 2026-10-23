@@ -105,12 +105,9 @@
  },
  "esperado": {
   "blocos": [
-   "TR-CAB.02",
    "TR-1",
    "TR-1.2",
-   "TR-1.3",
    "TR-1.5",
-   "TR-1.6",
    "TR-1.9",
    "TR-2",
    "TR-2.1",
@@ -156,7 +153,7 @@
    "TR-4.H08",
    "TR-4.41",
    "TR-5",
-   "TR-5.2",
+   "TR-5.1",
    "TR-5.3",
    "TR-5.4",
    "TR-5.H02",
@@ -336,13 +333,7 @@
    "TR-11.1",
    "TR-11.2",
    "TR-11.3",
-   "TR-12.1",
-   "TR-AI-1.2",
-   "TR-AI-2.1",
-   "TR-AI-2.3",
-   "TR-AI-3.1.10",
-   "TR-AI-4.1.7.3",
-   "TR-AI-5.11"
+   "TR-12.1"
   ],
   "clausulas_m08": [
    "SET-02",
@@ -477,6 +468,24 @@
   "TR-AI-8",
   "TR-AII.01"
  ],
+ "correcoes_da_comparacao": {
+  "removidos_do_esperado": {
+   "TR-CAB.02": "o TR real não tem o título do modelo; a comparação casou o rodapé que o TR Digital imprime em toda página ('Modelo de Termo de Referência – Aquisições – Licitação e Contratação Direta - Lei nº 14.133, de 2021')",
+   "TR-1.3": "GA-01: o TR real usa a opção A (TR-1.2), p.1, item 1.2: 'caracterizados como comuns'; a comparação casou a opção B, de texto quase igual",
+   "TR-1.6": "GA-02: o TR real usa a opção A (TR-1.5), p.1, item 1.3: '...na forma do artigo 105 da Lei n° 14.133, de 2021'; a comparação casou a opção B com o mesmo parágrafo",
+   "TR-5.2": "GA-06: o TR real usa a opção A (TR-5.1), p.4, item 5.1: '...em remessa única'; a comparação casou a opção B com o item 5.4 (endereço de entrega)",
+   "TR-AI-1.2": "o TR real não tem o Anexo I do modelo (a seção 13 'ANEXO I' do TR Digital traz 'Minuta já nos autos'); a comparação casou o bloco com o item 5.12 (prorrogação de prazo) do corpo",
+   "TR-AI-2.1": "o TR real não tem o Anexo I do modelo (a seção 13 'ANEXO I' do TR Digital traz 'Minuta já nos autos'); a comparação casou o bloco com o item 1.3 (vigência) do corpo",
+   "TR-AI-2.3": "o TR real não tem o Anexo I do modelo (a seção 13 'ANEXO I' do TR Digital traz 'Minuta já nos autos'); a comparação casou o bloco com o item 1.3 (vigência) do corpo",
+   "TR-AI-3.1.10": "o TR real não tem o Anexo I do modelo (a seção 13 'ANEXO I' do TR Digital traz 'Minuta já nos autos'); a comparação casou o bloco com o item 4.20.1 (garantia da contratação) do corpo",
+   "TR-AI-4.1.7.3": "o TR real não tem o Anexo I do modelo (a seção 13 'ANEXO I' do TR Digital traz 'Minuta já nos autos'); a comparação casou o bloco com o item 9.20 (regularidade fiscal) do corpo",
+   "TR-AI-5.11": "o TR real não tem o Anexo I do modelo (a seção 13 'ANEXO I' do TR Digital traz 'Minuta já nos autos'); a comparação casou o bloco com o item 4.9 (vedação de subcontratação) do corpo"
+  },
+  "acrescentados_ao_esperado": {
+   "TR-5.1": "GA-06: o TR real usa a opção A, p.4, item 5.1: 'O prazo de entrega dos bens é de 60 (sessenta) dias, contados da assinatura do contrato, em remessa única.'; texto preenchido, abaixo do limiar"
+  },
+  "nota": "Fase 14: conferidos no texto do TR real (pedido de 23/10/2026)."
+ },
  "divergencias_conhecidas": [
   {
    "dv": "DV-02",
@@ -522,33 +531,49 @@
    "descricao": "Diz que o pregão se destina 'à contratação direta e exclusiva' do órgão. Contratação direta é a dispensa ou a inexigibilidade (WZ-01); o texto quis dizer que não haverá ata de registro de preços.",
    "referencia": "WZ-01; WZ-10",
    "tratamento_no_sistema": "O sistema escreve a forma de seleção a partir da WZ-01 e da WZ-10, sem texto livre no objeto"
+  },
+  {
+   "dv": "DV-37",
+   "classificacao": "TR real",
+   "tipo": "CLAUSULA_SEM_PERTINENCIA",
+   "local": "TR 23/2026 p.12, item 11.3; TR 58/2026 p.17, item 11.3",
+   "descricao": "TR 23/2026 e TR 58/2026 mantêm o item do modelo '11.3. A dotação relativa aos exercícios financeiros subsequentes será indicada após aprovação da Lei Orçamentária respectiva e liberação dos créditos correspondentes, mediante apostilamento.' em fornecimento não contínuo. O bloco TR-11.3 só entra em fornecimento contínuo com vigência plurianual (NE-079). Classificado pelo dono do projeto em 23/10/2026 como erro do TR real (decisão 0008).",
+   "referencia": "TR-11.3; WZ-14; NE-079",
+   "tratamento_no_sistema": "TR-11.3 só com WZ-14 = CONTINUO. Nos casos de reprodução R1 e R2, a diferença é do tipo 'TR real'."
+  },
+  {
+   "dv": "DV-39",
+   "classificacao": "TR real",
+   "tipo": "CLAUSULA_SEM_PERTINENCIA",
+   "local": "p.13, subtítulo 'Critérios de aceitabilidade de preços' e itens 9.4 e 9.4.1",
+   "descricao": "Mantém '9.4. Em se tratando de contratação para registro de preços, caso adotado o critério de julgamento de menor preço ou de maior desconto por grupo de itens, o critério de aceitabilidade de preços unitários máximos será:' e o 9.4.1 num pregão sem registro de preços ('não se destina à formação de ata de registro de preços', item 1.6). Classificado pelo dono do projeto em 23/10/2026 como erro do TR real (decisão 0008).",
+   "referencia": "TR-9.H03; TR-9.4; TR-9.4.1; WZ-10; WZ-13; NE-055",
+   "tratamento_no_sistema": "Blocos só com registro de preços, grupo de itens e menor preço ou maior desconto (WZ-13 derivada). No caso de reprodução R2, a diferença é do tipo 'TR real'."
+  },
+  {
+   "dv": "DV-41",
+   "classificacao": "TR real",
+   "tipo": "CLAUSULA_SEM_PERTINENCIA",
+   "local": "p.4, subtítulo 'Reserva de cotas para microempresas e empresas de pequeno porte:' e itens 4.26 e 4.26.1",
+   "descricao": "Mantém o subtítulo de reserva de cotas e o item do modelo alterado para negar a cota: '4.26. Na presente licitação, não será realizada a reserva de cota de até 25% (vinte e cinco por cento) do objeto para a...', com justificativa no 4.26.1. Mesmo caso da DV-35. Classificado pelo dono do projeto em 23/10/2026 como erro do TR real (decisão 0008).",
+   "referencia": "TR-4.H08; TR-4.41; WZ-24; VAR-113",
+   "tratamento_no_sistema": "Blocos ligados só pela WZ-24 = SIM (derivada da VAR-113); sem cota, não entram. No caso de reprodução R2, a diferença é do tipo 'TR real'."
   }
  ],
  "referencia": {
   "diferencas_simulacao": {
    "no_tr_e_fora_da_simulacao": [
-    "TR-CAB.02",
-    "TR-1.3",
-    "TR-1.6",
     "TR-4.H08",
     "TR-4.41",
-    "TR-5.2",
     "TR-9.H03",
     "TR-9.4",
     "TR-9.4.1",
-    "TR-11.3",
-    "TR-AI-1.2",
-    "TR-AI-2.1",
-    "TR-AI-2.3",
-    "TR-AI-3.1.10",
-    "TR-AI-4.1.7.3",
-    "TR-AI-5.11"
+    "TR-11.3"
    ],
    "na_simulacao_e_ausentes_no_tr": [
     "TR-CAB.03",
     "TR-CAB.04",
     "TR-1.1",
-    "TR-5.1",
     "TR-8.41",
     "TR-9.3",
     "TR-9.14",

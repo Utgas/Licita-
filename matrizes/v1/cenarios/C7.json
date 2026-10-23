@@ -535,7 +535,8 @@
    "TR-12.1",
    "TR-ASSIN.02",
    "TR-ASSIN.03",
-   "SET-05"
+   "SET-05",
+   "SET-19"
   ]
  },
  "referencia": {
@@ -599,15 +600,15 @@
    "TR-ASSIN.01": "[[LACUNA VAR_005]], [[LACUNA VAR_097]] de [[LACUNA VAR_097]] de [[LACUNA VAR_097]].",
    "TR-ASSIN.02": "__________________________________",
    "SET-05": "Só será admitida a oferta de produto com registro ou notificação vigente na Anvisa. O produto entregue deverá corresponder ao registro ou à notificação informados na proposta.",
-   "SET-11": "O Contratado executará, nos itens [[LACUNA VAR-137]], as atividades [[LACUNA VAR-137]], e entregará [[LACUNA VAR-145]]. A instalação será considerada concluída quando atendidos os critérios [[LACUNA VAR-137]].",
-   "SET-12": "O Contratado ministrará treinamento [[LACUNA VAR-138]], com o conteúdo mínimo [[LACUNA VAR-138]], carga horária mínima [[LACUNA VAR-138]] e [[LACUNA VAR-138]], concluído [[LACUNA VAR-138]].",
-   "SET-13": "Durante a garantia estão incluídos, sem custo adicional, [[LACUNA VAR-139]]. O atendimento será [[LACUNA VAR-139]] e começará em até [[LACUNA VAR-140]] após a abertura do chamado. A garantia conta a partir de [[LACUNA VAR-141]]. [Equipamento substituto: VAR-152, em complemento a TR-5.14.]",
-   "SET-14": "Durante a garantia, o Contratado fará manutenção preventiva [[LACUNA VAR-148]], calibração ou verificação [[LACUNA VAR-148]] e prestará suporte [[LACUNA VAR-149]], com atendimento presencial em até [[LACUNA VAR-140]].",
-   "SET-16": "O fornecimento inclui as licenças [[LACUNA VAR-142]] necessárias ao funcionamento integral do equipamento e [[LACUNA VAR-142]].",
-   "SET-17": "A entrega só ocorrerá com o local apto, nas condições [[LACUNA VAR-143]]. [Se CK-P-9.5 = Sim: o Contratado apresentará levantamento técnico do local (site planning) com o conteúdo [[LACUNA VAR-143]], no prazo definido pela equipe.]",
-   "SET-18": "O Contratado fará a desinstalação técnica e a retirada de [[LACUNA VAR-144]], com os procedimentos [[LACUNA VAR-144]], antes da instalação do novo equipamento.",
-   "SET-19": "O objeto será entregue acompanhado de [[LACUNA VAR-150]], com versão em português.",
-   "SET-20": "No recebimento provisório serão conferidos [[LACUNA VAR-146]]. O recebimento definitivo ocorrerá após [[LACUNA VAR-146]] e a entrega de [[LACUNA VAR-145]]. O produto será recusado quando [[LACUNA VAR-146]]."
+   "SET-11": "O Contratado executará, nos itens [[LACUNA EQUIPE]], as atividades [[LACUNA CK_P_11_3]], e entregará [[LACUNA CK_P_11_4]]. A instalação será considerada concluída quando atendidos os critérios [[LACUNA CK_P_11_5]].",
+   "SET-12": "O Contratado ministrará treinamento [[LACUNA CK_P_12_2]], com o conteúdo mínimo [[LACUNA CK_P_12_3]], carga horária mínima [[LACUNA CK_P_12_4]] e [[LACUNA CK_P_12_5]], concluído [[LACUNA CK_P_12_6]].",
+   "SET-13": "Durante a garantia estão incluídos, sem custo adicional, [[LACUNA CK_P_13_4]]. O atendimento será [[LACUNA CK_P_13_5]] e começará em até [[LACUNA CK_P_13_6]] após a abertura do chamado. A garantia conta a partir de [[LACUNA CK_P_13_3]].",
+   "SET-14": "Durante a garantia, o Contratado fará manutenção preventiva [[LACUNA CK_P_14_5_texto]], calibração ou verificação [[LACUNA CK_P_14_6_texto]] e prestará suporte [[LACUNA VAR_149]], com atendimento presencial em até [[LACUNA CK_P_14_3_texto]].",
+   "SET-16": "O fornecimento inclui as licenças [[LACUNA CK_P_15_3_texto]] necessárias ao funcionamento integral do equipamento e [[LACUNA CK_P_15_6]].",
+   "SET-17": "A entrega só ocorrerá com o local apto, nas condições [[LACUNA VAR_143]].",
+   "SET-18": "O Contratado fará a desinstalação técnica e a retirada de [[LACUNA EQUIPE]], com os procedimentos [[LACUNA VAR_144]], antes da instalação do novo equipamento.",
+   "SET-19": "O objeto será entregue acompanhado de manuais de operação, manutenção e segurança e demais documentos técnicos, com versão em português.",
+   "SET-20": "No recebimento provisório serão conferidos [[LACUNA CK_C_16_1]]. O recebimento definitivo ocorrerá após [[LACUNA CK_P_19_2_texto]] e a entrega de [[LACUNA VAR_145]]. O produto será recusado quando [[LACUNA CK_C_16_2]]."
   },
   "lacunas_do_texto": {
    "TR-CAB.03": [
@@ -727,52 +728,46 @@
     "VAR_097"
    ],
    "SET-11": [
-    "VAR-137 em mais de um marcador (P36)",
-    "VAR-137 em mais de um marcador (P36)",
-    "VAR-145",
-    "VAR-137 em mais de um marcador (P36)"
+    "equipe: [VAR-137: itens]",
+    "CK_P_11_3",
+    "CK_P_11_4",
+    "CK_P_11_5"
    ],
    "SET-12": [
-    "VAR-138 em mais de um marcador (P36)",
-    "VAR-138 em mais de um marcador (P36)",
-    "VAR-138 em mais de um marcador (P36)",
-    "VAR-138 em mais de um marcador (P36)",
-    "VAR-138 em mais de um marcador (P36)"
+    "CK_P_12_2",
+    "CK_P_12_3",
+    "CK_P_12_4",
+    "CK_P_12_5",
+    "CK_P_12_6"
    ],
    "SET-13": [
-    "VAR-139 em mais de um marcador (P36)",
-    "VAR-139 em mais de um marcador (P36)",
-    "VAR-140",
-    "VAR-141",
-    "trecho entre colchetes do texto proposto"
+    "CK_P_13_4",
+    "escolha local_atendimento (CK_P_13_5)",
+    "CK_P_13_6",
+    "CK_P_13_3"
    ],
    "SET-14": [
-    "VAR-148 em mais de um marcador (P36)",
-    "VAR-148 em mais de um marcador (P36)",
-    "VAR-149",
-    "VAR-140"
+    "CK_P_14_5_texto",
+    "CK_P_14_6_texto",
+    "VAR_149",
+    "CK_P_14_3_texto"
    ],
    "SET-16": [
-    "VAR-142 em mais de um marcador (P36)",
-    "VAR-142 em mais de um marcador (P36)"
+    "CK_P_15_3_texto",
+    "escolha atualizacoes (CK_P_15_6)"
    ],
    "SET-17": [
-    "VAR-143 em mais de um marcador (P36)",
-    "VAR-143 em mais de um marcador (P36)",
-    "trecho entre colchetes do texto proposto"
+    "VAR_143"
    ],
    "SET-18": [
-    "VAR-144 em mais de um marcador (P36)",
-    "VAR-144 em mais de um marcador (P36)"
-   ],
-   "SET-19": [
-    "VAR-150"
+    "equipe: [VAR-144: equipamento e local]",
+    "VAR_144"
    ],
    "SET-20": [
-    "VAR-146 em mais de um marcador (P36)",
-    "VAR-146 em mais de um marcador (P36)",
-    "VAR-145",
-    "VAR-146 em mais de um marcador (P36)"
+    "CK_C_16_1",
+    "CK_P_19_2_texto",
+    "VAR_145",
+    "CK_C_16_2"
    ]
   },
   "sugestoes": {

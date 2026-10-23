@@ -1,2 +1,5 @@
 TR-AII.03: a coluna lacunas não está na ordem do texto; o mapa segue o texto
 M02.lacunas_mapa: 106 blocos com marcador; marcadores por ação {'EQUIPE': 21, 'ESCOLHA': 31, 'MANTER': 7, 'OPCIONAL': 4, 'PREENCHER': 108, 'REMOVER': 3, 'TABELA': 8}; tabela_colunas: ['TR-1.1.1.TAB1', 'TR-1.1.1.TAB2', 'TR-1.1.1.TAB3', 'TR-1.1.TAB1', 'TR-5.2.TAB1']
+M08.lacunas_mapa: 22 cláusulas com marcador, 57 marcadores
+padrao: M02 TR-1.7 '[o Estudo Técnico Preliminar]' -> 'o Estudo Técnico Preliminar' (padrão aceito na P37: o sistema gera o ETP do processo; a equipe troca na revisão se preferir texto próprio ou nota técn)
+padrao: M02 TR-AI-3.1.8.1 'XXXXXXX' -> '1 (um) mês' (sem prazo informado vale um mês (NE-087; art. 123, parágrafo único, da Lei nº 14.133, de 2021, citado na nota); aceito n)

@@ -7,6 +7,10 @@ Roda depois do f10_gerar_expr.py. Acrescenta ao M11:
   leitura           como ler a resposta do Word e qual prevalece em duplicidade (texto);
   revisao_expr      JSON Logic; verdadeira = a resposta fica destacada para o operador revisar (só operadores gerais);
   revisao_pergunta  pergunta que o sistema faz ao operador quando a dúvida muda a minuta (vazia quando basta o destaque);
+  revisao_motivos   (Fase 14) JSON: uma entrada por motivo {motivo, expr, texto, bloqueia}; motivos fixos SEM_RESPOSTA,
+                    MARCAS_MULTIPLAS, OUTRO_ILEGIVEL, DIVERGENCIA, RESPOSTA_UNICA_POR_ITEM, CONTRADICAO e NOME_DE_PESSOA;
+                    revisao_expr = "or" de todas as expr; revisao_pergunta_expr = "or" das que bloqueiam;
+                    revisao_pergunta = textos das que bloqueiam, separados por " | ";
   revisao_pergunta_expr (Fase 13) JSON Logic; verdadeira = a revisao_pergunta é feita e a minuta fica bloqueada até a
                     resposta. Falta de resposta só destaca (revisao_expr), nunca bloqueia: a pendência que decide bloco
                     já aparece como pergunta do wizard.
@@ -57,46 +61,62 @@ LEITURA_TIPO = {
 ESPEC = {}
 
 
-def espec(cid, texto, expr=None, pergunta=""):
+# Fase 14: um texto por motivo de revisão. MOTIVOS[cid] = [(motivo, expr, texto, bloqueia)]; bloqueia segue a P34
+# (só a dúvida que muda a minuta, isto é, a que tem pergunta ao operador).
+MOTIVOS_FIXOS = ("SEM_RESPOSTA", "MARCAS_MULTIPLAS", "OUTRO_ILEGIVEL", "DIVERGENCIA", "RESPOSTA_UNICA_POR_ITEM",
+                 "CONTRADICAO", "NOME_DE_PESSOA")
+MOTIVOS = {}
+
+
+def _motivo(cid, motivo, expr, texto, pergunta):
+    if expr is None:
+        return
+    if motivo not in MOTIVOS_FIXOS:
+        raise SystemExit(f"{cid}: motivo de revisão {motivo} fora da lista fixa")
+    MOTIVOS.setdefault(cid, []).append((motivo, expr, pergunta or texto, bool(pergunta)))
+
+
+def espec(cid, texto, expr=None, pergunta="", motivo=None):
     ESPEC[cid] = (texto, expr, pergunta)
+    _motivo(cid, motivo, expr, texto, pergunta)
 
 
 # S01: armazenamento
 espec("CK-C-13.5", "Duplicidade com a 20.1 (S01): prevalece a 13.5; resposta diferente na 20.1 destaca as duas (VAL-022).",
-      e(tem("CK_C_13_5"), tem("CK_C_20_1"), ne("CK_C_13_5", var("CK_C_20_1"))))
+      e(tem("CK_C_13_5"), tem("CK_C_20_1"), ne("CK_C_13_5", var("CK_C_20_1"))), motivo="DIVERGENCIA")
 espec("CK-C-20.1", "Repete a 13.5 (S01): não preenche nada; só confere. Resposta diferente da 13.5 destaca as duas.",
-      e(tem("CK_C_13_5"), tem("CK_C_20_1"), ne("CK_C_13_5", var("CK_C_20_1"))))
+      e(tem("CK_C_13_5"), tem("CK_C_20_1"), ne("CK_C_13_5", var("CK_C_20_1"))), motivo="DIVERGENCIA")
 # S02: fabricantes e fornecedores
 for L in ("C", "P"):
     div = ou(e(eq(f"CK_{L}_6_1", NAO), ou(eq(f"CK_{L}_5_5", SIM), eq(f"CK_{L}_5_6", SIM))),
              e(eq(f"CK_{L}_6_1", SIM), eq(f"CK_{L}_5_5", NAO), eq(f"CK_{L}_5_6", NAO)))
     espec(f"CK-{L}-6.1", "Repete a 5.5 e a 5.6 (S02): prevalecem a 5.5 e a 5.6; a 6.1 só confere. Contradição destaca a 6.1 "
-                         "(VAL-023).", div)
+                         "(VAL-023).", div, motivo="CONTRADICAO")
     for n in ("5.5", "5.6"):
         espec(f"CK-{L}-{n}", "Prevalece sobre a 6.1 em caso de divergência (S02).", None)
     # S03: cabeçalho x seção 1
     espec(f"CK-{L}-CAB.02", "Duplicidade com a 1.1 (S03): prevalece a 1.1; com as duas respondidas e diferentes, as duas "
                             "ficam destacadas.", e(tem(f"CK_{L}_CAB_02"), tem(f"CK_{L}_1_1"),
-                                                   ne(f"CK_{L}_CAB_02", var(f"CK_{L}_1_1"))))
+                                                   ne(f"CK_{L}_CAB_02", var(f"CK_{L}_1_1"))), motivo="DIVERGENCIA")
     espec(f"CK-{L}-1.1", "Prevalece sobre o cabeçalho (S03).", e(tem(f"CK_{L}_CAB_02"), tem(f"CK_{L}_1_1"),
-                                                                ne(f"CK_{L}_CAB_02", var(f"CK_{L}_1_1"))))
+                                                                ne(f"CK_{L}_CAB_02", var(f"CK_{L}_1_1"))), motivo="DIVERGENCIA")
     espec(f"CK-{L}-CAB.04", "Duplicidade com a 1.4 (S03): prevalece a 1.4. A leitura compara o nome do cabeçalho com o "
                             "campo Nome da 1.4; diferença põe os dois IDs em checklist.divergencias_leitura. Responsável só "
                             "no cabeçalho (1.4 vazia) também é destacado.",
-          ou(inn(f"CK-{L}-CAB.04", lista_ids(DIVERG)), e(tem(f"CK_{L}_CAB_04"), vazio(f"CK_{L}_1_4"))))
+          ou(inn(f"CK-{L}-CAB.04", lista_ids(DIVERG)), e(tem(f"CK_{L}_CAB_04"), vazio(f"CK_{L}_1_4"))), motivo="DIVERGENCIA")
     espec(f"CK-{L}-1.4", "Prevalece sobre o cabeçalho (S03); telefone e e-mail ficam só no processo.",
-          inn(f"CK-{L}-1.4", lista_ids(DIVERG)))
+          inn(f"CK-{L}-1.4", lista_ids(DIVERG)), motivo="DIVERGENCIA")
 # S04
 espec("CK-C-12.2", "Lida como 'o prazo da 12.1 é diferente de 30 dias?' (S04, DV-28): Sim = diferente, Não = igual. A "
                    "explicação é pedida quando a VAR-060 (prazo da 12.1) é diferente do PAR-05. Resposta que contradiz o "
                    "prazo da 12.1 fica destacada.",
       ou(e(eq("CK_C_12_2", NAO), tem("VAR_060"), ne("VAR_060", var("parametros.prazo_entrega_referencia"))),
-         e(eq("CK_C_12_2", SIM), eq("VAR_060", var("parametros.prazo_entrega_referencia")))))
+         e(eq("CK_C_12_2", SIM), eq("VAR_060", var("parametros.prazo_entrega_referencia")))), motivo="CONTRADICAO")
 # S06
 espec("CK-C-7.2", "Mistura resposta e causa (S06): 'Não' sozinho = demanda estável; 'Sim' ou qualquer causa marcada = "
                   "demanda variável (sugere registro de preços, VAL-024). 'Não' junto com outra marca é contradição e fica "
                   "destacada.",
-      e(inn(NAO, var("CK_C_7_2", [])), {"some": [var("CK_C_7_2", []), ne(var(""), NAO)]}))
+      e(inn(NAO, var("CK_C_7_2", [])), {"some": [var("CK_C_7_2", []), ne(var(""), NAO)]}), motivo="CONTRADICAO")
 # S07
 P07 = {"CK-C-14.1": "O prazo total de validade veio numa resposta só e marcou todos os itens de consumo como perecíveis. "
                     "Quais itens têm prazo de validade?",
@@ -107,27 +127,27 @@ P07 = {"CK-C-14.1": "O prazo total de validade veio numa resposta só e marcou t
 for cid, perg in P07.items():
     espec(cid, "Por item (S07). Se o Word trouxer uma resposta só, sem indicar itens, ela vale para todos os itens do "
                "checklist (consumo ou permanentes), o ID entra em checklist.resposta_unica_por_item e a resposta fica "
-               "destacada pedindo confirmação item a item.", inn(cid, lista_ids(UNICA_POR_ITEM)), perg)
+               "destacada pedindo confirmação item a item.", inn(cid, lista_ids(UNICA_POR_ITEM)), perg, motivo="RESPOSTA_UNICA_POR_ITEM")
 # S08: perguntas 'Quem...'
 for cid in ("CK-C-9.7", "CK-C-16.5", "CK-P-11.6", "CK-P-17.5", "CK-P-19.6"):
     espec(cid, "Pergunta 'Quem...' (S08): a resposta fica só para controle e nunca vai à minuta. Fica destacada sempre que "
                "houver resposta, para o operador ver que nome de pessoa não sai do sistema; a leitura não separa nome de "
-               "cargo sem um detector no motor (P32).", tem(ckn(cid)))
+               "cargo sem um detector no motor (P32).", tem(ckn(cid)), motivo="NOME_DE_PESSOA")
 # S09: seções 8 e 11
 espec("CK-C-8.2", "Grupo de itens diferentes, não divisão do mesmo item (S09). Sim sem item indicado, ou Sim com a 8.1 = Sim "
                   "(itens podem ser fornecidos separadamente), parece resposta trocada com a seção 11 e fica destacada.",
       ou(e(eq("CK_C_8_2", SIM), {"none": [var("itens"), tem("grupo")]}), e(eq("CK_C_8_1", SIM), eq("CK_C_8_2", SIM))),
       "A pergunta 8.2 pede grupo de itens, mas nenhum item foi indicado ou a 8.1 diz que os itens podem ser fornecidos "
       "separadamente. Quais itens formam cada grupo? Se a resposta tratava da divisão de um mesmo item (seção 11), deixe "
-      "sem grupo.")
+      "sem grupo.", motivo="CONTRADICAO")
 espec("CK-C-8.1", "Contradição com a 8.2 (S09): 8.1 = Sim e 8.2 = Sim ficam destacadas.",
-      e(eq("CK_C_8_1", SIM), eq("CK_C_8_2", SIM)))
+      e(eq("CK_C_8_1", SIM), eq("CK_C_8_2", SIM)), motivo="CONTRADICAO")
 for n in ("11.2", "11.4"):
     cid = f"CK-C-{n}"
     espec(cid, "Divisão do mesmo item entre fornecedores, isto é, cota (S09). Sim sem nenhuma unidade de disputa acima do "
                "limite de participação exclusiva (sem cota possível) parece resposta sobre grupo e fica destacada.",
           e(eq(ckn(cid), SIM), {"some": [var("itens"), tem("valor_unidade_disputa")]},
-            {"none": [var("itens"), {">": [var("valor_unidade_disputa"), var("parametros.limite_exclusivo_me_epp")]}]}))
+            {"none": [var("itens"), {">": [var("valor_unidade_disputa"), var("parametros.limite_exclusivo_me_epp")]}]}), motivo="CONTRADICAO")
 # S20: 'Outro' do prazo de entrega
 for cid in ("CK-C-12.1", "CK-P-8.1"):
     n = ckn(cid)
@@ -136,10 +156,11 @@ for cid in ("CK-C-12.1", "CK-P-8.1"):
                "resposta e faz a pergunta ao operador. A leitura do número é função do motor (P32), não expressão.",
           e(eq(n, "Outro"), vazio(n + "_numero")),
           "O prazo de entrega marcado como 'Outro' não está escrito como número de dias (ex.: '45 dias'). Qual é o prazo "
-          "de entrega, em dias corridos?")
+          "de entrega, em dias corridos?", motivo="OUTRO_ILEGIVEL")
 
 # P32.1 (resposta de 23/10/2026): a mesma leitura do número vale para os outros 'Outro' de prazo e de garantia
-def espec_mais(cid, texto, expr, pergunta=""):
+def espec_mais(cid, texto, expr, pergunta="", motivo=None):
+    _motivo(cid, motivo, expr, texto, pergunta)
     t0, e0, p0 = ESPEC.get(cid, ("", None, ""))
     ESPEC[cid] = ((t0 + " " + texto).strip(), ou(e0, expr) if e0 is not None else expr,
                   (p0 + " " + pergunta).strip() if p0 and pergunta else (p0 or pergunta))
@@ -156,11 +177,11 @@ for cid, outro, unid, perg in (
     espec_mais(cid, f"'Outro' (P32.1): número seguido de '{unid}' vira o número em {n}_numero e é o valor; qualquer outra "
                     f"coisa deixa {n}_numero vazio, destaca a resposta e faz a pergunta ao operador.",
                e(eq(n, outro), vazio(n + "_numero")),
-               f"O 'Outro' desta pergunta não traz um número legível. {perg}")
+               f"O 'Outro' desta pergunta não traz um número legível. {perg}", motivo="OUTRO_ILEGIVEL")
 espec_mais("CK-P-19.3", "A opção '30 dias' está em dias corridos e o prazo de recebimento definitivo é contado em dias "
                         "úteis: não é convertida, fica destacada e vira pergunta.", eq("CK_P_19_3", "30 dias"),
            "A opção '30 dias' está em dias corridos, mas o prazo de recebimento definitivo é em dias úteis. Qual é o prazo "
-           "em dias úteis?")
+           "em dias úteis?", motivo="CONTRADICAO")
 
 # --------------------------------------------------------------------------- complementos (S10 a S18)
 CONSUMO, PERMANENTES = tem("checklist.consumo"), tem("checklist.permanentes")
@@ -218,11 +239,35 @@ def generica(r, cond):
     return ou(*partes)
 
 
+def motivos_da_linha(r, cond):
+    """[(motivo, expr, texto, bloqueia)]: os específicos (MOTIVOS) e os gerais (sem resposta, duas marcas)."""
+    cid = r["id"]
+    lista = {"CONSUMO": "consumo", "PERMANENTES": "permanentes"}.get(r["checklist"], r["checklist"].lower())
+    out = list(MOTIVOS.get(cid, []))
+    if r["efeito"] == "SO_CONTROLE":
+        return out
+    if r["tipo_resposta"] in ("UNICA", "SIM_NAO"):
+        opc = r["opcoes"].split("campos:")[0].strip().rstrip(";")
+        if r["efeito"] == "PREENCHE" and r["preenche_expr"]:
+            out.append(("MARCAS_MULTIPLAS", inn(cid, lista_ids(MARCAS)),
+                        f"Na pergunta {r['numero']} do checklist de {lista} a leitura achou mais de uma marca. Qual opção "
+                        f"vale: {opc}?", True))
+        else:
+            out.append(("MARCAS_MULTIPLAS", inn(cid, lista_ids(MARCAS)),
+                        f"Na pergunta {r['numero']} do checklist de {lista} a leitura achou mais de uma marca; a "
+                        f"resposta não muda a minuta. Confira no Word.", False))
+    sem = vazio(ckn(cid))
+    out.append(("SEM_RESPOSTA", e(cond, sem) if cond is not None else sem,
+                f"A pergunta {r['numero']} do checklist de {lista} está sem resposta. Confira no Word; se ela decide "
+                f"um bloco da minuta, o wizard pergunta.", False))
+    return out
+
+
 def main():
     pasta = Path(sys.argv[1])
     m11 = ler_csv(pasta / "M11_checklist.csv")
     log = []
-    novas = ("leitura", "revisao_expr", "revisao_pergunta", "revisao_pergunta_expr")
+    novas = ("leitura", "revisao_expr", "revisao_pergunta", "revisao_pergunta_expr", "revisao_motivos")
     cols = [c for c in m11[0] if c not in novas]
     k = cols.index("sugere_expr") + 1
     cols = cols[:k] + list(novas) + cols[k:]
@@ -264,24 +309,14 @@ def main():
                     partes_r.append(f"{d_} não recebe a resposta ({'só condição' if dec_[0] == 'CONDICAO' else 'fica com a equipe'}: {dec_[1]})")
             r["regra"] = r["regra"].rstrip() + " Fase 13 (23/10/2026), Sim/Não fora de campo de texto: " + "; ".join(partes_r) + "."
         cond = json.loads(r["condicional_expr"]) if r["condicional_expr"] else None
-        partes = []
-        if expr is not None:
-            partes.append(expr)
-        if r["efeito"] != "SO_CONTROLE":
-            partes.append(generica(r, cond))
-        r["revisao_expr"] = dumps(ou(*partes)) if partes else ""
-        # Fase 13: pergunta ao operador (e bloqueio) só com dúvida que muda a minuta; falta de resposta só destaca
-        bloq, pergunta = [], perg
-        if perg and expr is not None:
-            bloq.append(expr)
-        if r["efeito"] == "PREENCHE" and r["preenche_expr"] and r["tipo_resposta"] in ("UNICA", "SIM_NAO"):
-            lista = "consumo" if r["checklist"] == "CONSUMO" else "permanentes"
-            duas = (f"Na pergunta {r['numero']} do checklist de {lista} a leitura achou mais de uma marca. Qual opção "
-                    f"vale: {r['opcoes'].split('campos:')[0].strip().rstrip(';')}?")
-            pergunta = f"{perg} Se a leitura achou mais de uma marca: {duas}" if perg else duas
-            bloq.append(inn(cid, lista_ids(MARCAS)))
-        r["revisao_pergunta"] = pergunta if bloq else ""
-        r["revisao_pergunta_expr"] = dumps(ou(*bloq)) if bloq else ""
+        # Fase 14: revisao_motivos (um texto por motivo); as três colunas de antes são o resumo
+        mot = motivos_da_linha(r, cond)
+        r["revisao_motivos"] = json.dumps([{"motivo": m, "expr": x, "texto": t, "bloqueia": b} for m, x, t, b in mot],
+                                          ensure_ascii=False, separators=(",", ":")) if mot else ""
+        r["revisao_expr"] = dumps(ou(*[x for _, x, _, _ in mot])) if mot else ""
+        bloq = [(x, t) for _, x, t, b in mot if b]
+        r["revisao_pergunta_expr"] = dumps(ou(*[x for x, _ in bloq])) if bloq else ""
+        r["revisao_pergunta"] = " | ".join(t for _, t in bloq)
         if "Fase 11 (23/10/2026)" not in r["fonte"]:
             r["fonte"] = r["fonte"].rstrip() + " Fase 11 (23/10/2026): leitura, revisao_expr e revisao_pergunta. " + FONTE_0009
         if "Fase 13 (23/10/2026): revisao_pergunta_expr" not in r["fonte"] and r["revisao_pergunta_expr"]:
@@ -300,7 +335,7 @@ def main():
                     "sugere_expr": dumps(ex) if ef == "SUGERE" else "",
                     "leitura": "Digitado pelo operador no sistema (complemento). " + LEITURA_TIPO[tipo]
                                + (" Por item: o operador indica os itens." if por_item == "S" else ""),
-                    "revisao_expr": "", "revisao_pergunta": "", "revisao_pergunta_expr": "",
+                    "revisao_expr": "", "revisao_pergunta": "", "revisao_pergunta_expr": "", "revisao_motivos": "",
                     "fonte": f"Sugestão {s_} (sugestoes_checklist.md), aceita pelo dono do projeto em 23/10/2026 (decisão 0009). {FONTE_0009} "
                              f"Pergunta, destinos e expressão INFERIDOS.", "status": "INFERIDO"})
     gravar_csv(pasta / "M11_checklist.csv", cols, m11, preservar=())

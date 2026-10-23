@@ -76,7 +76,7 @@ regra(["TR-1.2.OU"], grupo="GA-01")
 regra(["TR-1.3"], grupo="GA-01", opcao="B", condicao="SE bem especial, com justificativa no ETP (NE-005)",
       origem="WIZARD (classificação); ETP (justificativa)", inferido=["condicao_inclusao", "origem_dado"])
 regra(["TR-1.4"], condicao="SE bens de consumo (NE-006 remete ao art. 20 da Lei 14.133/2021, sobre itens de consumo, "
-                           "e ao Decreto 10.818/2021); para bens permanentes, decisão do usuário",
+                           "e ao Decreto 10.818/2021); para bens permanentes não entra (decisão 0008, reprodução, 23/10/2026)",
       inferido=["condicao_inclusao"])
 regra(["TR-1.5"], grupo="GA-02", opcao="A", condicao="SE fornecimento não contínuo (art. 105; NE-007)",
       origem="WIZARD (prazo e termo inicial)", inferido=["condicao_inclusao", "origem_dado"])

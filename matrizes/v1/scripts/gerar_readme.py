@@ -64,7 +64,9 @@ def main():
     sug = sum(1 for r in m11 if r["sugere_expr"])
     cnd = sum(1 for r in m11 if r["condicional_expr"])
     o = ["# Licita+ | Matrizes v1", "",
-         "Estado em 23/10/2026: Fases 0 a 13 concluídas. A Fase 13 resolve o texto da minuta: cada marcador do M02 ligado "
+         "Estado em 23/10/2026: Fases 0 a 14 concluídas. A Fase 14 leva para as matrizes as respostas às P34 a P37 e à "
+         "reprodução do R1 e do R2: cotas no fim da tabela de itens, mapa de marcadores no M08, valor padrão marcado, um "
+         "texto por motivo de revisão e esperado do R1 e do R2 conferido nos TRs reais. A Fase 13 resolve o texto da minuta: cada marcador do M02 ligado "
          "ao que o preenche (`lacunas_mapa`), tabelas montadas a partir dos itens (`tabela_colunas`), ponto e numeração "
          "das cláusulas do M08, fim do 'Sim'/'Não' copiado para campos de texto e revisão do checklist que só destaca a "
          "falta de resposta. A Fase 12 libera a garantia já prestada nos atestados (P25), "
@@ -79,12 +81,25 @@ def main():
     o += [f"| `{a}` | {d} | {n[a]} |" for a, d in ARQ]
     o += ["| `matrizes_v1.xlsx` | cópia de leitura e revisão: aba LEIA_ME e uma aba por CSV; colunas de revisão em amarelo no M03 e no M04 | |",
           f"| `cenarios/` | cenários de ouro C1 a C8 ({n_c}) e casos de reprodução R1 e R2 ({n_r}) em JSON, com entrada e esperado | |",
-          "| `perguntas_abertas.md` | decisões pendentes e adotadas, P01 a P36 | |",
+          "| `perguntas_abertas.md` | decisões pendentes e adotadas, P01 a P39 | |",
           "| `sugestoes_checklist.md` | lacunas, duplicidades e ambiguidades dos checklists, com redação proposta | |",
           "| `auditoria_matrizes_01_02.md` | auditoria das matrizes rascunho 01 e 02 (Fase 8) | |",
           "| `log_fase10_repo_leis.md` | arquivos do repositório auxiliar ctresb/leis (commit 15eb09b) cruzados com o M07 e uso de cada um | |",
           "| `logs/` | conferências, cobertura do checklist, comparação dos TRs, expressões, simulação, normas, testes | |",
           "| `scripts/` | scripts de análise que geram tudo acima | |", "",
+          "## O que mudou na Fase 14", "",
+          "- P35: no `tabela_colunas` do TR-1.1.TAB1, os itens ficam com o próprio número e as linhas de cota vão para o "
+          "fim da tabela, com os números seguintes ao último item e 'Cota reservada para ME/EPP do item n'.",
+          "- P36: coluna `M08.lacunas_mapa` (22 cláusulas, 57 marcadores), no formato do M02; quando a mesma VAR aparece em "
+          "vários marcadores, cada um vai para a pergunta do checklist que dá aquela parte, e o resto fica com a equipe. "
+          "Texto das cláusulas sem mudança.",
+          "- P37: `padrao: true` nas opções que entram sem valor informado (TR-1.7 e TR-AI-3.1.8.1), listadas em "
+          "`logs/f13_lacunas.txt`.",
+          "- M11: coluna `revisao_motivos` (um texto por motivo: SEM_RESPOSTA, MARCAS_MULTIPLAS, OUTRO_ILEGIVEL, "
+          "DIVERGENCIA, RESPOSTA_UNICA_POR_ITEM, CONTRADICAO, NOME_DE_PESSOA); as colunas de revisão anteriores viraram "
+          "resumo dela.",
+          "- Reprodução: DV-36 a DV-41 no M09; TR-1.4 só para consumo; no R1 e no R2, blocos que a comparação achou por "
+          "engano saem do esperado (`correcoes_da_comparacao`).", "",
           "## O que mudou na Fase 13", "",
           "- M02: colunas `lacunas_mapa` (106 blocos, todo marcador na ordem do texto) e `tabela_colunas` (TR-1.1.TAB1, "
           "TR-1.1.1.TAB1 a TAB3, TR-5.2.TAB1), com a linha da cota reservada e o orçamento sigiloso (NE-004). Formato na "
@@ -226,6 +241,11 @@ def main():
           "número `CK_x_numero` lido do 'Outro' do prazo (P32).",
           "- `revisao_pergunta`: pergunta que o sistema faz ao operador quando a dúvida muda a minuta; vazia quando basta o "
           "destaque.",
+          "- `revisao_motivos` (Fase 14): JSON, uma entrada por motivo `{motivo, expr, texto, bloqueia}`; motivos fixos "
+          "SEM_RESPOSTA, MARCAS_MULTIPLAS, OUTRO_ILEGIVEL, DIVERGENCIA, RESPOSTA_UNICA_POR_ITEM, CONTRADICAO e "
+          "NOME_DE_PESSOA. `revisao_expr` é o 'or' de todas as `expr`; `revisao_pergunta_expr`, o 'or' das que bloqueiam; "
+          "`revisao_pergunta`, os textos das que bloqueiam, separados por ' | '. Bloqueia só a dúvida que muda a minuta "
+          "(P34).",
           "- `revisao_pergunta_expr` (Fase 13): JSON Logic; verdadeira = a `revisao_pergunta` é feita e a minuta fica "
           "bloqueada até a resposta (VAL-037). Só duas marcas em pergunta de uma opção, 'Outro' sem número legível, "
           "resposta única para vários itens e as dúvidas específicas (S09). Pergunta sem resposta só fica destacada "
@@ -248,8 +268,11 @@ def main():
           "- Formatos: TEXTO, NUMERO_EXTENSO ('30 (trinta)'), PERCENTUAL_EXTENSO ('5% (cinco por cento)'), PERCENTUAL_2 "
           "('25,00%'), MOEDA ('R$ 1.234,56'), MOEDA_POR_EXTENSO, DATA, DIA, MES_EXTENSO, ANO, LISTA_TEXTO ('a, b e c'), "
           "LISTA_LINHAS, MINUSCULA, INICIAL_MINUSCULA, ITEM ('item 2') e POR_ITEM ('item 1: valor; item 3: valor').",
-          "- Cláusula do M08 com a mesma variável em mais de um marcador fica com lacuna nesses marcadores (P36); "
-          "cláusula PREENCHE_BLOCO não entra como texto, preenche o bloco.",
+          "- `M08.lacunas_mapa` (Fase 14): mesmo formato; marcador = trecho entre colchetes de primeiro nível do "
+          "`texto_proposto`. Cláusula PREENCHE_BLOCO não entra como texto: preenche o bloco.",
+          "- `padrao: true` (Fase 14, P37) na opção que dá valor sem ter sido informado; a revisão mostra esses valores.",
+          "- Chaves acrescentadas na Fase 14: `alternativas` (fontes de reserva, em ordem), `inicial_minuscula`, "
+          "`inicial_maiuscula`, `filtro_item` e o formato NUMEROS_DOS_ITENS ('1, 3 e 5').",
           "- Séries de blocos-lista (`lista_blocos`, ex.: TR-4.1.1 a TR-4.1.3): cada bloco recebe um elemento; bloco sem "
           "elemento sai; o último presente termina em '.', o anterior em '; e', os demais em ';'; o último bloco do modelo "
           "junta os elementos que sobram.",
@@ -292,7 +315,7 @@ def main():
     o += [f"- `Checklists/{k}`: SHA-256 `{v}`" for k, v in hashes.items()]
     o += ["", "Divisão de trabalho: o checklist traz os fatos técnicos (M11); o wizard fica com as decisões jurídicas (M04, "
           "`DECISAO_JURIDICA`). A tabela de atributos de item por checklist está em `sugestoes_checklist.md`.", "",
-          "## Testes de aceite (Fases 9 a 13)", "",
+          "## Testes de aceite (Fases 9 a 14)", "",
           f"Resultado completo em `logs/f9_testes.txt`. {falhas}.", ""]
     o += [f"- {l[6:]}" if l.startswith("OK") else f"- **FALHA** {l[6:]}" for l in principais]
     o += ["", "Outras conferências:", ""]
