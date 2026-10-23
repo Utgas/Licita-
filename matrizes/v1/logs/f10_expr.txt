@@ -1,0 +1,97 @@
+M04 WZ-09: depende_de só cita dado (VAR-011 (colunas perecivel e validade_minima, VAR-116 e VAR-117)); pergunta derivada, sem condição
+M04 WZ-18: depende_de só cita dado (VAR-011 (coluna marca_indicada, VAR-115)); pergunta derivada, sem condição
+M04 WZ-50: depende_de só cita dado (VAR-011 (coluna grupo, VAR-112)); pergunta derivada, sem condição
+M04: depende_de_expr em 25 de 59; calculo_expr em 6
+M05 VAR-031 (julgamento_por_grupo): ordem 7; global; mesmo cálculo da WZ-13
+M05 VAR-049 (amostra_itens): ordem 8; global; números dos itens com exige_amostra = S
+M05 VAR-065 (validade_minima_entrega): ordem 9; global; validade comum aos perecíveis, vazia se os critérios forem diferentes
+M05 VAR-111 (forma_fornecimento): ordem 6; global
+M05 VAR-113 (tabela_itens.tratamento_me_epp): ordem 4; por item; exceção > limite exclusivo > cota possível em todos os itens da unidade > ampla
+M05 VAR-116 (tabela_itens.perecivel): ordem 1; por item; S quando o checklist de consumo informa prazo de validade (CK-C-14.1) ou validade mínima (CK-C-14.2) para o item; N em permanente
+M05 VAR-118 (tabela_itens.quantidade_cota): ordem 5; por item; parte inteira de quantidade x VAR-057 / 100, só com COTA
+M05 VAR-119 (tabela_itens.valor_unidade_disputa): ordem 3; por item; soma de quantidade x valor_unitario em itens_do_grupo
+M05 VAR-154 (tabela_itens.tic): ordem 2; por item; lista de classes do M12
+M05: SISTEMA sem calculo_expr (dado do cadastro da OM, data ou texto montado, não cálculo): ['VAR-001', 'VAR-002', 'VAR-003', 'VAR-004', 'VAR-005', 'VAR-064', 'VAR-096', 'VAR-097', 'VAR-098', 'VAR-099', 'VAR-108']
+M11 CK-C-1.2 (PREENCHE): destino VAR-064 sem expressão (a regra pede só conferência ou o valor não sai da resposta)
+M11 CK-C-3.1 (PREENCHE): destino VAR-011 sem expressão (VAR-011 vem da importação da tabela)
+M11 CK-C-3.1 (PREENCHE): destino VAR-109 sem expressão (a regra pede só conferência ou o valor não sai da resposta)
+M11 CK-C-3.1: PREENCHE sem expressão; a tabela anexa entra pela importação de itens (VAR-011); a VAL-048 lê a resposta
+M11 CK-C-3.4 (SUGERE): destino VAR-115 sem expressão (atributo de item calculado ou sem valor dito na regra)
+M11 CK-C-3.4 (SUGERE): destino WZ-18 sem expressão; derivada da coluna marca_indicada; a regra não dá a marca, só aponta candidatos
+M11 CK-C-4.4 (SUGERE): destino WZ-15 sem expressão; resposta composta (prazo e termo inicial); termo inicial é decisão da equipe
+M11 CK-C-5.7 (PREENCHE): destino VAR-115 sem expressão (atributo de item calculado ou sem valor dito na regra)
+M11 CK-C-5.7 (PREENCHE): destino VAR-046 sem expressão (a regra pede só conferência ou o valor não sai da resposta)
+M11 CK-C-6.2 (SUGERE): destino WZ-01 sem expressão; a regra admite duas leituras (inexigibilidade ou marca indicada)
+M11 CK-C-6.2 (SUGERE): destino WZ-04 sem expressão; a regra admite duas leituras (inexigibilidade ou marca indicada)
+M11 CK-C-6.2: SUGERE sem expressão; a regra não dá valor a sugerir
+M11 CK-C-6.3 (PREENCHE): destino WZ-18 sem expressão; pergunta derivada: o valor sai do M04.calculo_expr a partir do atributo de item preenchido
+M11 CK-C-7.1 (SUGERE): destino WZ-43 sem expressão; a regra só diz que a resposta serve de fato de apoio
+M11 CK-C-7.6 (SUGERE): destino WZ-12 sem expressão; a regra não dá o número de participantes
+M11 CK-C-8.1 (SUGERE): destino WZ-50 sem expressão; derivada da coluna grupo; a regra não dá o rótulo do grupo
+M11 CK-C-8.1 (SUGERE): destino VAR-102 sem expressão (só sugestão explícita em SUGERE)
+M11 CK-C-8.1: SUGERE sem expressão; a regra não dá valor a sugerir
+M11 CK-C-8.2 (PREENCHE): destino WZ-13 sem expressão; pergunta derivada: o valor sai do M04.calculo_expr a partir do atributo de item preenchido
+M11 CK-C-8.2 (PREENCHE): destino WZ-50 sem expressão; pergunta derivada: o valor sai do M04.calculo_expr a partir do atributo de item preenchido
+M11 CK-C-9.1 (PREENCHE): destino WZ-20 sem expressão; pergunta derivada: o valor sai do M04.calculo_expr a partir do atributo de item preenchido
+M11 CK-C-9.2 (PREENCHE): destino WZ-20 sem expressão; pergunta derivada: o valor sai do M04.calculo_expr a partir do atributo de item preenchido
+M11 CK-C-12.1 (PREENCHE): destino WZ-27 sem expressão; resposta composta (prazo, termo inicial e antecedência); o prazo vai para a VAR-060
+M11 CK-C-13.3 (PREENCHE): destino VAR-123 sem expressão (atributo de item calculado ou sem valor dito na regra)
+M11 CK-C-13.5 (SUGERE): destino VAR-105 sem expressão (só sugestão explícita em SUGERE)
+M11 CK-C-14.1 (PREENCHE): destino VAR-116 sem expressão (atributo de item calculado ou sem valor dito na regra)
+M11 CK-C-14.1 (PREENCHE): destino VAR-117 sem expressão (atributo de item calculado ou sem valor dito na regra)
+M11 CK-C-14.1: PREENCHE sem expressão; o prazo total de validade marca o item como perecível pelo M05.calculo_expr da VAR-116
+M11 CK-C-14.2 (PREENCHE): destino WZ-09 sem expressão; pergunta derivada: o valor sai do M04.calculo_expr a partir do atributo de item preenchido
+M11 CK-C-14.5 (PREENCHE): destino WZ-57 sem expressão; decisão jurídica (WZ-57); a pergunta só traz o fato técnico
+M11 CK-C-15.1: PREENCHE sem expressão; a SET-05 lê a resposta na M08.condicao_expr
+M11 CK-C-15.2 (PREENCHE): destino WZ-38 sem expressão; a regra liga o fato ao atributo controle_especial; a exigência é decidida na WZ-38
+M11 CK-C-16.3 (PREENCHE): destino WZ-34 sem expressão; resposta composta (três prazos); o prazo de substituição vai para a VAR-074
+M11 CK-C-18.3 (SUGERE): destino VAR-009 sem expressão (só sugestão explícita em SUGERE)
+M11 CK-C-18.4 (SUGERE): destino VAR-138 sem expressão (só sugestão explícita em SUGERE)
+M11 CK-C-20.2 (SUGERE): destino VAR-105 sem expressão (só sugestão explícita em SUGERE)
+M11 CK-C-20.3 (SUGERE): destino VAR-105 sem expressão (só sugestão explícita em SUGERE)
+M11 CK-C-20.4 (SUGERE): destino VAR-105 sem expressão (só sugestão explícita em SUGERE)
+M11 CK-C-20.5 (SUGERE): destino VAR-105 sem expressão (só sugestão explícita em SUGERE)
+M11 CK-C-20.6 (SUGERE): destino VAR-105 sem expressão (só sugestão explícita em SUGERE)
+M11 CK-C-20.7 (SUGERE): destino VAR-105 sem expressão (só sugestão explícita em SUGERE)
+M11 CK-C-21.1 (PREENCHE): destino WZ-48 sem expressão; a regra só lista os resíduos; 'impacto relevante' é juízo da equipe
+M11 CK-C-21.1 (PREENCHE): destino WZ-17 sem expressão; a regra não liga resíduo a critério de sustentabilidade
+M11 CK-C-21.3 (PREENCHE): destino WZ-48 sem expressão; a regra só lista as situações; 'impacto relevante' é juízo da equipe
+M11 CK-P-1.2 (PREENCHE): destino VAR-064 sem expressão (a regra pede só conferência ou o valor não sai da resposta)
+M11 CK-P-2.4 (SUGERE): destino VAR-010 sem expressão (só sugestão explícita em SUGERE)
+M11 CK-P-3.1 (PREENCHE): destino VAR-011 sem expressão (VAR-011 vem da importação da tabela)
+M11 CK-P-3.1 (PREENCHE): destino VAR-109 sem expressão (a regra pede só conferência ou o valor não sai da resposta)
+M11 CK-P-3.1: PREENCHE sem expressão; o descritivo anexo entra pela importação de itens (VAR-011); a VAL-048 lê a resposta
+M11 CK-P-3.7 (SUGERE): destino VAR-115 sem expressão (atributo de item calculado ou sem valor dito na regra)
+M11 CK-P-3.7 (SUGERE): destino WZ-18 sem expressão; derivada da coluna marca_indicada; a regra não dá a marca, só aponta candidatos
+M11 CK-P-4.2 (PREENCHE): destino WZ-28 sem expressão; o local de instalação não é o endereço de entrega completo (perfil da OM)
+M11 CK-P-6.2 (SUGERE): destino WZ-01 sem expressão; a regra admite duas leituras (inexigibilidade ou marca indicada)
+M11 CK-P-6.2 (SUGERE): destino WZ-04 sem expressão; a regra admite duas leituras (inexigibilidade ou marca indicada)
+M11 CK-P-6.2: SUGERE sem expressão; a regra não dá valor a sugerir
+M11 CK-P-6.3 (PREENCHE): destino WZ-18 sem expressão; pergunta derivada: o valor sai do M04.calculo_expr a partir do atributo de item preenchido
+M11 CK-P-7.1 (SUGERE): destino WZ-50 sem expressão; derivada da coluna grupo; a regra não dá o rótulo do grupo
+M11 CK-P-7.1 (SUGERE): destino VAR-102 sem expressão (só sugestão explícita em SUGERE)
+M11 CK-P-7.1: SUGERE sem expressão; a regra não dá valor a sugerir
+M11 CK-P-7.2 (PREENCHE): destino WZ-13 sem expressão; pergunta derivada: o valor sai do M04.calculo_expr a partir do atributo de item preenchido
+M11 CK-P-7.2 (PREENCHE): destino WZ-50 sem expressão; pergunta derivada: o valor sai do M04.calculo_expr a partir do atributo de item preenchido
+M11 CK-P-7.5 (SUGERE): destino VAR-102 sem expressão (só sugestão explícita em SUGERE)
+M11 CK-P-8.1 (PREENCHE): destino WZ-27 sem expressão; resposta composta (prazo, termo inicial e antecedência); o prazo vai para a VAR-060
+M11 CK-P-9.2 (SUGERE): destino VAR-105 sem expressão (só sugestão explícita em SUGERE)
+M11 CK-P-9.5 (PREENCHE): destino WZ-33 sem expressão; a WZ-33 trata de infração com penalidade própria; a ligação com o site planning não tem valor dito (ver DV-05)
+M11 CK-P-9.6 (SUGERE): destino VAR-105 sem expressão (só sugestão explícita em SUGERE)
+M11 CK-P-9.7 (SUGERE): destino WZ-47 sem expressão; a regra fala de obra ou serviço à parte (WZ-46), não de providência prévia
+M11 CK-P-9.7 (SUGERE): destino VAR-103 sem expressão (só sugestão explícita em SUGERE)
+M11 CK-P-13.1 (PREENCHE): destino WZ-29 sem expressão; a regra não diz se o prazo mínimo por item implica garantia contratual
+M11 CK-P-13.1 (PREENCHE): destino VAR-066 sem expressão (a regra pede só conferência ou o valor não sai da resposta)
+M11 CK-P-13.7 (PREENCHE): destino WZ-29 sem expressão; a regra não diz se o prazo de reparo implica garantia contratual
+M11 CK-P-16.1: PREENCHE sem expressão; a SET-05 lê a resposta na M08.condicao_expr
+M11 CK-P-17.1 (PREENCHE): destino WZ-20 sem expressão; pergunta derivada: o valor sai do M04.calculo_expr a partir do atributo de item preenchido
+M11 CK-P-17.2 (PREENCHE): destino WZ-20 sem expressão; pergunta derivada: o valor sai do M04.calculo_expr a partir do atributo de item preenchido
+M11 CK-P-18.5 (SUGERE): destino VAR-084 sem expressão (só sugestão explícita em SUGERE)
+M11 CK-P-18.6 (SUGERE): destino WZ-21 sem expressão; a regra não diz que execução por autorizado implica carta de solidariedade
+M11 CK-P-19.3 (PREENCHE): destino WZ-34 sem expressão; resposta composta (três prazos); o prazo de recebimento vai para a VAR-075
+M11 CK-P-19.5 (PREENCHE): destino WZ-34 sem expressão; resposta composta (três prazos); o prazo de substituição vai para a VAR-074
+M11 CK-P-20.1 (SUGERE): destino VAR-144 sem expressão (só sugestão explícita em SUGERE)
+M11 CK-P-20.2 (PREENCHE): destino WZ-58 sem expressão; decisão jurídica (WZ-58); a pergunta só traz o fato técnico
+M11 CK-P-21.1 (PREENCHE): destino WZ-48 sem expressão; a regra só lista os resíduos; 'impacto relevante' é juízo da equipe
+M11 CK-P-21.2 (PREENCHE): destino WZ-48 sem expressão; a regra só diz que há logística reversa; 'impacto relevante' é juízo da equipe
+M11: condicional_expr 61 de 61 condicionais; preenche_expr 159 de 164 PREENCHE; sugere_expr 38 de 42 SUGERE

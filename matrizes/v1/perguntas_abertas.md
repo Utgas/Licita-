@@ -55,8 +55,8 @@ Situação de cada item:
 
 ### P10. DFD do processo do par 117/2025 (ABERTA)
 
-- **Situação (22/10/2026):** entraram três DFDs (18/2026, 710/2025 e o da PMPV) e os dois checklists técnicos. As origens que dependiam de DFD foram refeitas: o checklist passou a ser a entrada da área requisitante (M11) e as linhas deixaram de ser `A_VERIFICAR`. Nenhum DFD novo é do processo 65475.000677/2025-73, então a cadeia DFD, ETP e TR continua sem caso completo.
-- **Recomendo:** incluir, anonimizado, o DFD (ou o checklist preenchido) do processo 65475.000677/2025-73.
+- **Situação (22/10/2026):** entraram três DFDs (18/2026, 710/2025 e o da PMPV) e os dois checklists técnicos. As origens que dependiam de DFD foram refeitas: o checklist passou a ser a entrada da área requisitante (M11) e as linhas deixaram de ser `A_VERIFICAR`. Nenhum DFD novo é do processo PROC-02, então a cadeia DFD, ETP e TR continua sem caso completo.
+- **Recomendo:** incluir, anonimizado, o DFD (ou o checklist preenchido) do processo PROC-02.
 - **Por quê:** é o único processo com ETP e TR na base; com a peça de origem, o M06 testaria a cadeia inteira.
 - **Atenção:** o DFD da PMPV traz nomes e CPF de pessoas. Nada disso foi copiado para as matrizes, mas o arquivo da base deveria ser anonimizado.
 
@@ -91,12 +91,14 @@ Situação de cada item:
 - **Recomendo:** (a) nesses casos, usar TR-10.1, ou TR-10.3 com orçamento sigiloso, com status `INFERIDO`; (b) no técnica e preço, o wizard avisa que os critérios de pontuação precisam ser escritos pelo usuário, e o sistema não os gera.
 - **Por quê:** TR-10.1 só declara o valor estimado, o que serve a qualquer critério. Gerar critérios de pontuação sem fonte seria preencher por dedução.
 
-### P16. Obrigações do Decreto 12.174/2024 no Anexo I (ABERTA, conferido em parte na Fase 5)
+### P16. Obrigações do Decreto 12.174/2024 no Anexo I (RESOLVIDA na Fase 10, 23/10/2026)
 
-- **Situação:** os itens TR-AI-4.1.22 a TR-AI-4.1.26 estão em vermelho itálico. A NE-095 só diz que vêm do art. 2º do Decreto 12.174/2024, sem dizer quando suprimi-los. Criei a WZ-51 para essa decisão, com padrão SIM e status `A_VERIFICAR`.
-- **Fase 5 (22/10/2026):** a página do Portal de Compras (gov.br) descreve o decreto como norma que "dispõe sobre as garantias trabalhistas a serem observadas na execução dos contratos administrativos" e só dá exemplos de serviços com dedicação exclusiva de mão de obra. O texto do decreto no planalto.gov.br não pôde ser aberto pela ferramenta (fora da lista de acesso). O alcance em compras continua sem conferência (M07, `NAO_CONFERIDA`).
-- **Recomendo:** manter o padrão SIM e pedir à assessoria jurídica a regra de supressão em compras; se puder, inclua o PDF do decreto na base.
-- **Por quê:** são obrigações de proteção ao trabalho. Manter quando não se aplicam custa pouco; suprimir quando se aplicam pode deixar o instrumento sem cláusula exigida.
+- **Situação:** os itens TR-AI-4.1.22 a TR-AI-4.1.26 estão em vermelho itálico. A NE-095 só diz que vêm do art. 2º do Decreto 12.174/2024, sem dizer quando suprimi-los. A WZ-51 decide a inclusão.
+- **Conferência (23/10/2026):** texto no planalto.gov.br (https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/decreto/d12174.htm). Sem nota de revogação. O art. 1º, caput, trata das "garantias trabalhistas a serem observadas na execução dos contratos administrativos no âmbito da administração pública federal direta, autárquica e fundacional". O art. 2º, caput, diz: "Os contratos administrativos conterão cláusulas que disponham sobre:" (I proteção ao trabalho; II trabalho escravo e infantil; III denúncias de discriminação, violência e assédio; IV responsabilidade solidária por subcontratada). O art. 3º é o que se restringe a serviços contínuos com dedicação exclusiva de mão de obra.
+- **Alteração depois de 2024:** o Decreto 12.926, de 13/04/2026 (https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/decreto/d12926.htm, DOU de 14/04/2026), mudou o art. 1º, parágrafo único (antes "arts. 2º e 3º", agora só "art. 2º" se aplica às obras e serviços de engenharia do art. 46 da Lei 14.133), o art. 3º e o art. 5º, § 3º. O art. 2º ficou igual.
+- **Decisão:** a WZ-51 fica com padrão SIM, status `INFERIDO` e passa a exigir justificativa para NAO. O decreto não restringe o art. 2º a serviços, então compras também estão no alcance pelo texto.
+- **O que continua sendo leitura minha:** o Anexo I só aparece quando não há termo de contrato (WZ-43 diferente de CONTRATO). Tratar o instrumento substitutivo como "contrato administrativo" para o art. 2º é inferência; o decreto não fala dele. Se a assessoria jurídica entender diferente, basta mudar o padrão da WZ-51.
+- **Repositório auxiliar:** o arquivo do decreto no ctresb/leis (commit 15eb09b, `federal/decretos/2024/dec-12174-2024-09-11.md`) tem `versao_texto: "original"` e não foi usado para o conteúdo.
 
 ### P17. Textos prontos que estão dentro das notas, fora do corpo do modelo (RESOLVIDA)
 
@@ -195,12 +197,14 @@ Situação de cada item:
   3. Atributos calculados antes da avaliação: tratamento_me_epp e valor_unidade_disputa (soma por grupo), tic (lista de classes da OM) e a WZ-50 (contagem de unidades de disputa).
 - **Recomendo:** (1) e (3) como funções do sistema que rodam antes do JSON Logic e gravam o resultado em atributo; (2) dividir esses blocos em sub-blocos com ID próprio numa versão 2 do M02.
 - **Por quê:** o JSON Logic padrão não tem agregação por grupo nem comparação de textos; forçar operadores próprios tiraria a portabilidade das expressões.
+- **Fase 10 (23/10/2026):** o item 3 saiu daqui. tratamento_me_epp, valor_unidade_disputa, quantidade_cota, perecivel, tic e as derivadas do M04 (inclusive a WZ-50) ganharam `calculo_expr`, com os operadores padrão `reduce`, `+`, `*`, `-`, `/` e `%`, que estão fora da lista da Fase 10 (P31). Os itens 1 e 2 continuam.
 
 ### P28. Lista de classes de TIC para o alerta de escopo (ABERTA)
 
 - **Situação:** o VAL-001 usa o atributo tic de cada item, calculado pela classe ou PDM do DFD (VAR-153, VAR-154). Não há na base lista oficial de classes de TIC.
 - **Recomendo:** a OM manter a lista (classes e PDM que ela trata como TIC) como parâmetro do sistema; até lá, o alerta usa só as perguntas 15.3 e 15.5 do checklist de permanentes.
 - **Por quê:** inventar a lista seria preencher por dedução.
+- **Fase 10:** a lista virou o parâmetro `classes_tic` (M12, PAR-12), vazio até a OM cadastrar; com a lista vazia todo item sai com tic = N.
 
 ### P29. Origem CHECKLIST no M05 e variáveis novas (ADOTADA PROVISORIAMENTE)
 
@@ -211,3 +215,16 @@ Situação de cada item:
 ### P30. Checklist em revisão e M11 (INFORMATIVA)
 
 - **Situação:** o M11 foi feito sobre as versões dos docx cujo SHA-256 está no README. Qualquer mudança no checklist exige refazer o M11 (rodar `ck_ler.py` e `ck_gerar_M11.py`). As sugestões para a revisão estão em sugestoes_checklist.md.
+
+### P31. Fase 10: o que ficou fora da lista de operadores e as convenções que o compilador e o motor precisam aceitar (RESOLVIDA, 23/10/2026)
+
+- **Operadores fora da lista:** `reduce`, `+`, `*`, `-`, `/` e `%`, só em `M04.calculo_expr` e `M05.calculo_expr`. Motivo: somar quantidade x valor unitário dos itens do grupo (VAR-119), tirar a parte inteira de quantidade x VAR-057 / 100 (VAR-118), contar grupos e itens isolados (WZ-50), listar os itens com amostra (VAR-049) e achar a validade comum aos perecíveis (VAR-065). Não usei `>=`, `<` nem `all`: troquei por `<=` e `>` com os lados invertidos e por `none` com a condição negada. Todos são operadores do JSON Logic padrão; nenhum é próprio.
+- **Variáveis novas:** `itens_do_grupo` (itens com o mesmo rótulo de grupo, ou só o próprio item), `current.<atributo>` e `accumulator` (dentro do `reduce`), `parametros.<nome>` com nome do M12, e `CK_x_n` dentro do item, que é a resposta ligada àquele item quando a pergunta é por item.
+- **Contexto de item:** cada elemento de `itens` traz também as variáveis globais (WZ, CK, VAR, parametros e metadados). Sem isso, `some` e `none` não conseguem comparar um atributo do item com um parâmetro, porque o JSON Logic padrão só enxerga o próprio elemento dentro do laço. A VAL-017, a VAL-025 e a VAL-026 dependem disso.
+- **Números dentro de expressão:** 0 e 1 só como valor inicial e passo de contagem em `reduce`; no M11, número que traduz opção da própria pergunta ('36 meses' vira 36, '30 dias' vira 30). O "0" da WZ-12 é resposta (nenhum participante). O resto vem do M12.
+- **Colunas novas fora do pedido:** `M04.calculo_expr` (derivadas) e `M05.calculo_ordem` (ordem de cálculo). Sem a primeira, a WZ-57, que depende da WZ-09, não teria valor para avaliar; sem a segunda, o motor teria de descobrir a ordem lendo as expressões.
+- **O que o M11 não permitiu traduzir:** 41 destinos WZ sem expressão, 11 deles por serem perguntas derivadas (o valor vem do atributo de item). Os outros 30 ficaram de fora porque a regra não diz o valor (ex.: CK-C-6.2, que admite inexigibilidade ou marca indicada), porque a WZ é decisão jurídica (WZ-57, WZ-58) ou porque a resposta da WZ é composta (WZ-15, WZ-27, WZ-34: prazo mais termo inicial). Lista linha a linha em `logs/f10_expr.txt`. Nove perguntas PREENCHE ou SUGERE ficaram sem expressão, também com motivo no log.
+- **Ponto para decidir:** a VAL-029 procura "período mínimo" dentro da VAR-085, que é LISTA. Com contribuições do checklist (CK-C-17.4, CK-P-18.3, CK-P-18.4), a VAR-085 vira lista, e `in` passa a comparar elemento inteiro, não trecho. A regra só funciona como foi escrita se a VAR-085 for o texto final editado pela equipe.
+- **Recomendo:** (1) ajustar o compilador para aceitar os seis operadores só nas duas colunas de cálculo, as variáveis acima e o contexto de item; (2) manter o contexto de item como contrato do motor (README, "JSON Logic"); (3) decidir se a VAR-085 passa a TEXTO ou se a VAL-029 lê o texto final.
+- **Por quê:** sem esses operadores, o motor teria de calcular ME/EPP e quantidade da cota em código, que é exatamente o que o projeto proíbe.
+- **Decisão (23/10/2026):** os seis operadores ficam aceitos só em `M04.calculo_expr` e `M05.calculo_expr`, e o contexto de item fica como está no README. A VAR-085 continua lista: a VAL-029 passou a usar `some` sobre a `VAR_085` e procura "período mínimo", "Período mínimo", "últimos" e "Últimos" em cada item (`{"var": ""}` é o próprio item da lista). O PAR-05 passou a valor numérico (30, dias corridos); a VAL-020 e a condicional da CK-C-12.2 comparam a VAR-060, que recebe o prazo da CK-C-12.1 em número.

@@ -1,0 +1,9 @@
+C1: 228 blocos, M08 [], M10 ['VAL-005'], sem resposta 10; preenchidas pelo checklist {'WZ_07': 'CONSUMO', 'WZ_26': 'PARCELADA'}
+C2: 287 blocos, M08 [], M10 ['VAL-005'], sem resposta 12; preenchidas pelo checklist {'WZ_26': 'REMESSA_UNICA'}
+C3: 343 blocos, M08 ['SET-13'], M10 ['VAL-005', 'VAL-025', 'VAL-040'], sem resposta 15; preenchidas pelo checklist {'WZ_07': 'AMBOS'}
+C4: 344 blocos, M08 ['SET-11', 'SET-13'], M10 ['VAL-005', 'VAL-018', 'VAL-025', 'VAL-030', 'VAL-050'], sem resposta 12; preenchidas pelo checklist {'WZ_07': 'PERMANENTE', 'WZ_26': 'PARCELADA', 'WZ_08': 'SIM'}
+C5: 336 blocos, M08 ['SET-06'], M10 ['VAL-005', 'VAL-011'], sem resposta 13; preenchidas pelo checklist {}
+C6: 239 blocos, M08 ['SET-02'], M10 ['VAL-005', 'VAL-012', 'VAL-015', 'VAL-018', 'VAL-040'], sem resposta 11; preenchidas pelo checklist {}
+C7: 226 blocos, M08 ['SET-05', 'SET-11', 'SET-12', 'SET-13', 'SET-14', 'SET-16', 'SET-17', 'SET-18', 'SET-19', 'SET-20'], M10 ['VAL-001', 'VAL-025', 'VAL-026'], sem resposta 9; preenchidas pelo checklist {'WZ_47': 'SIM', 'WZ_08': 'SIM'}
+C8: 216 blocos, M08 ['SET-01', 'SET-02', 'SET-03', 'SET-04', 'SET-05', 'SET-06', 'SET-08', 'SET-09', 'SET-21', 'SET-22'], M10 ['VAL-004', 'VAL-010', 'VAL-011', 'VAL-020', 'VAL-022'], sem resposta 9; preenchidas pelo checklist {}
+TOTAL DE DIFERENÇAS: 0

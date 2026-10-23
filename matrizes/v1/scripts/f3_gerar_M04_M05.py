@@ -376,9 +376,10 @@ W = [
      "preços; a cota para ME/EPP segue a unidade de disputa (NE-022)",
      "Lei 14.133/2021, art. 18, § 1º, VIII; NE-003; NE-022", ""),
     ("WZ-51", "O Anexo I terá as obrigações trabalhistas do art. 2º do Decreto 12.174/2024 (itens 4.1.22 a 4.1.26)?", "TR", "SIM_NAO",
-     "SIM; NAO", "WZ-43 diferente de CONTRATO", "SIM: TR-AI-4.1.22..TR-AI-4.1.26", "NAO: TR-AI-4.1.22..TR-AI-4.1.26", "N",
-     "A nota só indica a origem dos itens e não diz quando suprimi-los; padrão SIM até a conferência do decreto na Fase 5 (P16)",
-     "NE-095", "A_VERIFICAR"),
+     "SIM; NAO", "WZ-43 diferente de CONTRATO", "SIM: TR-AI-4.1.22..TR-AI-4.1.26", "NAO: TR-AI-4.1.22..TR-AI-4.1.26", "S",
+     "Padrão SIM. O Decreto 12.174/2024, art. 2º, caput (não alterado pelo Decreto 12.926/2026), manda os contratos "
+     "administrativos conterem essas cláusulas, sem restringir a serviços; NAO só com justificativa da assessoria jurídica (P16)",
+     "NE-095; Decreto 12.174/2024, art. 2º", "INFERIDO"),
     ("WZ-52", "A antecipação será feita também durante a execução, por etapas, condicionada à comprovação da etapa anterior?", "TR",
      "SIM_NAO", "SIM; NAO", "WZ-35=SIM", "SIM: TR-8.29..TR-8.29.2; TR-8.36; TR-8.36.1",
      "NAO: TR-8.29..TR-8.29.2; TR-8.36.1 (e TR-8.36 se WZ-53=NAO)",
@@ -681,11 +682,14 @@ def main():
         if wid == "WZ-11":
             fonte += (" O participante faz o ETP e não elabora TR; o TR é compilado pela OM gerenciadora (informado pelo usuário "
                       "em 21/10/2026, P13).")
+        if wid == "WZ-51":
+            fonte += (" P16 fechada em 23/10/2026: Decreto 12.174/2024 conferido no planalto.gov.br (art. 1º, caput: garantias "
+                      "trabalhistas na execução dos contratos administrativos; art. 2º, caput: 'Os contratos administrativos "
+                      "conterão cláusulas que disponham sobre:'), com a alteração do Decreto 12.926/2026, que não tocou o art. 2º. "
+                      "INFERIDO: a aplicação ao instrumento substitutivo do Anexo I (WZ-43 diferente de CONTRATO) é leitura "
+                      "minha, não texto do decreto.")
         if status == "A_VERIFICAR":
-            if wid == "WZ-51":
-                fonte += " A_VERIFICAR: a nota não dá critério de inclusão e o alcance do decreto será conferido na Fase 5 (P16)."
-            else:
-                fonte += " A_VERIFICAR: ver perguntas_abertas.md."
+            fonte += " A_VERIFICAR: ver perguntas_abertas.md."
         linhas4.append({"id": wid, "pergunta": perg, "documento": doc, "tipo_resposta": tipo, "opcoes": opc,
                         "depende_de": dep, "pre_preenchida_por": PRE[wid], "liga_blocos": liga, "desliga_blocos": desl, "exige_justificativa": just,
                         "coerencia": coer, "fundamento": fund, "fonte": fonte, "status": status})

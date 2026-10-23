@@ -29,7 +29,7 @@ NOME_REGISTRADO = {}
 DOCS = [
     # ---------------- ETPs na pasta ETP exemplos ----------------
     dict(prefixo="39f4f8bb", tipo_real="ETP", numero_ano="19/2026", uasg="160245",
-         om="Policlínica Militar de Niterói (POMN)", processo="64657.001291/2026-69",
+         om="Policlínica Militar de Niterói (POMN)", processo="PROC-01",
          objeto_resumo="Aquisição de 1 densitômetro ósseo DXA (fan beam) para o Setor de Radiologia, com instalação, treinamento e garantia; recurso Extra-PAASSEx 2026",
          categoria="PERMANENTE", srp="N", papel_srp="NA",
          par="NAO. Vínculo temático com o TR 58/2026 (PAASSEx 2026, entrega também na POMN), mas processos diferentes",
@@ -45,10 +45,10 @@ DOCS = [
          inferidos=["srp"], verificar=[]),
     dict(prefixo="Estudo Técnico Preliminar-2", tipo_real="ETP", numero_ano="117/2025", uasg="160242",
          om="Base Administrativa do Complexo de Saúde do RJ; demanda do HCE (Depósito de Material Cirúrgico)",
-         processo="65475.000677/2025-73",
+         processo="PROC-02",
          objeto_resumo="OPME de Neurocirurgia III para o HCE, por registro de preços, com fornecimento em consignação",
          categoria="CONSUMO", srp="S", papel_srp="GERENCIADOR",
-         par="SIM. TR 117/2025 (TR exemplos/Termo de Referência-3.pdf), mesmo processo 65475.000677/2025-73",
+         par="SIM. TR 117/2025 (TR exemplos/Termo de Referência-3.pdf), mesmo processo PROC-02",
          problemas=("17 seções: seção extra '12. Justificativas pontuais' desloca as seguintes (Responsáveis vira 17); "
                     "subtítulos digitados dentro da seção 2 ('DO OBJETO DA CONTRATAÇÃO', 'O QUE SE ALMEJA ALCANÇAR'); "
                     "cita o Decreto 10.024/2019 na lista de referências das normas de OPME do EB (p.2); "
@@ -59,7 +59,7 @@ DOCS = [
          inferidos=["papel_srp"], verificar=[]),
     dict(prefixo="Outro-ETP160322_000058_2025", tipo_real="ETP", numero_ano="58/2025", uasg="160322",
          om="Hospital Central do Exército (HCE), Central de Abastecimento Farmacêutico",
-         processo="64574.013082/2024-16",
+         processo="PROC-03",
          objeto_resumo="Medicamentos controlados para diversas clínicas do HCE, com fornecimento contínuo e reajuste",
          categoria="CONSUMO", srp="S", papel_srp="?",
          par="NAO. O TR 140/2025 trata de 'Controlados II' para o HCE, com outro processo",
@@ -70,7 +70,7 @@ DOCS = [
          fonte="p.1 (cabeçalho, seções 1-3), p.3-9 (seção 5), p.9-10 (seção 6), p.15-18 (seções 8-16); UASG 160322 = HCE conforme cabeçalho do ETP 801/2025 p.1",
          inferidos=["categoria"], verificar=["papel_srp"]),
     dict(prefixo="d4ef8f94", tipo_real="ETP", numero_ano="99/2025", uasg="160332",
-         om="Policlínica Militar da Praia Vermelha (PMPV)", processo="64659.007385/2025-41",
+         om="Policlínica Militar da Praia Vermelha (PMPV)", processo="PROC-04",
          objeto_resumo="Material de penso de Enfermagem I (consumo médico-hospitalar), como participante da IRP 134/2025 da UASG 160242",
          categoria="CONSUMO", srp="S", papel_srp="PARTICIPANTE",
          par="NAO. Participante da IRP 134/2025; o TR 190/2025 (penso cirúrgico de Enfermagem I, UASG 160242) é compatível, mas não cita o número da IRP",
@@ -96,7 +96,7 @@ DOCS = [
          inferidos=["categoria"], verificar=[]),
     dict(prefixo="fdace9da", tipo_real="ETP", numero_ano="330/2025", uasg="160245",
          om="Policlínica Militar de Niterói (POMN), Pronto Atendimento",
-         processo="65475003638202528 (sem máscara)",
+         processo="PROC-05 (sem máscara)",
          objeto_resumo="Equipo comum, equipo fotossensível e tramadol para o Pronto Atendimento",
          categoria="CONSUMO", srp="S", papel_srp="?",
          par="NAO",
@@ -138,7 +138,7 @@ DOCS = [
          inferidos=["categoria"], verificar=["papel_srp"]),
     # ---------------- TRs ----------------
     dict(prefixo="1e19dfeb", tipo_real="TR", numero_ano="190/2025", uasg="160242",
-         om="Base Administrativa do Complexo de Saúde do RJ", processo="65475.002598/2025-05",
+         om="Base Administrativa do Complexo de Saúde do RJ", processo="PROC-06",
          objeto_resumo="Materiais de penso cirúrgico de Enfermagem I, por registro de preços com IRP",
          categoria="CONSUMO", srp="S", papel_srp="GERENCIADOR",
          par="NAO. Objeto compatível com o ETP 99/2025 (participante da IRP 134/2025), mas o TR não cita o número da IRP",
@@ -149,7 +149,7 @@ DOCS = [
          inferidos=["papel_srp"], verificar=[]),
     dict(prefixo="Outros-TR160242_000140_2025", tipo_real="TR", numero_ano="140/2025", uasg="160242",
          om="Base Administrativa do Complexo de Saúde do RJ; demanda do HCE",
-         processo="65475.001524/2025-43 (cabeçalho do sistema) x 65475.000645/2025-78 (corpo do documento)",
+         processo="PROC-07 (cabeçalho do sistema) x PROC-08 (corpo do documento)",
          objeto_resumo="Medicamentos controlados II para o HCE, por registro de preços com IRP",
          categoria="CONSUMO", srp="S", papel_srp="GERENCIADOR",
          par="NAO",
@@ -159,7 +159,7 @@ DOCS = [
          fonte="p.1 (Informações Básicas, cabeçalho do corpo, itens 1.1-1.5), rodapé de todas as páginas, p.12-17 (Anexos)",
          inferidos=[], verificar=[]),
     dict(prefixo="Termo de Referência-3", tipo_real="TR", numero_ano="117/2025", uasg="160242",
-         om="Base Administrativa do Complexo de Saúde do RJ; demanda do HCE", processo="65475.000677/2025-73",
+         om="Base Administrativa do Complexo de Saúde do RJ; demanda do HCE", processo="PROC-02",
          objeto_resumo="OPME de Neurocirurgia III em regime de consignação com comodato, por registro de preços com IRP",
          categoria="CONSUMO", srp="S", papel_srp="GERENCIADOR",
          par="SIM. ETP 117/2025 (ETP exemplos/Estudo Técnico Preliminar-2.pdf), mesmo processo",
@@ -169,7 +169,7 @@ DOCS = [
          fonte="p.1 (Informações Básicas, itens 1.1-1.5), rodapé de todas as páginas, p.20-25 (Anexos)",
          inferidos=[], verificar=[]),
     dict(prefixo="ae4297a4", tipo_real="TR", numero_ano="23/2026", uasg="160242",
-         om="Base Administrativa do Complexo de Saúde do RJ; destino: Hospital Militar de Resende", processo="65475.002871/2025-93",
+         om="Base Administrativa do Complexo de Saúde do RJ; destino: Hospital Militar de Resende", processo="PROC-09",
          objeto_resumo="1 ambulância de suporte avançado (tipo D) para o HMR, pregão tradicional, fornecimento integral, recurso de emenda parlamentar",
          categoria="PERMANENTE", srp="N", papel_srp="NA",
          par="NAO CONFIRMADO. Mesmo objeto do ETP 67/2026 (sem número de processo), que declara registro de preços",
@@ -179,7 +179,7 @@ DOCS = [
          fonte="p.1 (Informações Básicas, itens 1.1-1.7), p.12-14 (seções 13-15 e lista de anexos)",
          inferidos=[], verificar=[]),
     dict(prefixo="f518d222", tipo_real="TR", numero_ano="58/2026", uasg="160242",
-         om="Base Administrativa do Complexo de Saúde do RJ; entrega no HCE e na POMN", processo="65475.002947/2025-81",
+         om="Base Administrativa do Complexo de Saúde do RJ; entrega no HCE e na POMN", processo="PROC-10",
          objeto_resumo="Equipamentos hospitalares (material permanente) com recurso de emenda parlamentar, PAASSEx 2026, com instalação, treinamento e garantia",
          categoria="PERMANENTE", srp="N", papel_srp="NA",
          par="NAO",
@@ -279,7 +279,7 @@ DOCS += [
                 "acompanhamento); quantidades comparadas por script com as linhas de itens do ETP 801/2025"),
          inferidos=["srp", "papel_srp"], verificar=[]),
     dict(prefixo="eb69c93a", tipo_real="DFD", numero_ano="sem número", uasg="160332",
-         om="Policlínica Militar da Praia Vermelha (PMPV), Divisão de Medicina", processo="64659.003905/2024-65",
+         om="Policlínica Militar da Praia Vermelha (PMPV), Divisão de Medicina", processo="PROC-11",
          objeto_resumo=("Materiais de consumo farmacológico e hospitalar para 12 meses da PMPV; itens em planilha anexa; "
                         "estimativa preliminar de R$ 65.516,46; modelo de DFD próprio da OM, em Word"),
          categoria="CONSUMO", srp="?", papel_srp="?",
@@ -290,10 +290,10 @@ DOCS += [
          fonte="p.1 (itens 1 a 8 do modelo de DFD), p.2 (itens 9 a 11, aprovação); UASG conforme o ETP 99/2025, da mesma OM",
          inferidos=["uasg"], verificar=[]),
     dict(prefixo="882d42e8", tipo_real="ETP", numero_ano="109/2024", uasg="160322",
-         om="Hospital Central do Exército (HCE), Central de Abastecimento Farmacêutico", processo="64574.013078/2024-58",
+         om="Hospital Central do Exército (HCE), Central de Abastecimento Farmacêutico", processo="PROC-12",
          objeto_resumo="Medicamentos de alto custo para diversas clínicas do HCE, por registro de preços",
          categoria="CONSUMO", srp="S", papel_srp="?",
-         par=("NAO. Processo vizinho ao do ETP 58/2025 (64574.013082/2024-16, mesma Central de Abastecimento Farmacêutico), "
+         par=("NAO. Processo vizinho ao do ETP 58/2025 (PROC-03, mesma Central de Abastecimento Farmacêutico), "
               "mas objeto diferente; nenhum TR da base com o mesmo processo ou os mesmos códigos"),
          problemas=("Fundamenta 'bem comum' no art. 1º, parágrafo único, da Lei 10.520/2002 (achado 3, p.1); validade mínima de "
                     "50% do prazo de fábrica (p.2); a p.4 é imagem (tabela de preços) lida por OCR de baixa qualidade: códigos e "

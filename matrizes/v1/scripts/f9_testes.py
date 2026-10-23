@@ -32,24 +32,19 @@ from normas import identidades  # noqa: E402
 ARQS = {"M00": "M00_inventario.csv", "M01": "M01_etp_campos.csv", "M02": "M02_tr_blocos.csv",
         "M03": "M03_notas_explicativas.csv", "M04": "M04_wizard.csv", "M05": "M05_variaveis.csv",
         "M06": "M06_derivacao_etp_tr.csv", "M07": "M07_normas.csv", "M08": "M08_clausulas_setoriais.csv",
-        "M09": "M09_desvios.csv", "M10": "M10_validacoes.csv", "M11": "M11_checklist.csv"}
+        "M09": "M09_desvios.csv", "M10": "M10_validacoes.csv", "M11": "M11_checklist.csv",
+        "M12": "M12_parametros.csv"}
 CHAVE = {"M00": "arquivo", "M06": "bloco_tr"}
 PADRAO = {"M01": r"ETP-\d{2}\.\d{2}", "M02": r"TR-[A-Za-z0-9.\-]+", "M03": r"NE-\d{3}", "M04": r"WZ-\d{2}",
           "M05": r"VAR-\d{3}", "M06": r"TR-[A-Za-z0-9.\-]+", "M07": r"NRM-\d{3}", "M08": r"SET-\d{2}", "M09": r"DV-\d{2}",
-          "M10": r"VAL-\d{3}", "M11": r"CK-[CP]-(?:CAB\.\d{2}|\d{1,2}(?:\.\d{1,2})?)"}
+          "M10": r"VAL-\d{3}", "M11": r"CK-[CP]-(?:CAB\.\d{2}|\d{1,2}(?:\.\d{1,2})?)", "M12": r"PAR-\d{2}"}
 LITERAIS = {"texto_literal", "texto_integral", "trecho_ancorado", "lacunas", "citacoes", "normas", "objeto_resumo", "pergunta",
             "opcoes", "orientacao", "evidencia_corpus", "evidencia_par_117", "evidencia_caso_67_23", "formas_citadas",
-            "descricao", "condicao_expr", "liga_expr", "desliga_expr"}
+            "descricao", "condicao_expr", "liga_expr", "desliga_expr", "depende_de_expr", "calculo_expr",
+            "condicional_expr", "preenche_expr", "sugere_expr"}
 STATUS = {"EXTRAIDO", "INFERIDO", "A_VERIFICAR"}
 ID_RX = re.compile(r"\b(?:TR-[A-Za-z0-9.\-]+|ETP-\d{2}\.\d{2}|WZ-\d{2}|NE-\d{3}|VAR-\d{3}|SET-\d{2}|VAL-\d{3}|DV-\d{2}|"
                    r"NRM-\d{3}|CK-[CP]-(?:CAB\.\d{2}|\d{1,2}(?:\.\d{1,2})?))")
-OPERADORES = {"var", "==", "!=", "!", "!!", "and", "or", "in", "some", "all", "none", "if", "merge", ">", ">=", "<", "<=",
-              "+", "*"}
-ATRIB_ITEM = {"grupo", "tratamento_me_epp", "exige_amostra", "marca_indicada", "perecivel", "validade_minima",
-              "compatibilidade", "faixa_temperatura", "controle_especial", "garantia_minima_meses", "quantidade",
-              "valor_unitario", "catmat", "classe", "tic", "categoria", "valor_unidade_disputa", "justificativa_excecao_me_epp",
-              "quantidade_cota", "numero"}
-METADADOS = ("textos_livres", "importacao.", "checklist.", "parametros.")
 # Achados da seção 5 do prompt (lista reconstruída do registro da Fase 0: logs/f0_conferencias.txt e P01 a P11)
 ACHADOS_S5 = {1: "notas explicativas do modelo e ausência delas na matriz 01", 2: "arquivo-fonte e linhas da matriz 01",
               3: "estimativas ('~') na matriz 01", 4: "ETP 19/2026 com páginas ausentes",
@@ -194,7 +189,7 @@ def main():
         + ", ".join(f"{n}={cobertos[n]}" for n in ACHADOS_S5) + (f" | faltam {falt8}" if falt8 else ""))
     a22 = Counter(n for k in ("M09", "M10") for r in M[k] for n in re.findall(r"anexo 22/10, achado (\d+)", r["achado"]))
     out.append(f"INFO  achados de 22/10/2026 citados no M09 ou no M10: {dict(sorted(a22.items()))} (o 1, nenhum arquivo novo "
-               f"é TR, está no M00; o 5, sem DFD do processo 65475.000677/2025-73, está na P10)")
+               f"é TR, está no M00; o 5, sem DFD do processo PROC-02, está na P10)")
     # ------------------------------------------------------------ domínios
     dom = {"M04": {"documento": {"ETP", "TR", "AMBOS"}, "tipo_resposta": {"SIM_NAO", "UNICA", "MULTIPLA", "NUMERO", "DATA", "TEXTO"},
                    "validacao": {"", "OK", "CORRIGIR", "DUVIDA"}},
@@ -223,52 +218,10 @@ def main():
     ok_hash = all(any(h[:12] in r["fonte"] for r in M["M11"]) for h in hashes.values()) and len(hashes) == 2
     reg(ok_hash, "M11: hash dos dois checklists da base confere com o registrado nas linhas: "
         + "; ".join(f"{n[:40]}... {h[:12]}" for n, h in hashes.items()))
-    # ------------------------------------------------------------ JSON Logic
-    var_ok = {r["id"].replace("-", "_") for r in M["M04"]} | {r["id"].replace("-", "_") for r in M["M05"]} | \
-             {r["id"][3:].replace("-", "_").replace(".", "_") for r in M["M11"]}
-    var_ok = {("CK_" + v) if v[:2] in ("C_", "P_") else v for v in var_ok}
-    erros = []
-
-    def visita(e, onde, em_item=False):
-        if isinstance(e, list):
-            for x in e:
-                visita(x, onde, em_item)
-            return
-        if not isinstance(e, dict):
-            return
-        if len(e) != 1:
-            erros.append(f"{onde}: objeto com {len(e)} chaves")
-            return
-        op, a = next(iter(e.items()))
-        if op not in OPERADORES:
-            erros.append(f"{onde}: operador {op}")
-        if op == "var":
-            nome = a[0] if isinstance(a, list) else a
-            base = re.sub(r"_texto$", "", str(nome))
-            if em_item:
-                if nome not in ATRIB_ITEM:
-                    erros.append(f"{onde}: atributo de item desconhecido {nome}")
-            elif not (nome == "itens" or base in var_ok or str(nome).startswith(METADADOS)):
-                erros.append(f"{onde}: variável desconhecida {nome}")
-            return
-        if op in ("some", "all", "none"):
-            visita(a[0], onde, em_item)
-            visita(a[1], onde, True)
-            return
-        visita(a, onde, em_item)
-
-    n_expr = 0
-    for k, cols in (("M02", ("condicao_expr",)), ("M04", ("liga_expr", "desliga_expr")), ("M08", ("condicao_expr",)),
-                    ("M10", ("condicao_expr",))):
-        for r in M[k]:
-            for c in cols:
-                if r[c]:
-                    n_expr += 1
-                    try:
-                        visita(json.loads(r[c]), f"{k}:{r['id']}.{c}")
-                    except json.JSONDecodeError as ex:
-                        erros.append(f"{k}:{r['id']}.{c}: JSON inválido ({ex})")
-    reg(not erros, f"JSON Logic: {n_expr} expressões válidas, só operadores e variáveis conhecidos" + (f" | {erros[:8]}" if erros else ""))
+    # ------------------------------------------------------------ JSON Logic e Fase 10 (f10_testes.py)
+    from f10_testes import testes as testes_f10
+    for ok, msg in testes_f10(pasta, M):
+        reg(ok, msg)
     sem_expr = [r["id"] for r in M["M02"] if not r["condicao_expr"]]
     reg(not sem_expr, f"M02: condicao_expr preenchida em todos os blocos ({len(M['M02'])})")
     # ------------------------------------------------------------ evidências literais do M08

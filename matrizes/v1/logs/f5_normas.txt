@@ -1,4 +1,4 @@
-M07: 103 normas; citações não resolvidas: 0
+M07: 104 normas; citações não resolvidas: 0
 origem só MATRIZ e não conferida (deveria ser zero): []
-situação: {'VIGENTE': 2, 'REVOGADA': 1, 'NAO_CONFERIDA': 100}
-status: {'EXTRAIDO': 95, 'INFERIDO': 0, 'A_VERIFICAR': 8}
+situação: {'VIGENTE': 29, 'REVOGADA': 2, 'NAO_CONFERIDA': 73}
+status: {'EXTRAIDO': 96, 'INFERIDO': 0, 'A_VERIFICAR': 8}

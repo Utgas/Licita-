@@ -133,8 +133,8 @@ CENARIOS = {
         "ck": {"CK_P_11_1": "Sim", "CK_P_12_1": "Sim", "CK_P_13_1": "36 meses", "CK_P_14_1": "Sim", "CK_P_15_3": "Sim",
                "CK_P_15_5": "Não", "CK_P_16_1": "Sim", "CK_P_16_6": "Sim", "CK_P_8_8": "Sim", "CK_P_19_2": "Sim",
                "CK_P_20_1": "Sim"},
-        "var": {"VAR_001": "00000.000000/0000-00", "VAR_099": "DEZ/2025", "VAR_085": "fornecimento e instalação de "
-                "equipamento compatível"},
+        "var": {"VAR_001": "00000.000000/0000-00", "VAR_099": "DEZ/2025", "VAR_085": ["fornecimento e instalação de "
+                "equipamento compatível"]},
         "esperado": {"WZ-24": "NAO", "WZ-09": "NAO", "WZ-20": "NAO", "WZ-18": "NAO", "WZ-50": "POR_ITEM"},
         "tratamento_esperado": {1: "AMPLA", 2: "EXCLUSIVO"},
         "sets_esperados": ["SET-05", "SET-11", "SET-12", "SET-13", "SET-14", "SET-16", "SET-17", "SET-18", "SET-19", "SET-20"],
@@ -154,7 +154,7 @@ CENARIOS = {
                "CK_C_15_1": "Sim", "CK_C_12_6": "Sim", "CK_C_17_5": ["Licença sanitária", "AFE"], "CK_C_18_2": ["Recall"],
                "CK_C_21_3": ["Recall"], "CK_C_20_2": "Não", "CK_C_20_3": "Sim", "CK_C_12_1": "45 dias",
                "CK_C_12_2": "Sim", "CK_C_13_5": "Sim", "CK_C_20_1": "Não"},
-        "var": {"VAR_001": "00000.000000/0000-00", "VAR_099": "DEZ/2025"},
+        "var": {"VAR_001": "00000.000000/0000-00", "VAR_099": "DEZ/2025", "VAR_060": 45},
         "meta": {"textos_livres": "Bens comuns nos termos da Lei 10.520, de 2002."},
         "esperado": {"WZ-24": "SIM", "WZ-09": "SIM", "WZ-20": "NAO", "WZ-18": "NAO", "WZ-13": "NAO", "WZ-50": "POR_ITEM"},
         "tratamento_esperado": {1: "EXCLUSIVO", 2: "COTA"},
@@ -281,6 +281,7 @@ def pai(i, ids):
 # --------------------------------------------------------------------------- JSON Logic (avaliador em jlogic.py)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from jlogic import avaliar as jl  # noqa: E402
+from parametros import VALORES  # noqa: E402
 
 
 def dados_jl(resp, itens, trat, derivadas, multipla, cen):
@@ -292,11 +293,13 @@ def dados_jl(resp, itens, trat, derivadas, multipla, cen):
     for chave, its in unidades(itens).items():
         for i in its:
             valor_ud[i["numero"]] = sum(x["quantidade"] * x["valor_unitario"] for x in its)
-    d["itens"] = [dict(i, tratamento_me_epp=trat.get(i["numero"], ""), valor_unidade_disputa=valor_ud[i["numero"]])
-                  for i in itens]
     d.update(cen.get("ck", {}))
     d.update(cen.get("var", {}))
     d.update(cen.get("meta", {}))
+    d["parametros"] = VALORES
+    # convenção da Fase 10: cada item carrega as variáveis globais (WZ, CK, VAR, parametros e metadados)
+    d["itens"] = [dict(d, **dict(i, tratamento_me_epp=trat.get(i["numero"], ""), valor_unidade_disputa=valor_ud[i["numero"]]))
+                  for i in itens]
     return d
 
 

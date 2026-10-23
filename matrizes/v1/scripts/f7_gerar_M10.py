@@ -76,8 +76,9 @@ V = [
     ("VAL-004", "Citação de norma revogada ou do regime anterior em texto livre", "ALERTA", "CHECKLIST",
      "SE o texto livre citar a Lei 10.520/2002 (revogada pela Lei 14.133/2021, conferido no planalto.gov.br), a Lei 8.666/1993, "
      "o Decreto 10.024/2019 ou a IN SLTI/MP 01/2010 (situação a conferir)",
-     ou(inn("10.520", txt(TL)), inn("10520", txt(TL)), inn("8.666", txt(TL)), inn("10.024", txt(TL)),
-        inn("SLTI/MP", txt(TL))),
+     ou(*(inn(var("parametros." + n), txt(TL)) for n in (
+         "marcador_lei_pregao_revogada", "marcador_lei_pregao_revogada_sem_ponto", "marcador_lei_licitacoes_anterior",
+         "marcador_decreto_pregao_eletronico_anterior", "marcador_in_sustentabilidade_anterior"))),
      "O texto cita norma revogada ou do regime anterior. A Lei 10.520/2002 foi revogada pela Lei 14.133/2021; para bem comum, "
      "use a justificativa do ETP (TR-1.2).", "VAR-018; ETP-02.01; TR-1.2",
      "planalto.gov.br, L10520.htm, nota '(Revogado pela Lei nº 14.133, de 2021)', consultado em 22/10/2026; NRM da Lei "
@@ -140,7 +141,7 @@ V = [
      "NE-003 nota 4; NE-022; Decreto 8.538/2015, art. 10 (planalto.gov.br, conferido em 22/10/2026)", "", "INFERIDO"),
     ("VAL-017", "Exceção ao tratamento de ME/EPP em item que seria de participação exclusiva", "ALERTA", "ITENS",
      "SE algum item com EXCECAO_JUSTIFICADA tiver valor da unidade de disputa até R$ 80.000,00",
-     algum_item(e(eq("tratamento_me_epp", "EXCECAO_JUSTIFICADA"), le("valor_unidade_disputa", 80000))),
+     algum_item(e(eq("tratamento_me_epp", "EXCECAO_JUSTIFICADA"), le("valor_unidade_disputa", var("parametros.limite_exclusivo_me_epp")))),
      "O item seria de participação exclusiva de ME/EPP. Afastar a exclusividade é decisão da equipe administrativa (P22).",
      "VAR-113; VAR-119; VAR-120", "NE-003 nota 4; Decreto 8.538/2015, arts. 6º e 10", "", "A_VERIFICAR"),
     ("VAL-018", "Marca ou modelo indicado sem justificativa técnica", "BLOQUEIO", "ITENS",
@@ -154,8 +155,9 @@ V = [
      "licitação com marca indicada justificada (VAL-018).", "WZ-01; WZ-04; CK-C-6.2; CK-P-6.2", "M04 (WZ-01, WZ-04)", "",
      "INFERIDO"),
     ("VAL-020", "Prazo de entrega diferente de 30 dias sem explicação", "ALERTA", "CHECKLIST",
-     "SE CK-C-12.1 for diferente de '30 dias' E a caixa de explicação da CK-C-12.2 estiver vazia",
-     e(tem(ck(C, "12.1")), ne(ck(C, "12.1"), "30 dias"), vazio(ck(C, "12.2") + "_texto")),
+     "SE a CK-C-12.1 estiver respondida E o prazo de entrega (VAR-060, preenchido pela CK-C-12.1) for diferente do prazo "
+     "de referência (PAR-05, 30 dias corridos) E a caixa de explicação da CK-C-12.2 estiver vazia",
+     e(tem(ck(C, "12.1")), ne("VAR_060", var("parametros.prazo_entrega_referencia")), vazio(ck(C, "12.2") + "_texto")),
      "O prazo de entrega escolhido é diferente de 30 dias. Explique a necessidade (pergunta 12.2).",
      "CK-C-12.1; CK-C-12.2; VAR-060", "CK-C-12.2 (o próprio checklist pede explicação do prazo diferente)",
      "anexo 22/10, achado 6 (12.2 ambígua)", "INFERIDO"),
@@ -184,12 +186,12 @@ V = [
      "WZ-10; CK-C-7.2; CK-C-7.3; CK-C-7.6", "M04 (WZ-10)", "", "INFERIDO"),
     ("VAL-025", "Item com quantidade 1 sem justificativa", "ALERTA", "ITENS",
      "SE algum item tiver quantidade 1 E as caixas de justificativa (CK-C-4.7 e CK-P-4.4) estiverem vazias",
-     e(algum_item(eq("quantidade", 1)), vazio(ck(C, "4.7") + "_texto"), vazio(ck(P, "4.4"))),
+     e(algum_item(eq("quantidade", var("parametros.quantidade_unitaria"))), vazio(ck(C, "4.7") + "_texto"), vazio(ck(P, "4.4"))),
      "Há item com quantidade 1. Justifique na memória de cálculo (ETP-07.01).", "VAR-012; ETP-07.01; CK-C-4.7; CK-P-4.4",
      "Lei 14.133/2021, art. 18, § 1º, IV (M01)", "", "INFERIDO"),
     ("VAL-026", "Garantia acima de 12 meses sem justificativa", "BLOQUEIO", "ITENS",
      "SE algum item tiver garantia_minima_meses acima de 12 E CK-P-13.2 estiver vazia",
-     e(algum_item(gt("garantia_minima_meses", 12)), vazio(ck(P, "13.2"))),
+     e(algum_item(gt("garantia_minima_meses", var("parametros.garantia_padrao_meses"))), vazio(ck(P, "13.2"))),
      "Garantia acima de 12 meses precisa de justificativa técnica (pergunta 13.2) registrada nos autos (NE-029).",
      "VAR-124; VAR-066; WZ-29", "NE-027; NE-029", "", "INFERIDO"),
     ("VAL-027", "Comodato indicado no checklist sem decisão da equipe administrativa", "ALERTA", "WIZARD",
@@ -201,8 +203,10 @@ V = [
      "Quantitativo mínimo em atestado deve ser objetivo e limitado às parcelas de maior relevância (NE-071). Confira o "
      "percentual com a equipe administrativa.", "VAR-085; WZ-38; TR-9.34", "NE-071", "", "INFERIDO"),
     ("VAL-029", "Atestado com limitação de tempo ou de época", "BLOQUEIO", "WIZARD",
-     "SE as características dos atestados (VAR-085) contiverem 'período mínimo' ou 'últimos'",
-     ou(inn("período mínimo", txt("VAR_085")), inn("últimos", txt("VAR_085"))),
+     "SE algum item da lista de características dos atestados (VAR-085) contiver 'período mínimo' ou 'últimos' "
+     "(também com inicial maiúscula)",
+     {"some": [var("VAR_085", []), ou(*(inn(t, var("")) for t in ("período mínimo", "Período mínimo", "últimos",
+                                                                   "Últimos")))]},
      "A NE-071 veda limitação de tempo ou de época nos atestados. Retire a limitação.", "VAR-085; TR-9.34",
      "NE-071", "M09: ETP 117/2025 (atestado 'pelo período mínimo de 12 meses')", "INFERIDO"),
     ("VAL-030", "Execução por fabricante, rede credenciada ou carta de solidariedade", "ALERTA", "WIZARD",
@@ -215,15 +219,16 @@ V = [
      "O documento importado está incompleto. As seções das páginas ausentes ficam como não lidas.", "M00; M01",
      "M00 (ETP 19/2026: páginas 1, 3, 5, 7 e 9 de 9)", "seção 5, achado 4", "INFERIDO"),
     ("VAL-032", "TR importado feito sobre versão do modelo AGU diferente de DEZ/2025", "ALERTA", "IMPORTACAO",
-     "SE o rodapé do TR importado indicar versão diferente de DEZ/2025",
-     e(tem("importacao.versao_modelo"), ne("importacao.versao_modelo", "DEZ/2025")),
+     "SE o rodapé do TR importado indicar versão diferente da carregada no sistema (VAR-099; hoje DEZ/2025)",
+     e(tem("importacao.versao_modelo"), ne("importacao.versao_modelo", var("VAR_099"))),
      "O TR importado foi feito sobre outra versão do modelo AGU. Use-o só como referência de prática.", "VAR-099; M02",
      "M00 (TRs 117/2025 e 140/2025: NOV/2024; TR 190/2025: ABR/2025)", "seção 5, achado 7", "INFERIDO"),
     ("VAL-033", "ETP importado com seção fora do padrão do ETP Digital", "INFORMATIVO", "IMPORTACAO",
      "SE o ETP importado tiver seção extra ou nome de seção variante",
      ou(tem("importacao.secoes_extras"), tem("importacao.secoes_nome_variante")),
-     "Seção identificada pelo nome (ID ETP-SS.CC), não pelo número impresso; 'Benefícios a serem alcançados com a "
-     "contratação' é variante de 'Resultados Pretendidos'.", "M01; ETP-12.01; ETP-90.01", "P06; P07",
+     "O ETP importado tem seção a mais ou com nome diferente do ETP Digital. O sistema reconhece cada seção pelo nome, "
+     "não pelo número impresso: por exemplo, 'Benefícios a serem alcançados com a contratação' é lida como 'Resultados "
+     "Pretendidos'. Confira se cada seção foi lida no lugar certo.", "M01; ETP-12.01; ETP-90.01", "P06; P07",
      "seção 5, achado 10", "INFERIDO"),
     ("VAL-034", "ETP de participante com requisitos copiados de outro tipo de processo", "ALERTA", "MINUTA",
      "SE WZ-11 = PARTICIPANTE e o texto de requisitos trouxer trechos de outro tipo de processo (ex.: dispensa)", None,

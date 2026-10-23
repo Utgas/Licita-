@@ -89,6 +89,12 @@ def avaliar(ex, d):
             else:
                 return padrao
         return v
+    if op == "reduce":
+        arr = avaliar(a[0], d) or []
+        acc = avaliar(a[2], d) if len(a) > 2 else None
+        for x in arr:
+            acc = avaliar(a[1], {"current": x, "accumulator": acc})
+        return acc
     if op in ("some", "all", "none"):
         arr = avaliar(a[0], d) or []
         res = [bool(avaliar(a[1], x)) for x in arr]
@@ -127,7 +133,7 @@ def avaliar(ex, d):
     if op == "!=":
         return v[0] != v[1]
     if op == "in":
-        if v[1] is None:
+        if v[1] is None or v[0] is None:
             return False
         return v[0] in v[1]
     if op in (">", ">=", "<", "<="):
@@ -143,4 +149,10 @@ def avaliar(ex, d):
         return r
     if op == "+":
         return sum(float(x or 0) for x in v)
+    if op == "-":
+        return float(v[0] or 0) - float(v[1] or 0) if len(v) > 1 else -float(v[0] or 0)
+    if op == "/":
+        return float(v[0] or 0) / float(v[1])
+    if op == "%":
+        return float(v[0] or 0) % float(v[1])
     raise ValueError(f"operador JSON Logic não suportado: {op}")

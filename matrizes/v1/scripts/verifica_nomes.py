@@ -83,7 +83,7 @@ def nomes_do_corpus(pasta_texto):
 def textos_saida(caminhos):
     for c in caminhos:
         p = Path(c)
-        arquivos = [p] if p.is_file() else sorted(x for x in p.rglob("*") if x.suffix in (".csv", ".md", ".py", ".txt"))
+        arquivos = [p] if p.is_file() else sorted(x for x in p.rglob("*") if x.suffix in (".csv", ".md", ".py", ".txt", ".json"))
         for a in arquivos:
             yield a, a.read_text(encoding="utf-8-sig", errors="replace")
 

@@ -208,7 +208,7 @@ regra(["TR-5.3", "TR-5.4", "TR-7.2.4.1", "TR-7.2.4.3", "TR-7.2.4.4", "TR-7.2.4.5
 regra(["TR-ASSIN.03"], obs="Texto em preto que funciona como rótulo de preenchimento (P20).")
 regra([faixa("TR-AI-5.1", "TR-AI-5.3.2")], obs="Opção usada também no pequeno valor sem fornecimento contínuo, por inferência (P14).")
 regra(["TR-10.1", "TR-10.3", "TR-10.3.1"], obs="Usado também em técnica e preço e na contratação direta, por analogia (P15).")
-regra([faixa("TR-AI-4.1.22", "TR-AI-4.1.26")], obs="Inclusão decidida pela WZ-51, com padrão SIM (P16).")
+regra([faixa("TR-AI-4.1.22", "TR-AI-4.1.26")], obs="Inclusão decidida pela WZ-51, com padrão SIM; Decreto 12.174/2024, art. 2º (P16, fechada).")
 # bloco que é inteiro um marcador de preenchimento (sem colchetes nem pontilhado)
 regra(["TR-CAB.03"], lacunas_extra=["ÓRGÃO OU ENTIDADE PÚBLICA"], inferido=["lacunas"])
 # vermelho itálico com inclusão "Sempre": variável (EU), não opcional; TR-7.2.4.7 mantém OP pelo trecho entre colchetes
