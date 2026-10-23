@@ -1,0 +1,2 @@
+﻿"id","regra","tipo","momento","condicao","condicao_expr","mensagem","afeta","base","achado","fonte","status"
+"VAL-001","Regra fictícia","ALERTA","ITENS","fictícia","{"">"":[{""+"":[{""var"":""VAR_001""},1]},2]}","Mensagem fictícia.","VAR-001","NE-001","","fixture fictícia de teste","INFERIDO"

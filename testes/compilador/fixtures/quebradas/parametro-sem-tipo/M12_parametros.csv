@@ -1,0 +1,4 @@
+﻿"id","nome","valor","unidade","base","vigencia","usado_em","fonte","status"
+"PAR-01","lista_ficticia","[]","lista fictícia","","","VAL-001.condicao_expr","fixture fictícia de teste. Tipo do valor: lista.","INFERIDO"
+"PAR-02","limite_ficticio","100.50","R$","","","VAR-002.calculo_expr","fixture fictícia de teste","INFERIDO"
+"PAR-03","marcador_ficticio","1.000","trecho procurado","","","","fixture fictícia de teste. Tipo do valor: texto.","INFERIDO"

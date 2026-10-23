@@ -12,18 +12,32 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse } from "csv-parse/sync";
 import { z } from "zod";
+import {
+  STATUS,
+  TIPO_DE_PARAMETRO,
+  VALIDACAO,
+  VERSAO_DO_FORMATO,
+  esquemaDoPacote,
+  linhaM01,
+  linhaM02,
+  linhaM03,
+  linhaM04,
+  linhaM05,
+  linhaM06,
+  linhaM07,
+  linhaM08,
+  linhaM10,
+  linhaM11,
+  linhaM12,
+  type ValorDeParametro,
+} from "../src/motor/pacote/esquema.ts";
+import { COLUNAS_DE_CALCULO, OPERADORES_DE_CALCULO, OPERADORES_PERMITIDOS } from "../src/motor/pacote/operadores.ts";
 
 export const NOME_DO_PACOTE = "agu-tr-compras-2025-12";
-const VERSAO_DO_FORMATO = 1;
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 export const DIR_MATRIZES = path.join(RAIZ, "matrizes", "v1");
 export const DIR_PACOTE = path.join(RAIZ, "regras", NOME_DO_PACOTE);
-
-const STATUS = ["EXTRAIDO", "INFERIDO", "A_VERIFICAR"] as const;
-const VALIDACAO = ["", "OK", "CORRIGIR", "DUVIDA"] as const;
-const DOCUMENTO = ["AMBOS", "TR", "ETP"] as const;
-const RESULTADO_DE_TESTE = ["NAO_TESTADO", "CONSISTENTE", "PARCIAL", "DIVERGENTE", "NAO_LIDO"] as const;
 
 type Definicao = {
   arquivo: string;
@@ -38,6 +52,18 @@ type Definicao = {
   noPacote: boolean;
 };
 
+/**
+ * Definição de uma matriz que entra no pacote, tirada do esquema em src/motor/pacote/esquema.ts:
+ * as colunas são as chaves do esquema, na ordem do CSV, e os domínios são as colunas com enum.
+ */
+function doEsquema(arquivo: string, chave: string, formatoDaChave: RegExp | undefined, esquema: z.ZodObject): Definicao {
+  const dominios: Record<string, readonly string[]> = {};
+  for (const [coluna, tipo] of Object.entries(esquema.shape)) {
+    if (coluna !== "status" && tipo instanceof z.ZodEnum) dominios[coluna] = tipo.options as string[];
+  }
+  return { arquivo, chave, formatoDaChave, colunas: Object.keys(esquema.shape), dominios, noPacote: true };
+}
+
 // Colunas exatamente como estão no cabeçalho de cada CSV. Não renomeie.
 export const MATRIZES = {
   M00: {
@@ -46,80 +72,14 @@ export const MATRIZES = {
     colunas: ["arquivo", "pasta", "tipo_real", "numero_ano", "uasg", "om", "processo", "objeto_resumo", "categoria", "srp", "papel_srp", "formato", "paginas_lidas_total", "par", "problemas", "fonte", "status"],
     noPacote: false,
   },
-  M01: {
-    arquivo: "M01_etp_campos.csv",
-    chave: "id",
-    formatoDaChave: /^ETP-\d{2}\.\d{2}$/,
-    colunas: ["id", "secao_numero", "secao_nome", "campo", "inciso_art18", "obrigatorio_par2", "dispositivo_in58", "tipo", "regra_preenchimento", "regra_anti_alucinacao", "quando_nao_se_aplica", "destino_tr", "corpus_preenchido_omitido_na", "fonte", "status"],
-    dominios: { obrigatorio_par2: ["S", "N"] },
-    noPacote: true,
-  },
-  M02: {
-    arquivo: "M02_tr_blocos.csv",
-    chave: "id",
-    formatoDaChave: /^TR-[A-Za-z0-9]+(?:[.-][A-Za-z0-9]+)*$/,
-    colunas: ["id", "secao", "item_modelo", "texto_literal", "formatacao", "tipo", "grupo_alternativa", "opcao", "lacunas", "notas", "condicao_inclusao", "condicao_expr", "origem_dado", "normas", "fonte", "status"],
-    dominios: { formatacao: ["PRETO", "VERMELHO_ITALICO", "MISTO", "NOTA_EXPLICATIVA"] },
-    noPacote: true,
-  },
-  M03: {
-    arquivo: "M03_notas_explicativas.csv",
-    chave: "id",
-    formatoDaChave: /^NE-\d{3}$/,
-    colunas: ["id", "bloco_ancora", "trecho_ancorado", "texto_integral", "natureza", "regra_derivada", "afeta", "citacoes", "fonte", "status", "validacao", "comentario_validacao"],
-    dominios: {
-      natureza: ["OBRIGACAO", "ORIENTACAO_REDACAO", "CONDICAO", "VEDACAO", "REMISSAO_NORMATIVA", "PROCEDIMENTO_FORA_DO_TR"],
-      validacao: VALIDACAO,
-    },
-    noPacote: true,
-  },
-  M04: {
-    arquivo: "M04_wizard.csv",
-    chave: "id",
-    formatoDaChave: /^WZ-\d{2}$/,
-    colunas: ["id", "pergunta", "documento", "tipo_resposta", "opcoes", "depende_de", "pre_preenchida_por", "liga_blocos", "liga_expr", "desliga_blocos", "desliga_expr", "exige_justificativa", "coerencia", "fundamento", "fonte", "status", "validacao", "comentario_validacao"],
-    dominios: {
-      documento: DOCUMENTO,
-      tipo_resposta: ["UNICA", "MULTIPLA", "SIM_NAO", "NUMERO", "TEXTO"],
-      validacao: VALIDACAO,
-    },
-    noPacote: true,
-  },
-  M05: {
-    arquivo: "M05_variaveis.csv",
-    chave: "id",
-    formatoDaChave: /^VAR-\d{3}$/,
-    colunas: ["id", "nome", "descricao", "tipo_dado", "validacao", "obrigatoria", "origem", "usada_em", "fonte", "status"],
-    dominios: {
-      tipo_dado: ["TEXTO", "NUMERO", "MOEDA", "DATA", "LISTA", "TABELA"],
-      obrigatoria: ["S", "N", "CONDICIONAL"],
-      origem: ["SISTEMA", "CHECKLIST", "WIZARD", "DFD", "PESQUISA_PRECOS"],
-    },
-    noPacote: true,
-  },
-  M06: {
-    arquivo: "M06_derivacao_etp_tr.csv",
-    chave: "bloco_tr",
-    colunas: ["bloco_tr", "secao", "campos_etp", "variaveis", "perguntas_wz", "classe_origem", "regra_derivacao", "teste_par_117", "evidencia_par_117", "teste_caso_67_23", "evidencia_caso_67_23", "fonte", "status"],
-    dominios: { teste_par_117: RESULTADO_DE_TESTE, teste_caso_67_23: RESULTADO_DE_TESTE },
-    noPacote: true,
-  },
-  M07: {
-    arquivo: "M07_normas.csv",
-    chave: "id",
-    formatoDaChave: /^NRM-\d{3}$/,
-    colunas: ["id", "chave", "norma", "tipo", "numero", "ano", "orgao", "dispositivos_citados", "formas_citadas", "onde_citada", "n_citacoes", "origem", "situacao", "verificacao", "fonte", "status"],
-    dominios: { situacao: ["VIGENTE", "REVOGADA", "NAO_CONFERIDA"] },
-    noPacote: true,
-  },
-  M08: {
-    arquivo: "M08_clausulas_setoriais.csv",
-    chave: "id",
-    formatoDaChave: /^SET-\d{2}$/,
-    colunas: ["id", "tema", "documento", "origem_checklist", "condicao", "condicao_expr", "ponto_insercao", "texto_proposto", "variaveis", "perguntas_wz", "base_no_modelo", "evidencia_corpus", "observacao", "fonte", "status"],
-    dominios: { documento: DOCUMENTO },
-    noPacote: true,
-  },
+  M01: doEsquema("M01_etp_campos.csv", "id", /^ETP-\d{2}\.\d{2}$/, linhaM01),
+  M02: doEsquema("M02_tr_blocos.csv", "id", /^TR-[A-Za-z0-9]+(?:[.-][A-Za-z0-9]+)*$/, linhaM02),
+  M03: doEsquema("M03_notas_explicativas.csv", "id", /^NE-\d{3}$/, linhaM03),
+  M04: doEsquema("M04_wizard.csv", "id", /^WZ-\d{2}$/, linhaM04),
+  M05: doEsquema("M05_variaveis.csv", "id", /^VAR-\d{3}$/, linhaM05),
+  M06: doEsquema("M06_derivacao_etp_tr.csv", "bloco_tr", undefined, linhaM06),
+  M07: doEsquema("M07_normas.csv", "id", /^NRM-\d{3}$/, linhaM07),
+  M08: doEsquema("M08_clausulas_setoriais.csv", "id", /^SET-\d{2}$/, linhaM08),
   M09: {
     arquivo: "M09_desvios.csv",
     chave: "id",
@@ -127,31 +87,10 @@ export const MATRIZES = {
     colunas: ["id", "documento", "local", "tipo", "descricao", "referencia", "tratamento_no_sistema", "achado", "fonte", "status"],
     noPacote: false,
   },
-  M10: {
-    arquivo: "M10_validacoes.csv",
-    chave: "id",
-    formatoDaChave: /^VAL-\d{3}$/,
-    colunas: ["id", "regra", "tipo", "momento", "condicao", "condicao_expr", "mensagem", "afeta", "base", "achado", "fonte", "status"],
-    dominios: {
-      tipo: ["BLOQUEIO", "ALERTA", "INFORMATIVO"],
-      momento: ["CHECKLIST", "IMPORTACAO", "WIZARD", "ITENS", "MINUTA"],
-    },
-    noPacote: true,
-  },
-  M11: {
-    arquivo: "M11_checklist.csv",
-    chave: "id",
-    formatoDaChave: /^CK-[CP]-(?:CAB\.\d{2}|\d+(?:\.\d+)*)$/,
-    colunas: ["id", "checklist", "secao", "numero", "pergunta", "tipo_resposta", "opcoes", "orientacao", "condicional", "por_item", "destinos", "efeito", "regra", "fonte", "status"],
-    dominios: {
-      checklist: ["CONSUMO", "PERMANENTES"],
-      tipo_resposta: ["UNICA", "MULTIPLA", "SIM_NAO", "NUMERO", "TEXTO", "TABELA"],
-      por_item: ["S", "N"],
-      efeito: ["PREENCHE", "JUSTIFICA", "SUGERE", "SO_CONTROLE", "ALERTA"],
-    },
-    noPacote: true,
-  },
-} as const satisfies Record<string, Definicao>;
+  M10: doEsquema("M10_validacoes.csv", "id", /^VAL-\d{3}$/, linhaM10),
+  M11: doEsquema("M11_checklist.csv", "id", /^CK-[CP]-(?:CAB\.\d{2}|\d+(?:\.\d+)*)$/, linhaM11),
+  M12: doEsquema("M12_parametros.csv", "id", /^PAR-\d{2}$/, linhaM12),
+} satisfies Record<string, Definicao>;
 
 export type NomeDaMatriz = keyof typeof MATRIZES;
 const NOMES = Object.keys(MATRIZES) as NomeDaMatriz[];
@@ -168,16 +107,27 @@ const ORIGEM_DO_PREFIXO: Record<string, NomeDaMatriz> = {
   DV: "M09",
   VAL: "M10",
   CK: "M11",
+  PAR: "M12",
 };
-const CITACAO_DE_ID = /\b(ETP|TR|NE|WZ|VAR|NRM|SET|DV|VAL|CK)-[A-Za-z0-9]+(?:[.-][A-Za-z0-9]+)*/g;
+const CITACAO_DE_ID = /\b(ETP|TR|NE|WZ|VAR|NRM|SET|DV|VAL|CK|PAR)-[A-Za-z0-9]+(?:[.-][A-Za-z0-9]+)*/g;
+/** "VAR-113.calculo_expr" cita a coluna de um ID: o sufixo com duas ou mais minúsculas não faz parte do ID. */
+const SUFIXO_DE_COLUNA = /\.[a-z]{2,}.*$/;
 /** Todo ID tem algum dígito; sem dígito é notação de formato, como "ETP-SS.CC". */
 const TEM_DIGITO = /\d/;
 
-const OPERADORES_PERMITIDOS = new Set(["var", "==", "!=", "!", "!!", "and", "or", "if", "in", "merge", "some", "none", "<=", ">"]);
+const OPERADORES = new Set<string>(OPERADORES_PERMITIDOS);
+const OPERADORES_SO_DE_CALCULO = new Set<string>(OPERADORES_DE_CALCULO);
 const VARIAVEIS_LIVRES = new Set(["itens", "textos_livres"]);
-const PREFIXOS_LIVRES = ["importacao.", "checklist.", "parametros."];
+const PREFIXOS_LIVRES = ["importacao.", "checklist."];
 /** Colunas básicas de cada item, descritas na VAR-011 do M05; as demais vêm das linhas "tabela_itens.*". */
 const COLUNAS_BASICAS_DO_ITEM = ["numero", "especificacao", "catmat", "unidade", "quantidade", "valor_unitario"];
+/** Lista dos itens do mesmo grupo, disponível no contexto de item (README das matrizes). */
+const ITENS_DO_GRUPO = "itens_do_grupo";
+/** Colunas do M11 cujo valor é um objeto {destino: expressão}. */
+const COLUNAS_POR_DESTINO = new Set(["preenche_expr", "sugere_expr"]);
+/** Tipo do valor declarado na fonte de cada linha do M12 ("Tipo do valor: numero."). */
+const TIPO_DECLARADO = /Tipo do valor: (\w+)\./;
+const NUMERO = /^-?\d+(?:\.\d+)?$/;
 
 export type TipoDeErro =
   | "csv"
@@ -188,6 +138,9 @@ export type TipoDeErro =
   | "json_invalido"
   | "operador"
   | "variavel"
+  | "ordem"
+  | "parametro"
+  | "pacote"
   | "piloto";
 
 export type Erro = { tipo: TipoDeErro; matriz: NomeDaMatriz; linha?: number; coluna?: string; mensagem: string };
@@ -305,8 +258,9 @@ function conferirReferencias(
   let conferidas = 0;
   linhas.forEach((linha, indice) => {
     for (const [coluna, valor] of Object.entries(linha)) {
-      for (const [citado, prefixo] of valor.matchAll(CITACAO_DE_ID)) {
-        if (!TEM_DIGITO.test(citado)) continue;
+      for (const [encontrado, prefixo] of valor.matchAll(CITACAO_DE_ID)) {
+        if (!TEM_DIGITO.test(encontrado)) continue;
+        const citado = encontrado.replace(SUFIXO_DE_COLUNA, "");
         conferidas++;
         const origem = ORIGEM_DO_PREFIXO[prefixo];
         if (!ids[origem].has(citado)) {
@@ -324,7 +278,61 @@ function conferirReferencias(
   return conferidas;
 }
 
-type Vocabulario = { raiz: Set<string>; item: Set<string> };
+/**
+ * Converte o valor de uma linha do M12 pelo tipo declarado na fonte ("Tipo do valor: numero.").
+ * Número com ponto decimal, lista JSON ou texto; o que não se encaixa no tipo declarado é erro.
+ */
+function valorDoParametro(linha: Linha): { valor: ValorDeParametro } | { problema: string } {
+  const tipo = TIPO_DECLARADO.exec(linha.fonte)?.[1];
+  if (!tipo || !(TIPO_DE_PARAMETRO as readonly string[]).includes(tipo)) {
+    return { problema: `fonte sem "Tipo do valor: ${TIPO_DE_PARAMETRO.join(" | ")}."` };
+  }
+  const valor = linha.valor;
+  if (tipo === "numero") {
+    return NUMERO.test(valor) ? { valor: Number(valor) } : { problema: `valor "${valor}" não é número (use ponto decimal, sem unidade)` };
+  }
+  if (tipo === "lista") {
+    try {
+      const lista: unknown = JSON.parse(valor);
+      if (Array.isArray(lista)) return { valor: lista as ValorDeParametro };
+    } catch {
+      // cai no problema abaixo
+    }
+    return { problema: `valor "${valor}" não é lista JSON` };
+  }
+  return valor.trim() === "" ? { problema: "valor de texto vazio" } : { valor };
+}
+
+function lerParametros(linhas: Linha[], erros: Erro[]): Record<string, ValorDeParametro> {
+  const parametros: Record<string, ValorDeParametro> = {};
+  linhas.forEach((linha, indice) => {
+    const onde = { tipo: "parametro" as const, matriz: "M12" as const, linha: linhaDaPlanilha(indice) };
+    if (!/^[a-z][a-z0-9_]*$/.test(linha.nome)) {
+      erros.push({ ...onde, coluna: "nome", mensagem: `nome "${linha.nome}" fora do formato (minúsculas, dígitos e _)` });
+      return;
+    }
+    if (linha.nome in parametros) {
+      erros.push({ ...onde, coluna: "nome", mensagem: `nome ${linha.nome} repetido` });
+      return;
+    }
+    const lido = valorDoParametro(linha);
+    if ("problema" in lido) {
+      erros.push({ ...onde, coluna: "valor", mensagem: `${linha.id} (${linha.nome}): ${lido.problema}` });
+      return;
+    }
+    parametros[linha.nome] = lido.valor;
+  });
+  return parametros;
+}
+
+type Vocabulario = {
+  /** Variáveis globais: respostas do wizard e do checklist, variáveis do M05, metadados. */
+  raiz: Set<string>;
+  /** Atributos de item. */
+  item: Set<string>;
+  /** Nomes do M12. */
+  parametros: Set<string>;
+};
 
 function montarVocabulario(linhas: Record<NomeDaMatriz, Linha[]>, erros: Erro[]): Vocabulario {
   const raiz = new Set(VARIAVEIS_LIVRES);
@@ -347,66 +355,181 @@ function montarVocabulario(linhas: Record<NomeDaMatriz, Linha[]>, erros: Erro[])
   for (const linha of linhas.M05) {
     if (linha.nome.startsWith("tabela_itens.")) item.add(linha.nome.slice("tabela_itens.".length));
   }
-  return { raiz, item };
+  return { raiz, item, parametros: new Set(linhas.M12.map((l) => l.nome)) };
 }
 
-/** Contexto de uma variável: a raiz dos dados, um item (dentro de some/none sobre itens) ou um elemento de lista. */
-type Contexto = "raiz" | "item" | "elemento";
+/**
+ * Onde a expressão está sendo lida:
+ * - raiz: dados globais;
+ * - item: um item (some/none/reduce sobre itens, cálculo por item): atributos do item mais os globais;
+ * - elemento: some/none sobre lista que não é de itens; só vale {"var": ""};
+ * - reduce: passo do reduce; só valem accumulator e current (current.<x> quando a lista é de itens).
+ */
+type Contexto = { tipo: "raiz" } | { tipo: "item" } | { tipo: "elemento" } | { tipo: "reduce"; sobreItens: boolean };
 
-function conferirVariavel(nome: unknown, contexto: Contexto, vocabulario: Vocabulario): string | undefined {
-  if (typeof nome !== "string") return `var com nome que não é texto: ${JSON.stringify(nome)}`;
-  if (contexto === "elemento") return nome === "" ? undefined : `variável ${nome} dentro de some/none sobre lista que não é itens`;
-  if (contexto === "item") return vocabulario.item.has(nome) ? undefined : `atributo de item desconhecido: ${nome}`;
-  if (vocabulario.raiz.has(nome)) return undefined;
+type Problema = { tipo: "operador" | "variavel"; mensagem: string };
+
+/** Resultado da leitura de uma expressão: problemas e variáveis usadas (para a ordem de cálculo). */
+type Leitura = { problemas: Problema[]; usadas: { nome: string; deItem: boolean }[] };
+
+const ehReservadaDoReduce = (nome: string) =>
+  nome === "accumulator" || nome === "current" || nome.startsWith("accumulator.") || nome.startsWith("current.");
+
+/** Nome de uma variável global ou de item, fora do reduce. */
+function conferirNome(nome: string, noItem: boolean, vocabulario: Vocabulario, leitura: Leitura): string | undefined {
+  if (ehReservadaDoReduce(nome)) return `${nome.split(".")[0]} só vale dentro de reduce`;
+  if (vocabulario.item.has(nome)) {
+    if (!noItem) return `atributo de item ${nome} fora de some, none ou reduce sobre itens`;
+    leitura.usadas.push({ nome, deItem: true });
+    return undefined;
+  }
+  if (nome === ITENS_DO_GRUPO) return noItem ? undefined : `${ITENS_DO_GRUPO} só vale no contexto de item`;
+  if (vocabulario.raiz.has(nome)) {
+    leitura.usadas.push({ nome, deItem: false });
+    return undefined;
+  }
+  if (nome.startsWith("parametros.")) {
+    const parametro = nome.slice("parametros.".length);
+    return vocabulario.parametros.has(parametro) ? undefined : `parâmetro ${parametro} sem linha no M12`;
+  }
   if (PREFIXOS_LIVRES.some((prefixo) => nome.startsWith(prefixo) && nome.length > prefixo.length)) return undefined;
   return `variável desconhecida: ${nome}`;
 }
 
-/** Percorre a expressão e devolve os problemas encontrados, com o tipo de cada um. */
-function conferirExpressao(
-  expressao: unknown,
-  contexto: Contexto,
-  vocabulario: Vocabulario,
-): { tipo: "operador" | "variavel"; mensagem: string }[] {
-  if (Array.isArray(expressao)) return expressao.flatMap((e) => conferirExpressao(e, contexto, vocabulario));
-  if (expressao === null || typeof expressao !== "object") return [];
+function conferirVariavel(nome: unknown, contexto: Contexto, vocabulario: Vocabulario, leitura: Leitura): string | undefined {
+  if (typeof nome !== "string") return `var com nome que não é texto: ${JSON.stringify(nome)}`;
+  switch (contexto.tipo) {
+    case "elemento":
+      return nome === "" ? undefined : `variável ${nome} dentro de some/none sobre lista que não é de itens`;
+    case "reduce":
+      if (nome === "accumulator" || nome === "current") return undefined;
+      if (nome.startsWith("current.")) {
+        if (!contexto.sobreItens) return `${nome}: current só tem atributos quando o reduce é sobre itens`;
+        return conferirNome(nome.slice("current.".length), true, vocabulario, leitura);
+      }
+      return `dentro de reduce só valem accumulator e current (encontrado: ${nome})`;
+    default:
+      if (nome === "") return `{"var": ""} só vale dentro de some/none sobre lista`;
+      return conferirNome(nome, contexto.tipo === "item", vocabulario, leitura);
+  }
+}
+
+/** Nome da variável em {"var": "x"} ou {"var": ["x", padrão]}; undefined se não for var. */
+function nomeDoVar(expressao: unknown): unknown {
+  if (expressao === null || typeof expressao !== "object" || Array.isArray(expressao)) return undefined;
+  const registro = expressao as Record<string, unknown>;
+  if (Object.keys(registro).length !== 1 || !("var" in registro)) return undefined;
+  return Array.isArray(registro.var) ? registro.var[0] : registro.var;
+}
+
+/** A lista é de itens quando é {"var": "itens"}, ou {"var": "itens_do_grupo"} no contexto de item. */
+function ehListaDeItens(lista: unknown, contexto: Contexto): boolean {
+  const nome = nomeDoVar(lista);
+  if (contexto.tipo !== "raiz" && contexto.tipo !== "item") return false;
+  return nome === "itens" || (contexto.tipo === "item" && nome === ITENS_DO_GRUPO);
+}
+
+/** Percorre a expressão e registra problemas e variáveis usadas. */
+function lerExpressao(expressao: unknown, contexto: Contexto, calculo: boolean, vocabulario: Vocabulario, leitura: Leitura): void {
+  if (Array.isArray(expressao)) {
+    for (const e of expressao) lerExpressao(e, contexto, calculo, vocabulario, leitura);
+    return;
+  }
+  if (expressao === null || typeof expressao !== "object") return;
   const chaves = Object.keys(expressao);
   if (chaves.length !== 1) {
-    return [{ tipo: "operador", mensagem: `objeto com ${chaves.length} chaves; cada operação tem exatamente uma` }];
+    leitura.problemas.push({ tipo: "operador", mensagem: `objeto com ${chaves.length} chaves; cada operação tem exatamente uma` });
+    return;
   }
   const operador = chaves[0];
   const argumento = (expressao as Record<string, unknown>)[operador];
-  if (!OPERADORES_PERMITIDOS.has(operador)) return [{ tipo: "operador", mensagem: `operador fora da lista: ${operador}` }];
+  if (OPERADORES_SO_DE_CALCULO.has(operador) && !calculo) {
+    leitura.problemas.push({
+      tipo: "operador",
+      mensagem: `operador ${operador} só é aceito em ${COLUNAS_DE_CALCULO.join(" e ")} (P31)`,
+    });
+    return;
+  }
+  if (!OPERADORES.has(operador) && !OPERADORES_SO_DE_CALCULO.has(operador)) {
+    leitura.problemas.push({ tipo: "operador", mensagem: `operador fora da lista: ${operador}` });
+    return;
+  }
   const argumentos = Array.isArray(argumento) ? argumento : [argumento];
+  const ler = (e: unknown, c: Contexto = contexto) => lerExpressao(e, c, calculo, vocabulario, leitura);
   if (operador === "var") {
-    const problema = conferirVariavel(argumentos[0], contexto, vocabulario);
-    return problema ? [{ tipo: "variavel", mensagem: problema }] : [];
+    if (argumentos.length < 1 || argumentos.length > 2) {
+      leitura.problemas.push({ tipo: "operador", mensagem: "var precisa de 1 ou 2 argumentos (nome e padrão)" });
+      return;
+    }
+    const problema = conferirVariavel(argumentos[0], contexto, vocabulario, leitura);
+    if (problema) leitura.problemas.push({ tipo: "variavel", mensagem: problema });
+    if (argumentos.length === 2) ler(argumentos[1]);
+    return;
   }
   if (operador === "some" || operador === "none") {
-    if (argumentos.length !== 2) return [{ tipo: "operador", mensagem: `${operador} precisa de 2 argumentos` }];
+    if (argumentos.length !== 2) {
+      leitura.problemas.push({ tipo: "operador", mensagem: `${operador} precisa de 2 argumentos` });
+      return;
+    }
     const [lista, condicao] = argumentos;
-    const sobreItens = contexto === "raiz" && JSON.stringify(lista) === '{"var":"itens"}';
-    return [
-      ...conferirExpressao(lista, contexto, vocabulario),
-      ...conferirExpressao(condicao, sobreItens ? "item" : "elemento", vocabulario),
-    ];
+    ler(lista);
+    ler(condicao, ehListaDeItens(lista, contexto) ? { tipo: "item" } : { tipo: "elemento" });
+    return;
   }
-  return conferirExpressao(argumentos, contexto, vocabulario);
+  if (operador === "reduce") {
+    if (argumentos.length !== 3) {
+      leitura.problemas.push({ tipo: "operador", mensagem: "reduce precisa de 3 argumentos (lista, passo e valor inicial)" });
+      return;
+    }
+    const [lista, passo, inicial] = argumentos;
+    ler(lista);
+    ler(inicial);
+    ler(passo, { tipo: "reduce", sobreItens: ehListaDeItens(lista, contexto) });
+    return;
+  }
+  ler(argumentos);
 }
 
-/** Confere as colunas *_expr e devolve as linhas com essas colunas já convertidas para JSON. */
+/** Contexto de partida de cada coluna: cálculo por item no M05 (tabela_itens.*) e destinos itens.* no M11. */
+function contextoInicial(nome: NomeDaMatriz, linha: Linha): Contexto {
+  return nome === "M05" && linha.nome.startsWith("tabela_itens.") ? { tipo: "item" } : { tipo: "raiz" };
+}
+
+type ExpressaoLida = { valor: unknown; leitura: Leitura };
+
+/** Lê o objeto {destino: expressão} de preenche_expr e sugere_expr. */
+function lerPorDestino(objeto: unknown, vocabulario: Vocabulario, leitura: Leitura): void {
+  if (objeto === null || typeof objeto !== "object" || Array.isArray(objeto)) {
+    leitura.problemas.push({ tipo: "operador", mensagem: "esperado um objeto {destino: expressão}" });
+    return;
+  }
+  for (const [destino, expressao] of Object.entries(objeto)) {
+    if (destino.startsWith("itens.")) {
+      const atributo = destino.slice("itens.".length);
+      if (!vocabulario.item.has(atributo)) leitura.problemas.push({ tipo: "variavel", mensagem: `destino com atributo de item desconhecido: ${destino}` });
+      lerExpressao(expressao, { tipo: "item" }, false, vocabulario, leitura);
+      continue;
+    }
+    if (!/^(WZ|VAR)_/.test(destino) || !vocabulario.raiz.has(destino)) {
+      leitura.problemas.push({ tipo: "variavel", mensagem: `destino desconhecido: ${destino} (use WZ_xx, VAR_xxx ou itens.<atributo>)` });
+    }
+    lerExpressao(expressao, { tipo: "raiz" }, false, vocabulario, leitura);
+  }
+}
+
+/** Confere as colunas *_expr e devolve, por linha, as expressões já convertidas e o que cada uma usa. */
 function conferirExpressoes(
   nome: NomeDaMatriz,
   linhas: Linha[],
   vocabulario: Vocabulario,
   erros: Erro[],
-): Record<string, unknown>[] {
+): Record<string, ExpressaoLida | null>[] {
   return linhas.map((linha, indice) => {
-    const convertida: Record<string, unknown> = { ...linha };
+    const lidas: Record<string, ExpressaoLida | null> = {};
     for (const [coluna, valor] of Object.entries(linha)) {
       if (!coluna.endsWith("_expr")) continue;
       if (valor.trim() === "") {
-        convertida[coluna] = null;
+        lidas[coluna] = null;
         continue;
       }
       const onde = { matriz: nome, linha: linhaDaPlanilha(indice), coluna };
@@ -415,12 +538,64 @@ function conferirExpressoes(
         expressao = JSON.parse(valor);
       } catch (e) {
         erros.push({ tipo: "json_invalido", ...onde, mensagem: `JSON inválido: ${(e as Error).message}` });
+        lidas[coluna] = null;
         continue;
       }
-      for (const problema of conferirExpressao(expressao, "raiz", vocabulario)) erros.push({ ...onde, ...problema });
-      convertida[coluna] = expressao;
+      const leitura: Leitura = { problemas: [], usadas: [] };
+      if (nome === "M11" && COLUNAS_POR_DESTINO.has(coluna)) {
+        lerPorDestino(expressao, vocabulario, leitura);
+      } else {
+        const calculo = (COLUNAS_DE_CALCULO as readonly string[]).includes(`${nome}.${coluna}`);
+        lerExpressao(expressao, contextoInicial(nome, linha), calculo, vocabulario, leitura);
+      }
+      for (const problema of leitura.problemas) erros.push({ ...onde, ...problema });
+      lidas[coluna] = { valor: expressao, leitura };
     }
-    return convertida;
+    return lidas;
+  });
+}
+
+/**
+ * M05: calculo_ordem é inteiro positivo, único e presente só junto com calculo_expr,
+ * e cada cálculo só lê variável ou atributo calculado antes dele.
+ */
+function conferirOrdemDeCalculo(linhas: Linha[], expressoes: Record<string, ExpressaoLida | null>[], erros: Erro[]): void {
+  const ordemPorVariavel = new Map<string, number>();
+  const ordemPorAtributo = new Map<string, number>();
+  const vistas = new Map<number, string>();
+  linhas.forEach((linha, indice) => {
+    const onde = { tipo: "ordem" as const, matriz: "M05" as const, linha: linhaDaPlanilha(indice), coluna: "calculo_ordem" };
+    const temExpressao = linha.calculo_expr.trim() !== "";
+    if (linha.calculo_ordem === "") {
+      if (temExpressao) erros.push({ ...onde, mensagem: `${linha.id} tem calculo_expr sem calculo_ordem` });
+      return;
+    }
+    if (!/^[1-9]\d*$/.test(linha.calculo_ordem)) {
+      erros.push({ ...onde, mensagem: `${linha.id}: calculo_ordem "${linha.calculo_ordem}" não é inteiro positivo` });
+      return;
+    }
+    if (!temExpressao) erros.push({ ...onde, mensagem: `${linha.id} tem calculo_ordem sem calculo_expr` });
+    const ordem = Number(linha.calculo_ordem);
+    const outra = vistas.get(ordem);
+    if (outra) erros.push({ ...onde, mensagem: `${linha.id} e ${outra} têm a mesma calculo_ordem ${ordem}` });
+    vistas.set(ordem, linha.id);
+    ordemPorVariavel.set(variavelDoId(linha.id), ordem);
+    if (linha.nome.startsWith("tabela_itens.")) ordemPorAtributo.set(linha.nome.slice("tabela_itens.".length), ordem);
+  });
+  linhas.forEach((linha, indice) => {
+    const lida = expressoes[indice].calculo_expr;
+    if (!lida || !/^[1-9]\d*$/.test(linha.calculo_ordem)) return;
+    const ordem = Number(linha.calculo_ordem);
+    const problemas = new Set<string>();
+    for (const { nome, deItem } of lida.leitura.usadas) {
+      const usada = (deItem ? ordemPorAtributo : ordemPorVariavel).get(nome);
+      if (usada !== undefined && usada >= ordem) {
+        problemas.add(`${linha.id} (ordem ${ordem}) usa ${deItem ? `o atributo ${nome}` : nome}, que tem ordem ${usada}`);
+      }
+    }
+    for (const mensagem of problemas) {
+      erros.push({ tipo: "ordem", matriz: "M05", linha: linhaDaPlanilha(indice), coluna: "calculo_expr", mensagem });
+    }
   });
 }
 
@@ -476,6 +651,14 @@ export function jsonEstavel(valor: unknown): string {
   return `${JSON.stringify(ordenar(valor), null, 2)}\n`;
 }
 
+/** Linha como vai para o pacote: expressões em JSON e calculo_ordem em número. */
+function linhaDoPacote(linha: Linha, expressoes: Record<string, ExpressaoLida | null>): Record<string, unknown> {
+  const convertida: Record<string, unknown> = { ...linha };
+  for (const [coluna, lida] of Object.entries(expressoes)) convertida[coluna] = lida ? lida.valor : null;
+  if ("calculo_ordem" in linha) convertida.calculo_ordem = linha.calculo_ordem === "" ? null : Number(linha.calculo_ordem);
+  return convertida;
+}
+
 /** Compila a partir do conteúdo de cada CSV (nome do arquivo -> texto). Não lê nem grava nada. */
 export function compilarConteudos(conteudos: Record<string, string>, opcoes: Opcoes = {}): Resultado {
   const erros: Erro[] = [];
@@ -499,23 +682,44 @@ export function compilarConteudos(conteudos: Record<string, string>, opcoes: Opc
   let citacoes = 0;
   for (const nome of NOMES) citacoes += conferirReferencias(nome, linhas[nome], ids, erros);
 
+  const parametros = lerParametros(linhas.M12, erros);
   const vocabulario = montarVocabulario(linhas, erros);
-  const convertidas = {} as Record<NomeDaMatriz, Record<string, unknown>[]>;
-  for (const nome of NOMES) convertidas[nome] = conferirExpressoes(nome, linhas[nome], vocabulario, erros);
+  const expressoes = {} as Record<NomeDaMatriz, Record<string, ExpressaoLida | null>[]>;
+  for (const nome of NOMES) expressoes[nome] = conferirExpressoes(nome, linhas[nome], vocabulario, erros);
+  conferirOrdemDeCalculo(linhas.M05, expressoes.M05, erros);
 
   if (opcoes.piloto) conferirPiloto(linhas, erros);
 
   const relatorio = montarRelatorio(linhas, citacoes);
   if (erros.length > 0) return { erros, relatorio };
 
-  const json = jsonEstavel({
+  const pacote = {
     pacote: NOME_DO_PACOTE,
     versao_do_formato: VERSAO_DO_FORMATO,
     arquivos_de_origem: Object.fromEntries(
       NOMES.map((n) => [MATRIZES[n].arquivo, sha256(conteudos[MATRIZES[n].arquivo])]),
     ),
-    matrizes: Object.fromEntries(NOMES.filter((n) => MATRIZES[n].noPacote).map((n) => [n, convertidas[n]])),
-  });
+    parametros,
+    matrizes: Object.fromEntries(
+      NOMES.filter((n) => MATRIZES[n].noPacote).map((n) => [n, linhas[n].map((l, i) => linhaDoPacote(l, expressoes[n][i]))]),
+    ),
+  };
+  // O pacote tem de bater com os tipos que o motor usa (src/motor/pacote/esquema.ts).
+  const conferido = esquemaDoPacote.safeParse(pacote);
+  if (!conferido.success) {
+    for (const problema of conferido.error.issues.slice(0, 20)) {
+      const [, matriz, linha, coluna] = problema.path;
+      erros.push({
+        tipo: "pacote",
+        matriz: (typeof matriz === "string" && matriz in MATRIZES ? matriz : "M00") as NomeDaMatriz,
+        linha: typeof linha === "number" ? linhaDaPlanilha(linha) : undefined,
+        coluna: typeof coluna === "string" ? coluna : problema.path.join("."),
+        mensagem: problema.message,
+      });
+    }
+    return { erros, relatorio };
+  }
+  const json = jsonEstavel(pacote);
   return { erros, relatorio, pacote: { json, sha256: sha256(json) } };
 }
 
