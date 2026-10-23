@@ -10,7 +10,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run",
+    "compilar": "node scripts/compilar-regras.ts",
+    "compilar:piloto": "node scripts/compilar-regras.ts --piloto"
   },
   "dependencies": {
     "next": "16.4.2",
