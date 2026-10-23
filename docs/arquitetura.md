@@ -209,17 +209,17 @@ São seis marcos, e cada um só termina quando cumpre o critério de saída. Os 
 | Marco | Versão | Entrega | Sai quando | Depende de |
 | --- | --- | --- | --- | --- |
 | 0. Esqueleto | v0 | Repositório, CLAUDE.md, testes e compilador lendo as matrizes | O compilador gera o pacote sem erro a partir dos CSV atuais | Nada |
-| 1. Motor do TR, sem telas | v0 | Wizard, regras por item, montagem com numeração e validação determinística | C1 a C8 passam e os TRs 23/2026 e 58/2026 são reproduzidos, exceto nos trechos variáveis | Regras CONDICAO validadas e checklist congelado |
-| 2. Telas e banco | v0 | Login, checklist do requisitante, wizard, itens, revisão, PDF, copiar por campo e auditoria | Alguém de fora do desenvolvimento faz um TR do início ao PDF, com dados fictícios | Prazo de expurgo decidido |
+| 1. Motor do TR, sem telas | v0 | Wizard, regras por item, montagem com numeração e validação determinística | C1 a C8 passam e os TRs 23/2026 e 58/2026 são reproduzidos, exceto nos trechos variáveis | Matrizes da Fase 10 (feitas) |
+| 2. Telas e banco | v0 | Login, checklist do requisitante, wizard, itens, revisão, PDF, copiar por campo e auditoria | Alguém de fora do desenvolvimento faz um TR do início ao PDF, com dados fictícios | Checklist congelado |
 | 3. ETP e derivação | v1 | ETP montado a partir do checklist (M11) e derivação do ETP para o TR (M06) | O par 117/2025 é reproduzido a partir das mesmas respostas | Fases 4 a 9 das matrizes (feitas) |
-| 4. Piloto na OM | piloto | 3 processos reais feitos em paralelo com o método atual | Nenhuma ressalva da CJU atribuível ao sistema e tempo de elaboração medido | Hospedagem aprovada, conta e patrocinador formal |
+| 4. Piloto na OM | piloto | 3 processos reais feitos em paralelo com o método atual | Nenhuma ressalva da CJU atribuível ao sistema e tempo de elaboração medido | Regras do M03 e do M04 validadas, hospedagem aprovada, conta e patrocinador formal |
 | 5. IA | v2 | IA melhora a redação do ETP a partir do checklist e do DFD, citando a pergunta de origem | Nenhuma citação fora da base curada no banco de testes de DFDs | Provedor de IA aprovado |
 
 O Marco 1 concentra o risco: se o motor não reproduzir os TRs reais, nenhuma tela resolve.
 
 ## Decisões em aberto
 
-Nenhuma decisão em aberto impede o Marco 0. A validação das regras e a versão do checklist travam o Marco 1; o formato do checklist e o expurgo, o Marco 2; aprovação da hospedagem, conta e patrocinador, o Marco 4; e o provedor de IA, o Marco 5.
+O checklist congelado trava o Marco 2. A validação das regras do M03 e do M04, a aprovação da hospedagem, a conta e o patrocinador travam o Marco 4; o provedor de IA, o Marco 5. O prazo de expurgo já está decidido: rascunho guardado enquanto o processo está aberto e apagado 30 dias depois de concluído. Recomenda-se validar as regras aos poucos, durante os Marcos 1 a 3, para o retrabalho não chegar todo junto antes do piloto.
 
 | Decisão | Opções | Recomendação | Trava |
 | --- | --- | --- | --- |

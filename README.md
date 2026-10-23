@@ -47,10 +47,10 @@ O GitHub Actions roda lint, typecheck, testes e compilação em todo push e pull
 | Marco | Entrega | Depende de |
 | --- | --- | --- |
 | 0. Esqueleto | Repositório, testes e compilador lendo as matrizes | nada |
-| 1. Motor do TR | Wizard, regras por item, montagem e validação, sem telas | regras CONDICAO validadas e checklist congelado |
-| 2. Telas e banco | Login, checklist, wizard, itens, revisão, PDF, copiar por campo, auditoria | prazo de expurgo |
+| 1. Motor do TR | Wizard, regras por item, montagem e validação, sem telas | matrizes da Fase 10 (feitas) |
+| 2. Telas e banco | Login, checklist, wizard, itens, revisão, PDF, copiar por campo, auditoria | checklist congelado |
 | 3. ETP | ETP montado a partir do checklist e derivação para o TR | Fases 4 a 9 das matrizes (feitas) |
-| 4. Piloto | 3 processos reais em paralelo com o método atual | aprovação da hospedagem, conta e patrocinador |
+| 4. Piloto | 3 processos reais em paralelo com o método atual | regras do M03 e do M04 validadas, aprovação da hospedagem, conta e patrocinador |
 | 5. IA | Melhora a redação do ETP, citando a pergunta de origem | provedor de IA aprovado |
 
 Detalhes em `docs/arquitetura.md`.
