@@ -97,7 +97,7 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/wiz
                 </p>
                 <p className="text-sm">{c.trechos.length ? `⚠ Falta em: ${c.trechos.join(", ")}` : `✓ Informado: ${textoDoValor(c.valor)}`}</p>
                 {!somenteLeitura && (
-                  <FormularioCampo acao={salvarCampo.bind(null, id)} c={{ id: c.id, descricao: c.descricao, validacao: c.validacao, codigos: c.codigos, forma: c.forma, valores: textoDoCampo(c), falta: c.trechos.length > 0 }} />
+                  <FormularioCampo acao={salvarCampo.bind(null, id)} c={{ id: c.id, descricao: c.descricao, validacao: c.validacao, codigos: c.codigos, forma: c.forma, valores: c.id === "VAR-001" && c.valor === null ? { valor: p.processo.numero } : textoDoCampo(c), falta: c.trechos.length > 0 }} />
                 )}
               </li>
             ))}

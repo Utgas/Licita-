@@ -119,6 +119,13 @@ describe("campos extras que a minuta pede", () => {
     expect(depois.trechos.find((t) => t.id === "TR-1.5")?.texto).toContain("12 (doze) meses");
   });
 
+  it("pede também o dado que uma validação de bloqueio lê", () => {
+    const semNumero = gerarMinuta({ pacote, hashDoPacote: hash, ...C8, variaveis: { VAR_057: 25 } } as EntradaProcesso);
+    const pedidos = camposDaMinuta(pacote, semNumero, vazio).campos;
+    expect(pedidos.find((c) => c.id === "VAR-001")?.trechos).toContain("VAL-005");
+    expect(pedidos.find((c) => c.id === "VAR-099")?.trechos).toContain("VAL-047");
+  });
+
   it("lê número com vírgula, ponto de milhar e símbolos", () => {
     expect(numeroDigitado("1.234,56")).toBe(1234.56);
     expect(numeroDigitado("R$ 10")).toBe(10);

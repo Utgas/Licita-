@@ -9,6 +9,7 @@
  *   informou, com a forma de entrada tirada do mapa de lacunas (campo, índice, unidade) e do tabela_colunas.
  */
 import type { Minuta } from "../motor/minuta.ts";
+import { variaveisLidas } from "../motor/montagem/blocos.ts";
 import type { Valor } from "../motor/pacote/avaliador.ts";
 import type { LinhaM04, LinhaM05, Pacote } from "../motor/pacote/esquema.ts";
 import { variavelDoId } from "../motor/pacote/nomes.ts";
@@ -132,7 +133,7 @@ export type CampoDaMinuta = {
   /** Códigos aceitos, quando a validação do M05 os lista (ex.: DIAS, MESES ou ANOS). */
   codigos: string[];
   forma: FormaDoCampo;
-  /** Trechos da minuta onde o dado falta (vazio quando já foi informado). */
+  /** Trechos da minuta (ou validações de bloqueio) onde o dado falta; vazio quando já foi informado. */
   trechos: string[];
   valor: Valor;
 };
@@ -220,6 +221,15 @@ export function camposDaMinuta(pacote: Pacote, minuta: Minuta, p: ProcessoComple
     for (const unidade of usos.get(variavelDoId(fonte))?.unidades ?? []) {
       const id = unidade.replace("_", "-");
       if (!trechos.has(id) && minuta.processo.globais[unidade] === undefined) trechos.set(id, new Set(trechos.get(fonte)));
+    }
+  }
+  // Dado que uma validação de bloqueio disparada lê (VAL-005 lê a VAR-001, VAL-047 a VAR-099) também é pedido aqui.
+  const m10 = new Map(pacote.matrizes.M10.map((l) => [l.id, l]));
+  for (const v of minuta.validacoes.disparadas.filter((x) => x.tipo === "BLOQUEIO")) {
+    for (const nome of variaveisLidas(m10.get(v.id)?.condicao_expr ?? null)) {
+      if (!/^VAR_\d+$/.test(nome)) continue;
+      const id = nome.replace("_", "-");
+      trechos.set(id, (trechos.get(id) ?? new Set()).add(v.id));
     }
   }
   const informadas = new Map(p.respostasWizard.filter((r) => r.pergunta.startsWith("VAR-")).map((r) => [r.pergunta, r.valor as Valor]));
