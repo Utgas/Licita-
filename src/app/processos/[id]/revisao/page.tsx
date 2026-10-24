@@ -46,7 +46,7 @@ async function Conteudo({ params }: PageProps<"/processos/[id]/revisao">) {
             <ul className="list-disc pl-5">
               {bloqueios.map((v) => (
                 <li key={v.id}>
-                  <strong>{v.id}</strong>: {v.mensagem}
+                  <strong>{v.id}</strong>: {v.mensagem} <OndeResolver id={id} momento={v.momento} />
                 </li>
               ))}
             </ul>
@@ -89,7 +89,7 @@ async function Conteudo({ params }: PageProps<"/processos/[id]/revisao">) {
             <ul className="list-disc pl-5">
               {alertas.map((v) => (
                 <li key={v.id}>
-                  <strong>{v.id}</strong>: {v.mensagem}
+                  <strong>{v.id}</strong>: {v.mensagem} <OndeResolver id={id} momento={v.momento} />
                 </li>
               ))}
             </ul>
@@ -136,6 +136,25 @@ async function Conteudo({ params }: PageProps<"/processos/[id]/revisao">) {
         )}
       </main>
     </>
+  );
+}
+
+/** Tela onde se corrige o dado que a validação confere (coluna momento do M10). */
+const TELA_DO_MOMENTO: Record<string, [string, string]> = {
+  CHECKLIST: ["checklist", "corrigir no checklist"],
+  IMPORTACAO: ["itens", "corrigir nos itens"],
+  ITENS: ["itens", "corrigir nos itens"],
+  WIZARD: ["wizard", "corrigir no wizard"],
+  MINUTA: ["wizard", "completar no wizard"],
+};
+
+function OndeResolver({ id, momento }: { id: string; momento: string }) {
+  const tela = TELA_DO_MOMENTO[momento];
+  if (!tela) return null;
+  return (
+    <Link href={`/processos/${id}/${tela[0]}`} className="underline">
+      ({tela[1]})
+    </Link>
   );
 }
 
