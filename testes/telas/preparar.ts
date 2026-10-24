@@ -28,5 +28,11 @@ for (const [chave, u] of Object.entries(USUARIOS)) {
   const linha = { omId: om.id, nome: `Usuário ${chave}`, email: u.email, perfil: u.perfil, ativo: true, senhaProvisoria: false };
   await db.insert(esquema.usuario).values({ id: data.user.id, ...linha }).onConflictDoUpdate({ target: esquema.usuario.id, set: linha });
 }
+// Confere que cada um entra com a chave pública, como a tela faz: erro de configuração do Auth aparece aqui, claro.
+const publico = createClient(process.env.SUPABASE_URL as string, process.env.SUPABASE_PUBLISHABLE_KEY as string, { auth: { persistSession: false } });
+for (const u of Object.values(USUARIOS)) {
+  const { error } = await publico.auth.signInWithPassword({ email: u.email, password: u.senha });
+  if (error) throw new Error(`login de ${u.email} recusado pelo Supabase: ${error.code ?? error.message}`);
+}
 console.log("Usuários de teste prontos.");
 await cliente.end();
