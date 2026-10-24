@@ -19,6 +19,9 @@ export async function abrirProcesso(id: string): Promise<{ usuario: UsuarioLogad
 
 export class ProcessoConcluido extends Error {}
 
+/** Entrada recusada dentro da gravação: desfaz a transação (nada gravado, nem auditoria) e volta como mensagem. */
+export class EntradaRecusada extends Error {}
+
 /**
  * Grava no processo: confere sessão e perfil, abre o processo com o RLS, roda a escrita e registra a ação na
  * auditoria, tudo numa transação. `detalhes` não leva texto de resposta, só identificadores e hashes.
@@ -51,7 +54,7 @@ export async function avancarEtapa(tx: Transacao, p: ProcessoCompleto, etapa: (t
 
 /** Mensagem de erro de uma ação: processo concluído ou falha inesperada (sem detalhes internos na tela). */
 export function mensagemDeErro(e: unknown): string {
-  if (e instanceof ProcessoConcluido) return e.message;
+  if (e instanceof ProcessoConcluido || e instanceof EntradaRecusada) return e.message;
   if (e && typeof e === "object" && "digest" in e) throw e; // redirect e notFound seguem adiante
   console.error(e);
   return "Não foi possível salvar. Tente de novo.";

@@ -6,6 +6,7 @@
  */
 import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
+import { connection } from "next/server";
 import { redirect } from "next/navigation";
 import { bancoDaAplicacao, comoUsuario } from "../dados/conexao.ts";
 import { usuario } from "../dados/esquema.ts";
@@ -37,6 +38,8 @@ export async function clienteDaRequisicao() {
 
 /** Usuário da sessão, ou null sem sessão válida ou com usuário desativado. */
 export async function usuarioAtual(): Promise<UsuarioLogado | null> {
+  // Sessão é sempre da requisição: nada aqui entra no pré-render (o Supabase lê a hora para conferir o JWT).
+  await connection();
   const supabase = await clienteDaRequisicao();
   const { data, error } = await supabase.auth.getClaims();
   const id = data?.claims?.sub;
