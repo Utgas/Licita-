@@ -57,7 +57,7 @@ São onze componentes, entregues em três versões. A v0 monta o TR por regras. 
 
 | Componente | O que faz | Matrizes que usa | Versão |
 | --- | --- | --- | --- |
-| Checklist técnico | Formulário da área requisitante e leitura do Word preenchido, com a numeração do documento atual | M11 | v0 |
+| Checklist técnico | Leitura do Word preenchido pela área requisitante, enviado pelo operador, com revisão e complementos (decisão 0009) | M11 | v0 |
 | Compilador de regras | Lê os CSV, confere IDs e condições e gera o pacote em JSON, com hash | M02 a M07, M10, M11 | v0 |
 | Motor: wizard | Escolhe a próxima pergunta pelas dependências e já preenche o que o checklist respondeu | M04, M05, M11 | v0 |
 | Motor: itens | Aplica as regras de cada item: ME/EPP pelo valor estimado, grupo, amostra, marca e validade | M03, M05, M11 | v0 |
@@ -97,7 +97,7 @@ O banco não guarda a minuta pronta. Guarda as respostas, os itens e as ediçõe
 | Entidade | Campos principais | Observação |
 | --- | --- | --- |
 | OM | UASG, nome, linhas do cabeçalho, endereços de entrega, foro | O administrador cadastra; vira padrão no wizard |
-| Usuário | nome, e-mail, OM, perfil, segundo fator | Perfis: requisitante, elaborador, revisor, administrador |
+| Usuário | nome, e-mail, OM, perfil | Perfis: operador (quem elabora TR e ETP) e administrador, que só cria usuários (decisão 0010) |
 | Processo | NUP, objeto resumido, OM, pacote e hash, situação | Situações: rascunho, em revisão, liberado, concluído |
 | Resposta do checklist | processo, versão do checklist, pergunta (CK), valor, itens atingidos | Vem do formulário ou da leitura do Word |
 | Resposta do wizard | processo, pergunta (WZ), valor, origem (checklist ou equipe) | Uma linha por pergunta respondida |
@@ -122,7 +122,7 @@ O escopo inicial dizia para não guardar conteúdo, mas, para outra pessoa revis
 | Cópias de segurança | As diárias do Supabase Pro ficam 7 dias, dentro do prazo do expurgo; o plano gratuito não tem cópia automática |
 | Banco exposto | RLS ligado em toda tabela. Sem RLS, qualquer pessoa com a chave pública, que vai no código da página, lê a tabela. O navegador não consulta o banco; só o servidor |
 | Orçamento sigiloso | Quando a resposta da WZ-40 for SIM, os valores saem do PDF de circulação e vão para um anexo de acesso restrito |
-| Acesso | Login individual com segundo fator; cada usuário vê só os processos da própria OM e do próprio perfil |
+| Acesso | Login individual por e-mail e senha (decisão 0010); cada usuário vê só os processos da própria OM. O segundo fator é reavaliado antes do piloto |
 | Tráfego | HTTPS obrigatório; banco com criptografia em repouso |
 | Registros técnicos | Sem conteúdo de requisição; sem serviço externo de monitoramento que receba dados |
 | Recursos externos | Páginas sem fonte, script ou imagem de terceiros; tudo servido pelo próprio sistema |
@@ -140,7 +140,7 @@ O critério é usar uma linguagem só, ferramentas comuns e nada que prenda o mo
 | Banco | Supabase (PostgreSQL) | PostgreSQL comum por baixo; as migrações ficam no repositório |
 | Região | Funções da Vercel em São Paulo (gru1); banco do Supabase em São Paulo (sa-east-1) | O padrão da Vercel é Washington (iad1); no mesmo lugar, o dado fica no Brasil e as consultas não atravessam o continente |
 | Acesso ao banco | Drizzle ORM, pelo pooler do Supabase | Esquema em TypeScript; o pooler aguenta as conexões curtas das funções |
-| Login | Supabase Auth, com segundo fator | Já vem com o Supabase |
+| Login | Supabase Auth, e-mail e senha | Já vem com o Supabase; o segundo fator pode ser ligado depois sem refazer o login |
 | Validação | Zod | Confere o pacote de regras e toda entrada de tela |
 | Condições | JSON Logic | Avalia a condição sem executar código |
 | PDF | @react-pdf/renderer, no servidor | Roda dentro da função, sem navegador; o Chromium esbarra no limite de 250 MB das funções da Vercel |
@@ -183,7 +183,7 @@ licita-plus/
 │   │   ├── validacao/            # regras determinísticas (M10)
 │   │   └── derivacao/            # ETP para TR (v1)
 │   ├── dados/                    # esquema do banco, migrações e consultas
-│   ├── auth/                     # login, segundo fator, perfis e permissões
+│   ├── auth/                     # login, perfis e permissões
 │   ├── auditoria/                # registro só de inserção
 │   ├── exportacao/               # HTML do documento, PDF e texto por campo
 │   ├── ia/                       # v2: vazio até o provedor ser aprovado
@@ -210,7 +210,7 @@ São seis marcos, e cada um só termina quando cumpre o critério de saída. Os 
 | --- | --- | --- | --- | --- |
 | 0. Esqueleto | v0 | Repositório, CLAUDE.md, testes e compilador lendo as matrizes | O compilador gera o pacote sem erro a partir dos CSV atuais | Nada |
 | 1. Motor do TR, sem telas | v0 | Wizard, regras por item, montagem com numeração e validação determinística | C1 a C8 passam e os TRs 23/2026 e 58/2026 são reproduzidos, exceto nos trechos variáveis | Matrizes da Fase 10 (feitas) |
-| 2. Telas e banco | v0 | Login, checklist do requisitante, wizard, itens, revisão, PDF, copiar por campo e auditoria | Alguém de fora do desenvolvimento faz um TR do início ao PDF, com dados fictícios | Nada (checklist, formato e expurgo decididos) |
+| 2. Telas e banco | v0 | Login, envio e revisão do checklist, itens, wizard, revisão, PDF, copiar por seção do modelo AGU e auditoria | Alguém de fora do desenvolvimento faz um TR do início ao PDF, com dados fictícios | Nada (checklist, formato e expurgo decididos) |
 | 3. ETP e derivação | v1 | ETP montado a partir do checklist (M11) e derivação do ETP para o TR (M06) | O par 117/2025 é reproduzido a partir das mesmas respostas | Fases 4 a 9 das matrizes (feitas) |
 | 4. Piloto na OM | piloto | 3 processos reais feitos em paralelo com o método atual | Nenhuma ressalva da CJU atribuível ao sistema e tempo de elaboração medido | Regras do M03 e do M04 validadas, hospedagem aprovada, conta e patrocinador formal |
 | 5. IA | v2 | IA melhora a redação do ETP a partir do checklist e do DFD, citando a pergunta de origem | Nenhuma citação fora da base curada no banco de testes de DFDs | Provedor de IA aprovado |
