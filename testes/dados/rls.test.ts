@@ -137,7 +137,7 @@ describe("operador", () => {
     await como(operadorA, async (tx) => {
       expect((await tx.select().from(esquema.usuario)).map((u) => u.id)).toEqual([operadorA]);
       expect(await tx.update(esquema.usuario).set({ perfil: "ADMINISTRADOR" }).where(eq(esquema.usuario.id, operadorA)).returning()).toEqual([]);
-      await tx.execute(sql`select public.concluir_troca_de_senha()`);
+      await tx.execute(sql`select privado.concluir_troca_de_senha()`);
     });
     const [linha] = await db.select().from(esquema.usuario).where(eq(esquema.usuario.id, operadorA));
     expect(linha.perfil).toBe("OPERADOR");
@@ -191,6 +191,14 @@ describe("auditoria", () => {
     expect(await erroDoBanco(db.update(esquema.auditoria).set({ acao: "X" }))).toBe("a auditoria só aceita inclusão");
     expect(await erroDoBanco(db.delete(esquema.auditoria))).toBe("a auditoria só aceita inclusão");
     expect(await erroDoBanco(db.execute(sql`truncate public.auditoria cascade`))).toBe("a auditoria só aceita inclusão");
+  });
+});
+
+describe("API do Supabase", () => {
+  it("nenhuma função security definer fica exposta no esquema public", async () => {
+    const expostas = await db.execute(sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+      where n.nspname = 'public' and p.prosecdef`);
+    expect(expostas.map((l) => l.proname)).toEqual([]);
   });
 });
 
