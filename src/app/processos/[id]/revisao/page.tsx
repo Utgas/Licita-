@@ -2,13 +2,15 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { abrirProcesso } from "@/dados/acesso-processo.ts";
 import { carregarPacote } from "@/dados/pacote.ts";
-import { minutaDoProcesso, pendenciasDaMinuta } from "@/dados/processos.ts";
-import { ehTabela, linhasDaTabela, partesDoTexto, secoesDaMinuta, tabelaNaoMontada } from "@/exportacao/secoes.ts";
+import { documentosDoProcesso } from "@/dados/etp.ts";
+import { pendenciasDaMinuta } from "@/dados/processos.ts";
+import { ehTabela, secoesDaMinuta } from "@/exportacao/secoes.ts";
 import type { TrechoDaMinuta } from "@/motor/minuta.ts";
 import { textoDoValor } from "@/motor/montagem/formatos.ts";
 import type { Pacote } from "@/motor/pacote/esquema.ts";
 import { Carregando } from "../../../componentes/cabecalho.tsx";
 import { Icone } from "../../../componentes/icones.tsx";
+import { TabelaMarcada, TextoMarcado } from "../../../componentes/texto-marcado.tsx";
 import { Aviso, Codigo, classesDoBotao } from "../../../componentes/ui.tsx";
 import { CabecalhoDoProcesso } from "../processo.tsx";
 import { irParaExportar } from "./acoes.ts";
@@ -29,7 +31,9 @@ async function Conteudo({ params }: PageProps<"/processos/[id]/revisao">) {
   const { id } = await params;
   const { usuario, p } = await abrirProcesso(id);
   const { pacote } = carregarPacote(p.processo.pacote);
-  const minuta = minutaDoProcesso(p);
+  const { minuta, etp, derivacao } = documentosDoProcesso(p);
+  const nomesDosCampos = new Map(etp.campos.map((c) => [c.id, c.campo]));
+  const doEtp = new Map(derivacao.blocos.map((b) => [b.bloco, b.campos.map((c) => `${c} (${nomesDosCampos.get(c)})`)]));
   const somenteLeitura = p.processo.situacao === "CONCLUIDO";
   const m10 = new Map(pacote.matrizes.M10.map((l) => [l.id, l]));
   const bloqueios = minuta.validacoes.disparadas.filter((v) => v.tipo === "BLOQUEIO");
@@ -145,7 +149,7 @@ async function Conteudo({ params }: PageProps<"/processos/[id]/revisao">) {
             <section key={`${s.titulo}-${k}`} className="flex flex-col gap-1">
               <h2 className="sr-only">{s.titulo}</h2>
               {s.trechos.map((t) => (
-                <Trecho key={t.id} t={t} pacote={pacote} />
+                <Trecho key={t.id} t={t} pacote={pacote} id={id} doEtp={doEtp.get(t.id) ?? []} />
               ))}
             </section>
           ))}
@@ -174,67 +178,27 @@ function OndeResolver({ id, momento }: { id: string; momento: string }) {
   );
 }
 
-function Texto({ texto }: { texto: string }) {
-  return (
-    <>
-      {partesDoTexto(texto).map((parte, k) =>
-        parte.tipo === "texto" ? (
-          <span key={k}>{parte.texto}</span>
-        ) : parte.tipo === "lacuna" ? (
-          <mark key={k} className="inline-flex items-baseline gap-1 bg-atencao-marca px-1 text-atencao">
-            <Icone nome="lacuna" tamanho={13} className="self-center" />
-            {parte.texto}
-          </mark>
-        ) : (
-          <mark key={k} className="bg-padrao-fundo px-0.5 text-padrao underline decoration-dotted underline-offset-4" title="Valor padrão do pacote: confira">
-            {parte.texto}
-          </mark>
-        ),
-      )}
-    </>
-  );
-}
-
-function Trecho({ t, pacote }: { t: TrechoDaMinuta; pacote: Pacote }) {
+function Trecho({ t, pacote, id, doEtp }: { t: TrechoDaMinuta; pacote: Pacote; id: string; doEtp: string[] }) {
   return (
     <details className="group relative -mx-3 border-l-2 border-transparent px-3 transition-colors open:border-l-marca hover:border-l-linha-forte">
       <summary className="cursor-pointer list-none py-1.5">
         {ehTabela(t) ? (
-          <div className="overflow-x-auto">
-            {tabelaNaoMontada(t.texto).naoMontada && (
-              <p>
-                <mark className="inline-flex items-center gap-1 bg-atencao-marca px-1 text-atencao"><Icone nome="lacuna" tamanho={13} />tabela não montada: faltam as linhas (veja a origem)</mark>
-              </p>
-            )}
-            <table className="w-full border-collapse text-left text-sm">
-              <tbody>
-                {linhasDaTabela(t.texto).map((linha, k) => (
-                  <tr key={k} className={k === 0 ? "border-b-2 border-linha-forte font-semibold" : "border-b border-linha"}>
-                    {linha.map((c, j) => (
-                      <td key={j} className="p-2 align-top whitespace-pre-line">
-                        <Texto texto={c} />
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <TabelaMarcada texto={t.texto} />
         ) : (
           <p className="whitespace-pre-line">
             {t.numero && <strong>{t.numero} </strong>}
-            <Texto texto={t.texto} />
+            <TextoMarcado texto={t.texto} />
           </p>
         )}
       </summary>
-      <Origem t={t} pacote={pacote} />
+      <Origem t={t} pacote={pacote} id={id} doEtp={doEtp} />
     </details>
   );
 }
 
 const valor = (v: unknown) => (v === null || v === undefined || v === "" ? "sem resposta" : textoDoValor(v as never));
 
-function Origem({ t, pacote }: { t: TrechoDaMinuta; pacote: Pacote }) {
+function Origem({ t, pacote, id, doEtp }: { t: TrechoDaMinuta; pacote: Pacote; id: string; doEtp: string[] }) {
   const caixa = "mb-3 mt-1 flex flex-col gap-1.5 border border-linha bg-papel p-3 text-sm leading-normal text-tinta";
   if (t.tipo === "clausula_setorial") {
     const linha = pacote.matrizes.M08.find((l) => l.id === t.id);
@@ -263,6 +227,14 @@ function Origem({ t, pacote }: { t: TrechoDaMinuta; pacote: Pacote }) {
       </p>
       {linha?.condicao_inclusao && <p>Motivo: {linha.condicao_inclusao}</p>}
       {t.origem.ligadoPor.length > 0 && <p>Ligado pelas perguntas: {t.origem.ligadoPor.join(", ")}</p>}
+      {doEtp.length > 0 && (
+        <p>
+          Repete o ETP (M06):{" "}
+          <Link href={`/processos/${id}/etp`} className="underline">
+            {doEtp.join("; ")}
+          </Link>
+        </p>
+      )}
       <Respostas respostas={t.origem.respostas} />
       {notas.length > 0 && (
         <div>

@@ -16,7 +16,7 @@ O dono do projeto, Gabriel, é pregoeiro e não escreve código. Explique cada d
 
 ## Estado atual
 
-**Marco 2 (telas e banco).** Tarefa: `docs/tarefas/marco-2.md`, no ramo `marco-2`. Marco 1 concluído em 24/10/2026. Trabalhe só no marco atual. Não adiante IA nem ETP.
+**Marco 3 (ETP e derivação).** Tarefa: `docs/tarefas/marco-3.md`. Marco 2 no ar desde 24/10/2026 (falta só o teste com alguém de fora). Trabalhe só no marco atual. Não adiante IA.
 
 ## Onde está cada coisa
 
@@ -80,7 +80,7 @@ Exigem Node 22.18 ou mais novo (o Node roda o TypeScript dos scripts direto). In
 - `npm test`: Vitest (compilador, fixtures fictícias, motor, cenários de ouro e reprodução dos TRs reais).
 - `npm run test:banco`: RLS, auditoria e expurgo no Supabase local; antes, `npx supabase start` (exige Docker; decisão 0013).
 - `npm run test:telas`: fluxo inteiro no navegador (Playwright), do login ao PDF, mais o isolamento entre OMs; antes, Supabase local no ar, `.env.local` com as chaves locais e `node --env-file=.env.local testes/telas/preparar.ts`.
-- `npm run simular -- C1`: imprime a minuta de um cenário (C1 a C8, R1 ou R2) em texto corrido, com as pendências e a contagem de lacunas por motivo.
+- `npm run simular -- C1`: imprime a minuta de um cenário (C1 a C8, R1 ou R2) em texto corrido, com as pendências e a contagem de lacunas por motivo. Com `--etp`, imprime o ETP do cenário campo a campo, com a derivação para o TR.
 - `npm run lint`: ESLint, com a regra que isola `src/motor`.
 - `npm run typecheck`: gera os tipos do Next (`next typegen`) e roda o TypeScript.
 

@@ -141,9 +141,14 @@ export type CampoDaMinuta = {
 type EntradaDoMapa = { fonte?: string | null; alternativas?: string[]; campo?: string; indice?: number; formato?: string; unidade?: string };
 type Uso = { campos: Map<string, boolean>; indice: boolean; numerico: boolean; unidades: Set<string>; tabela?: { campo: string; cabecalho: string }[] };
 
+const usosEmCache = new WeakMap<Pacote, Map<string, Uso>>();
+
 /** Como cada VAR é usada nos mapas do M02 e do M08 e nas tabelas do M02. */
 function usosDasVariaveis(pacote: Pacote): Map<string, Uso> {
+  const emCache = usosEmCache.get(pacote);
+  if (emCache) return emCache;
   const usos = new Map<string, Uso>();
+  usosEmCache.set(pacote, usos);
   const uso = (v: string) => {
     let u = usos.get(v);
     if (!u) usos.set(v, (u = { campos: new Map(), indice: false, numerico: false, unidades: new Set() }));
@@ -250,19 +255,24 @@ export function camposDaMinuta(pacote: Pacote, minuta: Minuta, p: ProcessoComple
       if (onde.length) doChecklist.push({ id, descricao: linha.descricao, trechos: onde });
       continue;
     }
-    campos.push({
-      id,
-      descricao: linha.descricao,
-      tipoDeDado: linha.tipo_dado,
-      origem: linha.origem,
-      validacao: linha.validacao,
-      codigos: codigosDaValidacao(linha.validacao),
-      forma: formaDoCampo(linha, usos.get(variavelDoId(id))),
-      trechos: onde,
-      valor: informadas.get(id) ?? null,
-    });
+    campos.push(campoDaVariavel(pacote, linha, informadas.get(id) ?? null, onde));
   }
   return { campos, doChecklist, daEquipe };
+}
+
+/** Campo de entrada de uma VAR (forma tirada dos mapas e das tabelas do M02), com o valor que a equipe informou. */
+export function campoDaVariavel(pacote: Pacote, linha: LinhaM05, valor: Valor, trechos: string[] = []): CampoDaMinuta {
+  return {
+    id: linha.id,
+    descricao: linha.descricao,
+    tipoDeDado: linha.tipo_dado,
+    origem: linha.origem,
+    validacao: linha.validacao,
+    codigos: codigosDaValidacao(linha.validacao),
+    forma: formaDoCampo(linha, usosDasVariaveis(pacote).get(variavelDoId(linha.id))),
+    trechos,
+    valor,
+  };
 }
 
 /** Número digitado com vírgula ou ponto decimal ("1.234,56", "2,5", "30"); null quando não é número. */

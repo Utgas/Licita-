@@ -2,6 +2,7 @@
  * Simulação legível: monta a minuta de um cenário e imprime em texto corrido, para conferência sem ler código.
  *
  * Uso: npm run simular -- C1        (C1 a C8, R1 ou R2, de matrizes/v1/cenarios/)
+ *      npm run simular -- C1 --etp  (o ETP do mesmo cenário, campo a campo, com a derivação para o TR)
  *
  * O script lê o pacote gravado em regras/ (o motor nunca lê arquivo) e passa ao motor a entrada do cenário,
  * que é fictícia. Lacuna aparece no texto como [[LACUNA VAR-xxx]]; tabela ainda não montada, como
@@ -10,7 +11,9 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { type Derivacao, derivarEtpParaTr } from "../src/motor/derivacao/derivacao.ts";
 import { type Minuta, gerarMinuta } from "../src/motor/minuta.ts";
+import { type Etp, type SituacaoDoCampo, gerarEtp } from "../src/motor/montagem/etp.ts";
 import type { MotivoDeLacuna } from "../src/motor/montagem/lacunas.ts";
 import { esquemaDoPacote } from "../src/motor/pacote/esquema.ts";
 import { DIR_PACOTE } from "./compilar-regras.ts";
@@ -86,10 +89,50 @@ export function textoDaSimulacao(id: string, descricao: string, minuta: Minuta):
   return saida.join("\n");
 }
 
+/** Rótulo de cada situação de campo do ETP. */
+const SITUACOES_DO_CAMPO: Record<SituacaoDoCampo, string> = {
+  preenchido: "preenchido",
+  incompleto: "com lacuna",
+  vazio: "vazio",
+  texto_do_etp_digital: "texto do próprio ETP Digital (não se copia)",
+  sem_ligacao: "sem dado ligado no pacote (veja a orientação do M01)",
+};
+
+export function textoDoEtp(id: string, descricao: string, etp: Etp, derivacao: Derivacao): string {
+  const saida: string[] = [];
+  saida.push(`ETP ${id}: ${descricao}`);
+  saida.push(`Pacote ${etp.pacote.pacote}, SHA-256 ${etp.pacote.hash.slice(0, 12)}...`);
+  saida.push("Dados fictícios. Campo a campo, na ordem do ETP Digital (M01).", "", "=".repeat(78));
+  let secao = "";
+  for (const campo of etp.campos) {
+    if (campo.secao.numero !== secao) {
+      secao = campo.secao.numero;
+      saida.push("", `${campo.secao.numero}. ${campo.secao.nome.toUpperCase()}`);
+    }
+    const marca = campo.obrigatorio ? " [obrigatório]" : "";
+    saida.push("", `${campo.id} ${campo.campo}${marca}: ${SITUACOES_DO_CAMPO[campo.situacao]}`);
+    if (campo.texto) for (const linha of campo.texto.split("\n")) saida.push(`    ${linha}`);
+    else if (campo.situacao !== "texto_do_etp_digital") saida.push(`    Orientação: ${campo.orientacao.preenchimento}`);
+    const blocos = derivacao.porCampo[campo.id] ?? [];
+    if (blocos.length) saida.push(`    -> no TR: ${blocos.map((b) => (b.numero ? `${b.numero} (${b.bloco})` : b.bloco)).join(", ")}`);
+    if (campo.validacoes.length) saida.push(`    validações: ${campo.validacoes.join(", ")}`);
+  }
+  saida.push("", "=".repeat(78));
+  lista("Campos obrigatórios vazios ou com lacuna (art. 18, § 2º)", etp.pendencias, saida);
+  lista("Justificativas que o M04 pede no ETP sem dizer o campo", etp.justificativasSemCampo.map((j) => `${j.regra}: ${j.texto}`), saida);
+  lista(
+    "Blocos do TR que repetem campo vazio do ETP (rever o ETP antes)",
+    derivacao.blocos.filter((b) => b.situacao === "campo_vazio").map((b) => `${b.bloco}: ${b.camposVazios.join(", ")}`),
+    saida,
+  );
+  return saida.join("\n");
+}
+
 function principal(): void {
   const id = process.argv[2];
+  const etp = process.argv.includes("--etp");
   if (!id) {
-    console.error("Uso: npm run simular -- C1   (C1 a C8, R1 ou R2)");
+    console.error("Uso: npm run simular -- C1 [--etp]   (C1 a C8, R1 ou R2)");
     process.exitCode = 1;
     return;
   }
@@ -102,8 +145,14 @@ function principal(): void {
     return;
   }
   const { pacote, hash } = lerPacote();
-  const minuta = gerarMinuta({ pacote, hashDoPacote: hash, ...caso.entrada });
-  console.log(textoDaSimulacao(id, caso.descricao, minuta));
+  const entrada = { pacote, hashDoPacote: hash, ...caso.entrada };
+  const minuta = gerarMinuta(entrada);
+  if (!etp) {
+    console.log(textoDaSimulacao(id, caso.descricao, minuta));
+    return;
+  }
+  const documento = gerarEtp(entrada, minuta);
+  console.log(textoDoEtp(id, caso.descricao, documento, derivarEtpParaTr(pacote, minuta, documento)));
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) principal();

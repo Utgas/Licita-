@@ -25,6 +25,8 @@ export type Acao =
   | "MINUTA_GERADA"
   | "SECAO_COPIADA"
   | "PDF_BAIXADO"
+  | "ETP_CAMPO_COPIADO"
+  | "PDF_ETP_BAIXADO"
   | "PROCESSO_CONCLUIDO";
 
 export type Registro = {

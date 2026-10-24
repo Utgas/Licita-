@@ -111,7 +111,9 @@ export function entradaDoProcesso(p: ProcessoCompleto): EntradaProcesso {
 
   const wizard: Record<string, Valor> = {};
   const variaveis: Record<string, Valor> = {};
+  const justificativas: Record<string, string> = {};
   for (const r of p.respostasWizard) {
+    if (r.pergunta.startsWith("WZ-") && r.justificativa?.trim()) justificativas[variavelDoId(r.pergunta)] = r.justificativa;
     if (r.valor === null) continue;
     (r.pergunta.startsWith("WZ-") ? wizard : variaveis)[variavelDoId(r.pergunta)] = r.valor as Valor;
   }
@@ -130,6 +132,7 @@ export function entradaDoProcesso(p: ProcessoCompleto): EntradaProcesso {
     hashDoPacote: hash,
     checklist,
     wizard,
+    justificativas,
     itens,
     variaveis,
     metadados: {

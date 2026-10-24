@@ -28,9 +28,11 @@ async function Conteudo({ params }: PageProps<"/processos/[id]/exportar">) {
   const { usuario, p } = await abrirProcesso(id);
   const minuta = minutaDoProcesso(p);
   const concluido = p.processo.situacao === "CONCLUIDO";
-  const copiadas = new Set(p.exportacoes.filter((e) => e.tipo === "COPIA_SECAO").map((e) => e.secao));
-  const pdfs = p.exportacoes.filter((e) => e.tipo === "PDF");
   const secoes = secoesDaMinuta(minuta);
+  // Só as seções do TR: a cópia dos campos do ETP grava na mesma tabela, com o ID do campo (decisão 0015).
+  const titulos = new Set(secoes.map((s) => s.titulo));
+  const copiadas = new Set(p.exportacoes.filter((e) => e.tipo === "COPIA_SECAO" && e.secao && titulos.has(e.secao)).map((e) => e.secao));
+  const pdfs = p.exportacoes.filter((e) => e.tipo === "PDF");
   const expurgo = dataDoExpurgo(p.processo.concluidoEm);
 
   return (
