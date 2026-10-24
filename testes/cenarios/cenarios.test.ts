@@ -69,6 +69,13 @@ describe.each(CENARIOS)("cenário de ouro %s", (id) => {
     expect(minuta.trechos.filter((t) => t.tipo === "bloco").map((t) => t.id)).toEqual(esperado.blocos.filter((b: string) => !minuta.blocosOmitidos.includes(b)));
   });
 
+  it("complementos CK-X-10 a CK-X-19 pedidos exatamente quando a cláusula do M08 entra (Fase 15)", () => {
+    for (const linha of pacote.matrizes.M11.filter((l) => l.checklist === "COMPLEMENTO" && l.id >= "CK-X-10")) {
+      const clausula = linha.destinos.split("; ").find((d) => d.startsWith("SET-")) as string;
+      expect(minuta.complementosDoOperador.includes(linha.id), `${linha.id} (${clausula})`).toBe(minuta.clausulasSetoriais.includes(clausula));
+    }
+  });
+
   it("a mesma entrada gera a mesma minuta", () => {
     const outra = gerarMinuta({ pacote, hashDoPacote: hash, ...structuredClone(entrada) });
     expect(JSON.stringify(outra.trechos)).toBe(JSON.stringify(minuta.trechos));

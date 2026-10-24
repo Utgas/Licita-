@@ -1,6 +1,6 @@
 /**
  * Texto dos blocos (M02) e das cláusulas setoriais (M08) pelo lacunas_mapa, e tabelas pelo tabela_colunas
- * (Fases 13 e 14 das matrizes; README, "Texto da minuta"). A semântica segue a montagem do simulador das
+ * (Fases 13 a 15 das matrizes; README, "Texto da minuta"). A semântica segue a montagem do simulador das
  * matrizes (scripts/f13_texto.py), com duas diferenças deliberadas pedidas na tarefa:
  * - lacuna marcada com o ID da regra: [[LACUNA VAR-034]] (o simulador usa o nome da variável);
  * - opção com "padrao": true sai marcada, [[PADRÃO: texto]], para o operador ver que o valor não foi informado.
@@ -64,6 +64,10 @@ type EntradaDoMapa = {
   inicial_minuscula?: boolean;
   inicial_maiuscula?: boolean;
   filtro_item?: unknown;
+  /** Fase 15: singular ou plural pelo número de itens do valor; o trecho fixo vizinho entra na troca. */
+  concordancia?: { singular: string; plural: string };
+  /** Fase 15: modelo de cada grupo do POR_ITEM_AGRUPADO. */
+  modelo_por_item?: { singular: string; plural: string };
 };
 
 type Coluna = {
@@ -72,6 +76,10 @@ type Coluna = {
   campo?: string;
   formato?: string;
   sigiloso?: string;
+  /** Fase 15: a coluna só entra quando a condição é verdadeira. */
+  quando?: unknown;
+  /** Fase 15: código do M05 para o texto da célula; código fora da lista vira lacuna. */
+  textos?: Record<string, string>;
   complementos?: { fonte: string; rotulo: string; texto?: string; quando?: unknown }[];
 };
 
@@ -79,7 +87,8 @@ type TabelaColunas = {
   linhas: string;
   colunas: Coluna[];
   orcamento_sigiloso?: { quando: unknown; colunas: string[]; texto: string };
-  linha_cota?: { quando: unknown; valores: Record<string, string> };
+  /** Valor da cota: fonte itens.<atributo> ou texto fixo (Fase 15). */
+  linha_cota?: { quando: unknown; valores: Record<string, string | { texto: string }> };
 };
 
 const MARCA_DE_TABELA = "[[TABELA NÃO MONTADA]]";
@@ -162,6 +171,21 @@ export class Montagem {
         .map((item) => item.numero ?? null);
       return numeros.length ? listaEmTexto(numeros) : null;
     }
+    if (x.formato === "POR_ITEM_AGRUPADO" && x.fonte && x.modelo_por_item) {
+      // Fase 15: itens com o mesmo valor juntos, na ordem em que aparecem: "de 2 a 8 °C para os itens 1 e 3".
+      const nome = atributo(x.fonte);
+      const grupos = new Map<string, Valor[]>();
+      for (const item of this.itens()) {
+        if (vazia(item[nome])) continue;
+        const chave = textoDoValor(item[nome]);
+        grupos.set(chave, [...(grupos.get(chave) ?? []), item.numero ?? null]);
+      }
+      const modelo = x.modelo_por_item;
+      const partes = [...grupos].map(([v, numeros]) =>
+        (numeros.length === 1 ? modelo.singular : modelo.plural).replace("{valor}", v).replace("{itens}", listaEmTexto(numeros)),
+      );
+      return partes.length ? partes.join("; ") : null;
+    }
     if (x.formato === "POR_ITEM" && x.fonte) {
       const nome = atributo(x.fonte);
       const textos = this.itens()
@@ -183,6 +207,17 @@ export class Montagem {
       if (e instanceof FormatoInvalido) return null;
       throw e;
     }
+  }
+
+  /** Quantos itens o valor cita: itens filtrados, elementos da lista ou números escritos no texto (mínimo 1). */
+  private contagem(x: EntradaDoMapa): number {
+    if (x.formato === "NUMEROS_DOS_ITENS" && x.fonte) {
+      const nome = atributo(x.fonte);
+      return this.itens().filter((item) => (x.filtro_item !== undefined ? verdadeiro(avaliar(x.filtro_item, item)) : !vazia(item[nome]))).length;
+    }
+    const v = this.valor(x);
+    if (Array.isArray(v)) return v.length;
+    return v === null ? 0 : Math.max(1, (textoDoValor(v).match(/\d+/g) ?? []).length);
   }
 
   /** Primeira opção verdadeira; com {valor}, o valor da fonte; opção padrão sai marcada. */
@@ -279,10 +314,13 @@ export class Montagem {
           if (x.se_vazio === "OMITE_BLOCO") omitido = true;
           lacuna(x.marcador, x.fonte, "sem_valor");
           s = this.marca(x.fonte);
-        } else if (x.texto !== undefined) {
-          s = x.texto.replace("{valor}", s);
+          // Sem valor, o trecho fixo do modelo fica como está; a lacuna toma só o lugar do marcador.
+          trocas.push(x.concordancia ? [p, fim, s] : [p - (x.estende_desde ?? "").length, fim + (x.estende_ate ?? "").length, s]);
+        } else {
+          if (x.concordancia) s = (this.contagem(x) === 1 ? x.concordancia.singular : x.concordancia.plural).replace("{valor}", s);
+          else if (x.texto !== undefined) s = x.texto.replace("{valor}", s);
+          trocas.push([p - (x.estende_desde ?? "").length, fim + (x.estende_ate ?? "").length, s]);
         }
-        trocas.push([p - (x.estende_desde ?? "").length, fim, s]);
       }
       k++;
     }
@@ -303,6 +341,7 @@ export class Montagem {
     if (coluna.sigiloso && sigiloso) return coluna.sigiloso;
     const v = coluna.fonte ? (item[atributo(coluna.fonte)] ?? null) : (item[coluna.campo ?? ""] ?? null);
     if (vazia(v)) return null;
+    if (coluna.textos) return typeof v === "string" && Object.hasOwn(coluna.textos, v) ? coluna.textos[v] : null;
     let s: string;
     try {
       s = formatar(v, coluna.formato);
@@ -320,7 +359,9 @@ export class Montagem {
 
   /** Tabela pelo tabela_colunas: itens com o próprio número e as cotas no fim (P35), ou as linhas de uma VAR. */
   tabela(trecho: string, textoDoModelo: string, bruto: unknown): TextoMontado {
-    const tabela = bruto as TabelaColunas;
+    const original = bruto as TabelaColunas;
+    // Fase 15: coluna com "quando" só entra quando a condição é verdadeira (PARTICIPAÇÃO, só em licitação).
+    const tabela = { ...original, colunas: original.colunas.filter((c) => c.quando === undefined || verdadeiro(avaliar(c.quando, this.dados))) };
     const cabecalhos = tabela.colunas.map((c) => c.cabecalho);
     const linhas = [cabecalhos.join(" | ")];
     const lacunas: LacunaDoTexto[] = [];
@@ -364,13 +405,19 @@ export class Montagem {
     const cota = tabela.linha_cota;
     for (const item of comCota) {
       numero++;
-      const celulas = [textoDoNumero(numero), (cota?.valores[cabecalhos[1]] ?? "").replace(/\{[^}]*\}/, textoDoValor(item.numero ?? null))];
+      const especificacao = cota?.valores[cabecalhos[1]];
+      const celulas = [textoDoNumero(numero), (typeof especificacao === "string" ? especificacao : "").replace(/\{[^}]*\}/, textoDoValor(item.numero ?? null))];
       for (const cabecalho of cabecalhos.slice(2)) {
         if (sigiloso && tabela.orcamento_sigiloso?.colunas.includes(cabecalho)) {
           celulas.push(tabela.orcamento_sigiloso.texto);
           continue;
         }
-        const fonte = cota?.valores[cabecalho] ?? "";
+        const valorDaCota = cota?.valores[cabecalho] ?? "";
+        if (typeof valorDaCota === "object") {
+          celulas.push(valorDaCota.texto);
+          continue;
+        }
+        const fonte = valorDaCota;
         const coluna = tabela.colunas.find((c) => c.cabecalho === cabecalho);
         const v = fonte.startsWith("itens.") ? (item[atributo(fonte)] ?? null) : null;
         let s: string | null = null;

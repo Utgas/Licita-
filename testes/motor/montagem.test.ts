@@ -284,6 +284,35 @@ describe("texto pelo lacunas_mapa", () => {
     expect([...textos.values()]).toEqual(["a; e", "b."]);
   });
 
+  it("concordância pelo número de itens (Fase 15): singular, plural e, sem valor, o texto do modelo", () => {
+    const mapa = [{ marcador: "[itens]", ocorrencia: 1, fonte: "CK_X_17", formato: "LISTA_TEXTO", estende_desde: "Para os itens ", concordancia: { singular: "Para o item {valor}", plural: "Para os itens {valor}" } }];
+    expect(montar("Para os itens [itens], prazo menor.", mapa, { CK_X_17: [3] }).texto).toBe("Para o item 3, prazo menor.");
+    expect(montar("Para os itens [itens], prazo menor.", mapa, { CK_X_17: [1, 3] }).texto).toBe("Para os itens 1 e 3, prazo menor.");
+    expect(montar("Para os itens [itens], prazo menor.", mapa).texto).toBe("Para os itens [[LACUNA CK-X_17]], prazo menor.");
+  });
+
+  it("concordância com NUMEROS_DOS_ITENS e estende_ate: o verbo depois do marcador também concorda", () => {
+    const mapa = [{
+      marcador: "[itens]", ocorrencia: 1, fonte: "itens.faixa_temperatura", formato: "NUMEROS_DOS_ITENS", estende_desde: "Os itens ", estende_ate: " serão entregues",
+      concordancia: { singular: "O item {valor} será entregue", plural: "Os itens {valor} serão entregues" },
+    }];
+    const itens = (...faixas: (string | null)[]) => faixas.map((f, i) => ({ numero: i + 1, faixa_temperatura: f }));
+    expect(montar("Os itens [itens] serão entregues refrigerados.", mapa, { itens: itens("2 a 8 °C", null) }).texto).toBe("O item 1 será entregue refrigerados.");
+    expect(montar("Os itens [itens] serão entregues refrigerados.", mapa, { itens: itens("2 a 8 °C", "15 a 30 °C") }).texto).toBe("Os itens 1 e 2 serão entregues refrigerados.");
+  });
+
+  it("POR_ITEM_AGRUPADO (Fase 15): itens com o mesmo valor ficam juntos, na ordem em que aparecem", () => {
+    const mapa = [{ marcador: "[faixa]", ocorrencia: 1, fonte: "itens.faixa_temperatura", formato: "POR_ITEM_AGRUPADO", modelo_por_item: { singular: "de {valor} para o item {itens}", plural: "de {valor} para os itens {itens}" } }];
+    const itens = [
+      { numero: 1, faixa_temperatura: "2 a 8 °C" },
+      { numero: 2, faixa_temperatura: "15 a 30 °C" },
+      { numero: 3, faixa_temperatura: "2 a 8 °C" },
+      { numero: 4, faixa_temperatura: null },
+    ];
+    expect(montar("Faixa [faixa].", mapa, { itens }).texto).toBe("Faixa de 2 a 8 °C para os itens 1 e 3; de 15 a 30 °C para o item 2.");
+    expect(montar("Faixa [faixa].", mapa, { itens: [{ numero: 1 }] }).texto).toBe("Faixa [[LACUNA itens.faixa-temperatura]].");
+  });
+
   it("bloco com marcadores e sem mapa: lacuna sem_mapa", () => {
     const r = new Montagem({} as never, nome).texto("TR-9.9", "Texto [x].", null, "[x]");
     expect(r.lacunas.map((l) => l.motivo)).toEqual(["sem_mapa"]);
@@ -325,6 +354,25 @@ describe("tabela pelo tabela_colunas", () => {
     const r = new Montagem({ itens, WZ_40: "SIM" } as never, (v) => v).tabela("TR-1.1.TAB1", "", tabela);
     expect(r.texto).not.toContain("R$");
     expect(r.texto.split("\n")[3]).toBe("3 | Cota fictícia do item 1 | 25 | SIGILOSO");
+  });
+
+  it("coluna com quando e textos (PARTICIPAÇÃO, Fase 15): só entra quando vale; código fora da lista é lacuna; texto fixo na cota", () => {
+    const participacao = {
+      cabecalho: "PARTICIPAÇÃO", fonte: "itens.tratamento_me_epp", acrescentada: true, quando: { "==": [{ var: "WZ_01" }, "LICITACAO"] },
+      textos: { AMPLA: "Ampla participação", COTA: "Cota principal (ampla participação)" },
+    };
+    const comColuna = { ...tabela, colunas: [...tabela.colunas, participacao], linha_cota: { ...tabela.linha_cota, valores: { ...tabela.linha_cota.valores, "PARTICIPAÇÃO": { texto: "Cota reservada para ME/EPP" } } } };
+    const r = new Montagem({ itens, WZ_01: "LICITACAO", WZ_40: "SIM" } as never, (v) => v).tabela("TR-1.1.TAB1", "", comColuna);
+    expect(r.texto.split("\n")).toEqual([
+      "ITEM | ESPECIFICAÇÃO | QUANTIDADE | VALOR UNITÁRIO | PARTICIPAÇÃO",
+      "1 | Item fictício A | 75 | SIGILOSO | Cota principal (ampla participação)",
+      "2 | Item fictício B | 1.000 | SIGILOSO | Ampla participação",
+      "3 | Cota fictícia do item 1 | 25 | SIGILOSO | Cota reservada para ME/EPP",
+    ]);
+    const direta = new Montagem({ itens, WZ_01: "CONTRATACAO_DIRETA" } as never, (v) => v).tabela("TR-1.1.TAB1", "", comColuna);
+    expect(direta.texto).not.toContain("PARTICIPAÇÃO");
+    const semCodigo = new Montagem({ itens: [{ ...itens[0], tratamento_me_epp: "EXCLUSIVO" }], WZ_01: "LICITACAO" } as never, (v) => v).tabela("TR-1.1.TAB1", "", comColuna);
+    expect(semCodigo.lacunas.map((l) => l.marcador)).toEqual(["PARTICIPAÇÃO do item 2"]);
   });
 
   it("célula sem dado vira lacuna; tabela sem itens não é montada", () => {

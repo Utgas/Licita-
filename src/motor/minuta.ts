@@ -16,6 +16,7 @@ import type { LinhaM02, Pacote } from "./pacote/esquema.ts";
 import { variavelDoId } from "./pacote/nomes.ts";
 import { type ProcessoPreparado, prepararProcesso } from "./processo.ts";
 import { type ResultadoDasValidacoes, validar } from "./validacao/validacoes.ts";
+import { avaliar, verdadeiro } from "./pacote/avaliador.ts";
 import { type Revisao, type Sugestao, revisarChecklist } from "./wizard/checklist.ts";
 import type { PerguntaPendente } from "./wizard/perguntas.ts";
 
@@ -66,6 +67,8 @@ export type Minuta = {
   validacoes: ResultadoDasValidacoes;
   perguntasSemResposta: PerguntaPendente[];
   revisao: Revisao;
+  /** Complementos do operador (CK-X, checklist COMPLEMENTO) cuja condicional vale, na ordem do M11. */
+  complementosDoOperador: string[];
   sugestoes: Sugestao[];
   avisos: AvisoDoMotor[];
   /** Verdadeiro quando há bloqueio do M10, grupo de alternativas sem uma opção ou pergunta ao operador pendente. */
@@ -194,6 +197,9 @@ export function gerarMinuta(entrada: EntradaProcesso): Minuta {
 
   const validacoes = validar(M10, dados);
   const revisao = revisarChecklist(M11, dados, entrada.revisoes_confirmadas ?? []);
+  const complementosDoOperador = M11.filter(
+    (l) => l.checklist === "COMPLEMENTO" && (l.condicional_expr === null || verdadeiro(avaliar(l.condicional_expr, dados))),
+  ).map((l) => l.id);
   const bloqueada =
     validacoes.disparadas.some((v) => v.tipo === "BLOQUEIO") ||
     escolha.bloqueiosGrupoAlternativas.length > 0 ||
@@ -214,6 +220,7 @@ export function gerarMinuta(entrada: EntradaProcesso): Minuta {
     validacoes,
     perguntasSemResposta: processo.wizard.pendentes,
     revisao,
+    complementosDoOperador,
     sugestoes: processo.sugestoes,
     avisos: processo.avisos,
     bloqueada,

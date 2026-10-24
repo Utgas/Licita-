@@ -2,16 +2,16 @@
   "arquivos_de_origem": {
     "M00_inventario.csv": "fadea60ca9f6ee78ef42aa52e4d8c97f7c6e84d0d13ec6d287b516c0e08c245e",
     "M01_etp_campos.csv": "ae2ee3a5645dddbf828e1c5d26a64522043c36a0e344005f199ecbee9faae12c",
-    "M02_tr_blocos.csv": "5d6d7e798012f8026ff1f518e1694dfe3aaebce67c1e261a642c6131e2d0d485",
+    "M02_tr_blocos.csv": "3315edc26b105b438bfff69cffaa640c7fb7dec29c5688217dab585b59040fa1",
     "M03_notas_explicativas.csv": "9c289804aa6541b42da2a9e1ba547cee8c93a7976f24b6635eade293b585d4cb",
     "M04_wizard.csv": "3b2f0e7dfb1ca23572bf942577630c3aab9034c9d3e94803696be05f45ca53bb",
     "M05_variaveis.csv": "67fdffe05aa7a2995b181fd87e701aa6a08fe5e28323528537b43bdc917e3cff",
     "M06_derivacao_etp_tr.csv": "9e80fd593cae8b37dfaa95191697b814fa77c404ab48d077c6bd535428df6771",
     "M07_normas.csv": "342db04c347367b575f30b2b3c3106428b7846a8dc6158fd62db0176ed518d29",
-    "M08_clausulas_setoriais.csv": "a2d1dcb4757881e5bd7fdb1042489f50f6591a54d08cf9f7110b05ca607c6307",
-    "M09_desvios.csv": "3ccd6644087f79d158860d6d6077e9bd3de78ade2d0b606c7027af03a2a4b405",
+    "M08_clausulas_setoriais.csv": "f543d40db7410f6c76ae436e98b50764bf82410b4b2455d87a354d3f23dfd06d",
+    "M09_desvios.csv": "3ccb5c4ea6761e8eb028b6eaec9b23d50504cb2c1780f8c7b5b55c4bf3d096e1",
     "M10_validacoes.csv": "0a35a8f7da45d96c29dc5cf4fd221faf2e9edb10bbd2dbaae07a413174a38c82",
-    "M11_checklist.csv": "89f540d8fc9806b89fe1854f0dbfdfacbd4f6d7ec40bdf940d629ec7e6cd4d7f",
+    "M11_checklist.csv": "83ec8ca3cfd36166eaa78daa821210e6bf5baf00d41ecc4c76ec72d60e20760c",
     "M12_parametros.csv": "15782e14d0d657966effbf66b7dadf1b30dd07d8c87fc3f24c93766568fbe025"
   },
   "matrizes": {
@@ -717,6 +717,26 @@
               "fonte": "itens.valor_total",
               "formato": "MOEDA",
               "sigiloso": "SIGILOSO"
+            },
+            {
+              "acrescentada": true,
+              "cabecalho": "PARTICIPAÇÃO",
+              "comentario": "Fase 15 (decisão do dono do projeto, 0008): a minuta diz o tratamento de ME/EPP de cada item (VAR-113). Coluna que não está no modelo; base: NE-003, nota 1 ('A tabela acima é meramente ilustrativa, podendo ser livremente alterada conforme o caso concreto'). Continua com orçamento sigiloso. Só em licitação (WZ-01 = LICITACAO): em contratação direta a VAR-113 fica vazia e a coluna não entra. Tratamento vazio em licitação (sem valor da unidade) = lacuna. A linha de cota traz 'Cota reservada para ME/EPP'. A exceção não cita artigo: o M07 só tem o art. 48 da LC 123/2006 conferido; a justificativa fica no ETP (VAR-120)",
+              "fonte": "itens.tratamento_me_epp",
+              "quando": {
+                "==": [
+                  {
+                    "var": "WZ_01"
+                  },
+                  "LICITACAO"
+                ]
+              },
+              "textos": {
+                "AMPLA": "Ampla participação",
+                "COTA": "Cota principal (ampla participação)",
+                "EXCECAO_JUSTIFICADA": "Ampla participação, com exceção justificada no ETP",
+                "EXCLUSIVO": "Exclusiva para ME/EPP"
+              }
             }
           ],
           "linha_cota": {
@@ -748,6 +768,9 @@
               "CATMAT": "itens.catmat",
               "ESPECIFICAÇÃO": "Cota reservada para ME/EPP do item {itens.numero do item de origem}",
               "ITEM": "numero da linha de cota",
+              "PARTICIPAÇÃO": {
+                "texto": "Cota reservada para ME/EPP"
+              },
               "QUANTIDADE": "itens.quantidade_cota",
               "UNIDADE DE MEDIDA": "itens.unidade_medida",
               "VALOR TOTAL": "itens.valor_total_cota",
@@ -44055,7 +44078,13 @@
         "lacunas_mapa": [
           {
             "campo": "itens",
+            "concordancia": {
+              "plural": "dos itens {valor}",
+              "singular": "do item {valor}"
+            },
+            "estende_desde": "dos itens ",
             "fonte": "VAR_125",
+            "formato": "LISTA_TEXTO",
             "marcador": "[VAR-125: itens que dependem do equipamento]",
             "ocorrencia": 1
           },
@@ -44140,22 +44169,33 @@
         "lacunas_mapa": [
           {
             "comentario": "itens com faixa de temperatura (VAR-122); os cuidados de permanentes (VAR-128) entram no trecho 'Para permanentes'",
+            "concordancia": {
+              "plural": "Os itens {valor} serão transportados, armazenados até a entrega e entregues",
+              "singular": "O item {valor} será transportado, armazenado até a entrega e entregue"
+            },
+            "estende_ate": " serão transportados, armazenados até a entrega e entregues",
+            "estende_desde": "Os itens ",
             "fonte": "itens.faixa_temperatura",
             "formato": "NUMEROS_DOS_ITENS",
             "marcador": "[VAR-122 e VAR-128: itens e cuidados]",
             "ocorrencia": 1
           },
           {
+            "comentario": "itens com a mesma faixa ficam juntos; grupos separados por '; '",
             "fonte": "itens.faixa_temperatura",
-            "formato": "POR_ITEM",
+            "formato": "POR_ITEM_AGRUPADO",
             "marcador": "[VAR-122]",
+            "modelo_por_item": {
+              "plural": "de {valor} para os itens {itens}",
+              "singular": "de {valor} para o item {itens}"
+            },
             "ocorrencia": 1
           },
           {
             "acao": "OPCIONAL",
-            "comentario": "trecho do próprio marcador, sem a remissão '(VAR-129)'; entra com a CK-C-13.2 = Sim",
+            "comentario": "trecho do próprio marcador; entra com a CK-C-13.2 = Sim",
             "fonte": "CK_C_13_2",
-            "marcador": "[e com registro contínuo da temperatura durante o transporte, apresentado no ato da entrega (VAR-129)]",
+            "marcador": "[e com registro contínuo da temperatura durante o transporte, apresentado no ato da entrega]",
             "ocorrencia": 1,
             "quando": {
               "==": [
@@ -44170,9 +44210,9 @@
           },
           {
             "acao": "OPCIONAL",
-            "comentario": "trecho do próprio marcador; a remissão 'descrita em VAR-128' vira o texto da VAR-128 (CK-P-8.7 ou CK-C-13.3)",
+            "comentario": "trecho do próprio marcador; 'descrita pela área técnica' vira o texto da VAR-128 (CK-P-8.7 ou CK-C-13.3)",
             "fonte": "VAR_128",
-            "marcador": "[Para permanentes: o Contratado providenciará a logística especial de transporte e movimentação descrita em VAR-128.]",
+            "marcador": "[Para permanentes: o Contratado providenciará a logística especial de transporte e movimentação descrita pela área técnica.]",
             "ocorrencia": 1,
             "quando": {
               "!!": [
@@ -44186,13 +44226,13 @@
           }
         ],
         "nivel": "MESMO_NIVEL",
-        "observacao": "O ETP 99/2025 cita RDC 304/2019 e Decreto 10.388/2020 para o transporte; não conferidos em fonte oficial (M07, NAO_CONFERIDA): a redação proposta não cita norma.",
+        "observacao": "O ETP 99/2025 cita RDC 304/2019 e Decreto 10.388/2020 para o transporte; não conferidos em fonte oficial (M07, NAO_CONFERIDA): a redação proposta não cita norma. Fase 15: texto sem '(TR-8.2)', '(VAR-129)' e 'descrita em VAR-128'; a recusa é a do TR-8.2 e o registro e a logística vêm da CK-C-13.2 e da VAR-128 (ver lacunas_mapa).",
         "origem_checklist": "CK-C-13.1; CK-C-13.2; CK-C-13.3; CK-P-8.6; CK-P-8.7",
         "perguntas_wz": "",
         "ponto_insercao": "TR: seção 5 (Condições de entrega), depois de TR-5.4; ETP: ETP-04.01",
         "status": "INFERIDO",
         "tema": "Transporte e conservação (temperatura, cadeia de frio, luz, umidade, produto controlado, logística especial)",
-        "texto_proposto": "Os itens [VAR-122 e VAR-128: itens e cuidados] serão transportados, armazenados até a entrega e entregues nas condições de conservação indicadas pelo fabricante, observada a faixa de temperatura [VAR-122] [e com registro contínuo da temperatura durante o transporte, apresentado no ato da entrega (VAR-129)]. [Para permanentes: o Contratado providenciará a logística especial de transporte e movimentação descrita em VAR-128.] O descumprimento das condições de conservação é motivo de recusa (TR-8.2).",
+        "texto_proposto": "Os itens [VAR-122 e VAR-128: itens e cuidados] serão transportados, armazenados até a entrega e entregues nas condições de conservação indicadas pelo fabricante, observada a faixa de temperatura [VAR-122] [e com registro contínuo da temperatura durante o transporte, apresentado no ato da entrega]. [Para permanentes: o Contratado providenciará a logística especial de transporte e movimentação descrita pela área técnica.] O descumprimento das condições de conservação é motivo de recusa.",
         "variaveis": "VAR-122; VAR-128; VAR-129"
       },
       {
@@ -44225,9 +44265,14 @@
         "inserir_apos_alternativo": "",
         "lacunas_mapa": [
           {
-            "acao": "EQUIPE",
-            "comentario": "a VAR-130 chega como um texto só (caixa de resposta do checklist), sem separar esta parte; o texto entra inteiro no marcador de documentos",
-            "fonte": null,
+            "comentario": "complemento do operador CK-X-10 (P38, Fase 15)",
+            "concordancia": {
+              "plural": "dos itens {valor}",
+              "singular": "do item {valor}"
+            },
+            "estende_desde": "dos itens ",
+            "fonte": "CK_X_10",
+            "formato": "LISTA_TEXTO",
             "marcador": "[VAR-130: itens]",
             "ocorrencia": 1
           },
@@ -44367,6 +44412,11 @@
         "inserir_apos_alternativo": "",
         "lacunas_mapa": [
           {
+            "concordancia": {
+              "plural": "para os itens {valor}",
+              "singular": "para o item {valor}"
+            },
+            "estende_desde": "para os itens ",
             "filtro_item": {
               "==": [
                 {
@@ -44382,13 +44432,13 @@
           }
         ],
         "nivel": "PREENCHE_BLOCO",
-        "observacao": "O corpus chama a AE de 'Autorização de Funcionamento (AE)'; a NE-073 a chama de Autorização Especial (M09, VAL-041).",
+        "observacao": "O corpus chama a AE de 'Autorização de Funcionamento (AE)'; a NE-073 a chama de Autorização Especial (M09, VAL-041). Fase 15: texto sem 'TR-9.35 preenchido com:'; o bloco preenchido está em inserir_apos (PREENCHE_BLOCO).",
         "origem_checklist": "CK-C-15.2; CK-C-15.3; CK-C-17.5",
         "perguntas_wz": "WZ-38",
         "ponto_insercao": "TR: preenche TR-9.35 (Prova de atendimento aos requisitos previstos em lei especial), com WZ-38 incluindo REQUISITO_DE_LEI_ESPECIAL",
         "status": "INFERIDO",
         "tema": "Item sujeito a controle especial: Autorização Especial da empresa (requisito de lei especial)",
-        "texto_proposto": "TR-9.35 preenchido com: Autorização Especial (AE) da Anvisa, vigente, para os itens [VAR-123: itens com controle especial], com o fundamento indicado pela equipe administrativa.",
+        "texto_proposto": "Autorização Especial (AE) da Anvisa, vigente, para os itens [VAR-123: itens com controle especial], com o fundamento indicado pela equipe administrativa.",
         "variaveis": "VAR-123; VAR-136"
       },
       {
@@ -44471,16 +44521,21 @@
         "inserir_apos_alternativo": "TR-4 (SUBITEM)",
         "lacunas_mapa": [
           {
-            "acao": "EQUIPE",
-            "comentario": "a VAR-135 chega como um texto só (caixa de resposta do checklist), sem separar esta parte; o texto entra inteiro no marcador de requisitos",
-            "fonte": null,
+            "comentario": "complemento do operador CK-X-11 (P38, Fase 15)",
+            "concordancia": {
+              "plural": "Os itens {valor} deverão atender",
+              "singular": "O item {valor} deverá atender"
+            },
+            "estende_ate": " deverão atender",
+            "estende_desde": "Os itens ",
+            "fonte": "CK_X_11",
+            "formato": "LISTA_TEXTO",
             "marcador": "[VAR-135: itens]",
             "ocorrencia": 1
           },
           {
-            "acao": "EQUIPE",
-            "comentario": "escolha da equipe: o checklist não diz quando a comprovação é exigida",
-            "fonte": null,
+            "comentario": "complemento do operador CK-X-12 (P38, Fase 15)",
+            "fonte": "CK_X_12",
             "marcador": "[na proposta ou na entrega]",
             "ocorrencia": 1
           },
@@ -44530,28 +44585,27 @@
         "inserir_apos_alternativo": "",
         "lacunas_mapa": [
           {
-            "acao": "EQUIPE",
-            "comentario": "a VAR-136 traz as autorizações exigidas (licença sanitária, AFE, AE), não a atividade",
-            "fonte": null,
+            "comentario": "complemento do operador CK-X-13 (P38, Fase 15)",
+            "fonte": "CK_X_13",
+            "inicial_minuscula": true,
             "marcador": "[VAR-136: distribuição ou comércio dos produtos]",
             "ocorrencia": 1
           },
           {
-            "acao": "EQUIPE",
-            "comentario": "o órgão expedidor depende da autorização; a VAR-136 não o separa",
-            "fonte": null,
+            "comentario": "complemento do operador CK-X-14 (P38, Fase 15)",
+            "fonte": "CK_X_14",
             "marcador": "[VAR-136: vigilância sanitária ou Anvisa, conforme a autorização]",
             "ocorrencia": 1
           }
         ],
         "nivel": "PREENCHE_BLOCO",
-        "observacao": "AE para controlados vai no SET-06 (TR-9.35, NE-073); AFE e licença sanitária vão aqui (TR-9.14, NE-060).",
+        "observacao": "AE para controlados vai no SET-06 (TR-9.35, NE-073); AFE e licença sanitária vão aqui (TR-9.14, NE-060). Fase 15: texto sem 'TR-9.14 preenchido com:'; o bloco preenchido está em inserir_apos (PREENCHE_BLOCO).",
         "origem_checklist": "CK-C-17.5; CK-C-15.3",
         "perguntas_wz": "WZ-39",
         "ponto_insercao": "TR: preenche TR-9.14 (ato de autorização para o exercício da atividade)",
         "status": "INFERIDO",
         "tema": "Autorizações sanitárias da empresa fornecedora (licença sanitária, AFE)",
-        "texto_proposto": "TR-9.14 preenchido com: atividade [VAR-136: distribuição ou comércio dos produtos], órgão expedidor [VAR-136: vigilância sanitária ou Anvisa, conforme a autorização] e fundamento indicado pela equipe administrativa.",
+        "texto_proposto": "Atividade [VAR-136: distribuição ou comércio dos produtos], órgão expedidor [VAR-136: vigilância sanitária ou Anvisa, conforme a autorização] e fundamento indicado pela equipe administrativa.",
         "variaveis": "VAR-136; VAR-087"
       },
       {
@@ -44601,16 +44655,14 @@
         "inserir_apos_alternativo": "",
         "lacunas_mapa": [
           {
-            "acao": "EQUIPE",
-            "comentario": "o setor de recebimento vem com o endereço de entrega (VAR-064, TR-5.4); o checklist não o separa",
-            "fonte": null,
+            "comentario": "complemento do operador CK-X-15 (P38, Fase 15)",
+            "fonte": "CK_X_15",
             "marcador": "[VAR-131: setor de recebimento]",
             "ocorrencia": 1
           },
           {
-            "acao": "EQUIPE",
-            "comentario": "antecedência do agendamento: o checklist só pergunta se há agendamento (CK-C-12.6, CK-P-8.5)",
-            "fonte": null,
+            "comentario": "complemento do operador CK-X-16 (P38, Fase 15)",
+            "fonte": "CK_X_16",
             "marcador": "[VAR-131]",
             "ocorrencia": 1
           },
@@ -44650,9 +44702,14 @@
         "inserir_apos_alternativo": "TR-5.2 (MESMO_NIVEL); TR-5.4 (MESMO_NIVEL)",
         "lacunas_mapa": [
           {
-            "acao": "EQUIPE",
-            "comentario": "a VAR-132 chega como um texto só (caixa de resposta do checklist), sem separar esta parte; o texto entra inteiro no marcador de prazo",
-            "fonte": null,
+            "comentario": "complemento do operador CK-X-17 (P38, Fase 15)",
+            "concordancia": {
+              "plural": "Para os itens {valor}",
+              "singular": "Para o item {valor}"
+            },
+            "estende_desde": "Para os itens ",
+            "fonte": "CK_X_17",
+            "formato": "LISTA_TEXTO",
             "marcador": "[VAR-132: itens]",
             "ocorrencia": 1
           },
@@ -44692,9 +44749,14 @@
         "inserir_apos_alternativo": "",
         "lacunas_mapa": [
           {
-            "acao": "EQUIPE",
-            "comentario": "o checklist pergunta as atividades para o equipamento, sem separar por item",
-            "fonte": null,
+            "comentario": "complemento do operador CK-X-18 (P38, Fase 15)",
+            "concordancia": {
+              "plural": "nos itens {valor}",
+              "singular": "no item {valor}"
+            },
+            "estende_desde": "nos itens ",
+            "fonte": "CK_X_18",
+            "formato": "LISTA_TEXTO",
             "marcador": "[VAR-137: itens]",
             "ocorrencia": 1
           },
@@ -44856,9 +44918,9 @@
           },
           {
             "acao": "OPCIONAL",
-            "comentario": "trecho do próprio marcador, sem a remissão ao TR-5.14; entra com a caixa da CK-P-13.8",
+            "comentario": "o marcador indica o trecho; entra com a caixa da CK-P-13.8 (complementa o TR-5.14)",
             "fonte": "VAR_152",
-            "marcador": "[Equipamento substituto: VAR-152, em complemento a TR-5.14.]",
+            "marcador": "[Equipamento substituto, quando exigido.]",
             "ocorrencia": 1,
             "quando": {
               "!!": [
@@ -44872,13 +44934,13 @@
           }
         ],
         "nivel": "MESMO_NIVEL",
-        "observacao": "Prazo de garantia por item (VAR-124, CK-P-13.1); acima de 12 meses exige justificativa (VAL-026).",
+        "observacao": "Prazo de garantia por item (VAR-124, CK-P-13.1); acima de 12 meses exige justificativa (VAL-026). Fase 15: texto sem 'VAR-152, em complemento a TR-5.14'; o equipamento substituto vem da VAR-152 e complementa o TR-5.14.",
         "origem_checklist": "CK-P-13.1 a CK-P-13.8; CK-C-18.1",
         "perguntas_wz": "WZ-29",
         "ponto_insercao": "TR: complementa o grupo GA-07 opção B (TR-5.6 a TR-5.17), preenchendo VAR-066 e VAR-067 e acrescentando os subitens de atendimento",
         "status": "INFERIDO",
         "tema": "Garantia técnica do equipamento: serviços incluídos, local e prazos de atendimento, marco inicial, equipamento substituto",
-        "texto_proposto": "Durante a garantia estão incluídos, sem custo adicional, [VAR-139: serviços]. O atendimento será [VAR-139: no local de instalação] e começará em até [VAR-140] após a abertura do chamado. A garantia conta a partir de [VAR-141]. [Equipamento substituto: VAR-152, em complemento a TR-5.14.]",
+        "texto_proposto": "Durante a garantia estão incluídos, sem custo adicional, [VAR-139: serviços]. O atendimento será [VAR-139: no local de instalação] e começará em até [VAR-140] após a abertura do chamado. A garantia conta a partir de [VAR-141]. [Equipamento substituto, quando exigido.]",
         "variaveis": "VAR-066; VAR-067; VAR-139; VAR-140; VAR-141; VAR-152; VAR-124"
       },
       {
@@ -45101,7 +45163,7 @@
             "comentario": "trecho do próprio marcador; o [VAR-143] de dentro vira a caixa da CK-P-9.5",
             "fonte": "CK_P_9_5_texto",
             "inicial_maiuscula": true,
-            "marcador": "[Se CK-P-9.5 = Sim: o Contratado apresentará levantamento técnico do local (site planning) com o conteúdo [VAR-143], no prazo definido pela equipe.]",
+            "marcador": "[Se exigido o levantamento técnico: o Contratado apresentará levantamento técnico do local (site planning) com o conteúdo [VAR-143], no prazo definido pela equipe.]",
             "ocorrencia": 1,
             "quando": {
               "==": [
@@ -45116,13 +45178,13 @@
           }
         ],
         "nivel": "MESMO_NIVEL",
-        "observacao": "Obrigação da Administração (preparar o local) vai para ETP-13.01; obrigação do Contratado (levantamento técnico) vai para o TR.",
+        "observacao": "Obrigação da Administração (preparar o local) vai para ETP-13.01; obrigação do Contratado (levantamento técnico) vai para o TR. Fase 15: texto sem 'Se CK-P-9.5 = Sim'; o trecho entra com a CK-P-9.5 = Sim (lacunas_mapa).",
         "origem_checklist": "CK-P-8.8; CK-P-9.1 a CK-P-9.7",
         "perguntas_wz": "WZ-47; WZ-46",
         "ponto_insercao": "ETP: ETP-13.01 (providências prévias) e ETP-10.01 (obra ou serviço relacionado); TR: seção 5",
         "status": "INFERIDO",
         "tema": "Preparação do local e requisitos de infraestrutura antes da entrega",
-        "texto_proposto": "A entrega só ocorrerá com o local apto, nas condições [VAR-143]. [Se CK-P-9.5 = Sim: o Contratado apresentará levantamento técnico do local (site planning) com o conteúdo [VAR-143], no prazo definido pela equipe.]",
+        "texto_proposto": "A entrega só ocorrerá com o local apto, nas condições [VAR-143]. [Se exigido o levantamento técnico: o Contratado apresentará levantamento técnico do local (site planning) com o conteúdo [VAR-143], no prazo definido pela equipe.]",
         "variaveis": "VAR-143; VAR-105"
       },
       {
@@ -45144,9 +45206,8 @@
         "inserir_apos_alternativo": "",
         "lacunas_mapa": [
           {
-            "acao": "EQUIPE",
-            "comentario": "o checklist não pede o equipamento a retirar nem o local",
-            "fonte": null,
+            "comentario": "complemento do operador CK-X-19 (P38, Fase 15)",
+            "fonte": "CK_X_19",
             "marcador": "[VAR-144: equipamento e local]",
             "ocorrencia": 1
           },
@@ -71991,6 +72052,537 @@
           }
         },
         "regra": "Complemento do operador (S18). Faixa por item para faixa_temperatura, como a 13.1 do checklist de consumo.",
+        "revisao_expr": null,
+        "revisao_motivos": null,
+        "revisao_pergunta": "",
+        "revisao_pergunta_expr": null,
+        "secao": "COMPLEMENTO DO OPERADOR (decisão 0009)",
+        "status": "INFERIDO",
+        "sugere_expr": null,
+        "tipo_resposta": "TEXTO"
+      },
+      {
+        "checklist": "COMPLEMENTO",
+        "condicional": "responder se a SET-03 entrar na minuta (mesma condição: SE o checklist pedir documento na entrega (CK-C-13.4 com opção marcada OU CK-C-15.4 = Sim))",
+        "condicional_expr": {
+          "or": [
+            {
+              "!!": [
+                {
+                  "var": "CK_C_13_4"
+                }
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "CK_C_15_4"
+                },
+                "Sim"
+              ]
+            }
+          ]
+        },
+        "destinos": "VAR-130; SET-03",
+        "efeito": "PREENCHE",
+        "fonte": "P38 (perguntas_abertas.md), resposta de 24/10/2026: partes do M08 com fonte nula viram complementos do operador, como os CK-X-01 a CK-X-09 (decisão 0009). Pergunta INFERIDA do marcador da SET-03.",
+        "id": "CK-X-10",
+        "leitura": "Digitado pelo operador no sistema (complemento). Números dos itens da tabela, em lista.",
+        "numero": "10",
+        "opcoes": "números dos itens da tabela",
+        "orientacao": "Preenchido pelo operador no sistema; não existe no Word distribuído.",
+        "pergunta": "Quais itens serão entregues acompanhados dos documentos indicados no checklist (certificado de análise do lote, laudo, documento de rastreabilidade, registro de temperatura)?",
+        "por_item": "N",
+        "preenche_expr": null,
+        "regra": "Complemento do operador (P38, Fase 15): parte da SET-03 ligada à VAR-130 que nenhuma pergunta do checklist dá. O lacunas_mapa da SET-03 lê a resposta (CK_X_10) direto no marcador; ela não soma à VAR-130, para o texto não repetir.",
+        "revisao_expr": null,
+        "revisao_motivos": null,
+        "revisao_pergunta": "",
+        "revisao_pergunta_expr": null,
+        "secao": "COMPLEMENTO DO OPERADOR (decisão 0009)",
+        "status": "INFERIDO",
+        "sugere_expr": null,
+        "tipo_resposta": "MULTIPLA"
+      },
+      {
+        "checklist": "COMPLEMENTO",
+        "condicional": "responder se a SET-07 entrar na minuta (mesma condição: SE o checklist indicar algum desses requisitos para algum item)",
+        "condicional_expr": {
+          "or": [
+            {
+              "==": [
+                {
+                  "var": "CK_C_15_5"
+                },
+                "Sim"
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "CK_C_15_6"
+                },
+                "Sim"
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "CK_C_15_7"
+                },
+                "Sim"
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "CK_P_16_2"
+                },
+                "Sim"
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "CK_P_16_3"
+                },
+                "Sim"
+              ]
+            },
+            {
+              "and": [
+                {
+                  "!!": [
+                    {
+                      "var": "CK_P_3_5"
+                    }
+                  ]
+                },
+                {
+                  "!": [
+                    {
+                      "==": [
+                        {
+                          "var": "CK_P_3_5"
+                        },
+                        [
+                          "Não"
+                        ]
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "destinos": "VAR-135; SET-07",
+        "efeito": "PREENCHE",
+        "fonte": "P38 (perguntas_abertas.md), resposta de 24/10/2026: partes do M08 com fonte nula viram complementos do operador, como os CK-X-01 a CK-X-09 (decisão 0009). Pergunta INFERIDA do marcador da SET-07.",
+        "id": "CK-X-11",
+        "leitura": "Digitado pelo operador no sistema (complemento). Números dos itens da tabela, em lista.",
+        "numero": "11",
+        "opcoes": "números dos itens da tabela",
+        "orientacao": "Preenchido pelo operador no sistema; não existe no Word distribuído.",
+        "pergunta": "Quais itens devem atender aos requisitos sanitários e técnicos indicados no checklist?",
+        "por_item": "N",
+        "preenche_expr": null,
+        "regra": "Complemento do operador (P38, Fase 15): parte da SET-07 ligada à VAR-135 que nenhuma pergunta do checklist dá. O lacunas_mapa da SET-07 lê a resposta (CK_X_11) direto no marcador; ela não soma à VAR-135, para o texto não repetir.",
+        "revisao_expr": null,
+        "revisao_motivos": null,
+        "revisao_pergunta": "",
+        "revisao_pergunta_expr": null,
+        "secao": "COMPLEMENTO DO OPERADOR (decisão 0009)",
+        "status": "INFERIDO",
+        "sugere_expr": null,
+        "tipo_resposta": "MULTIPLA"
+      },
+      {
+        "checklist": "COMPLEMENTO",
+        "condicional": "responder se a SET-07 entrar na minuta (mesma condição: SE o checklist indicar algum desses requisitos para algum item)",
+        "condicional_expr": {
+          "or": [
+            {
+              "==": [
+                {
+                  "var": "CK_C_15_5"
+                },
+                "Sim"
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "CK_C_15_6"
+                },
+                "Sim"
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "CK_C_15_7"
+                },
+                "Sim"
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "CK_P_16_2"
+                },
+                "Sim"
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "CK_P_16_3"
+                },
+                "Sim"
+              ]
+            },
+            {
+              "and": [
+                {
+                  "!!": [
+                    {
+                      "var": "CK_P_3_5"
+                    }
+                  ]
+                },
+                {
+                  "!": [
+                    {
+                      "==": [
+                        {
+                          "var": "CK_P_3_5"
+                        },
+                        [
+                          "Não"
+                        ]
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "destinos": "VAR-135; SET-07",
+        "efeito": "PREENCHE",
+        "fonte": "P38 (perguntas_abertas.md), resposta de 24/10/2026: partes do M08 com fonte nula viram complementos do operador, como os CK-X-01 a CK-X-09 (decisão 0009). Pergunta INFERIDA do marcador da SET-07.",
+        "id": "CK-X-12",
+        "leitura": "Digitado pelo operador no sistema (complemento). Uma opção. Duas ou mais marcas: resposta vazia, ID em checklist.marcas_multiplas e destaque. Texto escrito ao lado de 'Outro' em CK_x_texto.",
+        "numero": "12",
+        "opcoes": "na proposta; na entrega; na proposta e na entrega",
+        "orientacao": "Preenchido pelo operador no sistema; não existe no Word distribuído.",
+        "pergunta": "Os requisitos sanitários e técnicos serão comprovados na proposta ou na entrega?",
+        "por_item": "N",
+        "preenche_expr": null,
+        "regra": "Complemento do operador (P38, Fase 15): parte da SET-07 ligada à VAR-135 que nenhuma pergunta do checklist dá. O lacunas_mapa da SET-07 lê a resposta (CK_X_12) direto no marcador; ela não soma à VAR-135, para o texto não repetir.",
+        "revisao_expr": null,
+        "revisao_motivos": null,
+        "revisao_pergunta": "",
+        "revisao_pergunta_expr": null,
+        "secao": "COMPLEMENTO DO OPERADOR (decisão 0009)",
+        "status": "INFERIDO",
+        "sugere_expr": null,
+        "tipo_resposta": "UNICA"
+      },
+      {
+        "checklist": "COMPLEMENTO",
+        "condicional": "responder se a SET-08 entrar na minuta (mesma condição: SE o checklist marcar autorização sanitária indispensável (CK-C-17.5) E a equipe confirmar que a atividade exige autorização para funcionar (WZ-39 = SIM))",
+        "condicional_expr": {
+          "and": [
+            {
+              "!!": [
+                {
+                  "var": "CK_C_17_5"
+                }
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "WZ_39"
+                },
+                "SIM"
+              ]
+            }
+          ]
+        },
+        "destinos": "VAR-136; SET-08",
+        "efeito": "PREENCHE",
+        "fonte": "P38 (perguntas_abertas.md), resposta de 24/10/2026: partes do M08 com fonte nula viram complementos do operador, como os CK-X-01 a CK-X-09 (decisão 0009). Pergunta INFERIDA do marcador da SET-08.",
+        "id": "CK-X-13",
+        "leitura": "Digitado pelo operador no sistema (complemento). Texto da caixa de resposta, sem alteração.",
+        "numero": "13",
+        "opcoes": "",
+        "orientacao": "Preenchido pelo operador no sistema; não existe no Word distribuído.",
+        "pergunta": "Qual atividade da empresa fornecedora depende da autorização exigida (ex.: distribuição ou comércio dos produtos)?",
+        "por_item": "N",
+        "preenche_expr": null,
+        "regra": "Complemento do operador (P38, Fase 15): parte da SET-08 ligada à VAR-136 que nenhuma pergunta do checklist dá. O lacunas_mapa da SET-08 lê a resposta (CK_X_13) direto no marcador; ela não soma à VAR-136, para o texto não repetir.",
+        "revisao_expr": null,
+        "revisao_motivos": null,
+        "revisao_pergunta": "",
+        "revisao_pergunta_expr": null,
+        "secao": "COMPLEMENTO DO OPERADOR (decisão 0009)",
+        "status": "INFERIDO",
+        "sugere_expr": null,
+        "tipo_resposta": "TEXTO"
+      },
+      {
+        "checklist": "COMPLEMENTO",
+        "condicional": "responder se a SET-08 entrar na minuta (mesma condição: SE o checklist marcar autorização sanitária indispensável (CK-C-17.5) E a equipe confirmar que a atividade exige autorização para funcionar (WZ-39 = SIM))",
+        "condicional_expr": {
+          "and": [
+            {
+              "!!": [
+                {
+                  "var": "CK_C_17_5"
+                }
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "WZ_39"
+                },
+                "SIM"
+              ]
+            }
+          ]
+        },
+        "destinos": "VAR-136; SET-08",
+        "efeito": "PREENCHE",
+        "fonte": "P38 (perguntas_abertas.md), resposta de 24/10/2026: partes do M08 com fonte nula viram complementos do operador, como os CK-X-01 a CK-X-09 (decisão 0009). Pergunta INFERIDA do marcador da SET-08.",
+        "id": "CK-X-14",
+        "leitura": "Digitado pelo operador no sistema (complemento). Texto da caixa de resposta, sem alteração.",
+        "numero": "14",
+        "opcoes": "",
+        "orientacao": "Preenchido pelo operador no sistema; não existe no Word distribuído.",
+        "pergunta": "Qual órgão expede essa autorização (ex.: vigilância sanitária ou Anvisa)?",
+        "por_item": "N",
+        "preenche_expr": null,
+        "regra": "Complemento do operador (P38, Fase 15): parte da SET-08 ligada à VAR-136 que nenhuma pergunta do checklist dá. O lacunas_mapa da SET-08 lê a resposta (CK_X_14) direto no marcador; ela não soma à VAR-136, para o texto não repetir.",
+        "revisao_expr": null,
+        "revisao_motivos": null,
+        "revisao_pergunta": "",
+        "revisao_pergunta_expr": null,
+        "secao": "COMPLEMENTO DO OPERADOR (decisão 0009)",
+        "status": "INFERIDO",
+        "sugere_expr": null,
+        "tipo_resposta": "TEXTO"
+      },
+      {
+        "checklist": "COMPLEMENTO",
+        "condicional": "responder se a SET-09 entrar na minuta (mesma condição: SE o checklist indicar agendamento prévio ou restrição de acesso)",
+        "condicional_expr": {
+          "or": [
+            {
+              "==": [
+                {
+                  "var": "CK_C_12_6"
+                },
+                "Sim"
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "CK_C_12_7"
+                },
+                "Sim"
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "CK_P_8_5"
+                },
+                "Sim"
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "CK_P_8_6"
+                },
+                "Sim"
+              ]
+            }
+          ]
+        },
+        "destinos": "VAR-131; SET-09",
+        "efeito": "PREENCHE",
+        "fonte": "P38 (perguntas_abertas.md), resposta de 24/10/2026: partes do M08 com fonte nula viram complementos do operador, como os CK-X-01 a CK-X-09 (decisão 0009). Pergunta INFERIDA do marcador da SET-09.",
+        "id": "CK-X-15",
+        "leitura": "Digitado pelo operador no sistema (complemento). Texto da caixa de resposta, sem alteração.",
+        "numero": "15",
+        "opcoes": "",
+        "orientacao": "Preenchido pelo operador no sistema; não existe no Word distribuído.",
+        "pergunta": "Com qual setor a entrega será agendada?",
+        "por_item": "N",
+        "preenche_expr": null,
+        "regra": "Complemento do operador (P38, Fase 15): parte da SET-09 ligada à VAR-131 que nenhuma pergunta do checklist dá. O lacunas_mapa da SET-09 lê a resposta (CK_X_15) direto no marcador; ela não soma à VAR-131, para o texto não repetir.",
+        "revisao_expr": null,
+        "revisao_motivos": null,
+        "revisao_pergunta": "",
+        "revisao_pergunta_expr": null,
+        "secao": "COMPLEMENTO DO OPERADOR (decisão 0009)",
+        "status": "INFERIDO",
+        "sugere_expr": null,
+        "tipo_resposta": "TEXTO"
+      },
+      {
+        "checklist": "COMPLEMENTO",
+        "condicional": "responder se a SET-09 entrar na minuta (mesma condição: SE o checklist indicar agendamento prévio ou restrição de acesso)",
+        "condicional_expr": {
+          "or": [
+            {
+              "==": [
+                {
+                  "var": "CK_C_12_6"
+                },
+                "Sim"
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "CK_C_12_7"
+                },
+                "Sim"
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "CK_P_8_5"
+                },
+                "Sim"
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "CK_P_8_6"
+                },
+                "Sim"
+              ]
+            }
+          ]
+        },
+        "destinos": "VAR-131; SET-09",
+        "efeito": "PREENCHE",
+        "fonte": "P38 (perguntas_abertas.md), resposta de 24/10/2026: partes do M08 com fonte nula viram complementos do operador, como os CK-X-01 a CK-X-09 (decisão 0009). Pergunta INFERIDA do marcador da SET-09.",
+        "id": "CK-X-16",
+        "leitura": "Digitado pelo operador no sistema (complemento). Texto da caixa de resposta, sem alteração.",
+        "numero": "16",
+        "opcoes": "",
+        "orientacao": "Preenchido pelo operador no sistema; não existe no Word distribuído.",
+        "pergunta": "Com quanta antecedência mínima a entrega deve ser agendada (número e unidade, ex.: 48 horas)?",
+        "por_item": "N",
+        "preenche_expr": null,
+        "regra": "Complemento do operador (P38, Fase 15): parte da SET-09 ligada à VAR-131 que nenhuma pergunta do checklist dá. O lacunas_mapa da SET-09 lê a resposta (CK_X_16) direto no marcador; ela não soma à VAR-131, para o texto não repetir.",
+        "revisao_expr": null,
+        "revisao_motivos": null,
+        "revisao_pergunta": "",
+        "revisao_pergunta_expr": null,
+        "secao": "COMPLEMENTO DO OPERADOR (decisão 0009)",
+        "status": "INFERIDO",
+        "sugere_expr": null,
+        "tipo_resposta": "TEXTO"
+      },
+      {
+        "checklist": "COMPLEMENTO",
+        "condicional": "responder se a SET-10 entrar na minuta (mesma condição: SE o checklist indicar itens com entrega emergencial (CK-C-12.4 = Sim))",
+        "condicional_expr": {
+          "==": [
+            {
+              "var": "CK_C_12_4"
+            },
+            "Sim"
+          ]
+        },
+        "destinos": "VAR-132; SET-10",
+        "efeito": "PREENCHE",
+        "fonte": "P38 (perguntas_abertas.md), resposta de 24/10/2026: partes do M08 com fonte nula viram complementos do operador, como os CK-X-01 a CK-X-09 (decisão 0009). Pergunta INFERIDA do marcador da SET-10.",
+        "id": "CK-X-17",
+        "leitura": "Digitado pelo operador no sistema (complemento). Números dos itens da tabela, em lista.",
+        "numero": "17",
+        "opcoes": "números dos itens da tabela",
+        "orientacao": "Preenchido pelo operador no sistema; não existe no Word distribuído.",
+        "pergunta": "Quais itens têm entrega emergencial?",
+        "por_item": "N",
+        "preenche_expr": null,
+        "regra": "Complemento do operador (P38, Fase 15): parte da SET-10 ligada à VAR-132 que nenhuma pergunta do checklist dá. O lacunas_mapa da SET-10 lê a resposta (CK_X_17) direto no marcador; ela não soma à VAR-132, para o texto não repetir.",
+        "revisao_expr": null,
+        "revisao_motivos": null,
+        "revisao_pergunta": "",
+        "revisao_pergunta_expr": null,
+        "secao": "COMPLEMENTO DO OPERADOR (decisão 0009)",
+        "status": "INFERIDO",
+        "sugere_expr": null,
+        "tipo_resposta": "MULTIPLA"
+      },
+      {
+        "checklist": "COMPLEMENTO",
+        "condicional": "responder se a SET-11 entrar na minuta (mesma condição: SE o checklist indicar instalação ou montagem especializada (CK-P-11.1 = Sim))",
+        "condicional_expr": {
+          "==": [
+            {
+              "var": "CK_P_11_1"
+            },
+            "Sim"
+          ]
+        },
+        "destinos": "VAR-137; SET-11",
+        "efeito": "PREENCHE",
+        "fonte": "P38 (perguntas_abertas.md), resposta de 24/10/2026: partes do M08 com fonte nula viram complementos do operador, como os CK-X-01 a CK-X-09 (decisão 0009). Pergunta INFERIDA do marcador da SET-11.",
+        "id": "CK-X-18",
+        "leitura": "Digitado pelo operador no sistema (complemento). Números dos itens da tabela, em lista.",
+        "numero": "18",
+        "opcoes": "números dos itens da tabela",
+        "orientacao": "Preenchido pelo operador no sistema; não existe no Word distribuído.",
+        "pergunta": "Em quais itens o Contratado executará a montagem, a instalação e as demais atividades?",
+        "por_item": "N",
+        "preenche_expr": null,
+        "regra": "Complemento do operador (P38, Fase 15): parte da SET-11 ligada à VAR-137 que nenhuma pergunta do checklist dá. O lacunas_mapa da SET-11 lê a resposta (CK_X_18) direto no marcador; ela não soma à VAR-137, para o texto não repetir.",
+        "revisao_expr": null,
+        "revisao_motivos": null,
+        "revisao_pergunta": "",
+        "revisao_pergunta_expr": null,
+        "secao": "COMPLEMENTO DO OPERADOR (decisão 0009)",
+        "status": "INFERIDO",
+        "sugere_expr": null,
+        "tipo_resposta": "MULTIPLA"
+      },
+      {
+        "checklist": "COMPLEMENTO",
+        "condicional": "responder se a SET-18 entrar na minuta (mesma condição: SE a equipe administrativa incluir a desinstalação como obrigação do fornecedor (WZ-58 = SIM))",
+        "condicional_expr": {
+          "==": [
+            {
+              "var": "WZ_58"
+            },
+            "SIM"
+          ]
+        },
+        "destinos": "VAR-144; SET-18",
+        "efeito": "PREENCHE",
+        "fonte": "P38 (perguntas_abertas.md), resposta de 24/10/2026: partes do M08 com fonte nula viram complementos do operador, como os CK-X-01 a CK-X-09 (decisão 0009). Pergunta INFERIDA do marcador da SET-18.",
+        "id": "CK-X-19",
+        "leitura": "Digitado pelo operador no sistema (complemento). Texto da caixa de resposta, sem alteração.",
+        "numero": "19",
+        "opcoes": "",
+        "orientacao": "Preenchido pelo operador no sistema; não existe no Word distribuído.",
+        "pergunta": "Qual equipamento será desinstalado e retirado, e em que local?",
+        "por_item": "N",
+        "preenche_expr": null,
+        "regra": "Complemento do operador (P38, Fase 15): parte da SET-18 ligada à VAR-144 que nenhuma pergunta do checklist dá. O lacunas_mapa da SET-18 lê a resposta (CK_X_19) direto no marcador; ela não soma à VAR-144, para o texto não repetir.",
         "revisao_expr": null,
         "revisao_motivos": null,
         "revisao_pergunta": "",
