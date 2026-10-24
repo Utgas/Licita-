@@ -179,13 +179,13 @@ licita-plus/
 │   │   ├── pacote/               # tipos e leitura do pacote
 │   │   ├── wizard/               # próxima pergunta, dependências, respostas
 │   │   ├── itens/                # ME/EPP, grupo, amostra, marca, validade
-│   │   ├── montagem/             # escolha de blocos, lacunas, numeração
+│   │   ├── montagem/             # escolha de blocos, lacunas, numeração; ETP campo a campo (etp.ts)
 │   │   ├── validacao/            # regras determinísticas (M10)
 │   │   └── derivacao/            # ETP para TR (v1)
 │   ├── dados/                    # esquema do banco, migrações e consultas
 │   ├── auth/                     # login, perfis e permissões
 │   ├── auditoria/                # registro só de inserção
-│   ├── exportacao/               # HTML do documento, PDF e texto por campo
+│   ├── exportacao/               # PDF e texto por seção (TR) e por campo (ETP)
 │   ├── ia/                       # v2: vazio até o provedor ser aprovado
 │   └── app/                      # telas e rotas
 │       ├── login/
@@ -194,7 +194,8 @@ licita-plus/
 │       │       ├── wizard/
 │       │       ├── itens/        # importação e atributos de cada item
 │       │       ├── revisao/      # minuta montada, edição por bloco, alertas
-│       │       └── exportar/     # PDF e botões de copiar por campo
+│       │       ├── exportar/     # PDF e botões de copiar por campo
+│       │       └── etp/          # ETP campo a campo, copiar por campo e PDF (decisão 0015)
 │       └── admin/                # usuários, OMs, pacotes, auditoria
 └── testes/
     ├── motor/                    # testes unitários

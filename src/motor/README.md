@@ -7,6 +7,6 @@ Núcleo puro do sistema. Recebe o pacote de regras e as respostas e devolve a mi
 | `pacote/` | tipos e leitura do pacote compilado | todas |
 | `wizard/` | próxima pergunta, dependências, pré-preenchimento pelo checklist | M04, M05, M11 |
 | `itens/` | regras de cada item: ME/EPP pelo valor, grupo, amostra, marca, validade | M03, M05, M11 |
-| `montagem/` | escolha de blocos, preenchimento de lacunas, numeração | M02, M04, M08 |
+| `montagem/` | escolha de blocos, preenchimento de lacunas, numeração; ETP campo a campo (`etp.ts`, Marco 3) | M01, M02, M04, M05, M06, M08, M11 |
 | `validacao/` | regras determinísticas antes do PDF | M10 |
-| `derivacao/` | campos do ETP para blocos do TR (v1) | M06 |
+| `derivacao/` | campos do ETP para blocos do TR: rastreabilidade e aviso de campo vazio (v1, Marco 3) | M06 |

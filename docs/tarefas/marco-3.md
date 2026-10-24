@@ -132,3 +132,17 @@ Para o ETP sair completo sem a equipe colar texto padrão, e para a reprodução
    O teste `testes/cenarios/reproducao-etp.test.ts` já espera esse formato.
 4. **M06:** o `campos_etp` está vazio no TR-4.H04, no TR-5.4 e no TR-5.5. A evidência do par 117/2025 desses blocos compara com o ETP: amostra no ETP-04.01, endereços (VAR-064) no ETP-04.01 e garantia do bem no ETP-06.01. O teste da derivação lista os três em `derivacao-117-classificacao.ts` (campo `matriz`).
 5. **M02, TR-2.2 e TR-2.3:** o marcador `[ANO]` lê a VAR-038, que é NUMERO, sem formato, e sai "2.026" na minuta. O simulador das matrizes faz o mesmo, então o motor está certo e a correção é na matriz. Duas saídas possíveis: um formato próprio para ano (por exemplo `ANO_NUMERO`) ou a VAR-038 como TEXTO. O ETP já mostra "2026", porque lê o "AAAA" da validação do M05.
+
+## Estado (24/10/2026)
+
+Passos 1 a 10 feitos, no ramo `claude/quirky-bohr-ez4er7`. O que ficou com o critério de saída:
+
+- **Feito:** derivação do par 117/2025 testada pelas evidências do M06.
+  - Os 5 blocos consistentes saem derivados do mesmo campo e das mesmas respostas.
+  - Os 9 divergentes estão classificados, com a fonte comum conferida nos dois lados.
+  - O TR dos cenários de ouro e da reprodução R1 e R2 não mudou.
+- **Pendente, fora do código:**
+  - o caso R3 e as colunas da Fase 16, com o agente das matrizes;
+  - a revisão do Gabriel na tela do ETP publicada.
+
+  O teste do R3 já roda sozinho quando o arquivo chegar.
