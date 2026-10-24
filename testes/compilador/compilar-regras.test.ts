@@ -113,6 +113,21 @@ describe("matrizes fictícias", () => {
     expect(tiposDeErro(conteudos)).toEqual(["referencia"]);
   });
 
+  it.each<[string, string, string, string]>([
+    // Ligações do ETP (Marco 3): o campo citado tem de existir no M01 e o bloco do TR, no M02.
+    ["M05.usada_em", "M05_variaveis.csv", '"WIZARD","TR-1.1"', '"WIZARD","TR-1.1; ETP-09.99"'],
+    ["M06.campos_etp", "M06_derivacao_etp_tr.csv", '"ETP-01.01","VAR-001"', '"ETP-09.99","VAR-001"'],
+    ["M06.bloco_tr", "M06_derivacao_etp_tr.csv", '"TR-1.1","1"', '"TR-9.99","1"'],
+    ["M11.destinos", "M11_checklist.csv", '"WZ-01"', '"WZ-01; ETP-09.99"'],
+    ["M04.exige_justificativa", "M04_wizard.csv", '"N","","NE-001"', '"S: justificativa no ETP-09.99","","NE-001"'],
+    ["M01.destino_tr", "M01_etp_campos.csv", '"Nunca","TR-1.1"', '"Nunca","TR-9.99"'],
+  ])("conferem a ligação do ETP em %s", (_coluna, arquivo, antes, depois) => {
+    const conteudos = matrizesDoCaso();
+    expect(conteudos[arquivo]).toContain(antes);
+    conteudos[arquivo] = conteudos[arquivo].replace(antes, depois);
+    expect(tiposDeErro(conteudos)).toEqual(["referencia"]);
+  });
+
   it("aceitam complemento do operador (CK-X-nn), variáveis da leitura e expressão false (linha desligada)", () => {
     const pacote = esquemaDoPacote.parse(JSON.parse(compilarConteudos(matrizesDoCaso()).pacote?.json ?? "{}"));
     const complemento = pacote.matrizes.M11.find((l) => l.id === "CK-X-01");
