@@ -19,7 +19,7 @@ from jlogic import avaliar  # noqa: E402
 GERAIS = {"var", "==", "!=", "!", "!!", "and", "or", "if", "in", "merge", "some", "none", "<=", ">"}
 ACOES = {"PREENCHER", "ESCOLHA", "OPCIONAL", "TABELA", "REMOVER", "MANTER", "EQUIPE"}
 FORMATOS = {"TEXTO", "NUMERO_EXTENSO", "PERCENTUAL_EXTENSO", "PERCENTUAL_2", "MOEDA", "MOEDA_POR_EXTENSO", "DATA", "DIA",
-            "MES_EXTENSO", "ANO", "LISTA_TEXTO", "LISTA_LINHAS", "MINUSCULA", "INICIAL_MINUSCULA", "ITEM", "POR_ITEM"}
+            "MES_EXTENSO", "ANO", "LISTA_TEXTO", "LISTA_LINHAS", "MINUSCULA", "INICIAL_MINUSCULA", "ITEM", "POR_ITEM", "POR_ITEM_AGRUPADO"}
 
 
 def _ck(rid):
@@ -115,7 +115,10 @@ def testes(pasta, M):
     esperadas = {"TR-1.1.TAB1", "TR-1.1.1.TAB1", "TR-1.1.1.TAB2", "TR-1.1.1.TAB3", "TR-5.2.TAB1"}
     ruins = []
     for b, tc in tabs.items():
-        cab = [c["cabecalho"] for c in tc["colunas"]]
+        cab = [c["cabecalho"] for c in tc["colunas"] if not c.get("acrescentada")]
+        extras = [c for c in tc["colunas"] if c.get("acrescentada")]
+        if any("NE-003, nota 1" not in c.get("comentario", "") for c in extras):
+            ruins.append(f"{b}: coluna acrescentada sem a base NE-003, nota 1")
         texto = next(r["texto_literal"] for r in m02 if r["id"] == b)
         prim = [c.strip() for c in texto.splitlines()[1 if texto.splitlines()[0].endswith(":") else 0].split("|")]
         if cab != prim:
@@ -238,20 +241,39 @@ def testes(pasta, M):
                         valor_total_cota=250)
         return dict(base, quantidade_principal=100, valor_total=1000, tratamento_me_epp="AMPLA")
     itens = [it_(1, True), it_(2, False), it_(3, True)]
-    t, lac, _ = bloco("TR-1.1.TAB1", {"itens": itens, "WZ_40": "NAO"})
+    t, lac, _ = bloco("TR-1.1.TAB1", {"itens": itens, "WZ_40": "NAO", "WZ_01": "LICITACAO"})
     linhas = t.splitlines()
-    esperado_tab = ["ITEM | ESPECIFICAÇÃO | CATMAT | UNIDADE DE MEDIDA | QUANTIDADE | VALOR UNITÁRIO | VALOR TOTAL",
-                    "1 | Item 1 | 000000 | unidade | 75 | R$ 10,00 | R$ 750,00",
-                    "2 | Item 2 | 000000 | unidade | 100 | R$ 10,00 | R$ 1.000,00",
-                    "3 | Item 3 | 000000 | unidade | 75 | R$ 10,00 | R$ 750,00",
-                    "4 | Cota reservada para ME/EPP do item 1 | 000000 | unidade | 25 | R$ 10,00 | R$ 250,00",
-                    "5 | Cota reservada para ME/EPP do item 3 | 000000 | unidade | 25 | R$ 10,00 | R$ 250,00"]
+    esperado_tab = ["ITEM | ESPECIFICAÇÃO | CATMAT | UNIDADE DE MEDIDA | QUANTIDADE | VALOR UNITÁRIO | VALOR TOTAL | "
+                    "PARTICIPAÇÃO",
+                    "1 | Item 1 | 000000 | unidade | 75 | R$ 10,00 | R$ 750,00 | Cota principal (ampla participação)",
+                    "2 | Item 2 | 000000 | unidade | 100 | R$ 10,00 | R$ 1.000,00 | Ampla participação",
+                    "3 | Item 3 | 000000 | unidade | 75 | R$ 10,00 | R$ 750,00 | Cota principal (ampla participação)",
+                    "4 | Cota reservada para ME/EPP do item 1 | 000000 | unidade | 25 | R$ 10,00 | R$ 250,00 | Cota "
+                    "reservada para ME/EPP",
+                    "5 | Cota reservada para ME/EPP do item 3 | 000000 | unidade | 25 | R$ 10,00 | R$ 250,00 | Cota "
+                    "reservada para ME/EPP"]
     cota_ok = linhas == esperado_tab and not lac
     if not cota_ok:
         falhas.append(f"TR-1.1.TAB1 com cota: {linhas} | {lac}")
-    t, lac, _ = bloco("TR-1.1.TAB1", {"itens": [it_(7, True)], "WZ_40": "SIM"})
-    if t.count("SIGILOSO") != 4 or "8 | Cota reservada para ME/EPP do item 7" not in t:
+    t, lac, _ = bloco("TR-1.1.TAB1", {"itens": [it_(7, True)], "WZ_40": "SIM", "WZ_01": "LICITACAO"})
+    if (t.count("SIGILOSO") != 4 or "8 | Cota reservada para ME/EPP do item 7" not in t
+            or not t.endswith("| SIGILOSO | SIGILOSO | Cota reservada para ME/EPP")):
         falhas.append(f"TR-1.1.TAB1 sigiloso: {t}")
+    # PARTICIPAÇÃO: os cinco textos, com sigilo, e fora da contratação direta (Fase 15)
+    part_ok = True
+    for trat, txt in (("EXCLUSIVO", "Exclusiva para ME/EPP"), ("AMPLA", "Ampla participação"),
+                      ("EXCECAO_JUSTIFICADA", "Ampla participação, com exceção justificada no ETP")):
+        t, lac, _ = bloco("TR-1.1.TAB1", {"itens": [dict(it_(1, False), tratamento_me_epp=trat)], "WZ_40": "SIM",
+                                          "WZ_01": "LICITACAO"})
+        part_ok &= t.splitlines()[1].endswith(f"| SIGILOSO | SIGILOSO | {txt}") and not lac
+    t, lac, _ = bloco("TR-1.1.TAB1", {"itens": [dict(it_(1, False), tratamento_me_epp=None)],
+                                      "WZ_01": "CONTRATACAO_DIRETA"})
+    part_ok &= "PARTICIPAÇÃO" not in t and not lac
+    t, lac, _ = bloco("TR-1.1.TAB1", {"itens": [dict(it_(1, False), tratamento_me_epp=None)], "WZ_01": "LICITACAO"})
+    part_ok &= "[[LACUNA]]" in t
+    reg(cota_ok and part_ok, "TR-1.1.TAB1 (Fase 15): coluna PARTICIPAÇÃO depois de VALOR TOTAL com os textos de "
+        "EXCLUSIVO, AMPLA, COTA (principal), linha de cota e EXCECAO_JUSTIFICADA; continua com orçamento sigiloso; fora "
+        "da contratação direta; tratamento vazio em licitação = lacuna")
     tc = json.loads(por_id["TR-1.1.TAB1"]["tabela_colunas"])
     reg(cota_ok and tc["linha_cota"]["posicao"].startswith("FIM_DA_TABELA") and tc["colunas"][0].get("fonte") ==
         "itens.numero", "TR-1.1.TAB1 (P35): itens 1, 2 e 3 com o próprio número; cotas dos itens 1 e 3 no fim, como 4 e 5, "

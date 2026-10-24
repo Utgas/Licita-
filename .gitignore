@@ -28,4 +28,6 @@ Thumbs.db
 
 # testes e certificados
 coverage/
+test-results/
+playwright-report/
 *.pem

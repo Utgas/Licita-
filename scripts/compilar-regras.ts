@@ -515,7 +515,7 @@ const COLUNAS_JSON = new Set(["lacunas_mapa", "tabela_colunas", "revisao_motivos
 const ACOES_DO_MAPA = new Set(["PREENCHER", "ESCOLHA", "OPCIONAL", "TABELA", "REMOVER", "MANTER", "EQUIPE"]);
 const FORMATOS_DO_MAPA = new Set([
   "TEXTO", "NUMERO", "NUMERO_EXTENSO", "PERCENTUAL_EXTENSO", "PERCENTUAL_2", "MOEDA", "MOEDA_POR_EXTENSO", "DATA", "DIA",
-  "MES_EXTENSO", "ANO", "LISTA_TEXTO", "LISTA_LINHAS", "MINUSCULA", "INICIAL_MINUSCULA", "ITEM", "POR_ITEM", "NUMEROS_DOS_ITENS",
+  "MES_EXTENSO", "ANO", "LISTA_TEXTO", "LISTA_LINHAS", "MINUSCULA", "INICIAL_MINUSCULA", "ITEM", "POR_ITEM", "POR_ITEM_AGRUPADO", "NUMEROS_DOS_ITENS",
 ]);
 const MOTIVOS_DE_REVISAO = new Set(["SEM_RESPOSTA", "MARCAS_MULTIPLAS", "OUTRO_ILEGIVEL", "DIVERGENCIA", "RESPOSTA_UNICA_POR_ITEM", "CONTRADICAO", "NOME_DE_PESSOA"]);
 
@@ -550,6 +550,13 @@ function lerMapaDeLacunas(mapa: unknown, vocabulario: Vocabulario, leitura: Leit
     for (const fonte of [entrada.fonte, entrada.unidade, ...((entrada.alternativas as unknown[]) ?? [])]) conferirFonte(fonte, vocabulario, leitura);
     if (entrada.quando !== undefined) lerExpressao(entrada.quando, { tipo: "raiz" }, false, vocabulario, leitura);
     if (entrada.filtro_item !== undefined) lerExpressao(entrada.filtro_item, { tipo: "item" }, false, vocabulario, leitura);
+    const temSingularEPlural = (v: unknown) => ehObjetoJson(v) && typeof v.singular === "string" && typeof v.plural === "string";
+    if (entrada.concordancia !== undefined && !temSingularEPlural(entrada.concordancia)) {
+      leitura.problemas.push({ tipo: "operador", mensagem: `concordancia sem singular e plural: ${entrada.marcador}` });
+    }
+    if (formato === "POR_ITEM_AGRUPADO" && !temSingularEPlural(entrada.modelo_por_item)) {
+      leitura.problemas.push({ tipo: "operador", mensagem: `POR_ITEM_AGRUPADO sem modelo_por_item (singular e plural): ${entrada.marcador}` });
+    }
     for (const opcao of (entrada.opcoes as unknown[]) ?? []) {
       if (!ehObjetoJson(opcao) || typeof opcao.texto !== "string") {
         leitura.problemas.push({ tipo: "operador", mensagem: "opção sem quando/texto" });
@@ -573,6 +580,10 @@ function lerTabelaColunas(tabela: unknown, vocabulario: Vocabulario, leitura: Le
       continue;
     }
     conferirFonte(coluna.fonte, vocabulario, leitura);
+    if (coluna.quando !== undefined) lerExpressao(coluna.quando, { tipo: "raiz" }, false, vocabulario, leitura);
+    if (coluna.textos !== undefined && (!ehObjetoJson(coluna.textos) || !Object.values(coluna.textos).every((t) => typeof t === "string"))) {
+      leitura.problemas.push({ tipo: "operador", mensagem: `textos da coluna ${coluna.cabecalho} precisa ser {código: texto}` });
+    }
     for (const complemento of (coluna.complementos as unknown[]) ?? []) {
       if (!ehObjetoJson(complemento)) continue;
       conferirFonte(complemento.fonte, vocabulario, leitura);

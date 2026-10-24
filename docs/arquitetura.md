@@ -97,7 +97,7 @@ O banco não guarda a minuta pronta. Guarda as respostas, os itens e as ediçõe
 | Entidade | Campos principais | Observação |
 | --- | --- | --- |
 | OM | UASG, nome, linhas do cabeçalho, endereços de entrega, foro | O administrador cadastra; vira padrão no wizard |
-| Usuário | nome, e-mail, OM, perfil | Perfis: operador (quem elabora TR e ETP) e administrador, que só cria usuários (decisão 0010) |
+| Usuário | nome, e-mail, OM, perfil | Perfis: operador (quem elabora TR e ETP) e administrador da TI, que cria usuários, troca senhas (provisórias) e lê a auditoria, sem abrir processos (decisões 0010 e 0012) |
 | Processo | NUP, objeto resumido, OM, pacote e hash, situação | Situações: rascunho, em revisão, liberado, concluído |
 | Resposta do checklist | processo, versão do checklist, pergunta (CK), valor, itens atingidos | Vem do formulário ou da leitura do Word |
 | Resposta do wizard | processo, pergunta (WZ), valor, origem (checklist ou equipe) | Uma linha por pergunta respondida |
@@ -122,7 +122,7 @@ O escopo inicial dizia para não guardar conteúdo, mas, para outra pessoa revis
 | Cópias de segurança | As diárias do Supabase Pro ficam 7 dias, dentro do prazo do expurgo; o plano gratuito não tem cópia automática |
 | Banco exposto | RLS ligado em toda tabela. Sem RLS, qualquer pessoa com a chave pública, que vai no código da página, lê a tabela. O navegador não consulta o banco; só o servidor |
 | Orçamento sigiloso | Quando a resposta da WZ-40 for SIM, os valores saem do PDF de circulação e vão para um anexo de acesso restrito |
-| Acesso | Login individual por e-mail e senha (decisão 0010); cada usuário vê só os processos da própria OM. O segundo fator é reavaliado antes do piloto |
+| Acesso | Login individual por e-mail e senha (decisão 0010); cada usuário vê só os processos da própria OM. Senha esquecida é trocada pela TI, com senha provisória (decisão 0012). O segundo fator é reavaliado antes do piloto |
 | Tráfego | HTTPS obrigatório; banco com criptografia em repouso |
 | Registros técnicos | Sem conteúdo de requisição; sem serviço externo de monitoramento que receba dados |
 | Recursos externos | Páginas sem fonte, script ou imagem de terceiros; tudo servido pelo próprio sistema |

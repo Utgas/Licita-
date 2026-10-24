@@ -1,24 +1,84 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * Visual do Licita+ (Marco 2, passo 13; decisão 0014): ferramenta de trabalho com cara de documento, não de
+ * produto de vitrine. Papel claro, tinta escura, uma cor para cada estado e nada de gradiente, brilho ou sombra.
+ * Contraste de 4.5:1 ou mais em todo texto; cor sempre acompanhada de ícone ou texto.
+ */
+@theme {
+  --font-sans: var(--fonte-texto), "Segoe UI", Arial, sans-serif;
+  --font-mono: var(--fonte-codigo), Consolas, monospace;
+
+  /* superfícies e texto */
+  --color-papel: #f3f2ee;
+  --color-papel-escuro: #e9e7e1;
+  --color-folha: #ffffff;
+  --color-tinta: #1a1b1e;
+  --color-tinta-2: #4a4b4f;
+  --color-linha: #d6d3cb;
+  --color-linha-forte: #8c8982;
+  --color-realce: #ebe9e3;
+  --color-selecao: #e6e9e1;
+
+  /* ação: botão principal em tinta; marca (verde-oliva) só no que indica posição */
+  --color-acao: #1a1b1e;
+  --color-acao-escura: #000000;
+  --color-marca: #4b5a32;
+  --color-link: #1a1b1e;
+  --color-foco: #e0a800;
+
+  /* estados (passo 13): vermelho trava, amarelo destaca, azul é valor padrão, verde é ok */
+  --color-trava: #8f2417;
+  --color-trava-fundo: #f8e8e5;
+  --color-atencao: #5f4100;
+  --color-atencao-fundo: #fbf0d2;
+  --color-atencao-marca: #f3d98a;
+  --color-padrao: #1b3f6e;
+  --color-padrao-fundo: #e1ebf7;
+  --color-ok: #24572f;
+  --color-ok-fundo: #e5f1e7;
+
+  --radius-sm: 2px;
+  --radius: 3px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--color-papel);
+  color: var(--color-tinta);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  font-feature-settings: "tnum" 1;
+}
+
+/* Foco sempre visível e igual em todo o sistema: contorno de tinta (15:1) com halo amarelo; na barra escura,
+   contorno claro. */
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid var(--color-tinta);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--color-foco);
+}
+
+header :where(a, button):focus-visible {
+  outline-color: var(--color-folha);
+}
+
+a {
+  text-underline-offset: 3px;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  accent-color: var(--color-tinta);
+}
+
+/* Movimento só de apoio (cor e borda), e nenhum para quem pede menos movimento. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
 }

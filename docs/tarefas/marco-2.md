@@ -8,7 +8,7 @@
 
 ## Regras deste marco
 
-- O motor (`src/motor`) não muda de comportamento. Se uma tela precisar de algo que o motor não dá, pare e avise.
+- O motor (`src/motor`) só muda no passo 0. Depois dele, se uma tela precisar de algo que o motor não dá, pare e avise.
 - Nenhuma consulta ao banco sai do navegador: tudo passa por código de servidor (Server Actions ou Route Handlers) com Drizzle.
 - Toda tabela nasce com RLS ligado e com política testada.
 - Segredos (chaves do Supabase, senha do banco) só em variáveis de ambiente. Nunca no repositório, em log ou em mensagem de commit.
@@ -17,6 +17,14 @@
 - Todo texto jurídico continua vindo do pacote de regras. A tela pode ter texto de interface, nunca cláusula, pergunta ou condição.
 
 ## Passos
+
+0. **Matrizes da Fase 15** (já no ramo `marco-2`). Hoje o compilador recusa o formato `POR_ITEM_AGRUPADO` no `lacunas_mapa` do M08, e o motor ainda não conhece as novidades. Ajuste o compilador e o motor, seguindo o simulador do agente das matrizes (`matrizes/v1/scripts/`, só leitura), para:
+   - a coluna "PARTICIPAÇÃO" na TR-1.1.TAB1 (`tabela_colunas`), com os textos da Fase 15;
+   - a concordância de número (singular ou plural pelo número de itens) e o formato `POR_ITEM_AGRUPADO` (itens com o mesmo valor agrupados) nas cláusulas setoriais;
+   - os complementos CK-X-10 a CK-X-19, lidos pelo mapa do M08;
+   - a DV-42 na reprodução do R2.
+
+   Os cenários de ouro, a reprodução e `npm run simular -- C8` voltam a passar ("O item 1 será transportado…"). Só então siga para o passo 1. É o único passo deste marco que mexe no motor.
 
 1. **Contas e ambientes.** Pare e passe ao Gabriel, em português simples e passo a passo, o que ele precisa fazer:
    - criar o projeto de desenvolvimento no Supabase, na região São Paulo (sa-east-1), no plano gratuito;
@@ -40,10 +48,12 @@
    Cada usuário só vê os processos da própria OM. RLS em todas, com testes que provam que um usuário de outra OM não lê nem escreve.
 
 3. **Login** (`src/auth/`), com Supabase Auth:
-   - e-mail e senha, "esqueci minha senha" e redefinição;
-   - sem cadastro aberto: o administrador cria usuários por um script (`npm run criar-usuario`) ou por uma tela simples só para ele;
+   - e-mail e senha; "esqueci minha senha" só orienta a procurar a TI, sem e-mail (decisão 0012);
+   - sem cadastro aberto: o primeiro administrador nasce por um script (`npm run criar-usuario`); depois, a tela do administrador cria e desativa usuários e troca senhas, sempre com senha provisória;
+   - senha provisória obriga a criar a própria senha no primeiro acesso; o operador troca a própria senha informando a atual;
+   - o administrador lê a auditoria e não abre processos;
    - sessão expirada leva ao login sem perder o que já foi salvo;
-   - todas as rotas, menos login e redefinição, exigem sessão.
+   - todas as rotas, menos o login, exigem sessão.
 
 4. **Auditoria** (`src/auditoria/`): toda escrita grava uma linha. Exemplos: leitura do checklist com o hash do arquivo, resposta do wizard, confirmação de revisão, minuta gerada com o hash do pacote, PDF baixado com o hash do PDF e processo concluído.
 

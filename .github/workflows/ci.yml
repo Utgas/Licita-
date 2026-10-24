@@ -28,3 +28,48 @@ jobs:
             echo "O pacote em regras/ não corresponde às matrizes. Rode npm run compilar e faça commit do resultado."
             exit 1
           fi
+
+  banco:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Supabase local (migrações aplicadas na subida)
+        run: npx supabase start -x studio,imgproxy,vector,logflare,edge-runtime,realtime,storage-api,postgres-meta,supavisor
+      - run: npm run test:banco
+
+  telas:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Supabase local com banco e login (migrações aplicadas na subida)
+        run: npx supabase start -x studio,imgproxy,vector,logflare,edge-runtime,realtime,storage-api,postgres-meta,supavisor
+      - name: Variáveis do Supabase local no .env.local (só chaves locais de teste)
+        run: |
+          npx supabase status -o env > supabase.env
+          set -a; . ./supabase.env; set +a
+          {
+            echo "SUPABASE_URL=$API_URL"
+            echo "SUPABASE_PUBLISHABLE_KEY=${PUBLISHABLE_KEY:-$ANON_KEY}"
+            echo "SUPABASE_SECRET_KEY=${SECRET_KEY:-$SERVICE_ROLE_KEY}"
+            echo "DATABASE_URL=$DB_URL"
+            echo "DATABASE_URL_MIGRACAO=$DB_URL"
+            echo "APP_URL=http://localhost:3000"
+          } > .env.local
+          rm supabase.env
+      - name: Usuários fictícios dos testes de tela
+        run: node --env-file=.env.local testes/telas/preparar.ts
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npm run test:telas
+        env:
+          CI: "true"

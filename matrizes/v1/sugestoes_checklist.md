@@ -40,8 +40,8 @@ Resumo: 21 sugestões (3 duplicidades, 7 ambiguidades, 9 lacunas e 1 sobre leitu
 
 ## S05. Ambiguidade
 
-- **Perguntas:** 47 perguntas: CK-C-1.5; CK-C-2.3; CK-C-2.4; CK-C-4.1; CK-C-4.4; CK-C-5.7; CK-C-6.7; CK-C-7.2; CK-C-8.3; CK-C-12.1; CK-C-12.3; CK-C-13.3; CK-C-13.4; CK-C-14.2; CK-C-16.1; CK-C-16.3; CK-C-17.5; CK-C-18.2; CK-C-21.1; CK-C-21.3; CK-C-22; CK-P-1.5; CK-P-2.5; CK-P-3.2; CK-P-3.5; CK-P-4.1; CK-P-6.7; CK-P-7.3; CK-P-8.1; CK-P-8.3; CK-P-9.3; CK-P-11.3; CK-P-12.5; CK-P-12.6; CK-P-13.1; CK-P-13.3; CK-P-13.4; CK-P-13.6; CK-P-13.7; CK-P-15.4; CK-P-19.1; CK-P-19.3; CK-P-19.5; CK-P-19.7; CK-P-20.3; CK-P-21.1; CK-P-22
-- **Problema:** Nas perguntas com mais de duas opções, o checklist não diz se é para marcar uma ou várias. O M11 inferiu 30 como MULTIPLA e 17 como UNICA.
+- **Perguntas:** 48 perguntas: CK-C-1.5; CK-C-2.3; CK-C-2.4; CK-C-4.1; CK-C-4.4; CK-C-5.7; CK-C-6.7; CK-C-7.2; CK-C-8.3; CK-C-12.1; CK-C-12.3; CK-C-13.3; CK-C-13.4; CK-C-14.2; CK-C-16.1; CK-C-16.3; CK-C-17.5; CK-C-18.2; CK-C-21.1; CK-C-21.3; CK-C-22; CK-P-1.5; CK-P-2.5; CK-P-3.2; CK-P-3.5; CK-P-4.1; CK-P-6.7; CK-P-7.3; CK-P-8.1; CK-P-8.3; CK-P-9.3; CK-P-11.3; CK-P-12.5; CK-P-12.6; CK-P-13.1; CK-P-13.3; CK-P-13.4; CK-P-13.6; CK-P-13.7; CK-P-15.4; CK-P-19.1; CK-P-19.3; CK-P-19.5; CK-P-19.7; CK-P-20.3; CK-P-21.1; CK-P-22; CK-X-12
+- **Problema:** Nas perguntas com mais de duas opções, o checklist não diz se é para marcar uma ou várias. O M11 inferiu 30 como MULTIPLA e 18 como UNICA.
 - **Proposta:** Acrescentar ao fim do enunciado '(marque uma opção)' ou '(marque todas as que se aplicam)'. O checklist de permanentes já faz isso na 2.3 e na 18.3.
 - **Efeito no sistema:** Sem a instrução, duas marcas numa pergunta UNICA viram pendência de leitura (VAL-037).
 - **No sistema (decisão 0009):** M11, todas as perguntas que não são só de controle: duas marcas em pergunta de uma opção (checklist.marcas_multiplas) ou pergunta sem resposta ficam destacadas; nas de uma opção que preenchem a minuta, o sistema pergunta ao operador qual opção vale (revisao_pergunta) e a VAL-037 bloqueia até a resposta.

@@ -744,7 +744,7 @@
    "TR-CAB.03": "[[LACUNA VAR_004]]",
    "TR-CAB.04": "(Processo Administrativo n° [[LACUNA VAR_001]])",
    "TR-1.1": "Aquisição de [[LACUNA VAR_008]], nos termos da tabela abaixo, conforme condições e exigências estabelecidas neste instrumento.",
-   "TR-1.1.TAB1": "ITEM | ESPECIFICAÇÃO | CATMAT | UNIDADE DE MEDIDA | QUANTIDADE | VALOR UNITÁRIO | VALOR TOTAL\n1 | [[LACUNA]] | 000000 | [[LACUNA]] | 300 | R$ 40,00 | R$ 12.000,00\n2 | [[LACUNA]] | 000000 | [[LACUNA]] | 200 | R$ 35,00 | R$ 7.000,00",
+   "TR-1.1.TAB1": "ITEM | ESPECIFICAÇÃO | CATMAT | UNIDADE DE MEDIDA | QUANTIDADE | VALOR UNITÁRIO | VALOR TOTAL | PARTICIPAÇÃO\n1 | [[LACUNA]] | 000000 | [[LACUNA]] | 300 | R$ 40,00 | R$ 12.000,00 | Exclusiva para ME/EPP\n2 | [[LACUNA]] | 000000 | [[LACUNA]] | 200 | R$ 35,00 | R$ 7.000,00 | Exclusiva para ME/EPP",
    "TR-1.6": "O prazo de vigência da contratação é de [[LACUNA VAR_034]] contados do(a) [[LACUNA VAR_035]], prorrogável por até 10 anos, na forma dos artigos 106 e 107 da Lei n° 14.133, de 2021.",
    "TR-1.7": "1.6.1 O fornecimento de bens é enquadrado como continuado tendo em vista que [[LACUNA VAR_036]], sendo a vigência plurianual mais vantajosa considerando o Estudo Técnico Preliminar;",
    "TR-4.1.1": "[[LACUNA VAR_044]].",

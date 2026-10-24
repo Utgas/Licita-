@@ -9,7 +9,7 @@
  * Chave: "<categoria>:<lado>:<ID>". Lado "tr" = só no TR real (ou no esperado); "minuta" = só na minuta do motor.
  * Em todos os casos a minuta do motor é igual à simulação do agente das matrizes (referencia.diferencas_simulacao):
  * nenhuma diferença vem do código. Esperado do R1 e do R2 conferido na Fase 14 das matrizes (divergências DV-36 a
- * DV-41 novas no M09).
+ * DV-41 novas no M09; DV-42 na Fase 15).
  */
 export type TipoDeDiferenca = "motor" | "matriz" | "TR real" | "lacuna";
 export type Classificacao = { tipo: TipoDeDiferenca; motivo: string; dv?: string };
@@ -87,7 +87,7 @@ export const CLASSIFICACAO: Record<"R1" | "R2", Record<string, Classificacao>> =
     ...Object.fromEntries(
       ["SET-02", "SET-05", "SET-06", "SET-12", "SET-14", "SET-15", "SET-17"].map((id) => [`m08:tr:${id}`, { tipo: "lacuna", motivo: CHECKLIST_REAL } satisfies Classificacao]),
     ),
-    "m08:minuta:SET-13": { tipo: "matriz", motivo: "a SET-13 entra por WZ-29 = SIM (garantia contratual), e o M08 não registra evidência dela no TR 58/2026; conferir" },
+    "m08:minuta:SET-13": { tipo: "TR real", dv: "DV-42", motivo: "o TR real tem garantia do bem (WZ-29 = SIM) e não traz a cláusula setorial de garantia técnica (Fase 15)" },
     "m10:tr:VAL-042": { tipo: "TR real", dv: "DV-05", motivo: "regra sem expressão (P27): sai na conferência manual" },
     "m10:tr:VAL-043": { tipo: "TR real", dv: "DV-02", motivo: "regra sem expressão (P27): sai na conferência manual" },
     "m10:minuta:VAL-005": { tipo: "lacuna", motivo: "número do processo tirado da entrada anonimizada" },

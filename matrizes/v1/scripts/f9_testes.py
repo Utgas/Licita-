@@ -232,6 +232,10 @@ def main():
     from f14_testes import testes as testes_f14
     for ok, msg in testes_f14(pasta, M):
         reg(ok, msg)
+    # ------------------------------------------------------------ Fase 15 (f15_testes.py)
+    from f15_testes import testes as testes_f15
+    for ok, msg in testes_f15(pasta, M):
+        reg(ok, msg)
     sem_expr = [r["id"] for r in M["M02"] if not r["condicao_expr"]]
     reg(not sem_expr, f"M02: condicao_expr preenchida em todos os blocos ({len(M['M02'])})")
     # ------------------------------------------------------------ evidências literais do M08
