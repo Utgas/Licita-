@@ -33,7 +33,7 @@ const email = exigir("--email", a.email).trim().toLowerCase();
 const perfil = exigir("--perfil", a.perfil) as (typeof esquema.PERFIS)[number];
 if (!esquema.PERFIS.includes(perfil)) exigir("--perfil OPERADOR ou ADMINISTRADOR", undefined);
 
-const supabase = createClient(exigir("SUPABASE_URL", process.env.SUPABASE_URL), exigir("SUPABASE_SECRET_KEY", process.env.SUPABASE_SECRET_KEY), {
+const supabase = createClient(new URL(exigir("SUPABASE_URL", process.env.SUPABASE_URL)).origin, exigir("SUPABASE_SECRET_KEY", process.env.SUPABASE_SECRET_KEY), {
   auth: { persistSession: false, autoRefreshToken: false },
 });
 const cliente = postgres(exigir("DATABASE_URL_MIGRACAO", process.env.DATABASE_URL_MIGRACAO ?? process.env.DATABASE_URL), { prepare: false, max: 1 });
