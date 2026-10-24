@@ -91,7 +91,7 @@ type TabelaColunas = {
   linha_cota?: { quando: unknown; valores: Record<string, string | { texto: string }> };
 };
 
-const MARCA_DE_TABELA = "[[TABELA NÃO MONTADA]]";
+export const MARCA_DE_TABELA = "[[TABELA NÃO MONTADA]]";
 
 /** [[LACUNA ...]] com o ID da regra; sem fonte, [[LACUNA]]. */
 export type NomeDaRegra = (variavel: string) => string;

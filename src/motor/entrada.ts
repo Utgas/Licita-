@@ -55,6 +55,11 @@ export type EntradaProcesso = {
   checklist: Record<string, Valor>;
   /** Respostas da equipe no wizard: WZ_01... MULTIPLA vira lista. */
   wizard: Record<string, Valor>;
+  /**
+   * Justificativas escritas pela equipe no wizard (WZ_06 -> texto). Vão para o campo do ETP que o
+   * M04.exige_justificativa cita (Marco 3); a minuta do TR não as lê.
+   */
+  justificativas?: Record<string, string>;
   itens: ItemDeEntrada[];
   /** Variáveis do M05 informadas: VAR_057... */
   variaveis: Record<string, Valor>;
