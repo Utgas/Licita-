@@ -15,10 +15,13 @@
     "test": "vitest run",
     "compilar": "node scripts/compilar-regras.ts",
     "compilar:piloto": "node scripts/compilar-regras.ts --piloto",
-    "simular": "node scripts/simular-wizard.ts"
+    "simular": "node scripts/simular-wizard.ts",
+    "test:banco": "vitest run --config vitest.banco.config.ts"
   },
   "dependencies": {
+    "drizzle-orm": "0.45.4",
     "next": "16.4.2",
+    "postgres": "3.4.9",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "zod": "4.6.5"
@@ -31,6 +34,7 @@
     "csv-parse": "7.0.3",
     "eslint": "9.39.5",
     "eslint-config-next": "16.4.2",
+    "supabase": "2.120.0",
     "tailwindcss": "4.3.3",
     "typescript": "5.9.3",
     "vitest": "4.1.11"
