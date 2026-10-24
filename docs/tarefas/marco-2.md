@@ -48,10 +48,12 @@
    Cada usuário só vê os processos da própria OM. RLS em todas, com testes que provam que um usuário de outra OM não lê nem escreve.
 
 3. **Login** (`src/auth/`), com Supabase Auth:
-   - e-mail e senha, "esqueci minha senha" e redefinição;
-   - sem cadastro aberto: o administrador cria usuários por um script (`npm run criar-usuario`) ou por uma tela simples só para ele;
+   - e-mail e senha; "esqueci minha senha" só orienta a procurar a TI, sem e-mail (decisão 0012);
+   - sem cadastro aberto: o primeiro administrador nasce por um script (`npm run criar-usuario`); depois, a tela do administrador cria e desativa usuários e troca senhas, sempre com senha provisória;
+   - senha provisória obriga a criar a própria senha no primeiro acesso; o operador troca a própria senha informando a atual;
+   - o administrador lê a auditoria e não abre processos;
    - sessão expirada leva ao login sem perder o que já foi salvo;
-   - todas as rotas, menos login e redefinição, exigem sessão.
+   - todas as rotas, menos o login, exigem sessão.
 
 4. **Auditoria** (`src/auditoria/`): toda escrita grava uma linha. Exemplos: leitura do checklist com o hash do arquivo, resposta do wizard, confirmação de revisão, minuta gerada com o hash do pacote, PDF baixado com o hash do PDF e processo concluído.
 
