@@ -1,98 +1,156 @@
 "use client";
-/** Formulários do wizard: uma pergunta por vez e campo extra (VAR). */
-import { useActionState } from "react";
+/** Formulários da tela do wizard: uma pergunta por vez e os campos extras que a minuta pede. */
+import { useActionState, useState } from "react";
 import type { Resultado } from "@/auth/acoes.ts";
 import { Botao, Mensagem } from "../../../componentes/formulario.tsx";
 
 type Acao = (anterior: Resultado, dados: FormData) => Promise<Resultado>;
-const caixa = "min-h-11 w-full rounded border border-zinc-500 px-3 py-2";
+const caixa = "min-h-11 w-full rounded border border-zinc-500 px-3";
 
-export type DadosDaPerguntaWz = {
+export type DadosDaPergunta = {
   id: string;
   tipo: string;
-  opcoes: { valor: string; rotulo: string }[];
-  valor: unknown;
-  justificativa: string;
-  regraJustificativa: string | null;
-  sugestao: { valor: unknown; perguntas: string } | null;
-  proxima: string;
+  opcoes: { codigo: string; rotulo: string }[];
+  orientacao: string;
+  valor: string[];
+  /** Há resposta gravada pela equipe (o que veio do checklist não se apaga aqui). */
+  daEquipe: boolean;
+  justificativa: { texto: string; obrigatoriaCom: "sempre" | string[] } | null;
+  justificativaAtual: string;
 };
 
-export function PerguntaWizard({ acao, d }: { acao: Acao; d: DadosDaPerguntaWz }) {
+export function FormularioPergunta({ acao, limpar, d }: { acao: Acao; limpar: Acao; d: DadosDaPergunta }) {
   const [resultado, salvar] = useActionState(acao, null);
-  const [r2, aceitar] = useActionState(acao, null);
-  const marcadas = new Set((Array.isArray(d.valor) ? d.valor : d.valor === null || d.valor === undefined ? [] : [d.valor]).map(String));
-  const mostrar = (v: unknown) => (Array.isArray(v) ? v.join(", ") : String(v));
+  const [limpo, limparAcao] = useActionState(limpar, null);
+  const [escolhidos, setEscolhidos] = useState<string[]>(d.valor);
+  const j = d.justificativa;
+  const obrigatoria = j !== null && (j.obrigatoriaCom === "sempre" || escolhidos.some((v) => j.obrigatoriaCom.includes(v)));
+  const multipla = d.tipo === "MULTIPLA";
   return (
-    <div className="flex flex-col gap-4">
-      {d.sugestao && (
-        <div className="flex flex-col gap-2 rounded border-2 border-dashed border-blue-800 bg-blue-50 p-3">
-          <p>
-            <strong>Sugestão do checklist</strong> ({d.sugestao.perguntas}): {mostrar(d.sugestao.valor)}. É só uma sugestão: a decisão é da equipe.
-          </p>
-          <form action={aceitar}>
-            <input type="hidden" name="pergunta" value={d.id} />
-            <input type="hidden" name="origem" value="SUGESTAO_ACEITA" />
-            <input type="hidden" name="proxima" value={d.proxima} />
-            {(Array.isArray(d.sugestao.valor) ? d.sugestao.valor : [d.sugestao.valor]).map((v) => (
-              <input key={String(v)} type="hidden" name="valor" value={String(v)} />
-            ))}
-            <Mensagem resultado={r2} />
-            <Botao variante="secundario">Aceitar a sugestão</Botao>
-          </form>
-        </div>
-      )}
-      <form action={salvar} className="flex flex-col gap-4">
+    <div className="flex flex-col gap-3">
+      <form action={salvar} className="flex flex-col gap-3">
         <input type="hidden" name="pergunta" value={d.id} />
-        <input type="hidden" name="proxima" value={d.proxima} />
         {d.opcoes.length > 0 ? (
           <fieldset className="flex flex-col gap-1">
-            <legend className="text-sm font-medium">{d.tipo === "MULTIPLA" ? "Marque todas as que valem" : "Resposta"}</legend>
+            <legend className="sr-only">Resposta</legend>
             {d.opcoes.map((o) => (
-              <label key={o.valor} className="flex min-h-11 items-center gap-3">
-                <input type={d.tipo === "MULTIPLA" ? "checkbox" : "radio"} name="valor" value={o.valor} defaultChecked={marcadas.has(o.valor)} className="size-5" /> {o.rotulo}
+              <label key={o.codigo} className="flex min-h-11 items-center gap-3">
+                <input
+                  type={multipla ? "checkbox" : "radio"}
+                  name="valor"
+                  value={o.codigo}
+                  defaultChecked={d.valor.includes(o.codigo)}
+                  onChange={(e) => setEscolhidos(multipla ? (e.target.checked ? [...escolhidos, o.codigo] : escolhidos.filter((x) => x !== o.codigo)) : [o.codigo])}
+                  className="size-5"
+                />
+                {o.rotulo}
               </label>
             ))}
           </fieldset>
         ) : (
           <label className="flex flex-col gap-1 text-sm font-medium">
             Resposta
-            <textarea name="valor" defaultValue={marcadas.size ? mostrar(d.valor) : ""} rows={d.tipo === "TEXTO" ? 3 : 1} className={caixa} />
+            <textarea name="valor" defaultValue={d.valor[0] ?? ""} rows={3} className={`${caixa} py-2 text-base font-normal`} />
+            {d.orientacao && <span className="font-normal text-zinc-700">Informe: {d.orientacao}</span>}
           </label>
         )}
-        {d.regraJustificativa && (
+        {j && (
           <label className="flex flex-col gap-1 text-sm font-medium">
-            Justificativa
-            <span className="font-normal text-zinc-700">Quando é exigida: {d.regraJustificativa}</span>
-            <textarea name="justificativa" defaultValue={d.justificativa} rows={3} className={caixa} />
+            Justificativa {obrigatoria ? "(obrigatória para esta resposta)" : "(se a resposta pedir)"}
+            <textarea name="justificativa" defaultValue={d.justificativaAtual} rows={3} required={obrigatoria} className={`${caixa} py-2 text-base font-normal`} />
+            <span className="font-normal text-zinc-700">{j.texto}</span>
           </label>
         )}
         <Mensagem resultado={resultado} />
         <div>
-          <Botao>Salvar e seguir</Botao>
+          <Botao>Salvar e ir para a próxima</Botao>
         </div>
       </form>
+      {d.daEquipe && (
+        <form action={limparAcao}>
+          <input type="hidden" name="pergunta" value={d.id} />
+          <Mensagem resultado={limpo} />
+          <Botao variante="secundario">Apagar a resposta da equipe</Botao>
+        </form>
+      )}
     </div>
   );
 }
 
-export function CampoExtra({ acao, variavel, rotulo, ajuda, tipo, valor }: { acao: Acao; variavel: string; rotulo: string; ajuda: string; tipo: string; valor: string }) {
+/** Aceita a sugestão do checklist como resposta (origem SUGESTAO_ACEITA). */
+export function AceitarSugestao({ acao, pergunta, valor, rotulo }: { acao: Acao; pergunta: string; valor: string[]; rotulo: string }) {
   const [resultado, salvar] = useActionState(acao, null);
   return (
-    <form action={salvar} className="flex flex-col gap-1">
-      <input type="hidden" name="variavel" value={variavel} />
-      <label className="flex flex-col gap-1 text-sm font-medium">
-        {variavel} · {rotulo}
-        {tipo === "TEXTO" || tipo === "TABELA" ? (
-          <textarea name="valor" defaultValue={valor} rows={2} className={caixa} />
-        ) : (
-          <input name="valor" defaultValue={valor} type={tipo === "DATA" ? "date" : "text"} inputMode={tipo === "NUMERO" || tipo === "MOEDA" ? "decimal" : "text"} className={`${caixa} max-w-md`} />
-        )}
-      </label>
-      {ajuda && <span className="text-sm text-zinc-700">{ajuda}</span>}
+    <form action={salvar} className="flex flex-col gap-2">
+      <input type="hidden" name="pergunta" value={pergunta} />
+      <input type="hidden" name="origem" value="SUGESTAO_ACEITA" />
+      {valor.map((v) => (
+        <input key={v} type="hidden" name="valor" value={v} />
+      ))}
       <Mensagem resultado={resultado} />
       <div>
-        <Botao variante="secundario">Salvar</Botao>
+        <Botao variante="secundario">Aceitar a sugestão: {rotulo}</Botao>
+      </div>
+    </form>
+  );
+}
+
+export type DadosDoCampo = {
+  id: string;
+  descricao: string;
+  validacao: string;
+  codigos: string[];
+  forma: { tipo: "simples"; numerico: boolean; data: boolean } | { tipo: "lista" } | { tipo: "partes"; partes: { caminho: string; numerico: boolean }[] } | { tipo: "tabela"; colunas: { campo: string; cabecalho: string }[] };
+  valores: Record<string, string>;
+  falta: boolean;
+};
+
+export function FormularioCampo({ acao, c }: { acao: Acao; c: DadosDoCampo }) {
+  const [resultado, salvar] = useActionState(acao, null);
+  const f = c.forma;
+  return (
+    <form action={salvar} className="flex flex-col gap-2">
+      <input type="hidden" name="campo" value={c.id} />
+      {f.tipo === "simples" &&
+        (c.codigos.length ? (
+          <label className="flex flex-col gap-1 text-sm font-medium">
+            Valor
+            <select name="valor" defaultValue={c.valores.valor ?? ""} className={caixa}>
+              <option value="">—</option>
+              {c.codigos.map((o) => (
+                <option key={o} value={o}>
+                  {o}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : (
+          <label className="flex flex-col gap-1 text-sm font-medium">
+            Valor{f.numerico ? " (número)" : f.data ? " (DD/MM/AAAA)" : ""}
+            <input name="valor" defaultValue={c.valores.valor ?? ""} inputMode={f.numerico ? "decimal" : "text"} className={caixa} />
+          </label>
+        ))}
+      {(f.tipo === "lista" || f.tipo === "tabela") && (
+        <label className="flex flex-col gap-1 text-sm font-medium">
+          {f.tipo === "lista" ? "Um por linha" : `Uma linha por linha da tabela; colunas separadas por ";": ${f.colunas.map((x) => x.cabecalho || x.campo).join("; ")}`}
+          <textarea name="valor" defaultValue={c.valores.valor ?? ""} rows={4} className={`${caixa} py-2 text-base font-normal`} />
+        </label>
+      )}
+      {f.tipo === "partes" && (
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {f.partes.map((parte) => (
+            <label key={parte.caminho} className="flex flex-col gap-1 text-sm font-medium">
+              {parte.caminho}
+              {parte.numerico ? " (número)" : ""}
+              <input name={`parte:${parte.caminho}`} defaultValue={c.valores[`parte:${parte.caminho}`] ?? ""} inputMode={parte.numerico ? "decimal" : "text"} className={caixa} />
+            </label>
+          ))}
+        </div>
+      )}
+      {c.validacao && <p className="text-sm text-zinc-700">Regra: {c.validacao}</p>}
+      <Mensagem resultado={resultado} />
+      <div>
+        <Botao variante="secundario">Salvar {c.id}</Botao>
       </div>
     </form>
   );

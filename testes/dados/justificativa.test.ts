@@ -1,10 +1,9 @@
 /** Leitura da coluna exige_justificativa do M04 na tela do wizard (passo 9), com os textos reais do pacote. */
 import { describe, expect, it } from "vitest";
-import { justificativaObrigatoria } from "../../src/app/processos/[id]/wizard/regras.ts";
 import { carregarPacote } from "../../src/dados/pacote.ts";
+import { justificativaDoM04, justificativaObrigatoria } from "../../src/dados/wizard.ts";
 
-const m04 = new Map(carregarPacote().pacote.matrizes.M04.map((l) => [l.id, l.exige_justificativa]));
-const regra = (id: string) => m04.get(id) as string;
+const m04 = new Map(carregarPacote().pacote.matrizes.M04.map((l) => [l.id, l]));
 
 describe("justificativa obrigatória", () => {
   it.each([
@@ -19,6 +18,6 @@ describe("justificativa obrigatória", () => {
     ["WZ-17", "SIM", false],
     ["WZ-17", "NAO", true],
   ])("%s = %s: %s", (id, valor, esperado) => {
-    expect(justificativaObrigatoria(regra(id), valor)).toBe(esperado);
+    expect(justificativaObrigatoria(justificativaDoM04(m04.get(id)!), valor)).toBe(esperado);
   });
 });
