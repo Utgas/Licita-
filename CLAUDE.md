@@ -16,7 +16,7 @@ O dono do projeto, Gabriel, é pregoeiro e não escreve código. Explique cada d
 
 ## Estado atual
 
-**Marco 1 concluído em 24/10/2026** (motor do TR, sem telas). **Marco 2 (telas e banco): tarefa em preparação** em `docs/tarefas/`. Não comece o Marco 2 antes de a tarefa existir. Não adiante IA.
+**Marco 2 (telas e banco).** Tarefa: `docs/tarefas/marco-2.md`, no ramo `marco-2`. Marco 1 concluído em 24/10/2026. Trabalhe só no marco atual. Não adiante IA nem ETP.
 
 ## Onde está cada coisa
 

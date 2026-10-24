@@ -45,7 +45,7 @@ A entrada principal do sistema é o checklist técnico, e não o DFD. A área re
 3. A equipe administrativa responde ao wizard. O que o checklist já respondeu chega preenchido, e as decisões jurídicas ficam com ela.
 4. O motor monta o ETP e o TR, e cada trecho mostra a pergunta do checklist de onde veio.
 
-**Formulário e arquivo Word, os dois.** Quem tem acesso preenche o formulário no sistema. Participantes e outras OMs mandam o Word preenchido, e o sistema o lê pelo número de cada pergunta, sem IA. Toda resposta que a leitura não entender aparece numa lista para confirmação manual.
+**Word e digitação pelo operador.** A área requisitante preenche o checklist em Word e o operador o envia ao sistema, que lê as respostas. O operador também pode digitar ou corrigir respostas na tela. Só o operador usa o sistema (decisão 0010).
 
 **A IA perde peso.** Com respostas estruturadas, a v1 já monta o ETP a partir do checklist. Na v2, a IA só melhora a redação, sempre citando a pergunta de origem.
 
