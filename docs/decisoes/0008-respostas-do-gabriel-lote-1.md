@@ -46,3 +46,4 @@ A validação do M03 e do M04 agora fica no repositório. Toda entrega nova do a
 | SET-13 quando há garantia do bem | Mantida sempre que houver garantia | Nenhum |
 | Revisão do checklist (P34) | Pergunta sem resposta só destaca; bloqueia só a dúvida que muda a minuta | Confirmado |
 | Linha de cota na tabela de itens (P35) | As linhas de cota vão para o fim da tabela; os itens de ampla participação não são renumerados | Ajuste no `tabela_colunas` do TR-1.1.TAB1 (Fase 14) |
+| Onde aparece a participação de ME/EPP | Numa coluna da tabela de itens (TR-1.1.TAB1) | Coluna "PARTICIPAÇÃO" (Fase 15); base na NE-003, nota 1 |
