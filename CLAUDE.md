@@ -16,7 +16,7 @@ O dono do projeto, Gabriel, é pregoeiro e não escreve código. Explique cada d
 
 ## Estado atual
 
-**Marco 2 (telas e banco).** Tarefa: `docs/tarefas/marco-2.md`, no ramo `marco-2`. Marco 1 concluído em 24/10/2026. Trabalhe só no marco atual. Não adiante IA nem ETP.
+**Marco 3 (ETP e derivação).** Tarefa: `docs/tarefas/marco-3.md`. Marco 2 no ar desde 24/10/2026 (falta só o teste com alguém de fora). Trabalhe só no marco atual. Não adiante IA.
 
 ## Onde está cada coisa
 
