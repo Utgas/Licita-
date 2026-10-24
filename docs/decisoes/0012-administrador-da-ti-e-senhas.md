@@ -23,6 +23,7 @@ A decisão 0010 previa "esqueci minha senha" com redefinição por e-mail e um a
 ## Consequências
 
 - Sai do Marco 2 o envio de e-mail e a tela de redefinição por link; entram a tela "Alterar minha senha", a troca obrigatória da senha provisória e a tela do administrador (usuários, senhas e auditoria).
+- Rotas: `/login`, `/esqueci-senha`, `/trocar-senha`, `/sair` (POST, recarrega a página para o navegador descartar as telas da sessão), `/admin` e `/admin/auditoria`.
 - Toda ação do administrador (criar, desativar, trocar senha) grava linha na auditoria.
 - Nenhum serviço de e-mail externo é necessário por enquanto.
 - O risco da decisão 0010 (sem segundo fator) continua e é reavaliado antes do piloto.
