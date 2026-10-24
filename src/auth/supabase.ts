@@ -13,6 +13,19 @@ function variavel(nome: string): string {
   return valor;
 }
 
+/**
+ * Endereço do projeto Supabase só com a origem (https://<ref>.supabase.co). O painel do Supabase mostra também o
+ * endereço da Data API, que termina em /rest/v1/; colado na variável, ele mandava o login para
+ * /rest/v1/auth/v1/token (404) e todo login falhava. Aqui qualquer caminho é descartado.
+ */
+export function enderecoDoSupabase(valor = variavel("SUPABASE_URL")): string {
+  try {
+    return new URL(valor).origin;
+  } catch {
+    throw new Error("SUPABASE_URL não é um endereço válido (use https://<ref>.supabase.co)");
+  }
+}
+
 export const OPCOES_DO_COOKIE = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
@@ -22,7 +35,7 @@ export const OPCOES_DO_COOKIE = {
 
 /** Cliente com a sessão do usuário, lida e gravada pelos cookies que o chamador fornece. */
 export function clienteDaSessao(cookies: CookieMethodsServer) {
-  return createServerClient(variavel("SUPABASE_URL"), variavel("SUPABASE_PUBLISHABLE_KEY"), {
+  return createServerClient(enderecoDoSupabase(), variavel("SUPABASE_PUBLISHABLE_KEY"), {
     cookies,
     cookieOptions: OPCOES_DO_COOKIE,
   });
@@ -33,7 +46,7 @@ export function clienteDaSessao(cookies: CookieMethodsServer) {
  * RLS; só é chamado depois de conferir que quem pede é administrador.
  */
 export function clienteAdministrativo() {
-  return createClient(variavel("SUPABASE_URL"), variavel("SUPABASE_SECRET_KEY"), {
+  return createClient(enderecoDoSupabase(), variavel("SUPABASE_SECRET_KEY"), {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 }
