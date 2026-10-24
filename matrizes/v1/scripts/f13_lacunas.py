@@ -370,7 +370,19 @@ TABELAS = {
             {"cabecalho": "UNIDADE DE MEDIDA", "fonte": "itens.unidade_medida"},
             {"cabecalho": "QUANTIDADE", "fonte": "itens.quantidade_principal", "formato": "NUMERO"},
             {"cabecalho": "VALOR UNITÁRIO", "fonte": "itens.valor_unitario", "formato": "MOEDA", "sigiloso": "SIGILOSO"},
-            {"cabecalho": "VALOR TOTAL", "fonte": "itens.valor_total", "formato": "MOEDA", "sigiloso": "SIGILOSO"}],
+            {"cabecalho": "VALOR TOTAL", "fonte": "itens.valor_total", "formato": "MOEDA", "sigiloso": "SIGILOSO"},
+            {"cabecalho": "PARTICIPAÇÃO", "fonte": "itens.tratamento_me_epp", "acrescentada": True,
+             "quando": eq("WZ_01", "LICITACAO"),
+             "textos": {"EXCLUSIVO": "Exclusiva para ME/EPP", "AMPLA": "Ampla participação",
+                        "COTA": "Cota principal (ampla participação)",
+                        "EXCECAO_JUSTIFICADA": "Ampla participação, com exceção justificada no ETP"},
+             "comentario": "Fase 15 (decisão do dono do projeto, 0008): a minuta diz o tratamento de ME/EPP de cada item "
+                           "(VAR-113). Coluna que não está no modelo; base: NE-003, nota 1 ('A tabela acima é meramente "
+                           "ilustrativa, podendo ser livremente alterada conforme o caso concreto'). Continua com "
+                           "orçamento sigiloso. Só em licitação (WZ-01 = LICITACAO): em contratação direta a VAR-113 fica "
+                           "vazia e a coluna não entra. Tratamento vazio em licitação (sem valor da unidade) = lacuna. A "
+                           "linha de cota traz 'Cota reservada para ME/EPP'. A exceção não cita artigo: o M07 só tem o "
+                           "art. 48 da LC 123/2006 conferido; a justificativa fica no ETP (VAR-120)"}],
         "orcamento_sigiloso": {"quando": SIGILOSO, "colunas": ["VALOR UNITÁRIO", "VALOR TOTAL"], "texto": "SIGILOSO",
                                "base": "NE-004: com orçamento sigiloso não se preenchem valor unitário e valor total; "
                                        "a célula traz a opção 'SIGILOSO' do próprio modelo"},
@@ -382,7 +394,7 @@ TABELAS = {
                         "ESPECIFICAÇÃO": "Cota reservada para ME/EPP do item {itens.numero do item de origem}",
                         "CATMAT": "itens.catmat", "UNIDADE DE MEDIDA": "itens.unidade_medida",
                         "QUANTIDADE": "itens.quantidade_cota", "VALOR UNITÁRIO": "itens.valor_unitario",
-                        "VALOR TOTAL": "itens.valor_total_cota"},
+                        "VALOR TOTAL": "itens.valor_total_cota", "PARTICIPAÇÃO": {"texto": "Cota reservada para ME/EPP"}},
             "regra": "entra para cada item com tratamento COTA (VAR-113) e quantidade reservada maior que zero (VAR-118); "
                      "a linha de origem fica com a quantidade principal (VAR-174 = quantidade menos a cota) e a da cota "
                      "com a VAR-118. A célula cita o item de origem (P35), no lugar do 'Idem ao Item 1 – ... XX,XX%' do "
@@ -437,61 +449,71 @@ def M8(confere, d):
     return (confere, d)
 
 
-TEXTO_UNICO = ("a VAR-{v} chega como um texto só (caixa de resposta do checklist), sem separar esta parte; o texto entra "
-               "inteiro no marcador de {onde}")
+def CONC(desde, sing, plur, ate=""):
+    """Fase 15: concordância pelo número de itens: o trecho fixo antes (e depois) do marcador entra no trecho trocado."""
+    d = {"estende_desde": desde, "concordancia": {"singular": sing, "plural": plur}}
+    if ate:
+        d["estende_ate"] = ate
+    return d
+
+
+def CKX(cid, **kw):
+    """Fase 15 (P38): parte da cláusula que nenhuma pergunta do checklist dá vem do complemento do operador."""
+    return dict(fonte="CK_" + cid[3:].replace("-", "_"), comentario=f"complemento do operador {cid} (P38, Fase 15)", **kw)
+
+
 M08_MAPA = {
-    "SET-01": [M8("itens que dependem", dict(fonte="VAR_125", campo="itens")),
+    "SET-01": [M8("itens que dependem", dict(fonte="VAR_125", campo="itens", formato="LISTA_TEXTO",
+                                             **CONC("dos itens ", "do item {valor}", "dos itens {valor}"))),
                M8("quantidade e descrição", dict(fonte="VAR_125", campo="equipamento")),
                M8("VAR-126", dict(fonte="VAR_126", formato="LISTA_TEXTO")),
                M8("VAR-127", dict(fonte="VAR_127"))],
     "SET-02": [M8("itens e cuidados", dict(fonte="itens.faixa_temperatura", formato="NUMEROS_DOS_ITENS",
                                            comentario="itens com faixa de temperatura (VAR-122); os cuidados de "
-                                                      "permanentes (VAR-128) entram no trecho 'Para permanentes'")),
-               M8("[VAR-122]", dict(fonte="itens.faixa_temperatura", formato="POR_ITEM")),
+                                                      "permanentes (VAR-128) entram no trecho 'Para permanentes'",
+                                           **CONC("Os itens ", "O item {valor} será transportado, armazenado até a "
+                                                  "entrega e entregue", "Os itens {valor} serão transportados, "
+                                                  "armazenados até a entrega e entregues",
+                                                  ate=" serão transportados, armazenados até a entrega e entregues"))),
+               M8("[VAR-122]", dict(fonte="itens.faixa_temperatura", formato="POR_ITEM_AGRUPADO",
+                                    modelo_por_item={"singular": "de {valor} para o item {itens}",
+                                                     "plural": "de {valor} para os itens {itens}"},
+                                    comentario="itens com a mesma faixa ficam juntos; grupos separados por '; '")),
                M8("registro contínuo", dict(fonte="CK_C_13_2", acao="OPCIONAL", quando=eq("CK_C_13_2", "Sim"),
                                             texto="e com registro contínuo da temperatura durante o transporte, "
                                                   "apresentado no ato da entrega", remove_antes=" ",
-                                            comentario="trecho do próprio marcador, sem a remissão '(VAR-129)'; entra com "
-                                                       "a CK-C-13.2 = Sim")),
+                                            comentario="trecho do próprio marcador; entra com a CK-C-13.2 = Sim")),
                M8("Para permanentes", dict(fonte="VAR_128", acao="OPCIONAL", quando=tem("VAR_128"),
                                            texto="O Contratado providenciará a logística especial de transporte e "
                                                  "movimentação descrita a seguir: {valor}.", remove_antes=" ",
-                                           comentario="trecho do próprio marcador; a remissão 'descrita em VAR-128' vira o "
+                                           comentario="trecho do próprio marcador; 'descrita pela área técnica' vira o "
                                                       "texto da VAR-128 (CK-P-8.7 ou CK-C-13.3)"))],
-    "SET-03": [M8("VAR-130: itens", dict(fonte=None, acao="EQUIPE",
-                                         comentario=TEXTO_UNICO.format(v="130", onde="documentos"))),
+    "SET-03": [M8("VAR-130: itens", CKX("CK-X-10", formato="LISTA_TEXTO",
+                                        **CONC("dos itens ", "do item {valor}", "dos itens {valor}"))),
                M8("documentos exigidos", dict(fonte="VAR_130", comentario="CK-C-13.4 e caixa da CK-C-15.4"))],
     "SET-04": [M8("VAR-133", dict(fonte="VAR_133")),
                M8("VAR-134", dict(fonte=None, acao="REMOVER",
                                   comentario="a VAR-134 não recebe mais a resposta Sim/Não (Fase 13); o compromisso de "
                                              "substituição já está no texto da cláusula"))],
     "SET-06": [M8("itens com controle especial", dict(fonte="itens.controle_especial", formato="NUMEROS_DOS_ITENS",
-                                                      filtro_item=eq("controle_especial", "S")))],
-    "SET-07": [M8("VAR-135: itens", dict(fonte=None, acao="EQUIPE",
-                                         comentario=TEXTO_UNICO.format(v="135", onde="requisitos"))),
-               M8("na proposta ou na entrega", dict(fonte=None, acao="EQUIPE",
-                                                    comentario="escolha da equipe: o checklist não diz quando a "
-                                                               "comprovação é exigida")),
+                                                      filtro_item=eq("controle_especial", "S"),
+                                                      **CONC("para os itens ", "para o item {valor}",
+                                                             "para os itens {valor}")))],
+    "SET-07": [M8("VAR-135: itens", CKX("CK-X-11", formato="LISTA_TEXTO",
+                                        **CONC("Os itens ", "O item {valor} deverá atender",
+                                               "Os itens {valor} deverão atender", ate=" deverão atender"))),
+               M8("na proposta ou na entrega", CKX("CK-X-12")),
                M8("requisito por item", dict(fonte="VAR_135"))],
-    "SET-08": [M8("distribuição ou comércio", dict(fonte=None, acao="EQUIPE",
-                                                   comentario="a VAR-136 traz as autorizações exigidas (licença "
-                                                              "sanitária, AFE, AE), não a atividade")),
-               M8("vigilância sanitária ou Anvisa", dict(fonte=None, acao="EQUIPE",
-                                                         comentario="o órgão expedidor depende da autorização; a "
-                                                                    "VAR-136 não o separa"))],
-    "SET-09": [M8("setor de recebimento", dict(fonte=None, acao="EQUIPE",
-                                               comentario="o setor de recebimento vem com o endereço de entrega (VAR-064, "
-                                                          "TR-5.4); o checklist não o separa")),
-               M8("[VAR-131]", dict(fonte=None, acao="EQUIPE",
-                                    comentario="antecedência do agendamento: o checklist só pergunta se há agendamento "
-                                               "(CK-C-12.6, CK-P-8.5)")),
+    "SET-08": [M8("distribuição ou comércio", CKX("CK-X-13", inicial_minuscula=True)),
+               M8("vigilância sanitária ou Anvisa", CKX("CK-X-14"))],
+    "SET-09": [M8("setor de recebimento", CKX("CK-X-15")),
+               M8("[VAR-131]", CKX("CK-X-16")),
                M8("horário, veículo", dict(fonte="VAR_131", comentario="caixa da CK-C-12.7 ou da CK-P-8.6"))],
-    "SET-10": [M8("VAR-132: itens", dict(fonte=None, acao="EQUIPE",
-                                         comentario=TEXTO_UNICO.format(v="132", onde="prazo"))),
+    "SET-10": [M8("VAR-132: itens", CKX("CK-X-17", formato="LISTA_TEXTO",
+                                        **CONC("Para os itens ", "Para o item {valor}", "Para os itens {valor}"))),
                M8("prazo informado", dict(fonte="VAR_132", comentario="caixa da CK-C-12.4 (itens, prazo e motivo)"))],
-    "SET-11": [M8("VAR-137: itens", dict(fonte=None, acao="EQUIPE",
-                                         comentario="o checklist pergunta as atividades para o equipamento, sem separar "
-                                                    "por item")),
+    "SET-11": [M8("VAR-137: itens", CKX("CK-X-18", formato="LISTA_TEXTO",
+                                        **CONC("nos itens ", "no item {valor}", "nos itens {valor}"))),
                M8("montagem, instalação", dict(fonte="CK_P_11_3", formato="LISTA_TEXTO", inicial_minuscula=True)),
                M8("certificados, laudos", dict(fonte="CK_P_11_4")),
                M8("critérios objetivos", dict(fonte="CK_P_11_5"))],
@@ -510,8 +532,8 @@ M08_MAPA = {
                M8("[VAR-141]", dict(fonte="CK_P_13_3", inicial_minuscula=True)),
                M8("Equipamento substituto", dict(fonte="VAR_152", acao="OPCIONAL", quando=tem("VAR_152"),
                                                  texto="Equipamento substituto: {valor}.", remove_antes=" ",
-                                                 comentario="trecho do próprio marcador, sem a remissão ao TR-5.14; "
-                                                            "entra com a caixa da CK-P-13.8"))],
+                                                 comentario="o marcador indica o trecho; entra com a caixa da "
+                                                            "CK-P-13.8 (complementa o TR-5.14)"))],
     "SET-14": [M8("VAR-148: periodicidade]", dict(fonte="CK_P_14_5_texto")),
                M8("periodicidade e comprovação", dict(fonte="CK_P_14_6_texto")),
                M8("VAR-149", dict(fonte="VAR_149")),
@@ -525,14 +547,13 @@ M08_MAPA = {
                                                              "firmware durante a garantia, sem custo adicional")],
                                                    comentario="texto do próprio marcador com a CK-P-15.6 = Sim"))],
     "SET-17": [M8("[VAR-143]. ", dict(fonte="VAR_143")),
-               M8("Se CK-P-9.5 = Sim", dict(fonte="CK_P_9_5_texto", acao="OPCIONAL", quando=eq("CK_P_9_5", "Sim"),
+               M8("levantamento técnico", dict(fonte="CK_P_9_5_texto", acao="OPCIONAL", quando=eq("CK_P_9_5", "Sim"),
                                             texto="o Contratado apresentará levantamento técnico do local (site "
                                                   "planning) com o conteúdo {valor}, no prazo definido pela equipe.",
                                             inicial_maiuscula=True, remove_antes=" ",
                                             comentario="trecho do próprio marcador; o [VAR-143] de dentro vira a caixa da "
                                                        "CK-P-9.5"))],
-    "SET-18": [M8("equipamento e local", dict(fonte=None, acao="EQUIPE",
-                                              comentario="o checklist não pede o equipamento a retirar nem o local")),
+    "SET-18": [M8("equipamento e local", CKX("CK-X-19")),
                M8("descontaminação", dict(fonte="VAR_144", comentario="CK-P-20.3 e caixa da CK-P-20.2"))],
     "SET-19": [M8("VAR-150", dict(fonte="VAR_150", acao="ESCOLHA", grupo="manuais",
                                   opcoes=[o(e(eq("CK_P_16_6", "Sim"), tem("VAR_150")),

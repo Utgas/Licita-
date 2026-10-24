@@ -255,6 +255,15 @@ D = [
      "(decisão 0008).",
      "TR-4.H08; TR-4.41; WZ-24; VAR-113", "Blocos ligados só pela WZ-24 = SIM (derivada da VAR-113); sem cota, não "
      "entram. No caso de reprodução R2, a diferença é do tipo 'TR real'.", "", "EXTRAIDO", "comparação f6; decisão 0008"),
+    # Fase 15: SET-13 entra sempre que há garantia do bem (decisão do dono do projeto, 0008)
+    ("DV-42", TR58, "p.5, subtítulo 'Garantia, manutenção e assistência técnica' e itens 5.5 a 5.14", "OMISSAO",
+     "Tem garantia contratual do bem ('5.5. O prazo de garantia contratual dos bens, complementar à garantia legal, será "
+     "conforme estabelecido no descritivo complementar em anexo...') e os itens de garantia do modelo, mas não traz a "
+     "cláusula setorial de garantia técnica (serviços incluídos sem custo, local e prazo de início do atendimento, marco "
+     "inicial). Classificado pelo dono do projeto em 24/10/2026 como diferença do TR real: a SET-13 entra sempre que "
+     "houver garantia do bem (decisão 0008).",
+     "SET-13; WZ-29; GA-07", "SET-13 com WZ-29 = SIM. No caso de reprodução R2, a SET-13 na minuta é diferença do tipo "
+     "'TR real'.", "", "EXTRAIDO", "comparação f6; decisão 0008"),
 ]
 
 

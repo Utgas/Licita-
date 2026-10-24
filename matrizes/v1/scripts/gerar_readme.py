@@ -64,7 +64,10 @@ def main():
     sug = sum(1 for r in m11 if r["sugere_expr"])
     cnd = sum(1 for r in m11 if r["condicional_expr"])
     o = ["# Licita+ | Matrizes v1", "",
-         "Estado em 23/10/2026: Fases 0 a 14 concluídas. A Fase 14 leva para as matrizes as respostas às P34 a P37 e à "
+         "Estado em 24/10/2026: Fases 0 a 15 concluídas; Marco 1 fechado. A Fase 15 traz os ajustes antes do Marco 2: "
+         "coluna PARTICIPAÇÃO na tabela de itens, redação das cláusulas setoriais (concordância, lista por item, sem ID "
+         "interno), DV-42 (SET-13 no TR 58/2026) e complementos do operador CK-X-10 a CK-X-19 para as partes do M08 que "
+         "eram da equipe. A Fase 14 leva para as matrizes as respostas às P34 a P37 e à "
          "reprodução do R1 e do R2: cotas no fim da tabela de itens, mapa de marcadores no M08, valor padrão marcado, um "
          "texto por motivo de revisão e esperado do R1 e do R2 conferido nos TRs reais. A Fase 13 resolve o texto da minuta: cada marcador do M02 ligado "
          "ao que o preenche (`lacunas_mapa`), tabelas montadas a partir dos itens (`tabela_colunas`), ponto e numeração "
@@ -81,12 +84,22 @@ def main():
     o += [f"| `{a}` | {d} | {n[a]} |" for a, d in ARQ]
     o += ["| `matrizes_v1.xlsx` | cópia de leitura e revisão: aba LEIA_ME e uma aba por CSV; colunas de revisão em amarelo no M03 e no M04 | |",
           f"| `cenarios/` | cenários de ouro C1 a C8 ({n_c}) e casos de reprodução R1 e R2 ({n_r}) em JSON, com entrada e esperado | |",
-          "| `perguntas_abertas.md` | decisões pendentes e adotadas, P01 a P39 | |",
+          "| `perguntas_abertas.md` | decisões pendentes e adotadas, P01 a P40 | |",
           "| `sugestoes_checklist.md` | lacunas, duplicidades e ambiguidades dos checklists, com redação proposta | |",
           "| `auditoria_matrizes_01_02.md` | auditoria das matrizes rascunho 01 e 02 (Fase 8) | |",
           "| `log_fase10_repo_leis.md` | arquivos do repositório auxiliar ctresb/leis (commit 15eb09b) cruzados com o M07 e uso de cada um | |",
           "| `logs/` | conferências, cobertura do checklist, comparação dos TRs, expressões, simulação, normas, testes | |",
           "| `scripts/` | scripts de análise que geram tudo acima | |", "",
+          "## O que mudou na Fase 15", "",
+          "- TR-1.1.TAB1: coluna PARTICIPAÇÃO depois de VALOR TOTAL (só em licitação; continua com orçamento sigiloso), "
+          "pelo `tratamento_me_epp`: 'Exclusiva para ME/EPP', 'Ampla participação', 'Cota principal (ampla "
+          "participação)', 'Cota reservada para ME/EPP' (linha de cota) e 'Ampla participação, com exceção justificada "
+          "no ETP'. Base: NE-003, nota 1.",
+          "- M08: IDs internos fora do `texto_proposto` (a remissão foi para `observacao`); `concordancia` no mapa "
+          "(singular ou plural pelo número de itens) e formato POR_ITEM_AGRUPADO ('de 2 a 8 °C para os itens 1 e 3').",
+          "- M11: complementos CK-X-10 a CK-X-19 (P38), com a condição da cláusula; o `lacunas_mapa` do M08 lê cada um no "
+          "marcador dele.",
+          "- M09: DV-42 (TR 58/2026 sem a SET-13, com garantia do bem).", "",
           "## O que mudou na Fase 14", "",
           "- P35: no `tabela_colunas` do TR-1.1.TAB1, os itens ficam com o próprio número e as linhas de cota vão para o "
           "fim da tabela, com os números seguintes ao último item e 'Cota reservada para ME/EPP do item n'.",
@@ -270,6 +283,10 @@ def main():
           "LISTA_LINHAS, MINUSCULA, INICIAL_MINUSCULA, ITEM ('item 2') e POR_ITEM ('item 1: valor; item 3: valor').",
           "- `M08.lacunas_mapa` (Fase 14): mesmo formato; marcador = trecho entre colchetes de primeiro nível do "
           "`texto_proposto`. Cláusula PREENCHE_BLOCO não entra como texto: preenche o bloco.",
+          "- Fase 15: `concordancia` (`singular` e `plural`, com `estende_desde` e `estende_ate`: o trecho fixo vizinho "
+          "entra na troca e concorda com o número de itens do valor) e POR_ITEM_AGRUPADO com `modelo_por_item`. Coluna de "
+          "tabela com `quando` só entra quando a condição é verdadeira; `textos` traduz o código do M05; `acrescentada` "
+          "marca coluna que não está no modelo.",
           "- `padrao: true` (Fase 14, P37) na opção que dá valor sem ter sido informado; a revisão mostra esses valores.",
           "- Chaves acrescentadas na Fase 14: `alternativas` (fontes de reserva, em ordem), `inicial_minuscula`, "
           "`inicial_maiuscula`, `filtro_item` e o formato NUMEROS_DOS_ITENS ('1, 3 e 5').",
@@ -315,7 +332,7 @@ def main():
     o += [f"- `Checklists/{k}`: SHA-256 `{v}`" for k, v in hashes.items()]
     o += ["", "Divisão de trabalho: o checklist traz os fatos técnicos (M11); o wizard fica com as decisões jurídicas (M04, "
           "`DECISAO_JURIDICA`). A tabela de atributos de item por checklist está em `sugestoes_checklist.md`.", "",
-          "## Testes de aceite (Fases 9 a 14)", "",
+          "## Testes de aceite (Fases 9 a 15)", "",
           f"Resultado completo em `logs/f9_testes.txt`. {falhas}.", ""]
     o += [f"- {l[6:]}" if l.startswith("OK") else f"- **FALHA** {l[6:]}" for l in principais]
     o += ["", "Outras conferências:", ""]

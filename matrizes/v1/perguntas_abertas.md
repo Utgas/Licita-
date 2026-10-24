@@ -292,13 +292,20 @@ Situação de cada item:
 - **Texto do modelo:** o TR-1.7 começa com "1.6.1" dentro do próprio texto (numeração do modelo); a tabela do item 1.1 não tem coluna nem linha de grupo para itens agrupados.
 - **Resposta:** aceitos o "1 (um) mês" do TR-AI-3.1.8.1 e a remissão do TR-1.7 ao ETP, com a condição de todo valor padrão ficar marcado. Fase 14: `"padrao": true` na opção do mapa (M02 e M08) e lista em `logs/f13_lacunas.txt`; hoje são essas duas.
 
-### P38. Partes de cláusula do M08 que nenhuma pergunta do checklist dá (ABERTA)
+### P38. Partes de cláusula do M08 que nenhuma pergunta do checklist dá (RESOLVIDA, 24/10/2026)
 
 - **O que ficou com a equipe no M08.lacunas_mapa:** setor de recebimento e antecedência do agendamento (SET-09); itens da entrega com documentos (SET-03), dos requisitos (SET-07), da entrega emergencial (SET-10) e da instalação (SET-11), porque a caixa de resposta traz itens e conteúdo num texto só; "[na proposta ou na entrega]" (SET-07); atividade e órgão expedidor da autorização (SET-08); equipamento e local da desinstalação (SET-18); etapas antes do recebimento definitivo no consumo (SET-20).
 - **Pergunta:** essas partes continuam como lacuna para a equipe na revisão, ou viram complementos do operador (CK-X-10 em diante), como os da decisão 0009? Os complementos tirariam essas lacunas da minuta sem mudar o checklist distribuído.
+- **Resposta (24/10/2026):** viram complementos do operador. Fase 15: CK-X-10 a CK-X-19, `checklist = COMPLEMENTO`, com a condição da própria cláusula (só aparecem quando ela entra) e ligados à VAR e à cláusula em `destinos`; o `lacunas_mapa` do M08 lê cada complemento no marcador dele, sem somar à VAR, para o texto não repetir. A etapa antes do recebimento definitivo no consumo (SET-20) continua com fonte própria (caixa da CK-P-19.2) e fica como lacuna no consumo.
 
 ### P39. Reprodução do R1 e do R2 depois das respostas (INFORMATIVA)
 
 - **Conferido nos TRs reais (Fase 14):** os dois TRs usam a opção A do GA-01 (TR-1.2, "comuns") e do GA-02 (TR-1.5, art. 105); o TR 58/2026 usa a opção A do GA-06 (TR-5.1, remessa única), e o TR 23/2026 também, com redação própria. Nenhum dos dois tem o Anexo I do modelo (a seção 13 do TR Digital traz "(Não se aplica)" no TR 23 e "Minuta já nos autos" no TR 58); os blocos TR-AI casaram com itens do corpo (vigência, regularidade fiscal, prorrogação, garantia da contratação, subcontratação). Nenhum dos dois tem o título do modelo (TR-CAB.02): a comparação casou o rodapé "Modelo de Termo de Referência – Aquisições – Licitação e Contratação Direta" que o TR Digital imprime em toda página. Esses blocos saíram do esperado, com o motivo em `correcoes_da_comparacao`; o TR-5.1 entrou.
 - **Divergências novas no M09:** DV-36 (TR-1.4 em bem permanente, TR 23), DV-37 (TR-11.3 em fornecimento não contínuo, TR 23 e TR 58), DV-38 (subitem de sociedades estrangeiras sem o item de registro, TR 23), DV-39 (critério de aceitabilidade de registro de preços sem registro de preços, TR 58), DV-40 (garantia com redação própria, TR 23) e DV-41 (reserva de cota sem cota, TR 58). Todas "TR real".
 - **SET-13:** mantida sempre que houver garantia do bem (WZ-29 = SIM), como respondido.
+
+### P40. Fase 15: pontos para conferir (INFORMATIVA)
+
+- **PARTICIPAÇÃO:** os textos da coluna são INFERIDOS. A exceção sai como "Ampla participação, com exceção justificada no ETP", sem citar o art. 49 da LC 123/2006: o M07 só tem o art. 48 dessa lei conferido. Se o artigo deve aparecer, ele precisa entrar no M07 com conferência em fonte oficial. Em contratação direta a coluna não entra, porque a VAR-113 fica vazia.
+- **Concordância:** nas cláusulas que citam itens (SET-01, SET-02, SET-03, SET-06, SET-07, SET-10 e SET-11), o mapa troca o trecho vizinho pelo singular ou pelo plural ("O item 1 será transportado"; "Os itens 1 e 3 serão transportados"). Fora do M08, o TR-4.2 ainda lista as marcas como "item 1: ...", formato aceito por ser lista; muda se o dono do projeto preferir outra redação.
+- **IDs internos:** saíram do `texto_proposto` da SET-02 ("(TR-8.2)" e as remissões a VAR-128 e VAR-129), da SET-06 e da SET-08 ("TR-9.35 preenchido com:", "TR-9.14 preenchido com:"), da SET-13 (VAR-152 e TR-5.14) e da SET-17 (CK-P-9.5). A remissão está na coluna `observacao` e no mapa.

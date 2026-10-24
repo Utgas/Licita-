@@ -232,6 +232,20 @@ class Montagem:
                 return None
             self.inseridos += [(trecho, x["fonte"], n) for n in nums]
             return lista_texto(nums)
+        if x.get("formato") == "POR_ITEM_AGRUPADO":  # Fase 15: "de 2 a 8 °C para os itens 1 e 3; de ... para o item 2"
+            attr = x["fonte"].split(".", 1)[1]
+            grupos = {}
+            for it in self.d.get("itens", []):
+                if not vazio(it.get(attr)):
+                    grupos.setdefault(texto_valor(it.get(attr)), []).append(it.get("numero"))
+            if not grupos:
+                return None
+            partes = []
+            for val, nums in grupos.items():
+                m = x["modelo_por_item"]["singular" if len(nums) == 1 else "plural"]
+                partes.append(m.replace("{valor}", val).replace("{itens}", lista_texto(nums)))
+                self.inseridos.append((trecho, x["fonte"], val))
+            return "; ".join(partes)
         if x.get("formato") == "POR_ITEM":
             attr = x["fonte"].split(".", 1)[1]
             partes = [f"item {texto_valor(it.get('numero'))}: {texto_valor(it.get(attr))}"
@@ -258,6 +272,17 @@ class Montagem:
             return None
         self.inseridos.append((trecho, x["fonte"], v))
         return ajusta_inicial(s, x)
+
+    def contagem(self, x):
+        """quantos itens o valor cita: elementos da lista, itens com o atributo, ou números escritos no texto."""
+        if x.get("formato") == "NUMEROS_DOS_ITENS":
+            attr = x["fonte"].split(".", 1)[1]
+            return sum(1 for it in self.d.get("itens", [])
+                       if (verdadeiro(avaliar(x["filtro_item"], it)) if x.get("filtro_item") else not vazio(it.get(attr))))
+        v = self.valor(x)
+        if isinstance(v, list):
+            return len(v)
+        return max(1, len(re.findall(r"\d+", texto_valor(v)))) if v is not None else 0
 
     def opcao(self, x, trecho):
         for op in x.get("opcoes", []):
@@ -342,10 +367,17 @@ class Montagem:
                         omitido = True
                     lacunas.append(x["fonte"])
                     s = f"[[LACUNA {x['fonte']}]]"
+                elif x.get("concordancia"):  # Fase 15: singular ou plural pelo número de itens do valor
+                    n = self.contagem(x)
+                    s = x["concordancia"]["singular" if n == 1 else "plural"].replace("{valor}", s)
                 elif "texto" in x:
                     s = x["texto"].replace("{valor}", s)
-                ini = p - len(x.get("estende_desde", ""))
-                trocas.append((ini, fim, s))
+                if x.get("concordancia") and s.startswith("[[LACUNA"):
+                    # sem valor, o trecho fixo do modelo fica como está, com a lacuna no lugar do marcador
+                    trocas.append((p, fim, s))
+                else:
+                    ini = p - len(x.get("estende_desde", ""))
+                    trocas.append((ini, fim + len(x.get("estende_ate", "")), s))
             k += 1
         for ini, fim, t in sorted(trocas, reverse=True):
             texto = texto[:ini] + t + texto[fim:]
@@ -361,6 +393,11 @@ class Montagem:
         v = it.get(col["fonte"].split(".", 1)[1]) if col.get("fonte") else it.get(col.get("campo"))
         if vazio(v):
             return "[[LACUNA]]", False
+        if col.get("textos"):  # código do M05 -> texto da coluna (PARTICIPAÇÃO)
+            if v not in col["textos"]:
+                return "[[LACUNA]]", False
+            self.inseridos.append(("tabela", col["fonte"], v))
+            return col["textos"][v], True
         s = formatar(v, col.get("formato"))
         for c in col.get("complementos", []):
             if c.get("quando") is not None and not verdadeiro(avaliar(c["quando"], self.d)):
@@ -373,6 +410,8 @@ class Montagem:
 
     def tabela(self, r):
         tc = json.loads(r["tabela_colunas"])
+        # coluna com "quando" só entra quando a condição é verdadeira (PARTICIPAÇÃO: só em licitação)
+        tc["colunas"] = [c for c in tc["colunas"] if c.get("quando") is None or verdadeiro(avaliar(c["quando"], self.d))]
         cab = [c["cabecalho"] for c in tc["colunas"]]
         linhas, lac = [" | ".join(cab)], []
         if tc["linhas"] == "itens":
@@ -398,6 +437,9 @@ class Montagem:
                 cel = [num_txt(n), f"Cota reservada para ME/EPP do item {texto_valor(it.get('numero'))}"]
                 for cabc in cab[2:]:
                     f = lc["valores"][cabc]
+                    if isinstance(f, dict):  # texto fixo da linha de cota
+                        cel.append(f["texto"])
+                        continue
                     if sig and cabc in tc["orcamento_sigiloso"]["colunas"]:
                         cel.append("SIGILOSO")
                         continue

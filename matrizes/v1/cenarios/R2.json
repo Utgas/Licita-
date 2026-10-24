@@ -558,6 +558,15 @@
    "descricao": "Mantém o subtítulo de reserva de cotas e o item do modelo alterado para negar a cota: '4.26. Na presente licitação, não será realizada a reserva de cota de até 25% (vinte e cinco por cento) do objeto para a...', com justificativa no 4.26.1. Mesmo caso da DV-35. Classificado pelo dono do projeto em 23/10/2026 como erro do TR real (decisão 0008).",
    "referencia": "TR-4.H08; TR-4.41; WZ-24; VAR-113",
    "tratamento_no_sistema": "Blocos ligados só pela WZ-24 = SIM (derivada da VAR-113); sem cota, não entram. No caso de reprodução R2, a diferença é do tipo 'TR real'."
+  },
+  {
+   "dv": "DV-42",
+   "classificacao": "TR real",
+   "tipo": "OMISSAO",
+   "local": "p.5, subtítulo 'Garantia, manutenção e assistência técnica' e itens 5.5 a 5.14",
+   "descricao": "Tem garantia contratual do bem ('5.5. O prazo de garantia contratual dos bens, complementar à garantia legal, será conforme estabelecido no descritivo complementar em anexo...') e os itens de garantia do modelo, mas não traz a cláusula setorial de garantia técnica (serviços incluídos sem custo, local e prazo de início do atendimento, marco inicial). Classificado pelo dono do projeto em 24/10/2026 como diferença do TR real: a SET-13 entra sempre que houver garantia do bem (decisão 0008).",
+   "referencia": "SET-13; WZ-29; GA-07",
+   "tratamento_no_sistema": "SET-13 com WZ-29 = SIM. No caso de reprodução R2, a SET-13 na minuta é diferença do tipo 'TR real'."
   }
  ],
  "referencia": {

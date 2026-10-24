@@ -229,6 +229,32 @@ COMPL = [
 ]
 
 
+# Fase 15 (P38): partes de cláusula do M08 que nenhuma pergunta do checklist dá. Só aparecem quando a cláusula entra
+# (condicional = condicao_expr da cláusula). O mapa da cláusula (M08.lacunas_mapa) lê o complemento direto; ele não
+# soma à VAR da cláusula, para não repetir texto.
+COMPL_M08 = [
+    # id, cláusula, VAR da parte, pergunta, tipo, opções
+    ("CK-X-10", "SET-03", "VAR-130", "Quais itens serão entregues acompanhados dos documentos indicados no checklist "
+     "(certificado de análise do lote, laudo, documento de rastreabilidade, registro de temperatura)?", "MULTIPLA",
+     "números dos itens da tabela"),
+    ("CK-X-11", "SET-07", "VAR-135", "Quais itens devem atender aos requisitos sanitários e técnicos indicados no "
+     "checklist?", "MULTIPLA", "números dos itens da tabela"),
+    ("CK-X-12", "SET-07", "VAR-135", "Os requisitos sanitários e técnicos serão comprovados na proposta ou na entrega?",
+     "UNICA", "na proposta; na entrega; na proposta e na entrega"),
+    ("CK-X-13", "SET-08", "VAR-136", "Qual atividade da empresa fornecedora depende da autorização exigida (ex.: "
+     "distribuição ou comércio dos produtos)?", "TEXTO", ""),
+    ("CK-X-14", "SET-08", "VAR-136", "Qual órgão expede essa autorização (ex.: vigilância sanitária ou Anvisa)?", "TEXTO",
+     ""),
+    ("CK-X-15", "SET-09", "VAR-131", "Com qual setor a entrega será agendada?", "TEXTO", ""),
+    ("CK-X-16", "SET-09", "VAR-131", "Com quanta antecedência mínima a entrega deve ser agendada (número e unidade, ex.: "
+     "48 horas)?", "TEXTO", ""),
+    ("CK-X-17", "SET-10", "VAR-132", "Quais itens têm entrega emergencial?", "MULTIPLA", "números dos itens da tabela"),
+    ("CK-X-18", "SET-11", "VAR-137", "Em quais itens o Contratado executará a montagem, a instalação e as demais "
+     "atividades?", "MULTIPLA", "números dos itens da tabela"),
+    ("CK-X-19", "SET-18", "VAR-144", "Qual equipamento será desinstalado e retirado, e em que local?", "TEXTO", ""),
+]
+
+
 def generica(r, cond):
     """S05: duas marcas em pergunta de uma opção; nenhuma resposta em pergunta a responder."""
     partes = []
@@ -338,6 +364,27 @@ def main():
                     "revisao_expr": "", "revisao_pergunta": "", "revisao_pergunta_expr": "", "revisao_motivos": "",
                     "fonte": f"Sugestão {s_} (sugestoes_checklist.md), aceita pelo dono do projeto em 23/10/2026 (decisão 0009). {FONTE_0009} "
                              f"Pergunta, destinos e expressão INFERIDOS.", "status": "INFERIDO"})
+    m08 = {x["id"]: x for x in ler_csv(pasta / "M08_clausulas_setoriais.csv")}
+    for (cid, sid, vid, perg, tipo, opc) in COMPL_M08:
+        if cid in ids or cid in {x["id"] for x in m11}:
+            raise SystemExit(f"{cid} já existe")
+        c8 = m08[sid]
+        m11.append({"id": cid, "checklist": "COMPLEMENTO", "secao": "COMPLEMENTO DO OPERADOR (decisão 0009)",
+                    "numero": cid[5:].replace("-", "."), "pergunta": perg, "tipo_resposta": tipo, "opcoes": opc,
+                    "orientacao": "Preenchido pelo operador no sistema; não existe no Word distribuído.",
+                    "condicional": f"responder se a {sid} entrar na minuta (mesma condição: {c8['condicao']})",
+                    "condicional_expr": c8["condicao_expr"], "por_item": "N", "destinos": f"{vid}; {sid}",
+                    "efeito": "PREENCHE",
+                    "regra": f"Complemento do operador (P38, Fase 15): parte da {sid} ligada à {vid} que nenhuma pergunta "
+                             f"do checklist dá. O lacunas_mapa da {sid} lê a resposta ({ckn(cid)}) direto no marcador; "
+                             f"ela não soma à {vid}, para o texto não repetir.",
+                    "preenche_expr": "", "sugere_expr": "",
+                    "leitura": "Digitado pelo operador no sistema (complemento). " + (
+                        "Números dos itens da tabela, em lista." if tipo == "MULTIPLA" else LEITURA_TIPO[tipo]),
+                    "revisao_expr": "", "revisao_pergunta": "", "revisao_pergunta_expr": "", "revisao_motivos": "",
+                    "fonte": f"P38 (perguntas_abertas.md), resposta de 24/10/2026: partes do M08 com fonte nula viram "
+                             f"complementos do operador, como os CK-X-01 a CK-X-09 (decisão 0009). Pergunta INFERIDA do "
+                             f"marcador da {sid}.", "status": "INFERIDO"})
     gravar_csv(pasta / "M11_checklist.csv", cols, m11, preservar=())
     log.append(f"M11: {len(m11)} linhas; complementos {len(COMPL)}; leitura em {sum(1 for r in m11 if r['leitura'])}; "
                f"revisao_expr em {sum(1 for r in m11 if r['revisao_expr'])}; revisao_pergunta em "

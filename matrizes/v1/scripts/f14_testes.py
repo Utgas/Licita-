@@ -116,9 +116,9 @@ def testes(pasta, M):
     alvo = ("O Contratado ministrará treinamento equipe de enfermagem, 10 pessoas, com o conteúdo mínimo operação e "
             "limpeza, carga horária mínima 8 horas e prática presencial e certificado, concluído antes da utilização.")
     t9, lac9 = Montagem({"VAR_131": "entrada pela doca", "parametros": sim.VALORES}).clausula(m08["SET-09"])
-    reg(t == alvo and not lac and "entrada pela doca" in t9 and t9.count("[[LACUNA EQUIPE]]") == 2,
+    reg(t == alvo and not lac and "entrada pela doca" in t9 and "[[LACUNA CK_X_15]]" in t9 and "[[LACUNA CK_X_16]]" in t9,
         "M08: SET-12 montada com uma pergunta por marcador (CK-P-12.2 a 12.6), sem repetir texto; SET-09 com a restrição "
-        "no marcador dela e setor e antecedência com a equipe" + ("" if t == alvo else f" | {t}"))
+        "no marcador dela e setor e antecedência nos complementos CK-X-15 e CK-X-16 (Fase 15)" + ("" if t == alvo else f" | {t}"))
     # ------------------------------------------------ 2. valor padrão marcado (P37)
     sem_marca, marcados = [], []
     for nome, linhas in (("M02", M["M02"]), ("M08", M["M08"])):
@@ -200,12 +200,12 @@ def testes(pasta, M):
     ok = (not tirar1 & set(r1["esperado"]["blocos"]) and not tirar2 & set(r2["esperado"]["blocos"])
           and {"TR-1.2", "TR-1.5", "TR-5.1"} <= set(r1["esperado"]["blocos"])
           and {"TR-1.2", "TR-1.5", "TR-5.1"} <= set(r2["esperado"]["blocos"])
-          and {"DV-35", "DV-36", "DV-37", "DV-38", "DV-40"} <= dv1 and {"DV-37", "DV-39", "DV-41"} <= dv2
-          and not {"DV-39", "DV-41"} & dv1 and not {"DV-35", "DV-36", "DV-38", "DV-40"} & dv2
+          and {"DV-35", "DV-36", "DV-37", "DV-38", "DV-40"} <= dv1 and {"DV-37", "DV-39", "DV-41", "DV-42"} <= dv2
+          and not {"DV-39", "DV-41", "DV-42"} & dv1 and not {"DV-35", "DV-36", "DV-38", "DV-40"} & dv2
           and all(x["classificacao"] == "TR real" for x in r1["divergencias_conhecidas"] + r2["divergencias_conhecidas"]
-                  if x["dv"] in ("DV-35", "DV-36", "DV-37", "DV-38", "DV-39", "DV-40", "DV-41")))
+                  if x["dv"] in ("DV-35", "DV-36", "DV-37", "DV-38", "DV-39", "DV-40", "DV-41", "DV-42")))
     reg(ok, "R1 e R2: blocos achados por engano pela comparação saem do esperado (título do modelo, opção B de GA-01, "
-        "GA-02 e GA-06, Anexo I), TR-5.1 entra; DV-36 a DV-41 do M09 em divergencias_conhecidas como 'TR real'")
+        "GA-02 e GA-06, Anexo I), TR-5.1 entra; DV-36 a DV-42 do M09 em divergencias_conhecidas como 'TR real'")
     # TR-1.4 só para consumo
     t14 = json.loads(next(r for r in M["M02"] if r["id"] == "TR-1.4")["condicao_expr"])
     ok14 = [bool(avaliar(t14, {"WZ_07": v})) for v in ("CONSUMO", "AMBOS", "PERMANENTE")]

@@ -563,7 +563,7 @@
    "TR-CAB.03": "[[LACUNA VAR_004]]",
    "TR-CAB.04": "(Processo Administrativo n° 00000.000000/0000-00)",
    "TR-1.1": "Aquisição de [[LACUNA VAR_008]], [[LACUNA VAR_009]], nos termos da tabela abaixo, conforme condições e exigências estabelecidas neste instrumento.",
-   "TR-1.1.TAB1": "ITEM | ESPECIFICAÇÃO | CATMAT | UNIDADE DE MEDIDA | QUANTIDADE | VALOR UNITÁRIO | VALOR TOTAL\n1 | [[LACUNA]] | 000000 | [[LACUNA]] | 1 | R$ 450.000,00 | R$ 450.000,00\n2 | [[LACUNA]] | 000000 | [[LACUNA]] | 2 | R$ 30.000,00 | R$ 60.000,00",
+   "TR-1.1.TAB1": "ITEM | ESPECIFICAÇÃO | CATMAT | UNIDADE DE MEDIDA | QUANTIDADE | VALOR UNITÁRIO | VALOR TOTAL | PARTICIPAÇÃO\n1 | [[LACUNA]] | 000000 | [[LACUNA]] | 1 | R$ 450.000,00 | R$ 450.000,00 | Ampla participação\n2 | [[LACUNA]] | 000000 | [[LACUNA]] | 2 | R$ 30.000,00 | R$ 60.000,00 | Exclusiva para ME/EPP",
    "TR-1.5": "O prazo de vigência da contratação é de [[LACUNA VAR_034]] contados do(a) [[LACUNA VAR_035]], na forma do artigo 105 da Lei n° 14.133, de 2021.",
    "TR-2.3": "O objeto da contratação está previsto no Plano de Contratações Anual [[LACUNA VAR_038]], conforme consta das informações básicas desse Termo de Referência.",
    "TR-4.1.1": "[[LACUNA VAR_044]].",
@@ -600,13 +600,13 @@
    "TR-ASSIN.01": "[[LACUNA VAR_005]], [[LACUNA VAR_097]] de [[LACUNA VAR_097]] de [[LACUNA VAR_097]].",
    "TR-ASSIN.02": "__________________________________",
    "SET-05": "Só será admitida a oferta de produto com registro ou notificação vigente na Anvisa. O produto entregue deverá corresponder ao registro ou à notificação informados na proposta.",
-   "SET-11": "O Contratado executará, nos itens [[LACUNA EQUIPE]], as atividades [[LACUNA CK_P_11_3]], e entregará [[LACUNA CK_P_11_4]]. A instalação será considerada concluída quando atendidos os critérios [[LACUNA CK_P_11_5]].",
+   "SET-11": "O Contratado executará, nos itens [[LACUNA CK_X_18]], as atividades [[LACUNA CK_P_11_3]], e entregará [[LACUNA CK_P_11_4]]. A instalação será considerada concluída quando atendidos os critérios [[LACUNA CK_P_11_5]].",
    "SET-12": "O Contratado ministrará treinamento [[LACUNA CK_P_12_2]], com o conteúdo mínimo [[LACUNA CK_P_12_3]], carga horária mínima [[LACUNA CK_P_12_4]] e [[LACUNA CK_P_12_5]], concluído [[LACUNA CK_P_12_6]].",
    "SET-13": "Durante a garantia estão incluídos, sem custo adicional, [[LACUNA CK_P_13_4]]. O atendimento será [[LACUNA CK_P_13_5]] e começará em até [[LACUNA CK_P_13_6]] após a abertura do chamado. A garantia conta a partir de [[LACUNA CK_P_13_3]].",
    "SET-14": "Durante a garantia, o Contratado fará manutenção preventiva [[LACUNA CK_P_14_5_texto]], calibração ou verificação [[LACUNA CK_P_14_6_texto]] e prestará suporte [[LACUNA VAR_149]], com atendimento presencial em até [[LACUNA CK_P_14_3_texto]].",
    "SET-16": "O fornecimento inclui as licenças [[LACUNA CK_P_15_3_texto]] necessárias ao funcionamento integral do equipamento e [[LACUNA CK_P_15_6]].",
    "SET-17": "A entrega só ocorrerá com o local apto, nas condições [[LACUNA VAR_143]].",
-   "SET-18": "O Contratado fará a desinstalação técnica e a retirada de [[LACUNA EQUIPE]], com os procedimentos [[LACUNA VAR_144]], antes da instalação do novo equipamento.",
+   "SET-18": "O Contratado fará a desinstalação técnica e a retirada de [[LACUNA CK_X_19]], com os procedimentos [[LACUNA VAR_144]], antes da instalação do novo equipamento.",
    "SET-19": "O objeto será entregue acompanhado de manuais de operação, manutenção e segurança e demais documentos técnicos, com versão em português.",
    "SET-20": "No recebimento provisório serão conferidos [[LACUNA CK_C_16_1]]. O recebimento definitivo ocorrerá após [[LACUNA CK_P_19_2_texto]] e a entrega de [[LACUNA VAR_145]]. O produto será recusado quando [[LACUNA CK_C_16_2]]."
   },
@@ -728,7 +728,7 @@
     "VAR_097"
    ],
    "SET-11": [
-    "equipe: [VAR-137: itens]",
+    "CK_X_18",
     "CK_P_11_3",
     "CK_P_11_4",
     "CK_P_11_5"
@@ -760,7 +760,7 @@
     "VAR_143"
    ],
    "SET-18": [
-    "equipe: [VAR-144: equipamento e local]",
+    "CK_X_19",
     "VAR_144"
    ],
    "SET-20": [

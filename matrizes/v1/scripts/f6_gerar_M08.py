@@ -78,9 +78,9 @@ S = [
          ponto="TR: seção 5 (Condições de entrega), depois de TR-5.4; ETP: ETP-04.01",
          texto="Os itens [VAR-122 e VAR-128: itens e cuidados] serão transportados, armazenados até a entrega e entregues nas "
                "condições de conservação indicadas pelo fabricante, observada a faixa de temperatura [VAR-122] [e com registro "
-               "contínuo da temperatura durante o transporte, apresentado no ato da entrega (VAR-129)]. [Para permanentes: o "
-               "Contratado providenciará a logística especial de transporte e movimentação descrita em VAR-128.] O "
-               "descumprimento das condições de conservação é motivo de recusa (TR-8.2).",
+               "contínuo da temperatura durante o transporte, apresentado no ato da entrega]. [Para permanentes: o "
+               "Contratado providenciará a logística especial de transporte e movimentação descrita pela área técnica.] O "
+               "descumprimento das condições de conservação é motivo de recusa.",
          vars_="VAR-122; VAR-128; VAR-129", wz="",
          base="NE-024 nota 1 (seção 5 adaptável); NE-010 nota 2",
          evid=f"{ETP99} p.2: 'Realizar transporte em veículos qualificados, com controle e registro de temperatura e umidade "
@@ -135,7 +135,7 @@ S = [
          expr=algum_item(eq("controle_especial", "S")),
          ponto="TR: preenche TR-9.35 (Prova de atendimento aos requisitos previstos em lei especial), com WZ-38 incluindo "
                "REQUISITO_DE_LEI_ESPECIAL",
-         texto="TR-9.35 preenchido com: Autorização Especial (AE) da Anvisa, vigente, para os itens [VAR-123: itens com controle "
+         texto="Autorização Especial (AE) da Anvisa, vigente, para os itens [VAR-123: itens com controle "
                "especial], com o fundamento indicado pela equipe administrativa.",
          vars_="VAR-123; VAR-136", wz="WZ-38",
          base="NE-073: 'a exigência, dentre os documentos de habilitação técnica, da chamada Autorização Especial, emitida pela "
@@ -167,7 +167,7 @@ S = [
                   "exige autorização para funcionar (WZ-39 = SIM)",
          expr=e(tem(ck(C, "17.5")), eq("WZ_39", "SIM")),
          ponto="TR: preenche TR-9.14 (ato de autorização para o exercício da atividade)",
-         texto="TR-9.14 preenchido com: atividade [VAR-136: distribuição ou comércio dos produtos], órgão expedidor [VAR-136: "
+         texto="Atividade [VAR-136: distribuição ou comércio dos produtos], órgão expedidor [VAR-136: "
                "vigilância sanitária ou Anvisa, conforme a autorização] e fundamento indicado pela equipe administrativa.",
          vars_="VAR-136; VAR-087", wz="WZ-39",
          base="NE-060: especificar documento, órgão expedidor e fundamento legal em TR-9.14",
@@ -234,7 +234,7 @@ S = [
                "subitens de atendimento",
          texto="Durante a garantia estão incluídos, sem custo adicional, [VAR-139: serviços]. O atendimento será [VAR-139: no "
                "local de instalação] e começará em até [VAR-140] após a abertura do chamado. A garantia conta a partir de "
-               "[VAR-141]. [Equipamento substituto: VAR-152, em complemento a TR-5.14.]",
+               "[VAR-141]. [Equipamento substituto, quando exigido.]",
          vars_="VAR-066; VAR-067; VAR-139; VAR-140; VAR-141; VAR-152; VAR-124", wz="WZ-29",
          base="NE-027; NE-029 (prazo de garantia justificado nos autos); NE-030 (assistência com deslocamento em distância "
               "compatível)",
@@ -287,7 +287,7 @@ S = [
                   "fornecedor (CK-P-9.5 = Sim)",
          expr=ou(sim(P, "8.8"), sim(P, "9.5")),
          ponto="ETP: ETP-13.01 (providências prévias) e ETP-10.01 (obra ou serviço relacionado); TR: seção 5",
-         texto="A entrega só ocorrerá com o local apto, nas condições [VAR-143]. [Se CK-P-9.5 = Sim: o Contratado apresentará "
+         texto="A entrega só ocorrerá com o local apto, nas condições [VAR-143]. [Se exigido o levantamento técnico: o Contratado apresentará "
                "levantamento técnico do local (site planning) com o conteúdo [VAR-143], no prazo definido pela equipe.]",
          vars_="VAR-143; VAR-105", wz="WZ-47; WZ-46",
          base="NE-024 nota 1",
@@ -413,6 +413,16 @@ INSERCAO = {
     "SET-23": ("TR-9.34.1", "MESMO_NIVEL", "TR-9.34 (SUBITEM)"),
 }
 NIVEIS = {"MESMO_NIVEL", "SUBITEM", "PREENCHE_BLOCO"}
+# Fase 15: IDs internos saíram do texto_proposto; a remissão fica nas colunas de controle
+REMISSOES_RETIRADAS = {
+    "SET-02": "texto sem '(TR-8.2)', '(VAR-129)' e 'descrita em VAR-128'; a recusa é a do TR-8.2 e o registro e a "
+              "logística vêm da CK-C-13.2 e da VAR-128 (ver lacunas_mapa)",
+    "SET-06": "texto sem 'TR-9.35 preenchido com:'; o bloco preenchido está em inserir_apos (PREENCHE_BLOCO)",
+    "SET-08": "texto sem 'TR-9.14 preenchido com:'; o bloco preenchido está em inserir_apos (PREENCHE_BLOCO)",
+    "SET-13": "texto sem 'VAR-152, em complemento a TR-5.14'; o equipamento substituto vem da VAR-152 e complementa o "
+              "TR-5.14",
+    "SET-17": "texto sem 'Se CK-P-9.5 = Sim'; o trecho entra com a CK-P-9.5 = Sim (lacunas_mapa)",
+}
 NOTA_INSERCAO = (" Fase 13 (23/10/2026): inserir_apos, nivel e inserir_apos_alternativo INFERIDOS do ponto_insercao; "
                  "sem alternativo, o bloco de referência está sempre na minuta (condicao_expr true) ou é o próprio bloco "
                  "que a cláusula preenche.")
@@ -444,7 +454,9 @@ def main():
                        "inserir_apos": INSERCAO[s["id"]][0], "nivel": INSERCAO[s["id"]][1],
                        "inserir_apos_alternativo": INSERCAO[s["id"]][2],
                        "texto_proposto": s["texto"], "variaveis": s["vars_"], "perguntas_wz": s["wz"],
-                       "base_no_modelo": s["base"], "evidencia_corpus": s["evid"], "observacao": s["obs"],
+                       "base_no_modelo": s["base"], "evidencia_corpus": s["evid"],
+                       "observacao": (s["obs"] + (" Fase 15: " + REMISSOES_RETIRADAS[s["id"]] + "." if s["id"] in
+                                                  REMISSOES_RETIRADAS else "")).strip(),
                        "fonte": fonte + NOTA_INSERCAO,
                        "status": s["status"]})
     gravar_csv(pasta / "M08_clausulas_setoriais.csv", COLS, linhas, preservar=())

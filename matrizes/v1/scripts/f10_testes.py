@@ -219,9 +219,10 @@ def testes(pasta, M):
     gerais = [r["id"] for r in M["M11"] if r["revisao_expr"] and re.search(r'"(reduce|\+|\*|-|/|%)":', r["revisao_expr"])]
     reg(not gerais, "M11.revisao_expr só com operadores gerais (sem os de cálculo)")
     compl = [r for r in M["M11"] if r["checklist"] == "COMPLEMENTO"]
-    ok_c = len(compl) == 9 and all(re.fullmatch(r"CK-X-\d{2}", r["id"]) and (r["preenche_expr"] or r["sugere_expr"])
-                                   and r["condicional_expr"] for r in compl)
-    reg(ok_c, f"M11: {len(compl)} complementos do operador (CK-X-01 a CK-X-09, checklist COMPLEMENTO), com condição e "
+    # Fase 15: CK-X-10 a CK-X-19 são lidos direto pelo M08.lacunas_mapa (sem preenche_expr; ver f15_testes.py)
+    ok_c = len(compl) == 19 and all(re.fullmatch(r"CK-X-\d{2}", r["id"]) and r["condicional_expr"] and (
+        r["preenche_expr"] or r["sugere_expr"] or int(r["id"][5:]) >= 10) for r in compl)
+    reg(ok_c, f"M11: {len(compl)} complementos do operador (CK-X-01 a CK-X-19, checklist COMPLEMENTO), com condição e "
         f"expressão")
     com = [r["id"] for r in M["M11"] if r["id"] in [f"CK-C-10.{n}" for n in range(1, 12)]
            and (r["efeito"] != "SO_CONTROLE" or r["destinos"] or r["preenche_expr"] or r["sugere_expr"])]

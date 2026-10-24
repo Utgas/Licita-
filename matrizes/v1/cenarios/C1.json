@@ -538,7 +538,7 @@
    "TR-CAB.03": "[[LACUNA VAR_004]]",
    "TR-CAB.04": "(Processo Administrativo n° [[LACUNA VAR_001]])",
    "TR-1.1": "Aquisição de [[LACUNA VAR_008]], nos termos da tabela abaixo, conforme condições e exigências estabelecidas neste instrumento.",
-   "TR-1.1.TAB1": "ITEM | ESPECIFICAÇÃO | CATMAT | UNIDADE DE MEDIDA | QUANTIDADE | VALOR UNITÁRIO | VALOR TOTAL\n1 | [[LACUNA]] | 000000 | [[LACUNA]] | 15.000 | R$ 6,00 | R$ 90.000,00\n2 | [[LACUNA]] | 000000 | [[LACUNA]] | 500 | R$ 30,00 | R$ 15.000,00\n3 | Cota reservada para ME/EPP do item 1 | 000000 | [[LACUNA]] | 5.000 | R$ 6,00 | R$ 30.000,00",
+   "TR-1.1.TAB1": "ITEM | ESPECIFICAÇÃO | CATMAT | UNIDADE DE MEDIDA | QUANTIDADE | VALOR UNITÁRIO | VALOR TOTAL | PARTICIPAÇÃO\n1 | [[LACUNA]] | 000000 | [[LACUNA]] | 15.000 | R$ 6,00 | R$ 90.000,00 | Cota principal (ampla participação)\n2 | [[LACUNA]] | 000000 | [[LACUNA]] | 500 | R$ 30,00 | R$ 15.000,00 | Exclusiva para ME/EPP\n3 | Cota reservada para ME/EPP do item 1 | 000000 | [[LACUNA]] | 5.000 | R$ 6,00 | R$ 30.000,00 | Cota reservada para ME/EPP",
    "TR-1.1.1.TAB1": "Órgão Gerenciador:\nitem | DESCRIÇÃO/ ESPECIF. | UNIDADE / DE / MEDIDA | REQUISIÇÃO / MÍNIMA | REQUISIÇÃO / Máxima | Quantidade / total\n |  |  |  |  | ",
    "TR-1.1.1.TAB2": "Órgão Participante:\nItem | DESCRIÇÃO/ ESPECIF. | UNIDADE / DE / MEDIDA | REQUISIÇÃO / MÍNIMA | REQUISIÇÃO / Máxima | Quantidade / total\n |  |  |  |  | ",
    "TR-1.1.1.TAB3": "Órgão Participante:\nItem | DESCRIÇÃO/ ESPECIF. | UNIDADE / DE / MEDIDA | REQUISIÇÃO / MÍNIMA | REQUISIÇÃO / Máxima | Quantidade / total\n |  |  |  |  | ",

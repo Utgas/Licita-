@@ -734,7 +734,7 @@
    "TR-CAB.03": "[[LACUNA VAR_004]]",
    "TR-CAB.04": "(Processo Administrativo n° [[LACUNA VAR_001]])",
    "TR-1.1": "Aquisição de [[LACUNA VAR_008]], [[LACUNA VAR_009]], nos termos da tabela abaixo, conforme condições e exigências estabelecidas neste instrumento.",
-   "TR-1.1.TAB1": "ITEM | ESPECIFICAÇÃO | CATMAT | UNIDADE DE MEDIDA | QUANTIDADE | VALOR UNITÁRIO | VALOR TOTAL\n1 | [[LACUNA]] | 000000 | [[LACUNA]] | 1 | SIGILOSO | SIGILOSO",
+   "TR-1.1.TAB1": "ITEM | ESPECIFICAÇÃO | CATMAT | UNIDADE DE MEDIDA | QUANTIDADE | VALOR UNITÁRIO | VALOR TOTAL | PARTICIPAÇÃO\n1 | [[LACUNA]] | 000000 | [[LACUNA]] | 1 | SIGILOSO | SIGILOSO | Ampla participação",
    "TR-1.6": "O prazo de vigência da contratação é de [[LACUNA VAR_034]] contados do(a) [[LACUNA VAR_035]], prorrogável por até 10 anos, na forma dos artigos 106 e 107 da Lei n° 14.133, de 2021.",
    "TR-1.7": "1.6.1 O fornecimento de bens é enquadrado como continuado tendo em vista que [[LACUNA VAR_036]], sendo a vigência plurianual mais vantajosa considerando o Estudo Técnico Preliminar;",
    "TR-2.2": "O objeto da contratação está previsto no Plano de Contratações Anual [[LACUNA VAR_038]], conforme detalhamento a seguir:",
@@ -800,7 +800,7 @@
    "TR-12.1": "As informações contidas neste Termo de Referência não são classificadas como sigilosas exceto o custo estimado da contratação, que possui caráter sigiloso até o julgamento das propostas.",
    "TR-ASSIN.01": "[[LACUNA VAR_005]], [[LACUNA VAR_097]] de [[LACUNA VAR_097]] de [[LACUNA VAR_097]].",
    "TR-ASSIN.02": "__________________________________",
-   "SET-11": "O Contratado executará, nos itens [[LACUNA EQUIPE]], as atividades [[LACUNA CK_P_11_3]], e entregará [[LACUNA CK_P_11_4]]. A instalação será considerada concluída quando atendidos os critérios [[LACUNA CK_P_11_5]].",
+   "SET-11": "O Contratado executará, nos itens [[LACUNA CK_X_18]], as atividades [[LACUNA CK_P_11_3]], e entregará [[LACUNA CK_P_11_4]]. A instalação será considerada concluída quando atendidos os critérios [[LACUNA CK_P_11_5]].",
    "SET-13": "Durante a garantia estão incluídos, sem custo adicional, [[LACUNA CK_P_13_4]]. O atendimento será [[LACUNA CK_P_13_5]] e começará em até [[LACUNA CK_P_13_6]] após a abertura do chamado. A garantia conta a partir de [[LACUNA CK_P_13_3]]."
   },
   "lacunas_do_texto": {
@@ -1021,7 +1021,7 @@
     "VAR_097"
    ],
    "SET-11": [
-    "equipe: [VAR-137: itens]",
+    "CK_X_18",
     "CK_P_11_3",
     "CK_P_11_4",
     "CK_P_11_5"

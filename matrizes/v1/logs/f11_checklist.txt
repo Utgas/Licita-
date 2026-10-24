@@ -1,1 +1,1 @@
-M11: 285 linhas; complementos 9; leitura em 285; revisao_expr em 260; revisao_pergunta em 75 (bloqueiam só com revisao_pergunta_expr: 75); SO_CONTROLE do comodato: 11
+M11: 295 linhas; complementos 9; leitura em 295; revisao_expr em 260; revisao_pergunta em 75 (bloqueiam só com revisao_pergunta_expr: 75); SO_CONTROLE do comodato: 11
