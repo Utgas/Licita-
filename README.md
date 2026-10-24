@@ -2,7 +2,7 @@
 
 Gera minutas de Termo de Referência (e, depois, de ETP) no modelo AGU, para compras de saúde. A entrada é o checklist técnico da área requisitante e as decisões da equipe administrativa no wizard. A minuta é revisada por pessoas e colada no Compras.gov.br.
 
-**Estado:** Marco 0 concluído; Marco 1 (motor do TR) em andamento no ramo `marco-1`. As matrizes da Fase 10 já estão lá, mas o compilador só as aceita depois do passo 1 do Marco 1. Ainda não há telas, banco, login nem IA.
+**Estado:** Marcos 0 e 1 concluídos. O motor monta a minuta do TR a partir das matrizes (Fase 14), e `npm run simular -- C1` mostra o resultado em texto corrido. Ainda não há telas, banco, login nem IA; o Marco 2 está em preparação.
 
 ## Como começar
 
