@@ -45,13 +45,16 @@ function alinea(n: number): string {
   return String.fromCharCode("a".charCodeAt(0) + n - 1);
 }
 
+/** O que a numeração lê de cada linha (bloco do M02 ou cláusula do M08 posta no lugar dela). */
+export type LinhaNumeravel = Pick<LinhaM02, "id" | "item_modelo" | "secao">;
+
 /** Corpo do TR ou Anexo I: cada um tem a própria numeração. */
-function documentoDoBloco(linha: LinhaM02): string {
+function documentoDoBloco(linha: LinhaNumeravel): string {
   return linha.secao.startsWith(PREFIXO_DO_ANEXO_I) || linha.secao === "Anexo I" ? "ANEXO_I" : "CORPO";
 }
 
 /** Número recalculado de cada bloco (ID -> número), na ordem dada; bloco sem número fica de fora. */
-export function numerar(linhas: readonly LinhaM02[]): Map<string, string> {
+export function numerar(linhas: readonly LinhaNumeravel[]): Map<string, string> {
   const numeros = new Map<string, string>();
   const contadores = new Map<string, number[]>();
   let ultimoItem = "";

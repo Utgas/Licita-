@@ -15,17 +15,18 @@ describe("simulação legível (npm run simular -- C1)", () => {
   it("imprime o TR numerado, com as lacunas marcadas", () => {
     expect(texto).toMatch(/^1\. CONDIÇÕES GERAIS DA CONTRATAÇÃO$/m);
     expect(texto).toMatch(/^1\.1\. Aquisição de \[\[LACUNA /m);
-    expect(texto).toContain("[[TABELA NÃO MONTADA]]");
+    expect(texto).toMatch(/^ITEM \| ESPECIFICAÇÃO \| CATMAT/m);
   });
 
-  it("termina com a contagem de lacunas pelos três motivos, que somam o total", () => {
+  it("termina com a contagem de lacunas por motivo, que soma o total", () => {
     const [, total] = /Lacunas por motivo \(total (\d+)\)/.exec(texto) ?? [];
-    const partes = ["falta de dado", "ligação ambígua do marcador", "tabela não montada"].map((rotulo) => {
+    const partes = ["falta de dado", "ligação ambígua do marcador", "tabela não montada", "preenchimento da equipe"].map((rotulo) => {
       const [, n] = new RegExp(`${rotulo}\\s+(\\d+)`).exec(texto) ?? [];
       return Number(n);
     });
     expect(partes.every((n) => Number.isInteger(n))).toBe(true);
     expect(partes.reduce((a, b) => a + b, 0)).toBe(Number(total));
-    expect(partes[2]).toBeGreaterThan(0);
+    // Com o lacunas_mapa, nenhum marcador fica sem ligação.
+    expect(partes[1]).toBe(0);
   });
 });

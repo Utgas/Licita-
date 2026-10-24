@@ -133,7 +133,7 @@ describe("revisão das respostas do checklist", () => {
   it("marca múltipla vira destaque e pergunta ao operador; confirmada, deixa de bloquear", () => {
     const dados = { CK_C_3_3: "Sim", checklist: { consumo: true, marcas_multiplas: ["CK-C-3.3"] } };
     const revisao = revisarChecklist(m11, dados);
-    expect(revisao.destaques).toContain("CK-C-3.3");
+    expect(revisao.destaques.map((d) => d.pergunta)).toContain("CK-C-3.3");
     expect(revisao.perguntasAoOperador.map((p) => p.pergunta)).toContain("CK-C-3.3");
     expect(revisarChecklist(m11, dados, ["CK-C-3.3"]).perguntasAoOperador.map((p) => p.pergunta)).not.toContain("CK-C-3.3");
   });
@@ -143,8 +143,17 @@ describe("revisão das respostas do checklist", () => {
     expect(revisao.perguntasAoOperador.find((p) => p.pergunta === "CK-C-12.1")?.texto).toMatch(/dias/);
   });
 
+  it("um texto por motivo: sem resposta só destaca; 'Outro' sem número bloqueia com o texto dele (Fase 14)", () => {
+    const semResposta = revisarChecklist(m11, { checklist: { consumo: true } });
+    const destaque = semResposta.destaques.find((d) => d.pergunta === "CK-C-12.1");
+    expect(destaque?.motivos.map((m) => [m.motivo, m.bloqueia])).toEqual([["SEM_RESPOSTA", false]]);
+    expect(semResposta.perguntasAoOperador.map((p) => p.pergunta)).not.toContain("CK-C-12.1");
+    const outro = revisarChecklist(m11, { CK_C_12_1: "Outro", checklist: { consumo: true } });
+    expect(outro.perguntasAoOperador.filter((p) => p.pergunta === "CK-C-12.1").map((p) => p.motivo)).toEqual(["OUTRO_ILEGIVEL"]);
+  });
+
   it("perguntas do checklist que não foi entregue não são revisadas", () => {
     const revisao = revisarChecklist(m11, { checklist: { consumo: true, permanentes: false } });
-    expect(revisao.destaques.some((id) => id.startsWith("CK-P-"))).toBe(false);
+    expect(revisao.destaques.some((d) => d.pergunta.startsWith("CK-P-"))).toBe(false);
   });
 });

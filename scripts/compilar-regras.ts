@@ -510,6 +510,94 @@ function lerPorDestino(objeto: unknown, vocabulario: Vocabulario, leitura: Leitu
   }
 }
 
+/** Colunas em JSON que não são uma expressão só: mapa de lacunas (M02, M08), tabela (M02), motivos de revisão (M11). */
+const COLUNAS_JSON = new Set(["lacunas_mapa", "tabela_colunas", "revisao_motivos"]);
+const ACOES_DO_MAPA = new Set(["PREENCHER", "ESCOLHA", "OPCIONAL", "TABELA", "REMOVER", "MANTER", "EQUIPE"]);
+const FORMATOS_DO_MAPA = new Set([
+  "TEXTO", "NUMERO", "NUMERO_EXTENSO", "PERCENTUAL_EXTENSO", "PERCENTUAL_2", "MOEDA", "MOEDA_POR_EXTENSO", "DATA", "DIA",
+  "MES_EXTENSO", "ANO", "LISTA_TEXTO", "LISTA_LINHAS", "MINUSCULA", "INICIAL_MINUSCULA", "ITEM", "POR_ITEM", "NUMEROS_DOS_ITENS",
+]);
+const MOTIVOS_DE_REVISAO = new Set(["SEM_RESPOSTA", "MARCAS_MULTIPLAS", "OUTRO_ILEGIVEL", "DIVERGENCIA", "RESPOSTA_UNICA_POR_ITEM", "CONTRADICAO", "NOME_DE_PESSOA"]);
+
+const ehObjetoJson = (v: unknown): v is Record<string, unknown> => v !== null && typeof v === "object" && !Array.isArray(v);
+
+/** Fonte de um marcador ou de uma coluna: variável global conhecida ou itens.<atributo>. */
+function conferirFonte(fonte: unknown, vocabulario: Vocabulario, leitura: Leitura): void {
+  if (fonte === null || fonte === undefined) return;
+  if (typeof fonte !== "string") {
+    leitura.problemas.push({ tipo: "variavel", mensagem: `fonte que não é texto: ${JSON.stringify(fonte)}` });
+    return;
+  }
+  const conhecida = fonte.startsWith("itens.") ? vocabulario.item.has(fonte.slice("itens.".length)) : vocabulario.raiz.has(fonte);
+  if (!conhecida) leitura.problemas.push({ tipo: "variavel", mensagem: `fonte desconhecida: ${fonte}` });
+}
+
+/** lacunas_mapa: lista de marcadores; condições só com operadores gerais; filtro_item no contexto de item. */
+function lerMapaDeLacunas(mapa: unknown, vocabulario: Vocabulario, leitura: Leitura): void {
+  if (!Array.isArray(mapa)) {
+    leitura.problemas.push({ tipo: "operador", mensagem: "lacunas_mapa precisa ser uma lista" });
+    return;
+  }
+  for (const entrada of mapa) {
+    if (!ehObjetoJson(entrada) || typeof entrada.marcador !== "string" || !Number.isInteger(entrada.ocorrencia)) {
+      leitura.problemas.push({ tipo: "operador", mensagem: `marcador sem marcador/ocorrencia: ${JSON.stringify(entrada).slice(0, 80)}` });
+      continue;
+    }
+    const acao = (entrada.acao as string | undefined) ?? "PREENCHER";
+    if (!ACOES_DO_MAPA.has(acao)) leitura.problemas.push({ tipo: "operador", mensagem: `ação desconhecida: ${acao}` });
+    const formato = entrada.formato as string | undefined;
+    if (formato !== undefined && !FORMATOS_DO_MAPA.has(formato)) leitura.problemas.push({ tipo: "operador", mensagem: `formato desconhecido: ${formato}` });
+    for (const fonte of [entrada.fonte, entrada.unidade, ...((entrada.alternativas as unknown[]) ?? [])]) conferirFonte(fonte, vocabulario, leitura);
+    if (entrada.quando !== undefined) lerExpressao(entrada.quando, { tipo: "raiz" }, false, vocabulario, leitura);
+    if (entrada.filtro_item !== undefined) lerExpressao(entrada.filtro_item, { tipo: "item" }, false, vocabulario, leitura);
+    for (const opcao of (entrada.opcoes as unknown[]) ?? []) {
+      if (!ehObjetoJson(opcao) || typeof opcao.texto !== "string") {
+        leitura.problemas.push({ tipo: "operador", mensagem: "opção sem quando/texto" });
+        continue;
+      }
+      lerExpressao(opcao.quando, { tipo: "raiz" }, false, vocabulario, leitura);
+    }
+  }
+}
+
+/** tabela_colunas: colunas com fonte de item ou campo da VAR da tabela; condições da cota no contexto de item. */
+function lerTabelaColunas(tabela: unknown, vocabulario: Vocabulario, leitura: Leitura): void {
+  if (!ehObjetoJson(tabela) || !Array.isArray(tabela.colunas) || typeof tabela.linhas !== "string") {
+    leitura.problemas.push({ tipo: "operador", mensagem: "tabela_colunas precisa de linhas e colunas" });
+    return;
+  }
+  if (tabela.linhas !== "itens") conferirFonte(tabela.linhas, vocabulario, leitura);
+  for (const coluna of tabela.colunas) {
+    if (!ehObjetoJson(coluna) || typeof coluna.cabecalho !== "string") {
+      leitura.problemas.push({ tipo: "operador", mensagem: "coluna sem cabeçalho" });
+      continue;
+    }
+    conferirFonte(coluna.fonte, vocabulario, leitura);
+    for (const complemento of (coluna.complementos as unknown[]) ?? []) {
+      if (!ehObjetoJson(complemento)) continue;
+      conferirFonte(complemento.fonte, vocabulario, leitura);
+      if (complemento.quando !== undefined) lerExpressao(complemento.quando, { tipo: "raiz" }, false, vocabulario, leitura);
+    }
+  }
+  if (ehObjetoJson(tabela.orcamento_sigiloso)) lerExpressao(tabela.orcamento_sigiloso.quando, { tipo: "raiz" }, false, vocabulario, leitura);
+  if (ehObjetoJson(tabela.linha_cota)) lerExpressao(tabela.linha_cota.quando, { tipo: "item" }, false, vocabulario, leitura);
+}
+
+/** revisao_motivos: lista de {motivo, expr, texto, bloqueia}, com motivos do domínio fixo. */
+function lerMotivosDeRevisao(motivos: unknown, vocabulario: Vocabulario, leitura: Leitura): void {
+  if (!Array.isArray(motivos)) {
+    leitura.problemas.push({ tipo: "operador", mensagem: "revisao_motivos precisa ser uma lista" });
+    return;
+  }
+  for (const m of motivos) {
+    if (!ehObjetoJson(m) || typeof m.texto !== "string" || typeof m.bloqueia !== "boolean" || !MOTIVOS_DE_REVISAO.has(m.motivo as string)) {
+      leitura.problemas.push({ tipo: "operador", mensagem: `motivo de revisão inválido: ${JSON.stringify(m).slice(0, 80)}` });
+      continue;
+    }
+    lerExpressao(m.expr, { tipo: "raiz" }, false, vocabulario, leitura);
+  }
+}
+
 /** Confere as colunas *_expr e devolve, por linha, as expressões já convertidas e o que cada uma usa. */
 function conferirExpressoes(
   nome: NomeDaMatriz,
@@ -520,7 +608,7 @@ function conferirExpressoes(
   return linhas.map((linha, indice) => {
     const lidas: Record<string, ExpressaoLida | null> = {};
     for (const [coluna, valor] of Object.entries(linha)) {
-      if (!coluna.endsWith("_expr")) continue;
+      if (!coluna.endsWith("_expr") && !COLUNAS_JSON.has(coluna)) continue;
       if (valor.trim() === "") {
         lidas[coluna] = null;
         continue;
@@ -537,6 +625,12 @@ function conferirExpressoes(
       const leitura: Leitura = { problemas: [], usadas: [] };
       if (nome === "M11" && COLUNAS_POR_DESTINO.has(coluna)) {
         lerPorDestino(expressao, vocabulario, leitura);
+      } else if (coluna === "lacunas_mapa") {
+        lerMapaDeLacunas(expressao, vocabulario, leitura);
+      } else if (coluna === "tabela_colunas") {
+        lerTabelaColunas(expressao, vocabulario, leitura);
+      } else if (coluna === "revisao_motivos") {
+        lerMotivosDeRevisao(expressao, vocabulario, leitura);
       } else {
         const calculo = (COLUNAS_DE_CALCULO as readonly string[]).includes(`${nome}.${coluna}`);
         lerExpressao(expressao, contextoInicial(nome, linha), calculo, vocabulario, leitura);

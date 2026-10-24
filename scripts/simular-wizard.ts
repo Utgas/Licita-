@@ -11,17 +11,20 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { type Minuta, gerarMinuta } from "../src/motor/minuta.ts";
+import type { MotivoDeLacuna } from "../src/motor/montagem/lacunas.ts";
 import { esquemaDoPacote } from "../src/motor/pacote/esquema.ts";
 import { DIR_PACOTE } from "./compilar-regras.ts";
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIR_CENARIOS = path.join(RAIZ, "matrizes", "v1", "cenarios");
 
-const MOTIVOS_DE_LACUNA = {
+/** Rótulo de cada motivo de lacuna, na ordem da contagem. */
+const MOTIVOS_DE_LACUNA: Record<MotivoDeLacuna, string> = {
   sem_valor: "falta de dado",
-  sem_ligacao_unica: "ligação ambígua do marcador",
+  sem_mapa: "ligação ambígua do marcador",
   tabela_nao_montada: "tabela não montada",
-} as const;
+  equipe: "preenchimento da equipe",
+};
 
 function lerPacote() {
   const json = readFileSync(path.join(DIR_PACOTE, "pacote.json"), "utf8");
@@ -43,7 +46,7 @@ export function textoDaSimulacao(id: string, descricao: string, minuta: Minuta):
 
   for (const trecho of minuta.trechos) {
     if (trecho.tipo === "clausula_setorial") {
-      saida.push(`[Cláusula setorial ${trecho.id}, ${trecho.tema}]`, `    ${trecho.texto}`, "");
+      saida.push(`${trecho.numero ? `${trecho.numero} ` : ""}${trecho.texto}`, `    [cláusula setorial ${trecho.id}, ${trecho.tema}]`, "");
       continue;
     }
     const numero = trecho.numero ? `${trecho.numero} ` : "";
@@ -66,17 +69,19 @@ export function textoDaSimulacao(id: string, descricao: string, minuta: Minuta):
   );
   lista("Conferência manual (regras do M10 sem expressão)", minuta.validacoes.conferenciaManual.map((v) => `${v.id}: ${v.regra}`), saida);
   lista("Grupos de alternativas sem exatamente uma opção (bloqueio)", minuta.bloqueiosGrupoAlternativas, saida);
-  lista("Perguntas ao operador sobre o checklist (bloqueiam até confirmar)", minuta.revisao.perguntasAoOperador.map((p) => `${p.pergunta}: ${p.texto}`), saida);
+  lista("Perguntas ao operador sobre o checklist (bloqueiam até confirmar)", minuta.revisao.perguntasAoOperador.map((p) => `${p.pergunta} (${p.motivo}): ${p.texto}`), saida);
+  lista("Respostas do checklist destacadas para revisão (sem bloquear)", minuta.revisao.destaques.filter((d) => d.motivos.every((m) => !m.bloqueia)).map((d) => `${d.pergunta}: ${d.motivos.map((m) => m.motivo).join(", ")}`), saida);
+  lista("Valores padrão, que entraram sem ter sido informados ([[PADRÃO: ...]])", minuta.valoresPadrao.map((p) => `${p.trecho}: ${p.texto}`), saida);
   lista("Sugestões do checklist (a equipe decide)", minuta.sugestoes.map((s) => `${s.destino}${s.item === undefined ? "" : ` (item ${s.item})`} = ${JSON.stringify(s.valor)}, pela ${s.pergunta}`), saida);
   lista("Avisos do motor", minuta.avisos.map((a) => `${a.codigo}: ${a.mensagem}`), saida);
 
-  const contagem = { sem_valor: 0, sem_ligacao_unica: 0, tabela_nao_montada: 0 };
+  const contagem: Record<MotivoDeLacuna, number> = { sem_valor: 0, sem_mapa: 0, tabela_nao_montada: 0, equipe: 0 };
   for (const lacuna of minuta.lacunasNoTexto) contagem[lacuna.motivo]++;
   contagem.sem_valor += minuta.lacunasDeDados.length;
-  const total = contagem.sem_valor + contagem.sem_ligacao_unica + contagem.tabela_nao_montada;
+  const total = Object.values(contagem).reduce((a, b) => a + b, 0);
   saida.push("", `Lacunas por motivo (total ${total}):`);
   for (const [motivo, rotulo] of Object.entries(MOTIVOS_DE_LACUNA)) {
-    saida.push(`  ${rotulo.padEnd(30)} ${contagem[motivo as keyof typeof contagem]}`);
+    saida.push(`  ${rotulo.padEnd(30)} ${contagem[motivo as MotivoDeLacuna]}`);
   }
   return saida.join("\n");
 }

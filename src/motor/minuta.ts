@@ -8,11 +8,12 @@
 import type { AvisoDoMotor, Lacuna } from "./avisos.ts";
 import type { EntradaProcesso } from "./entrada.ts";
 import { type OrigemDoBloco, escolherBlocos, variaveisLidas } from "./montagem/blocos.ts";
-import { type LacunaDoTexto, preencherBloco, preencherClausula, variaveisPorBloco } from "./montagem/lacunas.ts";
-import { numerar, semNumeracaoDigitada } from "./montagem/numeracao.ts";
-import { type Ancora, ancoraDaClausula, clausulasQueEntram } from "./montagem/setoriais.ts";
+import { type LacunaDoTexto, Montagem, type ValorPadrao, pontuarSeries } from "./montagem/lacunas.ts";
+import { type LinhaNumeravel, numerar, semNumeracaoDigitada } from "./montagem/numeracao.ts";
+import { type Insercao, clausulasQueEntram, insercaoDaClausula } from "./montagem/setoriais.ts";
 import type { Valor } from "./pacote/avaliador.ts";
-import type { LinhaM02 } from "./pacote/esquema.ts";
+import type { LinhaM02, Pacote } from "./pacote/esquema.ts";
+import { variavelDoId } from "./pacote/nomes.ts";
 import { type ProcessoPreparado, prepararProcesso } from "./processo.ts";
 import { type ResultadoDasValidacoes, validar } from "./validacao/validacoes.ts";
 import { type Revisao, type Sugestao, revisarChecklist } from "./wizard/checklist.ts";
@@ -36,8 +37,10 @@ export type TrechoDaMinuta =
       id: string;
       tema: string;
       texto: string;
+      /** Número no nível indicado pelo M08 (nivel); null quando a cláusula vai para o fim do corpo. */
+      numero: string | null;
       pontoDeInsercao: string;
-      ancora: Ancora;
+      insercao: Insercao;
       origem: { respostas: Record<string, Valor> } & OrigemDoPacote;
     };
 
@@ -52,6 +55,12 @@ export type Minuta = {
   blocosExcluidos: { id: string; motivo: "desligado" | "sem_pai" }[];
   bloqueiosGrupoAlternativas: string[];
   lacunasNoTexto: LacunaDoTexto[];
+  /** Valores que entraram pelo padrão do mapa, sem terem sido informados (marcados no texto com [[PADRÃO: ...]]). */
+  valoresPadrao: ValorPadrao[];
+  /** Blocos de série (lista_blocos) que saíram por não terem elemento. */
+  blocosOmitidos: string[];
+  /** Cláusulas do M08 com nivel PREENCHE_BLOCO: não entram como texto, preenchem o bloco indicado. */
+  clausulasQuePreenchemBloco: { id: string; bloco: string }[];
   /** Dados que faltaram antes da montagem (tipo incompatível vindo do checklist). */
   lacunasDeDados: Lacuna[];
   validacoes: ResultadoDasValidacoes;
@@ -66,76 +75,122 @@ export type Minuta = {
 };
 
 const PREFIXO_DO_ANEXO = "Anexo";
+const PREFIXO_DA_ASSINATURA = "TR-ASSIN";
+const NUMERO_DO_ITEM = /^(\d+(?:\.\d+)*)/;
 
-/** Posição (no array de trechos de blocos) depois da qual a cláusula entra. */
-function posicaoDaAncora(ancora: Ancora, blocos: readonly LinhaM02[]): number {
-  const ultimo = (filtro: (l: LinhaM02) => boolean) => blocos.reduce((achado, l, i) => (filtro(l) ? i : achado), -1);
-  const doCorpo = (l: LinhaM02) => !l.secao.startsWith(PREFIXO_DO_ANEXO);
-  if (ancora.tipo === "depois_do_bloco") {
-    const inicio = blocos.findIndex((l) => l.id === ancora.bloco);
-    let fim = inicio;
-    while (fim + 1 < blocos.length && blocos[fim + 1].id.startsWith(`${ancora.bloco}.`)) fim++;
-    return fim;
-  }
-  if (ancora.tipo === "fim_da_secao") {
-    const posicao = ultimo((l) => doCorpo(l) && new RegExp(`^TR-${ancora.secao}(?:[.]|$)`).test(l.id));
-    if (posicao >= 0) return posicao;
-  }
-  return ultimo(doCorpo);
+/** Nível numérico do item_modelo ("5.4." = 2); 0 quando não é item numerado. */
+function nivelDoItem(itemModelo: string): number {
+  const numero = NUMERO_DO_ITEM.exec(itemModelo.trim())?.[1];
+  return numero ? numero.split(".").length : 0;
 }
+
+/** item_modelo de mentira, só com a quantidade de níveis, para a numeração da cláusula. */
+function itemModeloDoNivel(nivel: number): string {
+  if (nivel === 0) return "";
+  const numero = Array.from({ length: nivel }, () => "0").join(".");
+  return nivel <= 2 ? `${numero}.` : numero;
+}
+
+/** Variável da expressão -> ID da regra (VAR_034 -> VAR-034, CK_C_12_1 -> CK-C-12.1), para a marca de lacuna. */
+function nomesDasRegras(pacote: Pacote): (variavel: string) => string {
+  const { M04, M05, M11 } = pacote.matrizes;
+  const mapa = new Map<string, string>();
+  for (const { id } of [...M04, ...M05, ...M11]) mapa.set(variavelDoId(id), id);
+  return (variavel) => mapa.get(variavel) ?? variavel;
+}
+
+type Posicionado = { trecho: TrechoDaMinuta; linha: LinhaNumeravel; ancora?: string };
 
 export function gerarMinuta(entrada: EntradaProcesso): Minuta {
   const { pacote } = entrada;
-  const { M02, M04, M05, M08, M10, M11 } = pacote.matrizes;
+  const { M02, M04, M08, M10, M11 } = pacote.matrizes;
   const origemDoPacote: OrigemDoPacote = { pacote: pacote.pacote, hash: entrada.hashDoPacote };
   const processo = prepararProcesso(entrada);
-  const { dados, globais } = processo;
+  const { dados } = processo;
 
   const escolha = escolherBlocos(M02, M04, dados);
-  const linhas = escolha.blocos.map((b) => b.linha);
-  const numeros = numerar(linhas);
-  const candidatas = variaveisPorBloco(M05);
+  const montagem = new Montagem(dados, nomesDasRegras(pacote));
   const lacunasNoTexto: LacunaDoTexto[] = [];
+  const blocosOmitidos: string[] = [];
 
-  const trechosDeBloco: TrechoDaMinuta[] = escolha.blocos.map(({ linha, origem }) => {
-    const preenchido = preencherBloco(linha, semNumeracaoDigitada(linha.texto_literal), candidatas.get(linha.id) ?? [], globais);
-    lacunasNoTexto.push(...preenchido.lacunas);
-    return {
+  // Texto de cada bloco; bloco de série sem elemento sai.
+  const textos = new Map<string, string>();
+  const presentes: { linha: LinhaM02; origem: OrigemDoBloco }[] = [];
+  for (const { linha, origem } of escolha.blocos) {
+    const montado = montagem.bloco(linha, semNumeracaoDigitada(linha.texto_literal));
+    if (montado.omitido) {
+      blocosOmitidos.push(linha.id);
+      continue;
+    }
+    textos.set(linha.id, montado.texto);
+    lacunasNoTexto.push(...montado.lacunas);
+    presentes.push({ linha, origem });
+  }
+  pontuarSeries(textos, M02);
+
+  const sequencia: Posicionado[] = presentes.map(({ linha, origem }) => ({
+    linha,
+    trecho: {
       tipo: "bloco",
       id: linha.id,
-      numero: numeros.get(linha.id) ?? null,
-      texto: preenchido.texto,
+      numero: null,
+      texto: textos.get(linha.id) as string,
       formatacao: linha.formatacao,
       secao: linha.secao,
       origem: { ...origem, ...origemDoPacote },
-    };
-  });
+    },
+  }));
 
-  const naMinuta = new Set(linhas.map((l) => l.id));
+  // Cláusulas do M08 no ponto de inserção, na ordem do M08.
+  const naMinuta = new Set(presentes.map((p) => p.linha.id));
   const clausulas = clausulasQueEntram(M08, dados);
-  const depoisDe = new Map<number, TrechoDaMinuta[]>();
+  const clausulasQuePreenchemBloco: Minuta["clausulasQuePreenchemBloco"] = [];
   for (const clausula of clausulas) {
-    const ancora = ancoraDaClausula(clausula, naMinuta);
-    const preenchida = preencherClausula(clausula.id, clausula.texto_proposto, globais);
-    lacunasNoTexto.push(...preenchida.lacunas);
+    const insercao = insercaoDaClausula(clausula, naMinuta);
+    if (insercao.tipo === "preenche_bloco") {
+      clausulasQuePreenchemBloco.push({ id: clausula.id, bloco: insercao.bloco });
+      continue;
+    }
+    const montado = montagem.clausula(clausula);
+    lacunasNoTexto.push(...montado.lacunas);
     const respostas: Record<string, Valor> = {};
     for (const nome of variaveisLidas(clausula.condicao_expr)) if (nome !== "itens") respostas[nome] = dados[nome] ?? null;
-    const posicao = posicaoDaAncora(ancora, linhas);
-    depoisDe.set(posicao, [
-      ...(depoisDe.get(posicao) ?? []),
-      {
-        tipo: "clausula_setorial",
-        id: clausula.id,
-        tema: clausula.tema,
-        texto: preenchida.texto,
-        pontoDeInsercao: clausula.ponto_insercao,
-        ancora,
-        origem: { respostas, ...origemDoPacote },
-      },
-    ]);
+    const trecho: TrechoDaMinuta = {
+      tipo: "clausula_setorial",
+      id: clausula.id,
+      tema: clausula.tema,
+      texto: montado.texto,
+      numero: null,
+      pontoDeInsercao: clausula.ponto_insercao,
+      insercao,
+      origem: { respostas, ...origemDoPacote },
+    };
+    if (insercao.tipo === "fim_do_corpo") {
+      const ultimo = sequencia.reduce((achado, p, i) => (p.trecho.tipo === "bloco" && !p.linha.secao.startsWith(PREFIXO_DO_ANEXO) && !p.linha.id.startsWith(PREFIXO_DA_ASSINATURA) ? i : achado), -1);
+      sequencia.splice(ultimo + 1, 0, { trecho, linha: { id: clausula.id, item_modelo: "", secao: "" } });
+      continue;
+    }
+    const indice = sequencia.findIndex((p) => p.linha.id === insercao.bloco);
+    const ancora = sequencia[indice].linha;
+    const nivel = nivelDoItem(ancora.item_modelo);
+    // Depois do bloco, dos subitens dele (pelo ID ou por nível mais fundo na mesma seção) e das cláusulas já postas ali.
+    let fim = indice;
+    while (fim + 1 < sequencia.length) {
+      const seguinte = sequencia[fim + 1];
+      const subitem =
+        seguinte.linha.id.startsWith(`${insercao.bloco}.`) ||
+        (seguinte.linha.secao === ancora.secao && nivel > 0 && nivelDoItem(seguinte.linha.item_modelo) > nivel) ||
+        seguinte.ancora === insercao.bloco;
+      if (!subitem) break;
+      fim++;
+    }
+    const nivelDaClausula = nivel === 0 ? 0 : insercao.nivel === "SUBITEM" ? nivel + 1 : nivel;
+    sequencia.splice(fim + 1, 0, { trecho, ancora: insercao.bloco, linha: { id: clausula.id, item_modelo: itemModeloDoNivel(nivelDaClausula), secao: ancora.secao } });
   }
-  const trechos: TrechoDaMinuta[] = [...(depoisDe.get(-1) ?? [])];
-  trechosDeBloco.forEach((trecho, i) => trechos.push(trecho, ...(depoisDe.get(i) ?? [])));
+
+  // Numeração refeita depois das exclusões, com as cláusulas no lugar delas.
+  const numeros = numerar(sequencia.map((p) => p.linha));
+  const trechos = sequencia.map((p) => ({ ...p.trecho, numero: numeros.get(p.linha.id) ?? null }) as TrechoDaMinuta);
 
   const validacoes = validar(M10, dados);
   const revisao = revisarChecklist(M11, dados, entrada.revisoes_confirmadas ?? []);
@@ -147,11 +202,14 @@ export function gerarMinuta(entrada: EntradaProcesso): Minuta {
   return {
     pacote: origemDoPacote,
     trechos,
-    blocos: linhas.map((l) => l.id),
+    blocos: escolha.blocos.map((b) => b.linha.id),
     clausulasSetoriais: clausulas.map((c) => c.id),
     blocosExcluidos: escolha.excluidos,
     bloqueiosGrupoAlternativas: escolha.bloqueiosGrupoAlternativas,
     lacunasNoTexto,
+    valoresPadrao: montagem.padroes,
+    blocosOmitidos,
+    clausulasQuePreenchemBloco,
     lacunasDeDados: processo.lacunas,
     validacoes,
     perguntasSemResposta: processo.wizard.pendentes,

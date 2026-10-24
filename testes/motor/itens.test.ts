@@ -59,7 +59,7 @@ describe("cálculo do M05 com as matrizes atuais", () => {
     expect(entrada.itens).toEqual(copia);
   });
 
-  // A VAR-113 da Fase 11 já devolve null quando falta o valor da disputa; o aviso vem só da VAR-119.
+  // A VAR-113 já devolve null quando falta o valor da disputa; os avisos vêm da VAR-119 e do valor total (VAR-175).
   it("item sem valor unitário: valor da disputa e tratamento viram lacuna, com aviso", () => {
     const { entrada } = cenario("C6");
     const itens: Item[] = entrada.itens.map((i: Item) => (i.numero === 4 ? { ...i, valor_unitario: null } : i));
@@ -69,6 +69,7 @@ describe("cálculo do M05 com as matrizes atuais", () => {
     expect(item4?.tratamento_me_epp).toBeNull();
     expect(resultado.avisos.filter((a) => a.origem.item === 4).map((a) => [a.codigo, a.origem.regra])).toEqual([
       ["CALCULO_SEM_DADO", "VAR-119"],
+      ["CALCULO_SEM_DADO", "VAR-175"],
     ]);
   });
 });

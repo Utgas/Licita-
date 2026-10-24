@@ -2,19 +2,22 @@
  * Cláusulas setoriais do M08: entram as de documento TR ou AMBOS cuja condicao_expr é verdadeira
  * (condicao_expr vazia ou false nunca entra).
  *
- * Ponto de inserção: a coluna ponto_insercao é texto. O motor lê dela só a parte do TR (antes de "ETP:") e o
- * primeiro bloco citado: a cláusula vai logo depois desse bloco e dos subitens dele. Sem bloco citado, ou com o
- * bloco fora da minuta, vai no fim da seção citada ("seção 5"); sem nada disso, no fim do corpo do TR.
- * O texto original do ponto de inserção acompanha a cláusula, para a revisão humana.
+ * Posição e numeração (Fase 13 das matrizes): inserir_apos é o bloco do M02 depois do qual a cláusula entra, com os
+ * subitens dele; nivel diz como ela é numerada (MESMO_NIVEL: item seguinte no nível do bloco; SUBITEM: último subitem
+ * do bloco; PREENCHE_BLOCO: não entra como texto, só preenche as lacunas do bloco). Se o bloco não está na minuta,
+ * vale o primeiro de inserir_apos_alternativo ("TR-5.4 (SUBITEM); TR-5.2 (MESMO_NIVEL)") que estiver. Sem nenhum,
+ * a cláusula vai para o fim do corpo do TR, sem número.
  */
 import { type Valor, avaliar, verdadeiro } from "../pacote/avaliador.ts";
 import type { LinhaM08 } from "../pacote/esquema.ts";
 
 const DOCUMENTOS_DO_TR = new Set(["TR", "AMBOS"]);
-const BLOCO_CITADO = /TR-[A-Za-z0-9]+(?:[.-][A-Za-z0-9]+)*/;
-const SECAO_CITADA = /seção (\d+)/;
+const ALTERNATIVA = /(TR-[A-Za-z0-9]+(?:[.-][A-Za-z0-9]+)*)\s*\((MESMO_NIVEL|SUBITEM)\)/g;
 
-export type Ancora = { tipo: "depois_do_bloco"; bloco: string } | { tipo: "fim_da_secao"; secao: string } | { tipo: "fim_do_corpo" };
+export type Insercao =
+  | { tipo: "preenche_bloco"; bloco: string }
+  | { tipo: "apos"; bloco: string; nivel: "MESMO_NIVEL" | "SUBITEM"; alternativa: boolean }
+  | { tipo: "fim_do_corpo" };
 
 export function clausulasQueEntram(m08: readonly LinhaM08[], dados: Record<string, Valor>): LinhaM08[] {
   return m08.filter(
@@ -22,19 +25,13 @@ export function clausulasQueEntram(m08: readonly LinhaM08[], dados: Record<strin
   );
 }
 
-/** Parte do ponto de inserção que fala do TR. */
-function parteDoTr(ponto: string): string {
-  return ponto.split("ETP:")[0];
-}
-
-/**
- * Âncora da cláusula, dado o conjunto de blocos na minuta.
- * A seção do corpo do TR é o número antes do primeiro ponto do item ("5." em "5. CONDIÇÕES...").
- */
-export function ancoraDaClausula(linha: LinhaM08, blocosNaMinuta: ReadonlySet<string>): Ancora {
-  const parte = parteDoTr(linha.ponto_insercao);
-  const bloco = BLOCO_CITADO.exec(parte)?.[0];
-  if (bloco !== undefined && blocosNaMinuta.has(bloco)) return { tipo: "depois_do_bloco", bloco };
-  const secao = SECAO_CITADA.exec(parte)?.[1] ?? (bloco !== undefined ? /^TR-(\d+)/.exec(bloco)?.[1] : undefined);
-  return secao !== undefined ? { tipo: "fim_da_secao", secao } : { tipo: "fim_do_corpo" };
+export function insercaoDaClausula(linha: LinhaM08, blocosNaMinuta: ReadonlySet<string>): Insercao {
+  if (linha.nivel === "PREENCHE_BLOCO") return { tipo: "preenche_bloco", bloco: linha.inserir_apos };
+  if (linha.inserir_apos && blocosNaMinuta.has(linha.inserir_apos) && linha.nivel !== "") {
+    return { tipo: "apos", bloco: linha.inserir_apos, nivel: linha.nivel, alternativa: false };
+  }
+  for (const [, bloco, nivel] of linha.inserir_apos_alternativo.matchAll(ALTERNATIVA)) {
+    if (blocosNaMinuta.has(bloco)) return { tipo: "apos", bloco, nivel: nivel as "MESMO_NIVEL" | "SUBITEM", alternativa: true };
+  }
+  return { tipo: "fim_do_corpo" };
 }

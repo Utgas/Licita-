@@ -59,6 +59,10 @@ export const linhaM02 = z.strictObject({
   /** Quando o grupo de alternativas vale; null = sempre (mesmo valor em todo o grupo). */
   grupo_ativo_expr: expressao,
   lacunas: texto,
+  /** Cada marcador do texto, na ordem, com o que o preenche (Fase 13). */
+  lacunas_mapa: z.array(z.json()).nullable(),
+  /** Como montar a tabela a partir dos itens ou de uma VAR (Fase 13). */
+  tabela_colunas: z.json().nullable(),
   notas: texto,
   condicao_inclusao: texto,
   condicao_expr: expressao,
@@ -165,7 +169,13 @@ export const linhaM08 = z.strictObject({
   condicao: texto,
   condicao_expr: expressao,
   ponto_insercao: texto,
+  /** Bloco do M02 depois do qual a cláusula entra (com os subitens dele). */
+  inserir_apos: texto,
+  nivel: z.enum(["", "MESMO_NIVEL", "SUBITEM", "PREENCHE_BLOCO"]),
+  /** "TR-5.4 (SUBITEM); TR-5.2 (MESMO_NIVEL)": em ordem, quando o bloco de inserir_apos não está na minuta. */
+  inserir_apos_alternativo: texto,
   texto_proposto: texto,
+  lacunas_mapa: z.array(z.json()).nullable(),
   variaveis: texto,
   perguntas_wz: texto,
   base_no_modelo: texto,
@@ -214,6 +224,10 @@ export const linhaM11 = z.strictObject({
   revisao_expr: expressao,
   /** Pergunta ao operador quando a dúvida muda a minuta; vazia quando basta o destaque. */
   revisao_pergunta: texto,
+  /** Resumo: or dos motivos que bloqueiam (Fase 13). */
+  revisao_pergunta_expr: expressao,
+  /** Um texto por motivo de revisão, com bloqueia (Fase 14): a fonte da revisão. */
+  revisao_motivos: z.array(z.json()).nullable(),
   fonte: texto,
   status,
 });

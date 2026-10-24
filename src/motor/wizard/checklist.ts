@@ -210,29 +210,44 @@ export function aplicarChecklist(
   return { globais, itens, preenchidoPeloChecklist: preenchido, origens, origensDeItem, sugestoes, avisos, lacunas: lacunasRestantes };
 }
 
+export type MotivoDaRevisao = { motivo: string; texto: string; bloqueia: boolean };
+
 export type Revisao = {
-  /** Respostas destacadas para o operador revisar (IDs CK). */
-  destaques: string[];
-  /** Perguntas ao operador ainda sem confirmação: bloqueiam a minuta. */
-  perguntasAoOperador: { pergunta: string; texto: string }[];
+  /** Respostas destacadas para o operador revisar: pergunta (ID CK) e os motivos que dispararam. */
+  destaques: { pergunta: string; motivos: MotivoDaRevisao[] }[];
+  /** Perguntas ao operador (motivos que bloqueiam) ainda sem confirmação: bloqueiam a minuta. */
+  perguntasAoOperador: { pergunta: string; motivo: string; texto: string }[];
 };
 
+type MotivoNoPacote = { motivo: string; expr: unknown; texto: string; bloqueia: boolean };
+
 /**
- * Revisão das respostas do checklist (revisao_expr), avaliada no fim, com os mesmos dados das validações do M10.
- * Só entram as perguntas do checklist em uso (consumo ou permanentes; complementos sempre) cuja condicional vale:
- * pergunta de um checklist que não foi entregue, ou que não se aplica, não tem o que revisar.
+ * Revisão das respostas do checklist pelo revisao_motivos do M11 (Fase 14): cada motivo cuja expr é verdadeira
+ * destaca a pergunta; os que bloqueiam viram pergunta ao operador, com o texto daquele motivo, até a confirmação.
+ * Avaliada no fim, com os mesmos dados das validações do M10. Só entram as perguntas do checklist em uso (consumo ou
+ * permanentes; complementos sempre) cuja condicional vale. Linha sem revisao_motivos usa o resumo antigo
+ * (revisao_expr e revisao_pergunta_expr).
  */
 export function revisarChecklist(m11: readonly LinhaM11[], dados: Record<string, Valor>, confirmadas: readonly string[] = []): Revisao {
   const emUso = checklistsEmUso(m11, dados);
-  const destaques: string[] = [];
+  const destaques: Revisao["destaques"] = [];
   const perguntasAoOperador: Revisao["perguntasAoOperador"] = [];
   for (const linha of m11) {
-    if (linha.revisao_expr === null || !emUso.has(linha.checklist)) continue;
+    if (!emUso.has(linha.checklist)) continue;
+    if (linha.revisao_motivos === null && linha.revisao_expr === null) continue;
     if (linha.condicional_expr !== null && !verdadeiro(avaliar(linha.condicional_expr, dados))) continue;
-    if (!verdadeiro(avaliar(linha.revisao_expr, dados))) continue;
-    destaques.push(linha.id);
-    if (linha.revisao_pergunta !== "" && !confirmadas.includes(linha.id)) {
-      perguntasAoOperador.push({ pergunta: linha.id, texto: linha.revisao_pergunta });
+    const motivos: MotivoNoPacote[] =
+      (linha.revisao_motivos as MotivoNoPacote[] | null) ??
+      [
+        { motivo: "RESUMO", expr: linha.revisao_expr, texto: "", bloqueia: false },
+        { motivo: "RESUMO", expr: linha.revisao_pergunta_expr ?? false, texto: linha.revisao_pergunta, bloqueia: true },
+      ];
+    const disparados = motivos.filter((m) => verdadeiro(avaliar(m.expr, dados)));
+    if (disparados.length === 0) continue;
+    destaques.push({ pergunta: linha.id, motivos: disparados.map(({ motivo, texto, bloqueia }) => ({ motivo, texto, bloqueia })) });
+    if (confirmadas.includes(linha.id)) continue;
+    for (const m of disparados) {
+      if (m.bloqueia && m.texto !== "") perguntasAoOperador.push({ pergunta: linha.id, motivo: m.motivo, texto: m.texto });
     }
   }
   return { destaques, perguntasAoOperador };

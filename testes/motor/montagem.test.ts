@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { codigoDoGrupo, escolherBlocos, paiDoBloco } from "../../src/motor/montagem/blocos.ts";
-import { preencherBloco, preencherClausula, textoDoValor, variaveisPorBloco } from "../../src/motor/montagem/lacunas.ts";
+import { extenso, formatar, moedaPorExtenso, textoDoValor } from "../../src/motor/montagem/formatos.ts";
+import { Montagem, pontuarSeries } from "../../src/motor/montagem/lacunas.ts";
 import { numerar, semNumeracaoDigitada, temNumeracaoDigitada } from "../../src/motor/montagem/numeracao.ts";
-import { ancoraDaClausula } from "../../src/motor/montagem/setoriais.ts";
+import { insercaoDaClausula } from "../../src/motor/montagem/setoriais.ts";
 import type { LinhaM02, LinhaM04, LinhaM08, LinhaM10 } from "../../src/motor/pacote/esquema.ts";
 import { validar } from "../../src/motor/validacao/validacoes.ts";
 import { pacoteDasMatrizes } from "./pacote-das-matrizes.ts";
@@ -22,6 +23,8 @@ function bloco(id: string, extra: Partial<LinhaM02> = {}): LinhaM02 {
     opcao: "",
     grupo_ativo_expr: null,
     lacunas: "",
+    lacunas_mapa: null,
+    tabela_colunas: null,
     notas: "",
     condicao_inclusao: "",
     condicao_expr: true,
@@ -184,60 +187,170 @@ describe("numeração", () => {
   });
 });
 
-describe("lacunas", () => {
-  it("um marcador e uma variável: preenche; sem valor, marca a lacuna", () => {
-    const linha = bloco("TR-5.3", { texto_literal: "Antecedência de (...) dias.", lacunas: "(...)" });
-    expect(preencherBloco(linha, linha.texto_literal, ["VAR-063"], { VAR_063: 5 }).texto).toBe("Antecedência de 5 dias.");
-    const vazio = preencherBloco(linha, linha.texto_literal, ["VAR-063"], {});
-    expect(vazio.texto).toBe("Antecedência de [[LACUNA VAR-063]] dias.");
-    expect(vazio.lacunas).toEqual([{ trecho: "TR-5.3", marcador: "(...)", candidatas: ["VAR-063"], motivo: "sem_valor" }]);
+describe("formatos do texto", () => {
+  it.each([
+    [1, "um"],
+    [30, "trinta"],
+    [100, "cem"],
+    [101, "cento e um"],
+    [1000, "mil"],
+    [1500, "mil e quinhentos"],
+    [1250, "mil duzentos e cinquenta"],
+    [2000000, "dois milhões"],
+  ])("%d por extenso: %s", (n, texto) => {
+    expect(extenso(n)).toBe(texto);
   });
 
-  it("sem ligação única entre marcador e variável: não adivinha, marca com as candidatas", () => {
-    const linha = bloco("TR-1.5", { texto_literal: "Prazo de [a] a partir de [b].", lacunas: "[a] | [b]" });
-    const resultado = preencherBloco(linha, linha.texto_literal, ["VAR-033", "VAR-034"], { VAR_033: 12, VAR_034: "assinatura" });
-    expect(resultado.texto).toBe("Prazo de [[LACUNA VAR-033, VAR-034]] a partir de [[LACUNA VAR-033, VAR-034]].");
-    expect(resultado.lacunas.map((l) => l.motivo)).toEqual(["sem_ligacao_unica", "sem_ligacao_unica"]);
+  it("número, moeda, percentual e data", () => {
+    expect(formatar(30, "NUMERO_EXTENSO")).toBe("30 (trinta)");
+    expect(formatar(1234.5, "MOEDA")).toBe("R$ 1.234,50");
+    expect(moedaPorExtenso(1234.56)).toBe("(mil duzentos e trinta e quatro reais e cinquenta e seis centavos)");
+    expect(formatar(5, "PERCENTUAL_EXTENSO")).toBe("5% (cinco por cento)");
+    expect(formatar(12.5, "PERCENTUAL_EXTENSO")).toBe("12,5% (doze vírgula cinco por cento)");
+    expect(formatar(25, "PERCENTUAL_2")).toBe("25,00%");
+    expect(formatar("2026-10-23", "DATA")).toBe("23/10/2026");
+    expect(formatar("23/10/2026", "MES_EXTENSO")).toBe("outubro");
+    expect(formatar(["a", "b", "c"], "LISTA_TEXTO")).toBe("a, b e c");
+    expect(formatar(1, "TEXTO", "MESES")).toBe("1 mês");
+    expect(formatar(12, "NUMERO_EXTENSO", "MESES")).toBe("12 (doze) meses");
+    expect(textoDoValor(15000)).toBe("15.000");
   });
 
-  it("tabela do modelo (tipo TB) não é montada: fica marcada, com a lacuna própria", () => {
-    const linha = bloco("TR-1.1.TAB1", { tipo: "TB", texto_literal: "ITEM | VALOR", lacunas: "R$ ...." });
-    const resultado = preencherBloco(linha, linha.texto_literal, ["VAR-011"], {});
-    expect(resultado.texto).toBe("[[TABELA NÃO MONTADA]]\nITEM | VALOR");
-    expect(resultado.lacunas.map((l) => l.motivo)).toEqual(["tabela_nao_montada"]);
-  });
-
-  it("marcador repetido é tratado uma ocorrência de cada vez", () => {
-    const linha = bloco("TR-4.18.1", { texto_literal: "[...] e [...]", lacunas: "[...] | [...]" });
-    expect(preencherBloco(linha, linha.texto_literal, ["VAR-054"], {}).texto).toBe("[[LACUNA VAR-054]] e [[LACUNA VAR-054]]");
-  });
-
-  it("cláusula do M08: [VAR-xxx: ...] com uma variável é preenchido; com duas, fica marcado", () => {
-    const resultado = preencherClausula("SET-99", "Itens [VAR-130: itens] com [VAR-122 e VAR-128: cuidados].", { VAR_130: ["1", "2"] });
-    expect(resultado.texto).toBe("Itens 1; 2 com [[LACUNA VAR-122, VAR-128]].");
-  });
-
-  it("valor no texto: número com vírgula decimal e lista separada por ponto e vírgula", () => {
-    expect(textoDoValor(12.5)).toBe("12,5");
-    expect(textoDoValor(["a", "b"])).toBe("a; b");
-  });
-
-  it("a ligação vem da coluna usada_em do M05", () => {
-    expect(variaveisPorBloco(pacote.matrizes.M05).get("TR-5.3")).toEqual(["VAR-063"]);
+  it("não arredonda: moeda com mais de dois decimais e extenso de número quebrado não são aceitos", () => {
+    expect(() => formatar(1.005, "MOEDA")).toThrow();
+    expect(() => formatar(2.5, "NUMERO_EXTENSO")).toThrow();
   });
 });
 
-describe("ponto de inserção das cláusulas setoriais", () => {
-  const clausula = (ponto: string) => ({ ponto_insercao: ponto }) as LinhaM08;
+describe("texto pelo lacunas_mapa", () => {
+  const nome = (v: string) => v.replace("_", "-");
+  const montar = (texto: string, mapa: unknown[], dados: Record<string, unknown> = {}) =>
+    new Montagem(dados as never, nome).texto("TR-9.9", texto, mapa);
 
-  it("depois do bloco citado na parte do TR", () => {
-    expect(ancoraDaClausula(clausula("TR: seção 5, depois de TR-5.4; ETP: ETP-04.01"), new Set(["TR-5.4"]))).toEqual({ tipo: "depois_do_bloco", bloco: "TR-5.4" });
+  it("PREENCHER com formato e unidade; sem valor, lacuna com o ID da regra", () => {
+    const mapa = [{ marcador: "[prazo]", ocorrencia: 1, fonte: "VAR_034", formato: "NUMERO_EXTENSO", unidade: "VAR_163" }];
+    expect(montar("Vigência de [prazo].", mapa, { VAR_034: 12, VAR_163: "MESES" }).texto).toBe("Vigência de 12 (doze) meses.");
+    const vazio = montar("Vigência de [prazo].", mapa);
+    expect(vazio.texto).toBe("Vigência de [[LACUNA VAR-034]].");
+    expect(vazio.lacunas).toEqual([{ trecho: "TR-9.9", marcador: "[prazo]", fonte: "VAR-034", motivo: "sem_valor" }]);
   });
 
-  it("bloco fora da minuta: fim da seção; sem nada: fim do corpo", () => {
-    expect(ancoraDaClausula(clausula("TR: seção 5, depois de TR-5.4"), new Set())).toEqual({ tipo: "fim_da_secao", secao: "5" });
-    expect(ancoraDaClausula(clausula("TR: complementa TR-8.2"), new Set())).toEqual({ tipo: "fim_da_secao", secao: "8" });
-    expect(ancoraDaClausula(clausula("ETP: ETP-13.01; TR: providências"), new Set())).toEqual({ tipo: "fim_do_corpo" });
+  it("marcador repetido: cada entrada do mapa troca a sua ocorrência", () => {
+    const mapa = [
+      { marcador: "[...]", ocorrencia: 1, fonte: "VAR_001" },
+      { marcador: "[...]", ocorrencia: 2, fonte: "VAR_002" },
+    ];
+    expect(montar("[...] e [...]", mapa, { VAR_001: "a", VAR_002: "b" }).texto).toBe("a e b");
+  });
+
+  it("ESCOLHA: fica a opção verdadeira do grupo; opção padrão sai marcada e listada", () => {
+    const mapa = [
+      { marcador: "[A]", ocorrencia: 1, fonte: null, acao: "ESCOLHA", grupo: "g", opcoes: [{ quando: { "==": [{ var: "WZ_01" }, "A"] }, texto: "opção A" }] },
+      { marcador: "[B]", ocorrencia: 1, fonte: null, acao: "ESCOLHA", grupo: "g", opcoes: [{ quando: true, texto: "opção B", padrao: true }] },
+    ];
+    expect(montar("Conforme [A] OU [B].", mapa, { WZ_01: "A" }).texto).toBe("Conforme opção A.");
+    const montagem = new Montagem({} as never, nome);
+    expect(montagem.texto("TR-9.9", "Conforme [A] OU [B].", mapa).texto).toBe("Conforme [[PADRÃO: opção B]].");
+    expect(montagem.padroes).toEqual([{ trecho: "TR-9.9", marcador: "[B]", texto: "opção B" }]);
+  });
+
+  it("OPCIONAL: entra sem os colchetes, ou sai junto com o texto de antes", () => {
+    const mapa = [{ marcador: "[incluindo X]", ocorrencia: 1, fonte: "VAR_009", acao: "OPCIONAL", quando: { "==": [{ var: "WZ_08" }, "SIM"] }, texto: "incluindo {valor}", remove_antes: ", ", formato: "LISTA_TEXTO" }];
+    expect(montar("Aquisição de bens, [incluindo X], nos termos.", mapa, { WZ_08: "SIM", VAR_009: ["instalação", "treinamento"] }).texto).toBe("Aquisição de bens, incluindo instalação e treinamento, nos termos.");
+    expect(montar("Aquisição de bens, [incluindo X], nos termos.", mapa, { WZ_08: "NAO" }).texto).toBe("Aquisição de bens, nos termos.");
+  });
+
+  it("EQUIPE e REMOVER", () => {
+    const mapa = [
+      { marcador: "[norma]", ocorrencia: 1, fonte: null, acao: "EQUIPE", comentario: "cita norma" },
+      { marcador: "(instrução)", ocorrencia: 1, fonte: null, acao: "REMOVER" },
+    ];
+    const resultado = montar("Conforme [norma] (instrução).", mapa);
+    expect(resultado.texto).toBe("Conforme [[LACUNA EQUIPE]].");
+    expect(resultado.lacunas.map((l) => l.motivo)).toEqual(["equipe"]);
+  });
+
+  it("série de blocos-lista: bloco sem elemento sai, e a pontuação final é refeita", () => {
+    const blocos = ["TR-4.1.1", "TR-4.1.2", "TR-4.1.3"];
+    const entrada = (i: number) => ({ marcador: "[...]", ocorrencia: 1, fonte: "VAR_044", indice: i, lista_blocos: blocos, ...(i > 0 ? { se_vazio: "OMITE_BLOCO" } : {}) });
+    const montagem = new Montagem({ VAR_044: ["a", "b"] } as never, nome);
+    const textos = new Map<string, string>();
+    blocos.forEach((b, i) => {
+      const r = montagem.texto(b, i === 2 ? "[...]." : "[...];", [entrada(i)]);
+      if (!r.omitido) textos.set(b, r.texto);
+    });
+    expect([...textos.keys()]).toEqual(["TR-4.1.1", "TR-4.1.2"]);
+    pontuarSeries(textos, blocos.map((id, i) => bloco(id, { lacunas_mapa: [entrada(i)] })));
+    expect([...textos.values()]).toEqual(["a; e", "b."]);
+  });
+
+  it("bloco com marcadores e sem mapa: lacuna sem_mapa", () => {
+    const r = new Montagem({} as never, nome).texto("TR-9.9", "Texto [x].", null, "[x]");
+    expect(r.lacunas.map((l) => l.motivo)).toEqual(["sem_mapa"]);
+  });
+});
+
+describe("tabela pelo tabela_colunas", () => {
+  const tabela = {
+    linhas: "itens",
+    colunas: [
+      { cabecalho: "ITEM", fonte: "itens.numero" },
+      { cabecalho: "ESPECIFICAÇÃO", fonte: "itens.especificacao" },
+      { cabecalho: "QUANTIDADE", fonte: "itens.quantidade_principal", formato: "NUMERO" },
+      { cabecalho: "VALOR UNITÁRIO", fonte: "itens.valor_unitario", formato: "MOEDA", sigiloso: "SIGILOSO" },
+    ],
+    orcamento_sigiloso: { quando: { "==": [{ var: "WZ_40" }, "SIM"] }, colunas: ["VALOR UNITÁRIO"], texto: "SIGILOSO" },
+    linha_cota: {
+      quando: { "==": [{ var: "tratamento_me_epp" }, "COTA"] },
+      valores: { ITEM: "numero", "ESPECIFICAÇÃO": "Cota fictícia do item {itens.numero}", QUANTIDADE: "itens.quantidade_cota", "VALOR UNITÁRIO": "itens.valor_unitario" },
+    },
+  };
+  const itens = [
+    { numero: 2, especificacao: "Item fictício B", quantidade_principal: 1000, valor_unitario: 1.5, tratamento_me_epp: "AMPLA" },
+    { numero: 1, especificacao: "Item fictício A", quantidade_principal: 75, valor_unitario: 10, tratamento_me_epp: "COTA", quantidade_cota: 25 },
+  ];
+
+  it("itens com o próprio número e as cotas no fim, sem renumerar (P35)", () => {
+    const r = new Montagem({ itens } as never, (v) => v).tabela("TR-1.1.TAB1", "", tabela);
+    expect(r.texto.split("\n")).toEqual([
+      "ITEM | ESPECIFICAÇÃO | QUANTIDADE | VALOR UNITÁRIO",
+      "1 | Item fictício A | 75 | R$ 10,00",
+      "2 | Item fictício B | 1.000 | R$ 1,50",
+      "3 | Cota fictícia do item 1 | 25 | R$ 10,00",
+    ]);
+    expect(r.lacunas).toEqual([]);
+  });
+
+  it("orçamento sigiloso: as colunas de valor trazem SIGILOSO", () => {
+    const r = new Montagem({ itens, WZ_40: "SIM" } as never, (v) => v).tabela("TR-1.1.TAB1", "", tabela);
+    expect(r.texto).not.toContain("R$");
+    expect(r.texto.split("\n")[3]).toBe("3 | Cota fictícia do item 1 | 25 | SIGILOSO");
+  });
+
+  it("célula sem dado vira lacuna; tabela sem itens não é montada", () => {
+    const r = new Montagem({ itens: [{ numero: 1 }] } as never, (v) => v).tabela("TR-1.1.TAB1", "", tabela);
+    expect(r.lacunas.map((l) => l.marcador)).toEqual(["ESPECIFICAÇÃO do item 1", "QUANTIDADE do item 1", "VALOR UNITÁRIO do item 1"]);
+    const vazia = new Montagem({ itens: [] } as never, (v) => v).tabela("TR-1.1.TAB1", "MODELO", tabela);
+    expect(vazia.texto).toBe("[[TABELA NÃO MONTADA]]\nMODELO");
+    expect(vazia.lacunas.map((l) => l.motivo)).toEqual(["tabela_nao_montada"]);
+  });
+});
+
+describe("posição das cláusulas setoriais (inserir_apos, nivel, alternativo)", () => {
+  const clausula = (extra: Partial<LinhaM08>) => ({ inserir_apos: "TR-5.4", nivel: "MESMO_NIVEL", inserir_apos_alternativo: "", ...extra }) as LinhaM08;
+
+  it("depois do bloco, no nível indicado", () => {
+    expect(insercaoDaClausula(clausula({ nivel: "SUBITEM" }), new Set(["TR-5.4"]))).toEqual({ tipo: "apos", bloco: "TR-5.4", nivel: "SUBITEM", alternativa: false });
+  });
+
+  it("bloco fora da minuta: o primeiro alternativo presente; sem nenhum, fim do corpo", () => {
+    const c = clausula({ inserir_apos: "TR-5.4.1", inserir_apos_alternativo: "TR-5.9 (MESMO_NIVEL); TR-5.4 (SUBITEM)" });
+    expect(insercaoDaClausula(c, new Set(["TR-5.4"]))).toEqual({ tipo: "apos", bloco: "TR-5.4", nivel: "SUBITEM", alternativa: true });
+    expect(insercaoDaClausula(c, new Set())).toEqual({ tipo: "fim_do_corpo" });
+  });
+
+  it("PREENCHE_BLOCO não entra como texto", () => {
+    expect(insercaoDaClausula(clausula({ inserir_apos: "TR-9.35", nivel: "PREENCHE_BLOCO" }), new Set(["TR-9.35"]))).toEqual({ tipo: "preenche_bloco", bloco: "TR-9.35" });
   });
 });
 

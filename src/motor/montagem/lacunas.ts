@@ -1,132 +1,428 @@
 /**
- * Lacunas do texto do bloco (coluna lacunas do M02) e das cláusulas setoriais (marcadores [VAR-xxx] do M08).
- *
- * O M02 lista os marcadores do texto (separados por " | "), mas não diz qual variável preenche cada um. A ligação
- * vem do M05 (usada_em). O motor só preenche quando ela é certa: o bloco tem um marcador só e uma variável só o
- * cita. Nos demais casos o marcador fica como lacuna, com as variáveis candidatas, e nada é adivinhado.
- * Valor ausente também fica marcado: [[LACUNA VAR-xxx]]. Tabela do modelo ainda não é montada: [[TABELA NÃO MONTADA]].
+ * Texto dos blocos (M02) e das cláusulas setoriais (M08) pelo lacunas_mapa, e tabelas pelo tabela_colunas
+ * (Fases 13 e 14 das matrizes; README, "Texto da minuta"). A semântica segue a montagem do simulador das
+ * matrizes (scripts/f13_texto.py), com duas diferenças deliberadas pedidas na tarefa:
+ * - lacuna marcada com o ID da regra: [[LACUNA VAR-034]] (o simulador usa o nome da variável);
+ * - opção com "padrao": true sai marcada, [[PADRÃO: texto]], para o operador ver que o valor não foi informado.
+ * Valor ausente sempre vira lacuna; nada é inventado.
  */
-import { type Valor } from "../pacote/avaliador.ts";
-import type { LinhaM02, LinhaM05 } from "../pacote/esquema.ts";
-import { variavelDoId } from "../pacote/nomes.ts";
+import { type Valor, avaliar, verdadeiro } from "../pacote/avaliador.ts";
+import type { LinhaM02, LinhaM08 } from "../pacote/esquema.ts";
 import { vazia } from "../wizard/checklist.ts";
+import { FormatoInvalido, formatar, listaEmTexto, textoDoNumero, textoDoValor } from "./formatos.ts";
 
-const CITACAO_DE_BLOCO = /TR-[A-Za-z0-9]+(?:[.-][A-Za-z0-9]+)*/g;
-const MARCADOR_DO_M08 = /\[(VAR-\d{3})(?:[^\][]*)\]/g;
+export type MotivoDeLacuna =
+  /** o mapa diz de onde vem o dado, e ele não veio */
+  | "sem_valor"
+  /** o mapa diz que a equipe preenche à mão (fonte nula, ação EQUIPE) */
+  | "equipe"
+  /** bloco com marcadores e sem mapa: não se sabe o que preenche */
+  | "sem_mapa"
+  /** tabela sem as linhas de que precisa (sem itens, ou VAR da tabela sem linhas estruturadas) */
+  | "tabela_nao_montada";
 
 export type LacunaDoTexto = {
   /** Bloco do M02 ou cláusula do M08. */
   trecho: string;
-  /** Marcador como está no texto do modelo. */
+  /** Marcador do modelo, ou a célula da tabela ("ESPECIFICAÇÃO do item 1"). */
   marcador: string;
-  /** Variáveis que podem preencher o marcador (vazia quando o M05 não liga nenhuma ao bloco). */
-  candidatas: string[];
-  /**
-   * sem_valor: a variável existe, mas o dado não veio; sem_ligacao_unica: o M02 não diz qual variável preenche o
-   * marcador; tabela_nao_montada: tabela do modelo (tipo TB) que o motor ainda não monta a partir dos itens.
-   */
-  motivo: "sem_valor" | "sem_ligacao_unica" | "tabela_nao_montada";
+  /** Regra de onde viria o dado (VAR-034, WZ-15...), quando o mapa diz. */
+  fonte: string | null;
+  motivo: MotivoDeLacuna;
 };
 
-const TABELA = "TB";
+export type ValorPadrao = { trecho: string; marcador: string; texto: string };
+
+export type TextoMontado = {
+  texto: string;
+  lacunas: LacunaDoTexto[];
+  padroes: ValorPadrao[];
+  /** Bloco de série (lista_blocos) sem elemento: sai da minuta. */
+  omitido: boolean;
+};
+
+type EntradaDoMapa = {
+  marcador: string;
+  ocorrencia: number;
+  fonte: string | null;
+  acao?: string;
+  campo?: string;
+  indice?: number;
+  juntar_restante?: boolean;
+  formato?: string;
+  unidade?: string;
+  texto?: string;
+  opcoes?: { quando: unknown; texto: string; padrao?: boolean }[];
+  grupo?: string;
+  quando?: unknown;
+  remove_antes?: string;
+  se_falso?: string;
+  estende_desde?: string;
+  estende_ate?: string;
+  se_vazio?: string;
+  alternativas?: string[];
+  inicial_minuscula?: boolean;
+  inicial_maiuscula?: boolean;
+  filtro_item?: unknown;
+};
+
+type Coluna = {
+  cabecalho: string;
+  fonte?: string;
+  campo?: string;
+  formato?: string;
+  sigiloso?: string;
+  complementos?: { fonte: string; rotulo: string; texto?: string; quando?: unknown }[];
+};
+
+type TabelaColunas = {
+  linhas: string;
+  colunas: Coluna[];
+  orcamento_sigiloso?: { quando: unknown; colunas: string[]; texto: string };
+  linha_cota?: { quando: unknown; valores: Record<string, string> };
+};
+
 const MARCA_DE_TABELA = "[[TABELA NÃO MONTADA]]";
 
-export function ehTabela(linha: LinhaM02): boolean {
-  return linha.tipo.split("+").includes(TABELA);
+/** [[LACUNA ...]] com o ID da regra; sem fonte, [[LACUNA]]. */
+export type NomeDaRegra = (variavel: string) => string;
+
+function ajustarInicial(s: string, x: EntradaDoMapa): string {
+  if (x.inicial_minuscula) return s.slice(0, 1).toLowerCase() + s.slice(1);
+  if (x.inicial_maiuscula) return s.slice(0, 1).toUpperCase() + s.slice(1);
+  return s;
 }
 
-/** Variáveis do M05 que citam cada bloco na coluna usada_em. */
-export function variaveisPorBloco(m05: readonly LinhaM05[]): Map<string, string[]> {
-  const mapa = new Map<string, string[]>();
-  for (const linha of m05) {
-    for (const [bloco] of linha.usada_em.matchAll(CITACAO_DE_BLOCO)) {
-      const lista = mapa.get(bloco) ?? [];
-      if (!lista.includes(linha.id)) mapa.set(bloco, [...lista, linha.id]);
+function caminho(valor: Valor, campo: string): Valor {
+  let atual: Valor | undefined = valor;
+  for (const parte of campo.split(".")) {
+    if (atual === null || typeof atual !== "object" || Array.isArray(atual)) return null;
+    atual = atual[parte];
+  }
+  return atual ?? null;
+}
+
+function atributo(fonte: string): string {
+  return fonte.slice("itens.".length);
+}
+
+/** Posições das ocorrências do marcador, sem sobreposição, da esquerda para a direita. */
+function posicoes(texto: string, marcador: string): number[] {
+  const achadas: number[] = [];
+  for (let i = texto.indexOf(marcador); i >= 0; i = texto.indexOf(marcador, i + marcador.length)) achadas.push(i);
+  return achadas;
+}
+
+export class Montagem {
+  readonly padroes: ValorPadrao[] = [];
+  private readonly dados: Record<string, Valor>;
+  private readonly nomeDaRegra: NomeDaRegra;
+
+  constructor(dados: Record<string, Valor>, nomeDaRegra: NomeDaRegra) {
+    this.dados = dados;
+    this.nomeDaRegra = nomeDaRegra;
+  }
+
+  private marca(fonte: string | null | undefined): string {
+    return fonte ? `[[LACUNA ${this.nomeDaRegra(fonte)}]]` : "[[LACUNA]]";
+  }
+
+  private itens(): Record<string, Valor>[] {
+    const itens = this.dados.itens;
+    return Array.isArray(itens) ? (itens.filter((i) => i !== null && typeof i === "object" && !Array.isArray(i)) as Record<string, Valor>[]) : [];
+  }
+
+  /** Valor bruto da fonte (com alternativas, campo e índice), ou null. */
+  private valor(x: EntradaDoMapa): Valor {
+    if (!x.fonte || x.fonte.startsWith("itens.")) return null;
+    let v: Valor = this.dados[x.fonte] ?? null;
+    for (const alternativa of x.alternativas ?? []) {
+      if (!vazia(v)) break;
+      v = this.dados[alternativa] ?? null;
+    }
+    if (x.campo) v = v !== null && typeof v === "object" && !Array.isArray(v) ? caminho(v, x.campo) : null;
+    if (x.indice !== undefined) {
+      const lista: Valor[] = Array.isArray(v) ? v : vazia(v) ? [] : [v];
+      if (x.juntar_restante) {
+        const resto = lista.slice(x.indice);
+        v = resto.length === 0 ? null : resto.length === 1 ? resto[0] : resto;
+      } else {
+        v = lista[x.indice] ?? null;
+      }
+    }
+    return vazia(v) ? null : v;
+  }
+
+  /** Texto do valor já formatado; null quando falta dado ou o formato não cabe. */
+  private render(x: EntradaDoMapa): string | null {
+    if (x.formato === "NUMEROS_DOS_ITENS" && x.fonte) {
+      const nome = atributo(x.fonte);
+      const numeros = this.itens()
+        .filter((item) => (x.filtro_item !== undefined ? verdadeiro(avaliar(x.filtro_item, item)) : !vazia(item[nome])))
+        .map((item) => item.numero ?? null);
+      return numeros.length ? listaEmTexto(numeros) : null;
+    }
+    if (x.formato === "POR_ITEM" && x.fonte) {
+      const nome = atributo(x.fonte);
+      const textos = this.itens()
+        .filter((item) => !vazia(item[nome]))
+        .map((item) => `item ${textoDoValor(item.numero ?? null)}: ${textoDoValor(item[nome])}`);
+      return textos.length ? textos.join("; ") : null;
+    }
+    let v = this.valor(x);
+    if (v === null) return null;
+    let unidade: Valor | undefined;
+    if (x.unidade) {
+      unidade = this.dados[x.unidade] ?? null;
+      if (vazia(unidade)) return null;
+    }
+    if (Array.isArray(v) && x.inicial_minuscula) v = v.map((e) => (typeof e === "string" ? ajustarInicial(e, x) : e));
+    try {
+      return ajustarInicial(formatar(v, x.formato, unidade), x);
+    } catch (e) {
+      if (e instanceof FormatoInvalido) return null;
+      throw e;
     }
   }
-  return mapa;
-}
 
-/** Valor como aparece no texto: número com vírgula decimal, lista separada por "; ". */
-export function textoDoValor(valor: Valor): string {
-  if (Array.isArray(valor)) return valor.map(textoDoValor).join("; ");
-  if (typeof valor === "number") return String(valor).replace(".", ",");
-  if (valor !== null && typeof valor === "object") return JSON.stringify(valor);
-  return String(valor);
-}
-
-function marca(candidatas: string[]): string {
-  return candidatas.length > 0 ? `[[LACUNA ${candidatas.join(", ")}]]` : "[[LACUNA]]";
-}
-
-/** Substitui a próxima ocorrência do marcador a partir de `inicio`; devolve o texto e onde continuar. */
-function substituir(texto: string, marcador: string, por: string, inicio: number): [string, number] {
-  const posicao = texto.indexOf(marcador, inicio);
-  if (posicao < 0) return [texto, inicio];
-  return [texto.slice(0, posicao) + por + texto.slice(posicao + marcador.length), posicao + por.length];
-}
-
-export function preencherBloco(
-  linha: LinhaM02,
-  texto: string,
-  candidatasDoBloco: string[],
-  globais: Record<string, Valor>,
-): { texto: string; lacunas: LacunaDoTexto[]; preenchidas: string[] } {
-  // A tabela fica como no modelo, marcada; as colunas virão do M02 (tabela_colunas, Fase 13 das matrizes).
-  if (ehTabela(linha)) {
-    return {
-      texto: `${MARCA_DE_TABELA}\n${texto}`,
-      lacunas: [{ trecho: linha.id, marcador: MARCA_DE_TABELA, candidatas: candidatasDoBloco, motivo: "tabela_nao_montada" }],
-      preenchidas: [],
-    };
+  /** Primeira opção verdadeira; com {valor}, o valor da fonte; opção padrão sai marcada. */
+  private opcao(x: EntradaDoMapa, trecho: string): string | null {
+    for (const opcao of x.opcoes ?? []) {
+      if (!verdadeiro(avaliar(opcao.quando, this.dados))) continue;
+      let texto = opcao.texto;
+      if (texto.includes("{valor}")) {
+        const s = this.render(x);
+        if (s === null) return null;
+        texto = texto.replace("{valor}", s);
+      }
+      if (opcao.padrao) {
+        this.padroes.push({ trecho, marcador: x.marcador, texto });
+        return `[[PADRÃO: ${texto}]]`;
+      }
+      return texto;
+    }
+    return null;
   }
-  if (linha.lacunas.trim() === "") return { texto, lacunas: [], preenchidas: [] };
-  const marcadores = linha.lacunas.split(" | ").filter((m) => m !== "");
-  const ligacaoUnica = marcadores.length === 1 && candidatasDoBloco.length === 1;
-  const lacunas: LacunaDoTexto[] = [];
-  const preenchidas: string[] = [];
-  let saida = texto;
-  let cursor = 0;
-  for (const marcador of marcadores) {
-    if (ligacaoUnica) {
-      const variavel = candidatasDoBloco[0];
-      const valor = globais[variavelDoId(variavel)];
-      if (!vazia(valor)) {
-        [saida, cursor] = substituir(saida, marcador, textoDoValor(valor as Valor), cursor);
-        preenchidas.push(variavel);
+
+  /** Texto de um bloco ou cláusula pelo mapa. */
+  texto(trecho: string, textoDoModelo: string, mapaBruto: readonly unknown[] | null, marcadoresDoModelo = ""): TextoMontado {
+    const mapa = (mapaBruto ?? []) as EntradaDoMapa[];
+    if (mapa.length === 0) {
+      const lacunas: LacunaDoTexto[] = marcadoresDoModelo.trim()
+        ? marcadoresDoModelo.split(" | ").map((marcador) => ({ trecho, marcador, fonte: null, motivo: "sem_mapa" as const }))
+        : [];
+      return { texto: textoDoModelo, lacunas, padroes: [], omitido: false };
+    }
+    const pos = mapa.map((x) => posicoes(textoDoModelo, x.marcador)[x.ocorrencia - 1] ?? -1);
+    const trocas: [number, number, string][] = [];
+    const lacunas: LacunaDoTexto[] = [];
+    const padroesAntes = this.padroes.length;
+    let omitido = false;
+    const lacuna = (marcador: string, fonte: string | null, motivo: MotivoDeLacuna) =>
+      lacunas.push({ trecho, marcador, fonte: fonte ? this.nomeDaRegra(fonte) : null, motivo });
+
+    for (let k = 0; k < mapa.length; ) {
+      const x = mapa[k];
+      const p = pos[k];
+      if (p < 0) {
+        // Marcador que não está no texto: o compilador confere; aqui só não troca nada.
+        k++;
         continue;
       }
-      lacunas.push({ trecho: linha.id, marcador, candidatas: [variavel], motivo: "sem_valor" });
-      [saida, cursor] = substituir(saida, marcador, marca([variavel]), cursor);
-      continue;
+      let fim = p + x.marcador.length;
+      const acao = x.acao ?? "PREENCHER";
+      if (x.grupo) {
+        let j = k;
+        while (j + 1 < mapa.length && mapa[j + 1].grupo === x.grupo) j++;
+        const inicio = p - (x.estende_desde ?? "").length;
+        fim = pos[j] + mapa[j].marcador.length + (mapa[j].estende_ate ?? "").length;
+        let escolhido: string | null = null;
+        for (const y of mapa.slice(k, j + 1)) {
+          escolhido = this.opcao(y, trecho);
+          if (escolhido !== null) break;
+        }
+        if (escolhido === null) {
+          lacuna(x.marcador, x.fonte, "sem_valor");
+          escolhido = x.fonte ? this.marca(x.fonte) : `[[LACUNA ${x.grupo}]]`;
+        }
+        trocas.push([inicio, fim, escolhido]);
+        k = j + 1;
+        continue;
+      }
+      if (acao === "REMOVER") {
+        trocas.push([textoDoModelo.slice(p - 1, p) === " " ? p - 1 : p, fim, ""]);
+      } else if (acao === "EQUIPE") {
+        lacuna(x.marcador, null, "equipe");
+        trocas.push([p, fim, "[[LACUNA EQUIPE]]"]);
+      } else if (acao === "OPCIONAL") {
+        if (verdadeiro(avaliar(x.quando, this.dados))) {
+          let t: string | null;
+          if (x.texto !== undefined) {
+            const s = x.texto.includes("{valor}") ? this.render({ ...x, inicial_maiuscula: false }) : "";
+            t = s === null ? null : ajustarInicial(x.texto.replace("{valor}", s), x);
+          } else {
+            t = x.marcador.startsWith("[") ? x.marcador.slice(1, -1) : x.marcador;
+          }
+          if (t === null) {
+            lacuna(x.marcador, x.fonte, "sem_valor");
+            t = this.marca(x.fonte);
+          }
+          trocas.push([p, fim, t]);
+        } else {
+          const antes = x.remove_antes ?? "";
+          const inicio = antes && textoDoModelo.slice(0, p).endsWith(antes) ? p - antes.length : p;
+          trocas.push([inicio, fim, x.se_falso ?? ""]);
+        }
+      } else if (acao !== "TABELA" && acao !== "MANTER") {
+        let s = this.render(x);
+        if (s === null) {
+          if (x.se_vazio === "OMITE_BLOCO") omitido = true;
+          lacuna(x.marcador, x.fonte, "sem_valor");
+          s = this.marca(x.fonte);
+        } else if (x.texto !== undefined) {
+          s = x.texto.replace("{valor}", s);
+        }
+        trocas.push([p - (x.estende_desde ?? "").length, fim, s]);
+      }
+      k++;
     }
-    lacunas.push({ trecho: linha.id, marcador, candidatas: candidatasDoBloco, motivo: "sem_ligacao_unica" });
-    [saida, cursor] = substituir(saida, marcador, marca(candidatasDoBloco), cursor);
+
+    let texto = textoDoModelo;
+    for (const [inicio, fimDaTroca, por] of [...trocas].sort((a, b) => b[0] - a[0] || b[1] - a[1])) {
+      texto = texto.slice(0, inicio) + por + texto.slice(fimDaTroca);
+    }
+    if (trocas.length) texto = texto.replace(/ {2,}/g, " ").replaceAll(" .", ".").replace(/ +$/, "");
+    if (omitido) {
+      this.padroes.length = padroesAntes;
+      return { texto, lacunas: [], padroes: [], omitido: true };
+    }
+    return { texto, lacunas, padroes: this.padroes.slice(padroesAntes), omitido: false };
   }
-  return { texto: saida, lacunas, preenchidas };
+
+  private celula(item: Record<string, Valor>, coluna: Coluna, sigiloso: boolean): string | null {
+    if (coluna.sigiloso && sigiloso) return coluna.sigiloso;
+    const v = coluna.fonte ? (item[atributo(coluna.fonte)] ?? null) : (item[coluna.campo ?? ""] ?? null);
+    if (vazia(v)) return null;
+    let s: string;
+    try {
+      s = formatar(v, coluna.formato);
+    } catch (e) {
+      if (e instanceof FormatoInvalido) return null;
+      throw e;
+    }
+    for (const c of coluna.complementos ?? []) {
+      if (c.quando !== undefined && !verdadeiro(avaliar(c.quando, this.dados))) continue;
+      const cv = item[atributo(c.fonte)] ?? null;
+      if (!vazia(cv)) s += `\n${c.rotulo}: ${(c.texto ?? "{valor}").replace("{valor}", textoDoValor(cv))}`;
+    }
+    return s;
+  }
+
+  /** Tabela pelo tabela_colunas: itens com o próprio número e as cotas no fim (P35), ou as linhas de uma VAR. */
+  tabela(trecho: string, textoDoModelo: string, bruto: unknown): TextoMontado {
+    const tabela = bruto as TabelaColunas;
+    const cabecalhos = tabela.colunas.map((c) => c.cabecalho);
+    const linhas = [cabecalhos.join(" | ")];
+    const lacunas: LacunaDoTexto[] = [];
+    const naoMontada = (motivo: string): TextoMontado => ({
+      texto: `${MARCA_DE_TABELA}\n${textoDoModelo}`,
+      lacunas: [{ trecho, marcador: motivo, fonte: tabela.linhas === "itens" ? null : this.nomeDaRegra(tabela.linhas), motivo: "tabela_nao_montada" }],
+      padroes: [],
+      omitido: false,
+    });
+
+    if (tabela.linhas !== "itens") {
+      const fonte = this.dados[tabela.linhas];
+      if (!Array.isArray(fonte) || fonte.length === 0 || !fonte.every((x) => x !== null && typeof x === "object" && !Array.isArray(x))) {
+        return naoMontada("tabela sem linhas estruturadas");
+      }
+      for (const linha of fonte as Record<string, Valor>[]) {
+        linhas.push(tabela.colunas.map((c) => textoDoValor(linha[c.campo ?? ""] ?? "")).join(" | "));
+      }
+      return { texto: linhas.join("\n"), lacunas, padroes: [], omitido: false };
+    }
+
+    const itens = [...this.itens()].sort((a, b) => Number(a.numero ?? 0) - Number(b.numero ?? 0));
+    if (itens.length === 0) return naoMontada("tabela sem itens");
+    const sigiloso = tabela.orcamento_sigiloso !== undefined && verdadeiro(avaliar(tabela.orcamento_sigiloso.quando, this.dados));
+    const comCota: Record<string, Valor>[] = [];
+    for (const item of itens) {
+      linhas.push(
+        tabela.colunas
+          .map((coluna) => {
+            const s = this.celula(item, coluna, sigiloso);
+            if (s !== null) return s;
+            lacunas.push({ trecho, marcador: `${coluna.cabecalho} do item ${textoDoValor(item.numero ?? null)}`, fonte: coluna.fonte ?? null, motivo: "sem_valor" });
+            return "[[LACUNA]]";
+          })
+          .join(" | "),
+      );
+      if (tabela.linha_cota && verdadeiro(avaliar(tabela.linha_cota.quando, item))) comCota.push(item);
+    }
+    // P35: cotas no fim, com os números seguintes ao maior número de item; os itens não são renumerados.
+    let numero = Math.max(0, ...itens.map((i) => (typeof i.numero === "number" ? i.numero : 0)));
+    const cota = tabela.linha_cota;
+    for (const item of comCota) {
+      numero++;
+      const celulas = [textoDoNumero(numero), (cota?.valores[cabecalhos[1]] ?? "").replace(/\{[^}]*\}/, textoDoValor(item.numero ?? null))];
+      for (const cabecalho of cabecalhos.slice(2)) {
+        if (sigiloso && tabela.orcamento_sigiloso?.colunas.includes(cabecalho)) {
+          celulas.push(tabela.orcamento_sigiloso.texto);
+          continue;
+        }
+        const fonte = cota?.valores[cabecalho] ?? "";
+        const coluna = tabela.colunas.find((c) => c.cabecalho === cabecalho);
+        const v = fonte.startsWith("itens.") ? (item[atributo(fonte)] ?? null) : null;
+        let s: string | null = null;
+        if (!vazia(v)) {
+          try {
+            s = formatar(v, coluna?.formato);
+          } catch (e) {
+            if (!(e instanceof FormatoInvalido)) throw e;
+          }
+        }
+        if (s === null) {
+          lacunas.push({ trecho, marcador: `${cabecalho} da cota do item ${textoDoValor(item.numero ?? null)}`, fonte: fonte || null, motivo: "sem_valor" });
+          s = "[[LACUNA]]";
+        }
+        celulas.push(s);
+      }
+      linhas.push(celulas.join(" | "));
+    }
+    return { texto: linhas.join("\n"), lacunas, padroes: [], omitido: false };
+  }
+
+  bloco(linha: LinhaM02, texto: string): TextoMontado {
+    if (linha.tabela_colunas) return this.tabela(linha.id, texto, linha.tabela_colunas);
+    return this.texto(linha.id, texto, linha.lacunas_mapa, linha.lacunas);
+  }
+
+  clausula(linha: LinhaM08): TextoMontado {
+    const montado = this.texto(linha.id, linha.texto_proposto, linha.lacunas_mapa);
+    if (!linha.lacunas_mapa && montado.texto.includes("[")) {
+      montado.lacunas.push({ trecho: linha.id, marcador: "trecho entre colchetes sem mapa", fonte: null, motivo: "sem_mapa" });
+    }
+    return montado;
+  }
 }
 
-/** Cláusula do M08: cada marcador [VAR-xxx: ...] com uma variável só é preenchido; o resto fica marcado. */
-export function preencherClausula(
-  id: string,
-  texto: string,
-  globais: Record<string, Valor>,
-): { texto: string; lacunas: LacunaDoTexto[]; preenchidas: string[] } {
-  const lacunas: LacunaDoTexto[] = [];
-  const preenchidas: string[] = [];
-  const saida = texto.replace(MARCADOR_DO_M08, (marcador: string, variavel: string) => {
-    const outras = [...marcador.matchAll(/VAR-\d{3}/g)].map((m) => m[0]);
-    if (outras.length > 1) {
-      lacunas.push({ trecho: id, marcador, candidatas: outras, motivo: "sem_ligacao_unica" });
-      return marca(outras);
+/**
+ * Séries de blocos-lista (lista_blocos, como TR-4.1.1 a TR-4.1.3): o último presente termina em ".", o anterior
+ * em "; e", os demais em ";".
+ */
+export function pontuarSeries(textos: Map<string, string>, m02: readonly LinhaM02[]): void {
+  const series = new Map<string, string[]>();
+  for (const linha of m02) {
+    for (const x of (linha.lacunas_mapa ?? []) as { lista_blocos?: string[] }[]) {
+      const lista = x.lista_blocos;
+      if (lista) series.set(lista.join("|"), lista);
     }
-    const valor = globais[variavelDoId(variavel)];
-    if (vazia(valor)) {
-      lacunas.push({ trecho: id, marcador, candidatas: [variavel], motivo: "sem_valor" });
-      return marca([variavel]);
-    }
-    preenchidas.push(variavel);
-    return textoDoValor(valor as Valor);
-  });
-  return { texto: saida, lacunas, preenchidas };
+  }
+  for (const serie of series.values()) {
+    const presentes = serie.filter((b) => textos.has(b));
+    presentes.forEach((b, i) => {
+      const final = i === presentes.length - 1 ? "." : i === presentes.length - 2 ? "; e" : ";";
+      textos.set(b, (textos.get(b) as string).trimEnd().replace(/(;\s*e|;|\.)\s*$/, "") + final);
+    });
+  }
 }
