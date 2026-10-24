@@ -27,5 +27,8 @@ export default defineConfig({
     url: `http://localhost:${porta}/login`,
     reuseExistingServer: true,
     timeout: 3 * 60 * 1000,
+    // Log do servidor junto do log do teste (erro de login ou de banco aparece no CI).
+    stdout: "pipe",
+    stderr: "pipe",
   },
 });

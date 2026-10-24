@@ -16,7 +16,13 @@ async function entrar(page: Page, usuario: { email: string; senha: string }) {
   await page.getByLabel("E-mail").fill(usuario.email);
   await page.getByLabel("Senha").fill(usuario.senha);
   await page.getByRole("button", { name: "Entrar" }).click();
-  await page.waitForURL(/\/processos/);
+  try {
+    await page.waitForURL(/\/processos(\/|$)/, { timeout: 30000 });
+  } catch (e) {
+    // Diagnóstico no log do CI: onde a página parou e o que ela mostra.
+    console.log(`Login não saiu de ${page.url()}:\n${await page.locator("body").innerText()}`);
+    throw e;
+  }
 }
 
 let urlDoProcesso = "";
