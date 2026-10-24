@@ -126,10 +126,36 @@ function inicialMaiuscula(s: string): string {
   return s.slice(0, 1).toUpperCase() + s.slice(1);
 }
 
-/** Descrição do M05 de um atributo de item, sem o "Coluna da VAR-011:" e só até a primeira explicação. */
-function rotuloDaDescricao(linha: LinhaM05): string {
-  if (!linha.nome.startsWith(PREFIXO_DE_ATRIBUTO)) return linha.descricao;
-  const curto = linha.descricao.replace(PREFIXO_DA_DESCRICAO_DE_ATRIBUTO, "").split(/[;(]/)[0].trim();
+/** Fim certo do rótulo: parêntese, ponto e vírgula ou dois-pontos. */
+const FIM_DO_ROTULO = /\s\(|;\s|:\s/;
+/** Remissão a regra interna no rótulo ("da VAR-034"): é nota para quem mantém as matrizes, não para o ETP. */
+const REMISSAO_INTERNA = /\s+(?:(?:d[aeo]s?|na|no|pela|pelo)\s+)?(?:VAR|WZ|CK|TR|ETP|SET|VAL)-[\w.-]+/g;
+/** Palavras depois das quais a maiúscula é nome próprio ("do Plano"), e não começo de frase. */
+const ANTES_DE_NOME = new Set(["a", "o", "as", "os", "de", "do", "da", "dos", "das", "no", "na", "nos", "nas", "em", "e", "ou", "com", "para", "pelo", "pela", "por", "ao", "à"]);
+
+/** Posição onde começa a segunda frase da descrição, quando a matriz não pôs ponto ("unidade A unidade fica"). */
+function inicioDeFrase(texto: string): number {
+  for (const m of texto.matchAll(/(?<=^|\s)(\S+)(?=\s[A-ZÀ-Ú](?:[a-zà-ú]|\s))/g)) {
+    const anterior = m[1];
+    if (/^[a-zà-ú]{3,}$/.test(anterior) && !ANTES_DE_NOME.has(anterior)) return (m.index ?? 0) + anterior.length;
+  }
+  return -1;
+}
+
+/**
+ * Rótulo de uma VAR a partir da descrição do M05: sem o "Coluna da VAR-011:" dos atributos de item e só até a
+ * primeira explicação (a descrição mistura o nome do dado com notas de quem mantém as matrizes).
+ */
+export function rotuloDaDescricao(linha: LinhaM05): string {
+  let texto = linha.descricao.replace(PREFIXO_DA_DESCRICAO_DE_ATRIBUTO, "").trim();
+  const fim = texto.search(FIM_DO_ROTULO);
+  if (fim > 0) texto = texto.slice(0, fim);
+  // Ponto que fecha frase: depois de palavra com quatro letras ou mais (não corta "art. 10").
+  const ponto = texto.search(/[a-zà-ú]{4}\.(\s|$)/);
+  if (ponto >= 0) texto = texto.slice(0, ponto + 4);
+  const frase = inicioDeFrase(texto);
+  if (frase > 0) texto = texto.slice(0, frase);
+  const curto = texto.replace(REMISSAO_INTERNA, "").trim();
   return inicialMaiuscula(curto || linha.nome);
 }
 
@@ -148,11 +174,15 @@ function textoEstruturado(v: Valor): string {
   return textoDoValor(v);
 }
 
+/** Validação do M05 que pede ano ("AAAA"): o número sai sem separador de milhar. */
+const VALIDACAO_DE_ANO = /^AAAA\b/;
+
 /** Valor de uma VAR no formato do tipo do M05; valor fora do formato sai como veio (o dado nunca some). */
-function textoDoTipo(v: Valor, tipo: LinhaM05["tipo_dado"]): string {
+function textoDoTipo(v: Valor, linha: LinhaM05): string {
+  const tipo = linha.tipo_dado;
   try {
     if (tipo === "MOEDA") return formatar(v, "MOEDA");
-    if (tipo === "NUMERO" && typeof v === "number") return formatar(v, "NUMERO");
+    if (tipo === "NUMERO" && typeof v === "number") return VALIDACAO_DE_ANO.test(linha.validacao) ? String(v) : formatar(v, "NUMERO");
     if (tipo === "DATA") return formatar(v, "DATA");
   } catch (e) {
     if (!(e instanceof FormatoInvalido)) throw e;
@@ -186,8 +216,8 @@ function parteDeVariavel(ctx: Contexto, linha: LinhaM05, ligacao: "M05" | "M06")
   return {
     tipo: "dado",
     regra: linha.id,
-    rotulo: linha.descricao,
-    texto: vazia(valor) ? null : textoDoTipo(valor as Valor, linha.tipo_dado),
+    rotulo: rotuloDaDescricao(linha),
+    texto: vazia(valor) ? null : textoDoTipo(valor as Valor, linha),
     obrigatoria: linha.obrigatoria,
     origem: vazia(valor) ? null : origemDaVariavel(ctx, variavel),
     ligacao,
@@ -209,7 +239,7 @@ function parteDeAtributo(ctx: Contexto, linha: LinhaM05, ligacao: "M05" | "M06")
       continue;
     }
     algum = true;
-    const bruto = textoDoTipo(valor as Valor, linha.tipo_dado);
+    const bruto = textoDoTipo(valor as Valor, linha);
     const texto = rotulo?.textos?.[bruto] ?? (rotulo?.modelo?.includes("{valor}") ? rotulo.modelo.replace("{valor}", bruto) : bruto);
     textos.push(`item ${item.numero}: ${texto}`);
     const pergunta = ctx.minuta.processo.origensDeItem[`${item.numero}.${atributo}`];
