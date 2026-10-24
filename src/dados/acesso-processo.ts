@@ -30,14 +30,17 @@ export async function gravarNoProcesso<T>(
   id: string,
   acao: Acao,
   escrever: (tx: Transacao, p: ProcessoCompleto, usuario: UsuarioLogado) => Promise<{ resultado: T; detalhes?: Record<string, string | number | boolean | null>; hashArquivo?: string; hashPdf?: string }>,
+  /** Exportar (copiar seção, baixar PDF) continua possível no processo concluído: não muda o processo. */
+  opcoes: { permitirConcluido?: boolean } = {},
 ): Promise<T> {
   const usuario = await exigirUsuario("OPERADOR");
   return comoUsuario(bancoDaAplicacao(), usuario.id, async (tx) => {
     const p = await carregarProcesso(tx, id);
     if (!p) notFound();
-    if (p.processo.situacao === "CONCLUIDO") throw new ProcessoConcluido("Processo concluído: não aceita alterações.");
+    const concluido = p.processo.situacao === "CONCLUIDO";
+    if (concluido && !opcoes.permitirConcluido) throw new ProcessoConcluido("Processo concluído: não aceita alterações.");
     const { resultado, detalhes, hashArquivo, hashPdf } = await escrever(tx, p, usuario);
-    await tx.update(processo).set({ atualizadoEm: sql`now()` }).where(eq(processo.id, id));
+    if (!concluido) await tx.update(processo).set({ atualizadoEm: sql`now()` }).where(eq(processo.id, id));
     await registrar(tx, { usuarioId: usuario.id, omId: usuario.omId, processoId: id, acao, detalhes, hashArquivo, hashPdf, hashPacote: p.processo.pacoteHash });
     return resultado;
   });
