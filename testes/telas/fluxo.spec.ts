@@ -135,6 +135,28 @@ test("fluxo completo de um TR fictício, do login ao PDF", async ({ page, contex
   await expect(page.getByText(/PDF baixado 1 vez/)).toBeVisible();
   await expect(page.getByText(`${secoes} de ${secoes} copiadas`)).toBeVisible();
 
+  // ETP (Marco 3): o mesmo processo, campo a campo; a equipe informa um dado, copia o campo e baixa o PDF
+  await page.getByRole("link", { name: "ETP", exact: true }).click();
+  await page.waitForURL(/\/etp$/);
+  await expect(page.getByRole("heading", { name: /Descrição da necessidade da contratação/ })).toBeVisible();
+  const viabilidade = page.locator("section", { has: page.locator("h3", { hasText: "Justificativa da viabilidade" }) });
+  const texto = "Contratação fictícia viável, pelas seções anteriores deste estudo.";
+  await viabilidade.getByLabel("Valor").fill(texto);
+  await viabilidade.getByRole("button", { name: "Salvar VAR-108" }).click();
+  await expect(viabilidade.locator("p", { hasText: texto })).toBeVisible();
+  await viabilidade.getByRole("button", { name: "Copiar", exact: true }).click();
+  await expect(viabilidade.getByText("Copiado", { exact: true })).toBeVisible();
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(texto);
+  const [pdfDoEtp] = await Promise.all([page.waitForEvent("download"), page.getByRole("link", { name: "Baixar o PDF do ETP" }).click()]);
+  expect(readFileSync((await pdfDoEtp.path()) as string).subarray(0, 5).toString()).toBe("%PDF-");
+  await page.reload();
+  await expect(viabilidade.getByText("Copiado", { exact: true })).toBeVisible();
+  // A minuta do TR mostra de que campo do ETP vem cada trecho derivado (M06)
+  await page.goto(`${urlDoProcesso}/revisao`);
+  await expect(page.locator("article details", { hasText: "Repete o ETP" }).first()).toBeAttached();
+  await page.goto(`${urlDoProcesso}/exportar`);
+  await expect(page.getByText(`${secoes} de ${secoes} copiadas`)).toBeVisible();
+
   // Conclusão
   await page.getByLabel(/Confirmo que a minuta foi copiada e revisada/).check();
   await page.getByRole("button", { name: "Marcar como concluído" }).click();

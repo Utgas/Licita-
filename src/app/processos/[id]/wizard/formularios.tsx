@@ -103,6 +103,8 @@ export type DadosDoCampo = {
   forma: { tipo: "simples"; numerico: boolean; data: boolean } | { tipo: "lista" } | { tipo: "partes"; partes: { caminho: string; numerico: boolean }[] } | { tipo: "tabela"; colunas: { campo: string; cabecalho: string }[] };
   valores: Record<string, string>;
   falta: boolean;
+  /** Texto corrido (campo do ETP): caixa de várias linhas. */
+  multilinha?: boolean;
 };
 
 export function FormularioCampo({ acao, c }: { acao: Acao; c: DadosDoCampo }) {
@@ -123,6 +125,11 @@ export function FormularioCampo({ acao, c }: { acao: Acao; c: DadosDoCampo }) {
                 </option>
               ))}
             </select>
+          </label>
+        ) : c.multilinha && !f.numerico && !f.data ? (
+          <label className="flex flex-col gap-1 text-sm font-medium">
+            Valor
+            <textarea name="valor" defaultValue={c.valores.valor ?? ""} rows={5} className={`${caixa} py-2 text-base font-normal`} />
           </label>
         ) : (
           <label className="flex flex-col gap-1 text-sm font-medium">

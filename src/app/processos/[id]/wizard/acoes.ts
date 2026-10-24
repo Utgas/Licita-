@@ -9,6 +9,7 @@ import { redirect } from "next/navigation";
 import type { Resultado } from "@/auth/acoes.ts";
 import { EntradaRecusada, abrirProcesso, avancarEtapa, gravarNoProcesso, mensagemDeErro } from "@/dados/acesso-processo.ts";
 import { respostaWizard } from "@/dados/esquema.ts";
+import { gravarVariavel } from "@/dados/etp.ts";
 import { carregarPacote } from "@/dados/pacote.ts";
 import { minutaDoProcesso } from "@/dados/processos.ts";
 import { camposDaMinuta, justificativaDoM04, justificativaObrigatoria, opcoesDoM04, perguntasDoWizard, proximaPendente, valorDoCampo } from "@/dados/wizard.ts";
@@ -84,16 +85,9 @@ export async function salvarCampo(id: string, _anterior: Resultado, dados: FormD
       if (!campo) throw new EntradaRecusada("Campo não encontrado.");
       const lido = valorDoCampo(campo, dados);
       if ("erro" in lido) throw new EntradaRecusada(lido.erro);
-      if (lido.valor === null) {
-        await tx.delete(respostaWizard).where(and(eq(respostaWizard.processoId, id), eq(respostaWizard.pergunta, variavel)));
-        return { resultado: { aviso: `${variavel} apagada.` }, detalhes: { pergunta: variavel, apagada: true } };
-      }
-      const campos = { valor: lido.valor, origem: "EQUIPE" as const };
-      await tx
-        .insert(respostaWizard)
-        .values({ processoId: id, pergunta: variavel, ...campos })
-        .onConflictDoUpdate({ target: [respostaWizard.processoId, respostaWizard.pergunta], set: campos });
-      return { resultado: { aviso: `${variavel} salva.` }, detalhes: { pergunta: variavel, apagada: false } };
+      await gravarVariavel(tx, id, variavel, lido.valor);
+      const apagada = lido.valor === null;
+      return { resultado: { aviso: `${variavel} ${apagada ? "apagada" : "salva"}.` }, detalhes: { pergunta: variavel, apagada } };
     }).finally(() => revalidatePath(`/processos/${id}`, "layout"));
   } catch (e) {
     return { erro: mensagemDeErro(e) };

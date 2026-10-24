@@ -1,6 +1,7 @@
 /**
  * Topo das telas de um processo: número, objeto e situação; trilho das cinco etapas com a posição atual, as etapas
- * já percorridas e as pendências de cada uma (dados do motor).
+ * já percorridas e as pendências de cada uma (dados do motor). Depois do trilho, o ETP (Marco 3): documento montado
+ * das mesmas respostas, aberto a qualquer momento.
  */
 import Link from "next/link";
 import type { UsuarioLogado } from "@/auth/sessao.ts";
@@ -12,7 +13,7 @@ import { Selo, type TipoDeEstado } from "../../componentes/ui.tsx";
 
 type Caminho = (typeof ETAPAS)[number]["caminho"];
 
-export function CabecalhoDoProcesso(props: { usuario: UsuarioLogado; p: ProcessoCompleto; pendencias: Pendencias; atual: Caminho }) {
+export function CabecalhoDoProcesso(props: { usuario: UsuarioLogado; p: ProcessoCompleto; pendencias: Pendencias; atual: Caminho | "etp" }) {
   const { processo } = props.p;
   const expurgo = dataDoExpurgo(processo.concluidoEm);
   const { travas, perguntas, bloqueios, lacunas } = props.pendencias;
@@ -75,6 +76,16 @@ export function CabecalhoDoProcesso(props: { usuario: UsuarioLogado; p: Processo
                   </li>
                 );
               })}
+              <li className="flex-1 border-l border-linha">
+                <Link
+                  href={`/processos/${processo.id}/etp`}
+                  aria-current={props.atual === "etp" ? "page" : undefined}
+                  className={`flex min-h-12 min-w-36 items-center gap-2.5 border-b-[3px] px-3 py-2 no-underline transition-colors ${props.atual === "etp" ? "border-marca font-semibold text-tinta" : "border-transparent text-tinta-2 hover:border-linha-forte hover:text-tinta"}`}
+                >
+                  <Icone nome="documento" tamanho={16} />
+                  <span>ETP</span>
+                </Link>
+              </li>
             </ol>
           </nav>
         </div>
