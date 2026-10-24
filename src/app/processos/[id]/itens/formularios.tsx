@@ -7,7 +7,7 @@ import { Botao, Mensagem } from "../../../componentes/formulario.tsx";
 type Acao = (anterior: Resultado, dados: FormData) => Promise<Resultado>;
 export type ColunaDoFormulario = { titulo: string; coluna: string; tipo: string; obrigatoria?: boolean };
 
-const caixa = "min-h-11 w-full rounded border border-zinc-500 px-3";
+const caixa = "min-h-11 w-full rounded-sm border border-linha-forte px-3";
 
 export function Importar({ acao }: { acao: Acao }) {
   const [resultado, enviar] = useActionState(acao, null);
@@ -91,7 +91,7 @@ export function RespostaAqui({ acao, pergunta, rotulo, tipo, valor, ajuda }: { a
           <input name="valor" defaultValue={valor} inputMode="decimal" className={`${caixa} max-w-40`} />
         </label>
       )}
-      {ajuda && <p className="text-sm text-zinc-700">{ajuda}</p>}
+      {ajuda && <p className="text-sm text-tinta-2">{ajuda}</p>}
       <Mensagem resultado={resultado} />
       <div>
         <Botao variante="secundario">Salvar</Botao>

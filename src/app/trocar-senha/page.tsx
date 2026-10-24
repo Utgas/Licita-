@@ -20,7 +20,7 @@ async function Conteudo() {
       <main className="mx-auto flex w-full max-w-md flex-col gap-4 p-6">
         <h1 className="text-2xl font-semibold">{usuario.senhaProvisoria ? "Crie a sua senha" : "Alterar minha senha"}</h1>
         {usuario.senhaProvisoria && (
-          <p className="rounded border border-amber-700 bg-amber-50 p-3 text-amber-950">
+          <p className="rounded-sm border border-atencao bg-atencao-fundo p-3 text-atencao">
             Atenção: você entrou com uma senha provisória da TI. Crie a sua senha para continuar.
           </p>
         )}

@@ -6,7 +6,7 @@ import { Botao, Mensagem } from "../../../componentes/formulario.tsx";
 
 type Acao = (anterior: Resultado, dados: FormData) => Promise<Resultado>;
 
-const caixa = "min-h-11 w-full rounded border border-zinc-500 px-3 py-2";
+const caixa = "min-h-11 w-full rounded-sm border border-linha-forte px-3 py-2";
 
 export function EnviarWord({ acao }: { acao: Acao }) {
   const [resultado, enviar] = useActionState(acao, null);
@@ -16,7 +16,7 @@ export function EnviarWord({ acao }: { acao: Acao }) {
         Checklist preenchido (.docx)
         <input type="file" name="arquivo" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required className="min-h-11 font-normal" />
       </label>
-      <p className="text-sm text-zinc-700">O arquivo é lido e descartado; fica só o hash. Um novo envio substitui as respostas daquele checklist.</p>
+      <p className="text-sm text-tinta-2">O arquivo é lido e descartado; fica só o hash. Um novo envio substitui as respostas daquele checklist.</p>
       <Mensagem resultado={resultado} />
       <div>
         <Botao>Ler o checklist</Botao>
@@ -44,7 +44,7 @@ export function FormularioResposta({ acao, apagar, p, linha, confirmarMotivo }: 
   const marcadas = new Set(Array.isArray(atual) ? atual.map(String) : typeof atual === "string" ? [atual] : []);
   const tabela = Array.isArray(atual) && typeof atual[0] === "object" ? (atual[0] as Record<string, string>) : {};
   return (
-    <div className="flex flex-col gap-2 rounded border border-zinc-300 bg-white p-3">
+    <div className="flex flex-col gap-2 rounded-sm border border-linha bg-folha p-3">
       <form action={salvar} className="flex flex-col gap-3">
         <input type="hidden" name="pergunta" value={p.pergunta} />
         {linha && <input type="hidden" name="linha" value={linha.id} />}
@@ -57,7 +57,7 @@ export function FormularioResposta({ acao, apagar, p, linha, confirmarMotivo }: 
                 <input type="radio" name="valor" value={o} defaultChecked={marcadas.has(o)} className="size-5" /> {o}
               </label>
             ))}
-            <label className="flex min-h-11 items-center gap-2 text-zinc-700">
+            <label className="flex min-h-11 items-center gap-2 text-tinta-2">
               <input type="radio" name="valor" value="" defaultChecked={marcadas.size === 0} className="size-5" /> Sem resposta
             </label>
           </fieldset>
@@ -132,7 +132,7 @@ export function Trava({ acaoResposta, acaoConfirmar, pergunta, motivo, opcoes, o
           <input type="hidden" name="confirmarMotivo" value={motivo} />
           <label className="flex flex-col gap-1 text-sm font-medium">
             Número do &quot;{outro}&quot; (só algarismos)
-            <input name="numero" inputMode="numeric" required pattern="[0-9]+" className="min-h-11 w-40 rounded border border-zinc-500 px-3" />
+            <input name="numero" inputMode="numeric" required pattern="[0-9]+" className="min-h-11 w-40 rounded-sm border border-linha-forte px-3" />
           </label>
           <Botao>Salvar o número</Botao>
         </form>
@@ -183,7 +183,7 @@ export function Complemento({ acao, pergunta, tipo, opcoes, itens, valor }: { ac
       {itens === null ? (
         campo("valor", valor)
       ) : itens.length === 0 ? (
-        <p className="text-zinc-700">Cadastre os itens primeiro: este complemento é respondido item a item.</p>
+        <p className="text-tinta-2">Cadastre os itens primeiro: este complemento é respondido item a item.</p>
       ) : (
         itens.map((n) => (
           <label key={n} className="flex flex-col gap-1 text-sm font-medium">

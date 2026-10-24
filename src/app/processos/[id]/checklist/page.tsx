@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { Aviso, TituloDeSecao, classesDoBotao } from "../../../componentes/ui.tsx";
+import { Icone } from "../../../componentes/icones.tsx";
 import { Suspense } from "react";
 import { abrirProcesso } from "@/dados/acesso-processo.ts";
 import { carregarPacote } from "@/dados/pacote.ts";
@@ -68,10 +70,10 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/che
   return (
     <>
       <CabecalhoDoProcesso usuario={usuario} p={p} pendencias={pendenciasDaMinuta(minuta)} atual="checklist" />
-      <main className="flex flex-col gap-8 p-6">
+      <main className="mx-auto flex w-full max-w-[1400px] flex-col gap-8 px-4 py-6 md:px-6">
         {!somenteLeitura && (
-          <section className="flex max-w-2xl flex-col gap-3">
-            <h2 className="text-xl font-semibold">Enviar o checklist preenchido</h2>
+          <section className="flex flex-col gap-4 border border-linha bg-folha p-4 md:p-5">
+            <TituloDeSecao>Enviar o checklist preenchido</TituloDeSecao>
             <p>
               Checklists deste processo: {p.processo.checklists.map((c) => (c === "CONSUMO" ? "consumo" : "permanentes")).join(" e ")}. Também é possível digitar ou corrigir as respostas abaixo, sem o Word.
             </p>
@@ -79,16 +81,16 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/che
           </section>
         )}
 
-        <section className="flex flex-col gap-3">
-          <h2 className="text-xl font-semibold">Travas ({travas.length})</h2>
+        <section className="flex flex-col gap-4 border border-linha bg-folha p-4 md:p-5">
+          <TituloDeSecao>Travas ({travas.length})</TituloDeSecao>
           {travas.length === 0 ? (
-            <p className="text-green-800">✓ Nenhuma trava: nenhuma dúvida da leitura muda a minuta.</p>
+            <Aviso tipo="ok" titulo="Nenhuma trava: nenhuma dúvida da leitura muda a minuta." />
           ) : (
             <ul className="flex flex-col gap-3">
               {travas.map((t) => {
                 const l = m11.get(t.pergunta) as LinhaM11;
                 return (
-                  <li key={`${t.pergunta}-${t.motivo}`} className="flex flex-col gap-2 rounded border-2 border-red-800 bg-red-50 p-3">
+                  <li key={`${t.pergunta}-${t.motivo}`} className="flex flex-col gap-2 rounded-sm border-2 border-trava bg-trava-fundo p-3">
                     <div className="flex flex-wrap items-center gap-2">
                       <Estado estado="trava" />
                       <strong>{t.pergunta}</strong> <span>{l.pergunta}</span>
@@ -106,12 +108,12 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/che
           )}
         </section>
 
-        <section className="flex flex-col gap-3">
-          <h2 className="text-xl font-semibold">Complementos do operador ({complementos.length})</h2>
-          <p className="text-zinc-700">Dados que o checklist distribuído não pede e que a minuta usa (decisão 0009).</p>
+        <section className="flex flex-col gap-4 border border-linha bg-folha p-4 md:p-5">
+          <TituloDeSecao>Complementos do operador ({complementos.length})</TituloDeSecao>
+          <p className="text-tinta-2">Dados que o checklist distribuído não pede e que a minuta usa (decisão 0009).</p>
           {complementos.length === 0 && <p>Nenhum complemento se aplica a este processo agora.</p>}
           {complementos.map((l) => (
-            <div key={l.id} className="flex flex-col gap-2 rounded border border-zinc-400 p-3">
+            <div key={l.id} className="flex flex-col gap-2 rounded-sm border border-linha p-3">
               <div className="flex flex-wrap items-center gap-2">
                 <Estado estado={valorDoComplemento.has(l.id) ? "ok" : "destaque"} />
                 <strong>{l.id}</strong> <span>{l.pergunta}</span>
@@ -123,14 +125,14 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/che
           ))}
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section className="flex flex-col gap-4 border border-linha bg-folha p-4 md:p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-xl font-semibold">{todas ? "Todas as perguntas" : "Perguntas que pedem atenção"}</h2>
-            <Link href={todas ? "?" : "?ver=todas"} className="flex min-h-11 items-center text-blue-800 underline">
+            <TituloDeSecao>{todas ? "Todas as perguntas" : "Perguntas que pedem atenção"}</TituloDeSecao>
+            <Link href={todas ? "?" : "?ver=todas"} className="flex min-h-11 items-center text-link underline">
               {todas ? "Mostrar só as que pedem atenção" : "Mostrar todas as perguntas (para digitar ou corrigir)"}
             </Link>
           </div>
-          {visiveis.length === 0 && <p className="text-green-800">✓ Nenhuma pergunta pede atenção.</p>}
+          {visiveis.length === 0 && <Aviso tipo="ok" titulo="Nenhuma pergunta pede atenção." />}
           {[...secoes].map(([secao, ls]) => (
             <div key={secao} className="flex flex-col gap-2">
               <h3 className="font-semibold">{secao}</h3>
@@ -140,7 +142,7 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/che
                   const motivos = destaques.get(l.id) ?? [];
                   const estado = comTrava.has(l.id) ? "trava" : motivos.length ? "destaque" : respostas.length ? "ok" : "vazio";
                   return (
-                    <li key={l.id} className="flex flex-col gap-2 border-b border-zinc-200 pb-2">
+                    <li key={l.id} className="flex flex-col gap-2 border-b border-linha pb-2">
                       <div className="flex flex-wrap items-start gap-2">
                         <Estado estado={estado} />
                         <span>
@@ -153,17 +155,18 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/che
                           <strong>{mostrar(r.valor) || "—"}</strong>
                           {r.texto && <span> · {r.texto}</span>}
                           {r.numero !== null && <span> · número: {r.numero}</span>}
-                          <span className="text-zinc-700"> ({r.origem === "LEITURA_WORD" ? "lida do Word" : "digitada"})</span>
+                          <span className="text-tinta-2"> ({r.origem === "LEITURA_WORD" ? "lida do Word" : "digitada"})</span>
                         </p>
                       ))}
                       {motivos.map((m) => (
-                        <p key={m.motivo} className="pl-2 text-sm text-amber-950">
-                          ⚠ {m.texto}
+                        <p key={m.motivo} className="flex items-start gap-2 pl-2 text-sm text-atencao">
+                          <Icone nome="atencao" tamanho={15} className="mt-0.5" />
+                          {m.texto}
                         </p>
                       ))}
                       {!somenteLeitura && (
                         <details className="pl-2">
-                          <summary className="flex min-h-11 cursor-pointer items-center text-blue-800 underline">{respostas.length ? "Corrigir" : "Responder"}</summary>
+                          <summary className="flex min-h-11 cursor-pointer items-center text-link underline">{respostas.length ? "Corrigir" : "Responder"}</summary>
                           <div className="flex flex-col gap-2">
                             {respostas.map((r) => (
                               <FormularioResposta key={r.id} acao={acaoResposta} apagar={acaoApagar} p={dadosDaPergunta(l)} linha={{ id: r.id, valor: r.valor, texto: r.texto, numero: r.numero, itens: r.itens }} />
@@ -182,8 +185,8 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/che
 
         {!somenteLeitura && (
           <form action={irParaItens.bind(null, id)}>
-            <button type="submit" className="min-h-11 rounded bg-blue-800 px-4 font-medium text-white hover:bg-blue-900">
-              Seguir para os itens →
+            <button type="submit" className={classesDoBotao("principal")}>
+              Seguir para os itens <Icone nome="avancar" tamanho={16} />
             </button>
           </form>
         )}

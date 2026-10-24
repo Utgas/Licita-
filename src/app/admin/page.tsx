@@ -1,4 +1,5 @@
 import { asc } from "drizzle-orm";
+import { TituloDeSecao } from "../componentes/ui.tsx";
 import Link from "next/link";
 import { Suspense } from "react";
 import { exigirUsuario } from "@/auth/sessao.ts";
@@ -22,26 +23,26 @@ async function Conteudo() {
   return (
     <>
       <Cabecalho usuario={admin} />
-      <main className="flex flex-col gap-8 p-6">
+      <main className="mx-auto flex w-full max-w-[1400px] flex-col gap-8 px-4 py-6 md:px-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-2xl font-semibold">Usuários da OM</h1>
-          <Link href="/admin/auditoria" className="flex min-h-11 items-center text-blue-800 underline">
+          <Link href="/admin/auditoria" className="flex min-h-11 items-center text-link underline">
             Ver a auditoria
           </Link>
         </div>
-        <table className="w-full border-collapse text-left text-sm">
+        <table className="w-full border-collapse border border-linha bg-folha text-left text-sm">
           <thead>
-            <tr className="border-b border-zinc-400">
-              <th className="p-2">Nome</th>
-              <th className="p-2">E-mail</th>
-              <th className="p-2">Perfil</th>
-              <th className="p-2">Situação</th>
-              <th className="p-2">Ações</th>
+            <tr className="border-b border-linha-forte bg-papel text-xs uppercase tracking-wide text-tinta-2">
+              <th className="px-3 py-2.5 font-medium">Nome</th>
+              <th className="px-3 py-2.5 font-medium">E-mail</th>
+              <th className="px-3 py-2.5 font-medium">Perfil</th>
+              <th className="px-3 py-2.5 font-medium">Situação</th>
+              <th className="px-3 py-2.5 font-medium">Ações</th>
             </tr>
           </thead>
           <tbody>
             {usuarios.map((u) => (
-              <tr key={u.id} className="border-b border-zinc-200 align-top">
+              <tr key={u.id} className="border-b border-linha align-top">
                 <td className="p-2">{u.nome}</td>
                 <td className="p-2">{u.email}</td>
                 <td className="p-2">{u.perfil === "ADMINISTRADOR" ? "Administrador da TI" : "Operador"}</td>
@@ -56,9 +57,9 @@ async function Conteudo() {
             ))}
           </tbody>
         </table>
-        <section className="flex flex-col gap-3">
-          <h2 className="text-xl font-semibold">Novo usuário</h2>
-          <p className="text-zinc-700">O sistema gera uma senha provisória. Entregue-a à pessoa; no primeiro acesso ela cria a própria senha.</p>
+        <section className="flex flex-col gap-4 border border-linha bg-folha p-4 md:p-5">
+          <TituloDeSecao>Novo usuário</TituloDeSecao>
+          <p className="text-tinta-2">O sistema gera uma senha provisória. Entregue-a à pessoa; no primeiro acesso ela cria a própria senha.</p>
           <NovoUsuario />
         </section>
       </main>

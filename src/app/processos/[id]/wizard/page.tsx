@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { Icone, type NomeDoIcone } from "../../../componentes/icones.tsx";
+import { Aviso, Codigo, Selo, TituloDeSecao, type TipoDeEstado, classesDoBotao } from "../../../componentes/ui.tsx";
 import { Suspense } from "react";
 import { abrirProcesso } from "@/dados/acesso-processo.ts";
 import { carregarPacote } from "@/dados/pacote.ts";
@@ -21,17 +23,29 @@ export default function TelaDoWizard(props: PageProps<"/processos/[id]/wizard">)
   );
 }
 
-const ESTADOS: Record<EstadoDaPergunta, [string, string]> = {
-  respondida: ["border-green-800 bg-green-50 text-green-900", "✓ Respondida"],
-  checklist: ["border-green-800 bg-green-50 text-green-900", "✓ Veio do checklist"],
-  calculada: ["border-zinc-600 bg-zinc-50 text-zinc-900", "= Calculada pelos itens"],
-  decisao_pendente: ["border-red-800 bg-red-50 text-red-900", "⛔ Decisão jurídica pendente"],
-  pendente: ["border-amber-700 bg-amber-50 text-amber-950", "⚠ Sem resposta"],
+const ESTADOS: Record<EstadoDaPergunta, [TipoDeEstado, string]> = {
+  respondida: ["ok", "Respondida"],
+  checklist: ["ok", "Veio do checklist"],
+  calculada: ["calculada", "Calculada pelos itens"],
+  decisao_pendente: ["juridica", "Decisão jurídica pendente"],
+  pendente: ["pendente", "Sem resposta"],
+};
+
+const ICONE_DO_ESTADO: Record<TipoDeEstado, NomeDoIcone> = {
+  ok: "ok",
+  calculada: "calculada",
+  juridica: "juridica",
+  pendente: "pendente",
+  trava: "trava",
+  atencao: "atencao",
+  padrao: "padrao",
+  neutro: "documento",
+  vazio: "vazio",
 };
 
 function EstadoDaPerguntaRotulo({ estado }: { estado: EstadoDaPergunta }) {
-  const [cor, texto] = ESTADOS[estado];
-  return <span className={`inline-block shrink-0 rounded border px-2 py-0.5 text-sm font-medium ${cor}`}>{texto}</span>;
+  const [tipo, texto] = ESTADOS[estado];
+  return <Selo tipo={tipo}>{texto}</Selo>;
 }
 
 const lista = (v: Valor): string[] => (v === null || v === undefined ? [] : Array.isArray(v) ? v.map((x) => String(x)) : [String(v)]);
@@ -58,44 +72,53 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/wiz
   return (
     <>
       <CabecalhoDoProcesso usuario={usuario} p={p} pendencias={pendenciasDaMinuta(minuta)} atual="wizard" />
-      <main className="flex flex-col gap-8 p-6">
+      <main className="mx-auto flex w-full max-w-[1400px] flex-col gap-8 px-4 py-6 md:px-6">
         <div className="grid gap-6 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]">
-          <nav aria-label="Perguntas do wizard" className="flex flex-col gap-2">
-            <h2 className="text-xl font-semibold">Perguntas ({pendentes} sem resposta)</h2>
-            <ol className="flex max-h-[70vh] flex-col gap-1 overflow-y-auto pr-1">
-              {perguntas.map((x) => (
-                <li key={x.id}>
-                  <Link
-                    href={`/processos/${id}/wizard?p=${x.id}`}
-                    aria-current={x.id === atual?.id ? "true" : undefined}
-                    className={`flex min-h-11 flex-col gap-1 rounded border px-3 py-2 ${x.id === atual?.id ? "border-blue-800 bg-blue-50" : "border-zinc-300 bg-white hover:bg-zinc-50"}`}
-                  >
-                    <span className="flex flex-wrap items-center gap-2">
-                      <strong>{x.id}</strong> <EstadoDaPerguntaRotulo estado={x.estado} />
-                    </span>
-                    <span className="text-sm text-zinc-800">{x.pergunta}</span>
-                  </Link>
-                </li>
-              ))}
+          <nav aria-label="Perguntas do wizard" className="flex flex-col border border-linha bg-folha lg:sticky lg:top-4 lg:self-start">
+            <h2 className="flex items-baseline justify-between gap-2 border-b border-linha px-4 py-3 font-semibold">
+              Perguntas <span className="text-sm font-normal text-tinta-2">{pendentes} sem resposta</span>
+            </h2>
+            <ol className="flex max-h-[70vh] flex-col overflow-y-auto">
+              {perguntas.map((x) => {
+                const [tipo, texto] = ESTADOS[x.estado];
+                const ativa = x.id === atual?.id;
+                return (
+                  <li key={x.id}>
+                    <Link
+                      href={`/processos/${id}/wizard?p=${x.id}`}
+                      aria-current={ativa ? "true" : undefined}
+                      className={`flex min-h-11 gap-3 border-b border-l-[3px] border-b-linha px-3 py-2.5 no-underline transition-colors ${ativa ? "border-l-marca bg-selecao" : "border-l-transparent hover:bg-papel"}`}
+                    >
+                      <span className={`mt-0.5 ${tipo === "ok" ? "text-ok" : tipo === "juridica" ? "text-trava" : tipo === "pendente" ? "text-atencao" : "text-tinta-2"}`}>
+                        <Icone nome={ICONE_DO_ESTADO[tipo]} tamanho={16} rotulo={texto} />
+                      </span>
+                      <span className="flex min-w-0 flex-col">
+                        <span className="font-mono text-xs text-tinta-2">{x.id}</span>
+                        <span className="line-clamp-2 text-sm">{x.pergunta}</span>
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
             </ol>
           </nav>
 
-          <section className="flex flex-col gap-4" aria-live="polite">
+          <section className="flex flex-col gap-4 border border-linha bg-folha p-4 md:p-6" aria-live="polite">
             {atual ? <Pergunta id={id} x={atual} somenteLeitura={somenteLeitura} daEquipe={p.respostasWizard.some((r) => r.pergunta === atual.id)} /> : <Fim pendentes={pendentes} />}
           </section>
         </div>
 
-        <section className="flex flex-col gap-4">
-          <h2 className="text-xl font-semibold">Dados que a minuta pede ({faltando.length} faltando)</h2>
-          <p className="text-sm text-zinc-700">Cada dado preenche uma lacuna da minuta. O que não for informado continua marcado como lacuna; o sistema não inventa valor, prazo nem percentual.</p>
-          {faltando.length === 0 && <p className="rounded border border-green-800 bg-green-50 p-3 text-green-900">✓ Nenhum dado faltando nesta tela.</p>}
+        <section className="flex flex-col gap-4 border border-linha bg-folha p-4 md:p-5">
+          <TituloDeSecao>Dados que a minuta pede ({faltando.length} faltando)</TituloDeSecao>
+          <p className="text-sm text-tinta-2">Cada dado preenche uma lacuna da minuta. O que não for informado continua marcado como lacuna; o sistema não inventa valor, prazo nem percentual.</p>
+          {faltando.length === 0 && <Aviso tipo="ok" titulo="Nenhum dado faltando nesta tela." />}
           <ul className="grid gap-4 md:grid-cols-2">
             {[...faltando, ...informados].map((c) => (
-              <li key={c.id} className={`flex flex-col gap-2 rounded border p-3 ${c.trechos.length ? "border-amber-700 bg-amber-50" : "border-zinc-300"}`}>
+              <li key={c.id} className={`flex flex-col gap-2 border border-l-4 p-3 ${c.trechos.length ? "border-linha border-l-atencao bg-folha" : "border-linha border-l-ok bg-folha"}`}>
                 <p>
-                  <strong>{c.id}</strong> · {c.descricao}
+                  <Codigo>{c.id}</Codigo> · {c.descricao}
                 </p>
-                <p className="text-sm">{c.trechos.length ? `⚠ Falta em: ${c.trechos.join(", ")}` : `✓ Informado: ${textoDoValor(c.valor)}`}</p>
+                <p className="text-sm">{c.trechos.length ? <Selo tipo="atencao">Falta em {c.trechos.join(", ")}</Selo> : <Selo tipo="ok">Informado: {textoDoValor(c.valor)}</Selo>}</p>
                 {!somenteLeitura && (
                   <FormularioCampo acao={salvarCampo.bind(null, id)} c={{ id: c.id, descricao: c.descricao, validacao: c.validacao, codigos: c.codigos, forma: c.forma, valores: c.id === "VAR-001" && c.valor === null ? { valor: p.processo.numero } : textoDoCampo(c), falta: c.trechos.length > 0 }} />
                 )}
@@ -103,8 +126,7 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/wiz
             ))}
           </ul>
           {doChecklist.length > 0 && (
-            <div className="flex flex-col gap-2 rounded border border-amber-700 bg-amber-50 p-3">
-              <h3 className="font-semibold">⚠ Faltam dados que vêm do checklist</h3>
+            <Aviso tipo="atencao" titulo="Faltam dados que vêm do checklist">
               <ul className="list-disc pl-5 text-sm">
                 {doChecklist.map((c) => (
                   <li key={c.id}>
@@ -112,13 +134,13 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/wiz
                   </li>
                 ))}
               </ul>
-              <Link href={`/processos/${id}/checklist`} className="flex min-h-11 items-center text-blue-800 underline">
+              <Link href={`/processos/${id}/checklist`} className="flex min-h-11 w-fit items-center text-link underline">
                 Corrigir ou completar na tela do checklist
               </Link>
-            </div>
+            </Aviso>
           )}
           {daEquipe.length > 0 && (
-            <p className="text-sm text-zinc-800">
+            <p className="text-sm text-tinta-2">
               Trechos que a equipe completa no Compras.gov.br, sem dado ligado no sistema: {daEquipe.map((x) => `${x.trecho} (${x.marcador})`).join("; ")}.
             </p>
           )}
@@ -126,8 +148,8 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/wiz
 
         {!somenteLeitura && (
           <form action={irParaMinuta.bind(null, id)}>
-            <button type="submit" className="min-h-11 rounded bg-blue-800 px-4 font-medium text-white hover:bg-blue-900">
-              Seguir para a minuta →
+            <button type="submit" className={classesDoBotao("principal")}>
+              Seguir para a minuta <Icone nome="avancar" tamanho={16} />
             </button>
           </form>
         )}
@@ -140,28 +162,31 @@ function Pergunta({ id, x, somenteLeitura, daEquipe }: { id: string; x: Pergunta
   const respondida = x.valor !== null && x.valor !== undefined && x.valor !== "";
   return (
     <>
-      <div className="flex flex-wrap items-center gap-2">
-        <h2 className="text-xl font-semibold">{x.id}</h2>
+      <div className="flex flex-wrap items-center gap-3">
+        <Codigo>{x.id}</Codigo>
         <EstadoDaPerguntaRotulo estado={x.estado} />
       </div>
-      <p className="text-lg">{x.pergunta}</p>
+      <h2 className="text-xl font-semibold leading-snug">{x.pergunta}</h2>
       {respondida && (
-        <p className="rounded border border-zinc-400 bg-white p-3">
+        <p className="border border-linha bg-papel p-3">
           Resposta atual: <strong>{mostrar(x.valor)}</strong>
           {x.doChecklist.length > 0 && <> (preenchida pelo checklist: {x.doChecklist.join(", ")}; a resposta da equipe vale sobre ela)</>}
         </p>
       )}
-      {x.estado === "decisao_pendente" && <p className="rounded border border-red-800 bg-red-50 p-3 text-red-900">⛔ Decisão jurídica: a equipe responde. O checklist, no máximo, sugere.</p>}
+      {x.estado === "decisao_pendente" && <Aviso tipo="trava" titulo="Decisão jurídica: a equipe responde. O checklist, no máximo, sugere." />}
       {x.sugestoes.map((s) => (
-        <div key={`${s.pergunta}-${String(s.valor)}`} className="flex flex-col gap-2 rounded border border-blue-800 bg-blue-50 p-3 text-blue-950">
-          <p>
-            💡 Sugestão do checklist ({s.pergunta}): <strong>{mostrar(s.valor)}</strong>. É só sugestão; quem decide é a equipe.
+        <div key={`${s.pergunta}-${String(s.valor)}`} className="flex flex-col gap-2 border border-l-4 border-linha border-l-padrao bg-padrao-fundo p-3 text-padrao">
+          <p className="flex items-start gap-2">
+            <Icone nome="sugestao" className="mt-0.5" />
+            <span>
+              Sugestão do checklist (<Codigo>{s.pergunta}</Codigo>): <strong>{mostrar(s.valor)}</strong>. É só sugestão; quem decide é a equipe.
+            </span>
           </p>
           {!somenteLeitura && x.estado !== "calculada" && <AceitarSugestao acao={responderPergunta.bind(null, id)} pergunta={x.id} valor={lista(s.valor)} rotulo={mostrar(s.valor)} />}
         </div>
       ))}
       {x.estado === "calculada" ? (
-        <p className="text-zinc-800">Calculada pelo motor a partir da tabela de itens. Para mudar, corrija os itens.</p>
+        <p className="text-tinta-2">Calculada pelo motor a partir da tabela de itens. Para mudar, corrija os itens.</p>
       ) : (
         !somenteLeitura && (
           <FormularioPergunta
@@ -181,15 +206,15 @@ function Pergunta({ id, x, somenteLeitura, daEquipe }: { id: string; x: Pergunta
           />
         )
       )}
-      {x.fundamento && <p className="text-sm text-zinc-700">Fundamento: {x.fundamento}</p>}
+      {x.fundamento && <p className="text-sm text-tinta-2">Fundamento: {x.fundamento}</p>}
     </>
   );
 }
 
 function Fim({ pendentes }: { pendentes: number }) {
   return pendentes === 0 ? (
-    <p className="rounded border border-green-800 bg-green-50 p-3 text-green-900">✓ Todas as perguntas que se aplicam a este processo estão respondidas. Confira os dados abaixo e siga para a minuta.</p>
+    <Aviso tipo="ok" titulo="Todas as perguntas que se aplicam a este processo estão respondidas.">Confira os dados abaixo e siga para a minuta.</Aviso>
   ) : (
-    <p className="rounded border border-amber-700 bg-amber-50 p-3 text-amber-950">⚠ Ainda há {pendentes} pergunta(s) sem resposta. Escolha uma na lista.</p>
+    <Aviso tipo="atencao" titulo={`Ainda há ${pendentes} pergunta(s) sem resposta.`}>Escolha uma na lista.</Aviso>
   );
 }

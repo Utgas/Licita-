@@ -8,6 +8,8 @@ import type { TrechoDaMinuta } from "@/motor/minuta.ts";
 import { textoDoValor } from "@/motor/montagem/formatos.ts";
 import type { Pacote } from "@/motor/pacote/esquema.ts";
 import { Carregando } from "../../../componentes/cabecalho.tsx";
+import { Icone } from "../../../componentes/icones.tsx";
+import { Aviso, Codigo, classesDoBotao } from "../../../componentes/ui.tsx";
 import { CabecalhoDoProcesso } from "../processo.tsx";
 import { irParaExportar } from "./acoes.ts";
 
@@ -39,86 +41,108 @@ async function Conteudo({ params }: PageProps<"/processos/[id]/revisao">) {
   return (
     <>
       <CabecalhoDoProcesso usuario={usuario} p={p} pendencias={pendenciasDaMinuta(minuta)} atual="revisao" />
-      <main className="flex flex-col gap-6 p-6">
-        <section aria-label="Bloqueios" className={`flex flex-col gap-2 rounded border p-4 ${travada ? "border-red-800 bg-red-50 text-red-950" : "border-green-800 bg-green-50 text-green-950"}`}>
-          <h2 className="text-lg font-semibold">{travada ? "⛔ A minuta tem travas: a exportação fica bloqueada até resolvê-las" : "✓ Sem travas: a minuta pode ser exportada"}</h2>
-          {bloqueios.length > 0 && (
-            <ul className="list-disc pl-5">
-              {bloqueios.map((v) => (
-                <li key={v.id}>
-                  <strong>{v.id}</strong>: {v.mensagem} <OndeResolver id={id} momento={v.momento} />
-                </li>
-              ))}
-            </ul>
+      <main className="mx-auto grid w-full max-w-[1400px] grid-cols-[minmax(0,1fr)] gap-6 px-4 py-6 md:px-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
+        <aside className="flex flex-col gap-4 xl:sticky xl:top-4 xl:order-2 xl:max-h-[calc(100vh-2rem)] xl:self-start xl:overflow-y-auto">
+          <Aviso tipo={travada ? "trava" : "ok"} titulo={travada ? "A minuta tem travas: a exportação fica bloqueada até resolvê-las" : "Sem travas: a minuta pode ser exportada"}>
+            {bloqueios.length > 0 && (
+              <ul className="flex flex-col gap-1.5">
+                {bloqueios.map((v) => (
+                  <li key={v.id}>
+                    <Codigo>{v.id}</Codigo>: {v.mensagem} <OndeResolver id={id} momento={v.momento} />
+                  </li>
+                ))}
+              </ul>
+            )}
+            {minuta.bloqueiosGrupoAlternativas.length > 0 && (
+              <p>
+                Grupos de alternativas do modelo sem uma opção escolhida: <Codigo>{minuta.bloqueiosGrupoAlternativas.join(", ")}</Codigo>. Responda as perguntas pendentes no{" "}
+                <Link href={`/processos/${id}/wizard`} className="underline">
+                  wizard
+                </Link>
+                .
+              </p>
+            )}
+            {perguntasAoOperador.length > 0 && (
+              <p>
+                {perguntasAoOperador.length} pergunta(s) da leitura do checklist esperam a sua resposta:{" "}
+                <Link href={`/processos/${id}/checklist`} className="underline">
+                  resolver no checklist
+                </Link>
+                .
+              </p>
+            )}
+            {semResposta.length > 0 && (
+              <p>
+                {semResposta.length} pergunta(s) do wizard sem resposta ({semResposta.filter((x) => x.decisaoJuridica).length} de decisão jurídica):{" "}
+                <Link href={`/processos/${id}/wizard`} className="underline">
+                  responder no wizard
+                </Link>
+                .
+              </p>
+            )}
+          </Aviso>
+
+          {alertas.length > 0 && (
+            <Aviso tipo="atencao" titulo={`Alertas (${alertas.length})`}>
+              <ul className="flex flex-col gap-1.5">
+                {alertas.map((v) => (
+                  <li key={v.id}>
+                    <Codigo>{v.id}</Codigo>: {v.mensagem} <OndeResolver id={id} momento={v.momento} />
+                  </li>
+                ))}
+              </ul>
+            </Aviso>
           )}
-          {minuta.bloqueiosGrupoAlternativas.length > 0 && (
-            <p>
-              Grupos de alternativas do modelo sem uma opção escolhida: {minuta.bloqueiosGrupoAlternativas.join(", ")}. Responda as perguntas pendentes no{" "}
-              <Link href={`/processos/${id}/wizard`} className="underline">
-                wizard
-              </Link>
-              .
+
+          <div className="flex flex-col gap-2 border border-linha bg-folha p-4 text-sm">
+            <p className="font-semibold">Como ler a minuta</p>
+            <p className="flex items-center gap-2">
+              <mark className="inline-flex items-center gap-1 bg-atencao-marca px-1 text-atencao">
+                <Icone nome="lacuna" tamanho={14} />
+                lacuna
+              </mark>
+              falta dado: {minuta.lacunasNoTexto.length}
             </p>
-          )}
-          {perguntasAoOperador.length > 0 && (
-            <p>
-              {perguntasAoOperador.length} pergunta(s) da leitura do checklist esperam a sua resposta:{" "}
-              <Link href={`/processos/${id}/checklist`} className="underline">
-                resolver no checklist
-              </Link>
-              .
+            <p className="flex items-center gap-2">
+              <mark className="inline-flex items-center gap-1 bg-padrao-fundo px-1 text-padrao underline decoration-dotted">
+                <Icone nome="padrao" tamanho={14} />
+                valor padrão
+              </mark>
+              do pacote, confira: {minuta.valoresPadrao.length}
             </p>
+            <p className="text-tinta-2">Clique num trecho para ver de onde ele veio. O texto não se edita aqui: corrija as respostas e os dados, e a minuta é montada de novo. Lacuna não trava a exportação, mas sai marcada.</p>
+          </div>
+
+          {minuta.validacoes.conferenciaManual.length > 0 && (
+            <details className="border border-linha bg-folha p-4 text-sm">
+              <summary className="flex min-h-11 cursor-pointer items-center gap-2 font-semibold">
+                <Icone nome="vazio" tamanho={16} />
+                Conferência manual ({minuta.validacoes.conferenciaManual.length} regras que o sistema não confere sozinho)
+              </summary>
+              <ul className="mt-2 flex flex-col gap-3">
+                {minuta.validacoes.conferenciaManual.map((v) => (
+                  <li key={v.id}>
+                    <Codigo>{v.id}</Codigo> ({m10.get(v.id)?.tipo ?? ""}): {v.regra}
+                    <br />
+                    <span className="text-tinta-2">{v.mensagem}</span>
+                  </li>
+                ))}
+              </ul>
+            </details>
           )}
-          {semResposta.length > 0 && (
-            <p>
-              {semResposta.length} pergunta(s) do wizard sem resposta ({semResposta.filter((x) => x.decisaoJuridica).length} de decisão jurídica):{" "}
-              <Link href={`/processos/${id}/wizard`} className="underline">
-                responder no wizard
-              </Link>
-              .
-            </p>
+
+          {!somenteLeitura && (
+            <form action={irParaExportar.bind(null, id)}>
+              <button type="submit" className={`${classesDoBotao("principal")} w-full`}>
+                Seguir para exportar <Icone nome="avancar" tamanho={16} />
+              </button>
+            </form>
           )}
-          <p className="text-sm">
-            {minuta.lacunasNoTexto.length} lacuna(s) marcada(s) em amarelo e {minuta.valoresPadrao.length} valor(es) padrão em azul. Lacuna não trava a exportação, mas sai marcada no texto.
-          </p>
-        </section>
+        </aside>
 
-        {alertas.length > 0 && (
-          <section aria-label="Alertas" className="flex flex-col gap-2 rounded border border-amber-700 bg-amber-50 p-4 text-amber-950">
-            <h2 className="text-lg font-semibold">⚠ Alertas ({alertas.length})</h2>
-            <ul className="list-disc pl-5">
-              {alertas.map((v) => (
-                <li key={v.id}>
-                  <strong>{v.id}</strong>: {v.mensagem} <OndeResolver id={id} momento={v.momento} />
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {minuta.validacoes.conferenciaManual.length > 0 && (
-          <details className="rounded border border-zinc-500 bg-white p-4">
-            <summary className="flex min-h-11 cursor-pointer items-center text-lg font-semibold">☐ Conferência manual ({minuta.validacoes.conferenciaManual.length} regras que o sistema não confere sozinho)</summary>
-            <ul className="mt-2 flex flex-col gap-2">
-              {minuta.validacoes.conferenciaManual.map((v) => (
-                <li key={v.id}>
-                  <strong>{v.id}</strong> ({m10.get(v.id)?.tipo ?? ""}): {v.regra}
-                  <br />
-                  <span className="text-sm text-zinc-700">{v.mensagem}</span>
-                </li>
-              ))}
-            </ul>
-          </details>
-        )}
-
-        <p className="text-sm text-zinc-700">
-          Legenda: <span className="rounded bg-amber-200 px-1 text-amber-950">⚠ lacuna (falta dado)</span> <span className="rounded bg-blue-100 px-1 text-blue-950">valor padrão (ⓟ)</span>. Clique num trecho para ver de onde ele veio. O texto
-          não se edita aqui: corrija as respostas e os dados, e a minuta é montada de novo.
-        </p>
-
-        <article className="flex flex-col gap-4 rounded border border-zinc-400 bg-white p-4 md:p-8">
+        <article aria-label="Minuta do Termo de Referência" className="mx-auto w-full max-w-[52rem] border border-linha bg-folha px-5 py-8 leading-relaxed md:px-16 md:py-14 xl:order-1">
           {secoesDaMinuta(minuta).map((s, k) => (
-            <section key={`${s.titulo}-${k}`} className="flex flex-col gap-2">
+            <section key={`${s.titulo}-${k}`} className="flex flex-col gap-1">
               <h2 className="sr-only">{s.titulo}</h2>
               {s.trechos.map((t) => (
                 <Trecho key={t.id} t={t} pacote={pacote} />
@@ -126,14 +150,6 @@ async function Conteudo({ params }: PageProps<"/processos/[id]/revisao">) {
             </section>
           ))}
         </article>
-
-        {!somenteLeitura && (
-          <form action={irParaExportar.bind(null, id)}>
-            <button type="submit" className="min-h-11 rounded bg-blue-800 px-4 font-medium text-white hover:bg-blue-900">
-              Seguir para exportar →
-            </button>
-          </form>
-        )}
       </main>
     </>
   );
@@ -165,12 +181,13 @@ function Texto({ texto }: { texto: string }) {
         parte.tipo === "texto" ? (
           <span key={k}>{parte.texto}</span>
         ) : parte.tipo === "lacuna" ? (
-          <mark key={k} className="rounded bg-amber-200 px-1 text-amber-950">
-            ⚠ {parte.texto}
+          <mark key={k} className="inline-flex items-baseline gap-1 bg-atencao-marca px-1 text-atencao">
+            <Icone nome="lacuna" tamanho={13} className="self-center" />
+            {parte.texto}
           </mark>
         ) : (
-          <mark key={k} className="rounded bg-blue-100 px-1 text-blue-950" title="Valor padrão do pacote: confira">
-            {parte.texto} ⓟ
+          <mark key={k} className="bg-padrao-fundo px-0.5 text-padrao underline decoration-dotted underline-offset-4" title="Valor padrão do pacote: confira">
+            {parte.texto}
           </mark>
         ),
       )}
@@ -180,19 +197,19 @@ function Texto({ texto }: { texto: string }) {
 
 function Trecho({ t, pacote }: { t: TrechoDaMinuta; pacote: Pacote }) {
   return (
-    <details className="group rounded hover:bg-zinc-50">
-      <summary className="cursor-pointer list-none rounded p-1 focus:outline-2 focus:outline-blue-700">
+    <details className="group relative -mx-3 border-l-2 border-transparent px-3 transition-colors open:border-l-marca hover:border-l-linha-forte">
+      <summary className="cursor-pointer list-none py-1.5">
         {ehTabela(t) ? (
           <div className="overflow-x-auto">
             {tabelaNaoMontada(t.texto).naoMontada && (
               <p>
-                <mark className="rounded bg-amber-200 px-1 text-amber-950">⚠ tabela não montada: faltam as linhas (veja a origem)</mark>
+                <mark className="inline-flex items-center gap-1 bg-atencao-marca px-1 text-atencao"><Icone nome="lacuna" tamanho={13} />tabela não montada: faltam as linhas (veja a origem)</mark>
               </p>
             )}
             <table className="w-full border-collapse text-left text-sm">
               <tbody>
                 {linhasDaTabela(t.texto).map((linha, k) => (
-                  <tr key={k} className={k === 0 ? "border-b-2 border-zinc-500 font-semibold" : "border-b border-zinc-200"}>
+                  <tr key={k} className={k === 0 ? "border-b-2 border-linha-forte font-semibold" : "border-b border-linha"}>
                     {linha.map((c, j) => (
                       <td key={j} className="p-2 align-top whitespace-pre-line">
                         <Texto texto={c} />
@@ -218,7 +235,7 @@ function Trecho({ t, pacote }: { t: TrechoDaMinuta; pacote: Pacote }) {
 const valor = (v: unknown) => (v === null || v === undefined || v === "" ? "sem resposta" : textoDoValor(v as never));
 
 function Origem({ t, pacote }: { t: TrechoDaMinuta; pacote: Pacote }) {
-  const caixa = "mb-2 ml-1 flex flex-col gap-1 border-l-4 border-blue-800 bg-blue-50 p-3 text-sm text-zinc-900";
+  const caixa = "mb-3 mt-1 flex flex-col gap-1.5 border border-linha bg-papel p-3 text-sm leading-normal text-tinta";
   if (t.tipo === "clausula_setorial") {
     const linha = pacote.matrizes.M08.find((l) => l.id === t.id);
     return (

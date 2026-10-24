@@ -29,23 +29,23 @@ async function Conteudo() {
       <main className="flex flex-col gap-4 p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-2xl font-semibold">Auditoria</h1>
-          <Link href="/admin" className="flex min-h-11 items-center text-blue-800 underline">
+          <Link href="/admin" className="flex min-h-11 items-center text-link underline">
             Voltar aos usuários
           </Link>
         </div>
-        <p className="text-zinc-700">Últimos {LIMITE} registros da OM, do mais recente ao mais antigo. Ninguém altera nem apaga estes registros.</p>
-        <table className="w-full border-collapse text-left text-sm">
+        <p className="text-tinta-2">Últimos {LIMITE} registros da OM, do mais recente ao mais antigo. Ninguém altera nem apaga estes registros.</p>
+        <table className="w-full border-collapse border border-linha bg-folha text-left text-sm">
           <thead>
-            <tr className="border-b border-zinc-400">
-              <th className="p-2">Quando</th>
-              <th className="p-2">Quem</th>
-              <th className="p-2">Ação</th>
-              <th className="p-2">Detalhes</th>
+            <tr className="border-b border-linha-forte bg-papel text-xs uppercase tracking-wide text-tinta-2">
+              <th className="px-3 py-2.5 font-medium">Quando</th>
+              <th className="px-3 py-2.5 font-medium">Quem</th>
+              <th className="px-3 py-2.5 font-medium">Ação</th>
+              <th className="px-3 py-2.5 font-medium">Detalhes</th>
             </tr>
           </thead>
           <tbody>
             {linhas.map((l) => (
-              <tr key={l.id} className="border-b border-zinc-200 align-top">
+              <tr key={l.id} className="border-b border-linha align-top">
                 <td className="p-2 whitespace-nowrap">{new Date(l.em).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}</td>
                 <td className="p-2">{l.usuarioId ? (nomes.get(l.usuarioId) ?? l.usuarioId) : "Sistema"}</td>
                 <td className="p-2">{l.acao}</td>

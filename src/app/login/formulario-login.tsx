@@ -13,7 +13,7 @@ export function FormularioLogin({ volta }: { volta: string | null }) {
       <Campo rotulo="Senha" nome="senha" tipo="password" autoComplete="current-password" />
       <Mensagem resultado={resultado} />
       <Botao>Entrar</Botao>
-      <Link href="/esqueci-senha" className="flex min-h-11 items-center text-blue-800 underline">
+      <Link href="/esqueci-senha" className="flex min-h-11 w-fit items-center text-link underline">
         Esqueci minha senha
       </Link>
     </form>

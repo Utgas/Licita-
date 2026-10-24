@@ -1,5 +1,7 @@
 "use client";
 /** Botão "Copiar" de cada seção e confirmação de conclusão (passo 11). */
+import { Selo, classesDoBotao } from "../../../componentes/ui.tsx";
+import { Icone } from "../../../componentes/icones.tsx";
 import { useActionState, useState, useTransition } from "react";
 import type { Resultado } from "@/auth/acoes.ts";
 import { Botao, Mensagem } from "../../../componentes/formulario.tsx";
@@ -27,12 +29,13 @@ export function Copiar({ texto, secao, copiada, registrar }: { texto: string; se
       setMensagem("");
     });
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      <button type="button" onClick={copiar} disabled={pendente} className="min-h-11 rounded bg-blue-800 px-4 font-medium text-white hover:bg-blue-900 disabled:opacity-60">
+    <div className="flex flex-wrap items-center justify-end gap-2">
+      <button type="button" onClick={copiar} disabled={pendente} className={classesDoBotao("secundario")}>
+        <Icone nome="copiar" tamanho={16} />
         {pendente ? "Copiando…" : "Copiar"}
       </button>
-      {estado === "copiado" && <span className="rounded border border-green-800 bg-green-50 px-2 py-1 text-green-900">✓ Copiado</span>}
-      {estado === "erro" && <span className="rounded border border-red-800 bg-red-50 px-2 py-1 text-red-900">Erro: {mensagem}</span>}
+      {estado === "copiado" ? <Selo tipo="ok">Copiado</Selo> : estado === "" ? <Selo tipo="vazio">Não copiado</Selo> : null}
+      {estado === "erro" && <Selo tipo="trava">Erro: {mensagem}</Selo>}
     </div>
   );
 }

@@ -5,7 +5,7 @@ import type { Resultado } from "@/auth/acoes.ts";
 import { Botao, Mensagem } from "../../../componentes/formulario.tsx";
 
 type Acao = (anterior: Resultado, dados: FormData) => Promise<Resultado>;
-const caixa = "min-h-11 w-full rounded border border-zinc-500 px-3";
+const caixa = "min-h-11 w-full rounded-sm border border-linha-forte px-3";
 
 export type DadosDaPergunta = {
   id: string;
@@ -51,14 +51,14 @@ export function FormularioPergunta({ acao, limpar, d }: { acao: Acao; limpar: Ac
           <label className="flex flex-col gap-1 text-sm font-medium">
             Resposta
             <textarea name="valor" defaultValue={d.valor[0] ?? ""} rows={3} className={`${caixa} py-2 text-base font-normal`} />
-            {d.orientacao && <span className="font-normal text-zinc-700">Informe: {d.orientacao}</span>}
+            {d.orientacao && <span className="font-normal text-tinta-2">Informe: {d.orientacao}</span>}
           </label>
         )}
         {j && (
           <label className="flex flex-col gap-1 text-sm font-medium">
             Justificativa {obrigatoria ? "(obrigatória para esta resposta)" : "(se a resposta pedir)"}
             <textarea name="justificativa" defaultValue={d.justificativaAtual} rows={3} required={obrigatoria} className={`${caixa} py-2 text-base font-normal`} />
-            <span className="font-normal text-zinc-700">{j.texto}</span>
+            <span className="font-normal text-tinta-2">{j.texto}</span>
           </label>
         )}
         <Mensagem resultado={resultado} />
@@ -147,7 +147,7 @@ export function FormularioCampo({ acao, c }: { acao: Acao; c: DadosDoCampo }) {
           ))}
         </div>
       )}
-      {c.validacao && <p className="text-sm text-zinc-700">Regra: {c.validacao}</p>}
+      {c.validacao && <p className="text-sm text-tinta-2">Regra: {c.validacao}</p>}
       <Mensagem resultado={resultado} />
       <div>
         <Botao variante="secundario">Salvar {c.id}</Botao>

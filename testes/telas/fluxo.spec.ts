@@ -48,18 +48,18 @@ test("fluxo completo de um TR fictício, do login ao PDF", async ({ page, contex
   await page.locator('input[type="file"][name="arquivo"]').setInputFiles({ name: "checklist-ficticio.docx", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", buffer: await wordFicticioCompleto(NUMERO) });
   await page.getByRole("button", { name: "Ler o checklist" }).click();
   await expect(page.getByText(/Checklist de consumo lido/)).toBeVisible();
-  const trava = page.locator("li", { hasText: "CK-C-3.3" }).filter({ hasText: "⛔ Trava" }).first();
+  const trava = page.locator("li", { hasText: "CK-C-3.3" }).filter({ has: page.getByText("Trava", { exact: true }) }).first();
   await expect(trava).toBeVisible();
   await trava.getByRole("button", { name: "Não", exact: true }).click();
-  await expect(page.locator("li", { hasText: "CK-C-3.3" }).filter({ hasText: "⛔ Trava" })).toHaveCount(0);
+  await expect(page.locator("li", { hasText: "CK-C-3.3" }).filter({ has: page.getByText("Trava", { exact: true }) })).toHaveCount(0);
   // As demais (resposta única para vários itens) o operador confere e confirma como estão.
-  for (let vez = 0; vez < 10 && (await page.getByText("✓ Nenhuma trava").count()) === 0; vez++) {
+  for (let vez = 0; vez < 10 && (await page.getByText("Nenhuma trava", { exact: false }).count()) === 0; vez++) {
     const travas = await page.getByRole("heading", { name: /^Travas \(\d+\)$/ }).innerText();
     await page.getByRole("button", { name: "Conferi: vale como está" }).first().click();
     await expect(page.getByRole("heading", { name: /^Travas \(\d+\)$/ })).not.toHaveText(travas);
   }
-  await expect(page.getByText("✓ Nenhuma trava")).toBeVisible();
-  await page.getByRole("button", { name: "Seguir para os itens →" }).click();
+  await expect(page.getByText("Nenhuma trava", { exact: false })).toBeVisible();
+  await page.getByRole("button", { name: "Seguir para os itens" }).click();
   await page.waitForURL(/\/itens$/);
 
   // Itens: um item digitado
@@ -77,13 +77,13 @@ test("fluxo completo de um TR fictício, do login ao PDF", async ({ page, contex
   await item.getByRole("button", { name: "Incluir item" }).click();
   await expect(page.getByText("Item 1 salvo.")).toBeVisible();
   await expect(page.getByText(/ME\/EPP: Exclusivo/)).toBeVisible();
-  await page.getByRole("button", { name: "Seguir para o wizard →" }).click();
+  await page.getByRole("button", { name: "Seguir para o wizard" }).click();
   await page.waitForURL(/\/wizard$/);
 
   // Wizard: responde cada pergunta pendente (primeira opção, ou texto fictício) até não sobrar nenhuma
   for (let vez = 0; vez < 80; vez++) {
-    const titulo = await page.getByRole("heading", { name: /^Perguntas \(\d+ sem resposta\)$/ }).innerText();
-    if (titulo.includes("(0 sem resposta)")) break;
+    const titulo = await page.getByRole("heading", { name: /^Perguntas \d+ sem resposta$/ }).innerText();
+    if (/\b0 sem resposta$/.test(titulo)) break;
     const pergunta = page.locator("section[aria-live]");
     const opcoes = pergunta.locator('input[name="valor"][type="radio"], input[name="valor"][type="checkbox"]');
     if ((await opcoes.count()) > 0) await opcoes.first().check();
@@ -94,7 +94,7 @@ test("fluxo completo de um TR fictício, do login ao PDF", async ({ page, contex
     await pergunta.getByRole("button", { name: "Salvar e ir para a próxima" }).click();
     await page.waitForURL((u) => u.toString() !== antes);
   }
-  await expect(page.getByRole("heading", { name: "Perguntas (0 sem resposta)" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Perguntas 0 sem resposta" })).toBeVisible();
 
   // Dados que as validações de bloqueio pedem, quando faltam: número do processo (sugerido; o Word fictício já o
   // traz no cabeçalho) e versão do modelo AGU
@@ -105,14 +105,14 @@ test("fluxo completo de um TR fictício, do login ao PDF", async ({ page, contex
     await campo(id).getByRole("button", { name: `Salvar ${id}` }).click();
     await expect(campo(id).getByText(`Feito: ${id} salva.`)).toBeVisible();
   }
-  await page.getByRole("button", { name: "Seguir para a minuta →" }).click();
+  await page.getByRole("button", { name: "Seguir para a minuta" }).click();
   await page.waitForURL(/\/revisao$/);
 
   // Minuta sem travas; um trecho mostra a origem
-  await expect(page.getByRole("heading", { name: /Sem travas/ })).toBeVisible();
+  await expect(page.getByText("Sem travas: a minuta pode ser exportada")).toBeVisible();
   await page.locator("article details").nth(3).locator("summary").click();
   await expect(page.locator("article details[open]").getByText(/Bloco TR-/)).toBeVisible();
-  await page.getByRole("button", { name: "Seguir para exportar →" }).click();
+  await page.getByRole("button", { name: "Seguir para exportar" }).click();
   await page.waitForURL(/\/exportar$/);
 
   // Cópia de todas as seções, uma por uma
@@ -122,7 +122,7 @@ test("fluxo completo de um TR fictício, do login ao PDF", async ({ page, contex
   expect(secoes).toBeGreaterThan(10);
   for (let k = 0; k < secoes; k++) {
     await linhas.nth(k).getByRole("button", { name: "Copiar", exact: true }).click();
-    await expect(linhas.nth(k).getByText("✓ Copiado")).toBeVisible();
+    await expect(linhas.nth(k).getByText("Copiado", { exact: true })).toBeVisible();
     await expect(linhas.nth(k).getByRole("button", { name: "Copiar", exact: true })).toBeEnabled();
   }
   expect(await page.evaluate(() => navigator.clipboard.readText())).not.toBe("");
@@ -133,7 +133,7 @@ test("fluxo completo de um TR fictício, do login ao PDF", async ({ page, contex
   expect(pdf.subarray(0, 5).toString()).toBe("%PDF-");
   await page.reload();
   await expect(page.getByText(/PDF baixado 1 vez/)).toBeVisible();
-  await expect(page.getByText(`${secoes} de ${secoes} seção(ões) copiada(s)`)).toBeVisible();
+  await expect(page.getByText(`${secoes} de ${secoes} copiadas`)).toBeVisible();
 
   // Conclusão
   await page.getByLabel(/Confirmo que a minuta foi copiada e revisada/).check();

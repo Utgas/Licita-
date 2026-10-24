@@ -11,7 +11,7 @@ export function NovoUsuario() {
       <Campo rotulo="E-mail" nome="email" tipo="email" autoComplete="off" />
       <label className="flex flex-col gap-1 text-sm font-medium">
         Perfil
-        <select name="perfil" className="min-h-11 rounded border border-zinc-500 px-3 text-base font-normal" defaultValue="OPERADOR">
+        <select name="perfil" className="min-h-11 rounded-sm border border-linha-forte px-3 text-base font-normal" defaultValue="OPERADOR">
           <option value="OPERADOR">Operador (elabora TR e ETP)</option>
           <option value="ADMINISTRADOR">Administrador da TI</option>
         </select>
