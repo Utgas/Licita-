@@ -95,7 +95,19 @@ export function entradaDoProcesso(p: ProcessoCompleto): EntradaProcesso {
       Object.assign(checklist, valores);
     }
   }
-  for (const c of p.complementos) checklist[variavelDoId(c.pergunta)] = c.valor as Valor;
+  const complementoPorItem = new Set(pacote.matrizes.M11.filter((l) => l.checklist === "COMPLEMENTO" && l.por_item === "S").map((l) => l.id));
+  for (const c of p.complementos) {
+    const nome = variavelDoId(c.pergunta);
+    if (!complementoPorItem.has(c.pergunta)) {
+      checklist[nome] = c.valor as Valor;
+      continue;
+    }
+    // Complemento por item: { "1": valor, "3": valor }.
+    for (const [n, v] of Object.entries((c.valor ?? {}) as Record<string, Valor>)) {
+      const item = porNumero.get(Number(n));
+      if (item && v !== null && v !== "") item.respostas_por_item = { ...item.respostas_por_item, [nome]: v };
+    }
+  }
 
   const wizard: Record<string, Valor> = {};
   const variaveis: Record<string, Valor> = {};
@@ -112,7 +124,7 @@ export function entradaDoProcesso(p: ProcessoCompleto): EntradaProcesso {
     ...p.respostasWizard.flatMap((r) => [r.justificativa, r.valor]),
   ].filter((x): x is string => typeof x === "string" && x.trim() !== "");
 
-  const leitura = p.processo.leituraChecklist as LeituraDoChecklist;
+  const leitura = juntarLeituras(p.processo.leituraChecklist as LeiturasGravadas);
   return {
     pacote,
     hashDoPacote: hash,
@@ -131,6 +143,36 @@ export function entradaDoProcesso(p: ProcessoCompleto): EntradaProcesso {
     revisoes_confirmadas: [...new Set(p.revisoes.map((r) => r.pergunta))],
     om: { uasg: p.om.uasg, nome: p.om.nome, cabecalho: p.om.cabecalho, ...(p.om.dados as Record<string, Valor>) },
   };
+}
+
+/** Metadados da leitura do Word, guardados por checklist: cada envio substitui só os do seu checklist. */
+export type LeiturasGravadas = Partial<Record<"CONSUMO" | "PERMANENTES", LeituraDoChecklist>>;
+
+const LISTAS_DA_LEITURA = ["marcas_multiplas", "resposta_unica_por_item", "divergencias_leitura", "leitura_pendencias", "sem_resposta"] as const;
+
+export function juntarLeituras(gravadas: LeiturasGravadas): LeituraDoChecklist {
+  const junta: LeituraDoChecklist = {};
+  for (const leitura of Object.values(gravadas)) {
+    if (!leitura) continue;
+    for (const lista of LISTAS_DA_LEITURA) junta[lista] = [...(junta[lista] ?? []), ...(leitura[lista] ?? [])];
+    // VAL-036 compara o modelo com o M11: basta um checklist fora da versão para acusar.
+    if (leitura.sha256_modelo && (!junta.sha256_modelo || leitura.sha256_modelo !== leitura.sha256_m11)) {
+      junta.sha256_modelo = leitura.sha256_modelo;
+      junta.sha256_m11 = leitura.sha256_m11;
+    }
+  }
+  return junta;
+}
+
+/** Tira uma pergunta das listas da leitura (o operador corrigiu ou confirmou a resposta na tela). */
+export function semPerguntaNaLeitura(gravadas: LeiturasGravadas, pergunta: string): LeiturasGravadas {
+  const novas: LeiturasGravadas = {};
+  for (const [c, leitura] of Object.entries(gravadas) as [keyof LeiturasGravadas, LeituraDoChecklist][]) {
+    const copia: LeituraDoChecklist = { ...leitura };
+    for (const lista of LISTAS_DA_LEITURA) if (copia[lista]) copia[lista] = copia[lista].filter((x) => x !== pergunta);
+    novas[c] = copia;
+  }
+  return novas;
 }
 
 export function minutaDoProcesso(p: ProcessoCompleto): Minuta {

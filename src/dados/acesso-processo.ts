@@ -39,3 +39,20 @@ export async function gravarNoProcesso<T>(
     return resultado;
   });
 }
+
+const ORDEM_DAS_ETAPAS = ["CHECKLIST", "ITENS", "WIZARD", "MINUTA", "EXPORTACAO"] as const;
+
+/** Leva o processo à etapa indicada, se ele ainda não passou dela (o painel mostra a etapa mais adiantada). */
+export async function avancarEtapa(tx: Transacao, p: ProcessoCompleto, etapa: (typeof ORDEM_DAS_ETAPAS)[number]): Promise<void> {
+  if (ORDEM_DAS_ETAPAS.indexOf(etapa) > ORDEM_DAS_ETAPAS.indexOf(p.processo.etapa)) {
+    await tx.update(processo).set({ etapa }).where(eq(processo.id, p.processo.id));
+  }
+}
+
+/** Mensagem de erro de uma ação: processo concluído ou falha inesperada (sem detalhes internos na tela). */
+export function mensagemDeErro(e: unknown): string {
+  if (e instanceof ProcessoConcluido) return e.message;
+  if (e && typeof e === "object" && "digest" in e) throw e; // redirect e notFound seguem adiante
+  console.error(e);
+  return "Não foi possível salvar. Tente de novo.";
+}

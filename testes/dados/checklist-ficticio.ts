@@ -82,6 +82,6 @@ export class ChecklistFicticio {
 
   async gerar(): Promise<Uint8Array> {
     this.zip.file("word/document.xml", this.xml);
-    return this.zip.generateAsync({ type: "uint8array" });
+    return this.zip.generateAsync({ type: "uint8array", compression: "DEFLATE" });
   }
 }
