@@ -55,20 +55,18 @@ export const processo = pgTable("processo", {
 
 const doProcesso = () => uuid("processo_id").notNull().references(() => processo.id, { onDelete: "cascade" });
 
-export const respostaChecklist = pgTable(
-  "resposta_checklist",
-  {
-    processoId: doProcesso(),
-    pergunta: text("pergunta").notNull(),
-    valor: jsonb("valor"),
-    texto: text("texto"),
-    numero: numeric("numero"),
-    itens: integer("itens").array(),
-    origem: text("origem", { enum: ["LEITURA_WORD", "OPERADOR"] }).notNull(),
-    atualizadoEm: momento("atualizado_em").notNull().defaultNow(),
-  },
-  (t) => [primaryKey({ columns: [t.processoId, t.pergunta] })],
-);
+/** Uma linha por pergunta e conjunto de itens (itens vazio = vale para o processo inteiro). */
+export const respostaChecklist = pgTable("resposta_checklist", {
+  id: bigint("id", { mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
+  processoId: doProcesso(),
+  pergunta: text("pergunta").notNull(),
+  valor: jsonb("valor"),
+  texto: text("texto"),
+  numero: numeric("numero"),
+  itens: integer("itens").array().notNull().default([]),
+  origem: text("origem", { enum: ["LEITURA_WORD", "OPERADOR"] }).notNull(),
+  atualizadoEm: momento("atualizado_em").notNull().defaultNow(),
+});
 
 export const revisaoConfirmada = pgTable(
   "revisao_confirmada",
