@@ -10,6 +10,9 @@ import { carregarUsuario } from "@/auth/sessao.ts";
 import { bancoDaAplicacao, comoUsuario } from "@/dados/conexao.ts";
 
 export async function POST(request: NextRequest) {
+  // Só aceita o pedido vindo das próprias telas: outro site não desconecta o usuário (CSRF).
+  const origem = request.headers.get("origin");
+  if (origem && origem !== request.nextUrl.origin) return new Response("Origem recusada.", { status: 403 });
   const resposta = NextResponse.redirect(new URL("/login", request.url), 303);
   const supabase = clienteDaSessao({
     getAll: () => request.cookies.getAll(),

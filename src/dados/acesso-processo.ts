@@ -59,6 +59,19 @@ export async function avancarEtapa(tx: Transacao, p: ProcessoCompleto, etapa: (t
 export function mensagemDeErro(e: unknown): string {
   if (e instanceof ProcessoConcluido || e instanceof EntradaRecusada) return e.message;
   if (e && typeof e === "object" && "digest" in e) throw e; // redirect e notFound seguem adiante
-  console.error(e);
+  console.error(registroTecnico(e));
   return "Não foi possível salvar. Tente de novo.";
+}
+
+/**
+ * O que vai para o registro técnico de um erro: tipo, código do PostgreSQL e a primeira linha da mensagem. Nunca a
+ * consulta com os valores (o erro do Drizzle traz os parâmetros, que podem ter texto do processo) nem a pilha com
+ * dados (arquitetura, "Registros técnicos").
+ */
+export function registroTecnico(e: unknown): string {
+  if (!(e instanceof Error)) return "erro sem detalhes";
+  const causa = (e as { cause?: { code?: unknown; routine?: unknown } }).cause;
+  const consulta = e.message.startsWith("Failed query");
+  const mensagem = consulta ? "falha na consulta ao banco" : e.message.split("\n")[0].slice(0, 200);
+  return [e.name, mensagem, causa?.code ? `código ${String(causa.code)}` : null].filter(Boolean).join(" · ");
 }
