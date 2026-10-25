@@ -57,7 +57,7 @@ async function Conteudo({ params }: PageProps<"/processos/[id]/etp">) {
   return (
     <>
       <CabecalhoDoProcesso usuario={usuario} p={p} pendencias={pendenciasDaMinuta(minuta)} atual="etp" />
-      <main className="mx-auto grid w-full max-w-[1400px] grid-cols-[minmax(0,1fr)] gap-6 px-4 py-6 md:px-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
+      <main id="conteudo" className="mx-auto grid w-full max-w-[1400px] grid-cols-[minmax(0,1fr)] gap-6 px-4 py-6 md:px-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
         <aside className="flex flex-col gap-4 xl:sticky xl:top-4 xl:order-2 xl:max-h-[calc(100vh-2rem)] xl:self-start xl:overflow-y-auto">
           {!liberado ? (
             <Aviso tipo="trava" titulo="O ETP espera as dúvidas da leitura do checklist">

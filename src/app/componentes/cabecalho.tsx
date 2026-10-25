@@ -11,6 +11,7 @@ const NAVEGACAO = {
   ADMINISTRADOR: [
     { href: "/admin", rotulo: "Usuários" },
     { href: "/admin/auditoria", rotulo: "Auditoria" },
+    { href: "/admin/pedidos", rotulo: "Pedidos LGPD" },
   ],
 } as const;
 
@@ -35,6 +36,9 @@ export function Cabecalho({ usuario }: { usuario: UsuarioLogado }) {
           <span className="hidden pr-2 text-folha/80 sm:inline">
             {usuario.nome} · {usuario.perfil === "ADMINISTRADOR" ? "Administrador da TI" : "Operador"}
           </span>
+          <Link href="/meus-dados" className="flex min-h-11 items-center px-2 text-folha underline decoration-folha/40 hover:decoration-folha">
+            Meus dados
+          </Link>
           <Link href="/trocar-senha" className="flex min-h-11 items-center px-2 text-folha underline decoration-folha/40 hover:decoration-folha">
             Alterar minha senha
           </Link>
@@ -56,5 +60,5 @@ export function Carregando() {
 
 /** Área de conteúdo com largura máxima e margens iguais em todas as telas. */
 export function Conteudo({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <main className={`mx-auto flex w-full max-w-[1400px] flex-col gap-8 px-4 py-6 md:px-6 ${className}`}>{children}</main>;
+  return <main id="conteudo" className={`mx-auto flex w-full max-w-[1400px] flex-col gap-8 px-4 py-6 md:px-6 ${className}`}>{children}</main>;
 }

@@ -72,7 +72,7 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/wiz
   return (
     <>
       <CabecalhoDoProcesso usuario={usuario} p={p} pendencias={pendenciasDaMinuta(minuta)} atual="wizard" />
-      <main className="mx-auto flex w-full max-w-[1400px] flex-col gap-8 px-4 py-6 md:px-6">
+      <main id="conteudo" className="mx-auto flex w-full max-w-[1400px] flex-col gap-8 px-4 py-6 md:px-6">
         <div className="grid gap-6 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]">
           <nav aria-label="Perguntas do wizard" className="flex flex-col border border-linha bg-folha lg:sticky lg:top-4 lg:self-start">
             <h2 className="flex items-baseline justify-between gap-2 border-b border-linha px-4 py-3 font-semibold">

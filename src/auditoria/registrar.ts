@@ -27,7 +27,10 @@ export type Acao =
   | "PDF_BAIXADO"
   | "ETP_CAMPO_COPIADO"
   | "PDF_ETP_BAIXADO"
-  | "PROCESSO_CONCLUIDO";
+  | "PROCESSO_CONCLUIDO"
+  | "DADOS_PESSOAIS_EXPORTADOS"
+  | "SOLICITACAO_TITULAR_CRIADA"
+  | "SOLICITACAO_TITULAR_RESPONDIDA";
 
 export type Registro = {
   usuarioId: string;

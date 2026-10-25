@@ -27,7 +27,7 @@ export function PaginaDeAcesso({ titulo, children }: { titulo: string; children:
         </div>
         <p className="text-xs text-folha/60">Acesso restrito à equipe de licitação. Toda ação fica registrada na auditoria.</p>
       </aside>
-      <main className="flex flex-col justify-center px-6 py-10 md:px-16">
+      <main id="conteudo" className="flex flex-col justify-center px-6 py-10 md:px-16">
         <div className="mx-auto flex w-full max-w-sm flex-col gap-6">
           <p className="flex items-center gap-3 text-lg font-semibold md:hidden">
             <Marca tamanho={28} />

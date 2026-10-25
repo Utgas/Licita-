@@ -6,7 +6,8 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { clienteDaSessao } from "./auth/supabase.ts";
 
-const PUBLICAS = ["/login", "/esqueci-senha", "/sair"];
+// Política de privacidade e termos de uso ficam abertos: quem ainda não entrou precisa poder lê-los (decisão 0017).
+const PUBLICAS = ["/login", "/esqueci-senha", "/sair", "/privacidade", "/termos"];
 
 export async function proxy(request: NextRequest) {
   let resposta = NextResponse.next({ request });

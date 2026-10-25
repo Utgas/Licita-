@@ -70,7 +70,7 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/che
   return (
     <>
       <CabecalhoDoProcesso usuario={usuario} p={p} pendencias={pendenciasDaMinuta(minuta)} atual="checklist" />
-      <main className="mx-auto flex w-full max-w-[1400px] flex-col gap-8 px-4 py-6 md:px-6">
+      <main id="conteudo" className="mx-auto flex w-full max-w-[1400px] flex-col gap-8 px-4 py-6 md:px-6">
         {!somenteLeitura && (
           <section className="flex flex-col gap-4 border border-linha bg-folha p-4 md:p-5">
             <TituloDeSecao>Enviar o checklist preenchido</TituloDeSecao>

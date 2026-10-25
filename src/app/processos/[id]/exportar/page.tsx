@@ -38,7 +38,7 @@ async function Conteudo({ params }: PageProps<"/processos/[id]/exportar">) {
   return (
     <>
       <CabecalhoDoProcesso usuario={usuario} p={p} pendencias={pendenciasDaMinuta(minuta)} atual="exportar" />
-      <main className="mx-auto flex w-full max-w-[1400px] flex-col gap-6 px-4 py-6 md:px-6">
+      <main id="conteudo" className="mx-auto flex w-full max-w-[1400px] flex-col gap-6 px-4 py-6 md:px-6">
         {minuta.bloqueada ? (
           <Aviso tipo="trava" titulo="Exportação bloqueada: a minuta tem travas">
             <p>

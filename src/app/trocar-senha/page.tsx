@@ -17,7 +17,7 @@ async function Conteudo() {
   return (
     <>
       <Cabecalho usuario={usuario} />
-      <main className="mx-auto flex w-full max-w-md flex-col gap-4 p-6">
+      <main id="conteudo" className="mx-auto flex w-full max-w-md flex-col gap-4 p-6">
         <h1 className="text-2xl font-semibold">{usuario.senhaProvisoria ? "Crie a sua senha" : "Alterar minha senha"}</h1>
         {usuario.senhaProvisoria && (
           <p className="rounded-sm border border-atencao bg-atencao-fundo p-3 text-atencao">

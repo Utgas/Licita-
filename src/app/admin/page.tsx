@@ -23,7 +23,7 @@ async function Conteudo() {
   return (
     <>
       <Cabecalho usuario={admin} />
-      <main className="mx-auto flex w-full max-w-[1400px] flex-col gap-8 px-4 py-6 md:px-6">
+      <main id="conteudo" className="mx-auto flex w-full max-w-[1400px] flex-col gap-8 px-4 py-6 md:px-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-2xl font-semibold">Usuários da OM</h1>
           <Link href="/admin/auditoria" className="flex min-h-11 items-center text-link underline">

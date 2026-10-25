@@ -26,7 +26,7 @@ async function Conteudo() {
   return (
     <>
       <Cabecalho usuario={admin} />
-      <main className="flex flex-col gap-4 p-6">
+      <main id="conteudo" className="flex flex-col gap-4 p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-2xl font-semibold">Auditoria</h1>
           <Link href="/admin" className="flex min-h-11 items-center text-link underline">
