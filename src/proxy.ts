@@ -29,6 +29,6 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Tudo, menos os arquivos do próprio Next e o ícone.
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  // Tudo, menos os arquivos do próprio Next e os ícones da aba.
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.svg|apple-icon.png).*)"],
 };
