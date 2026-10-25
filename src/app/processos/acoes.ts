@@ -10,8 +10,8 @@ import { processo, respostaWizard } from "@/dados/esquema.ts";
 import { PACOTE_ATUAL, carregarPacote } from "@/dados/pacote.ts";
 
 const novo = z.object({
-  numero: z.string().trim().min(5, "Informe o número do processo."),
-  objeto: z.string().trim().min(5, "Descreva o objeto em poucas palavras."),
+  numero: z.string().trim().min(5, "Informe o número do processo.").max(60, "Número do processo longo demais."),
+  objeto: z.string().trim().min(5, "Descreva o objeto em poucas palavras.").max(500, "Resuma o objeto em até 500 caracteres."),
   modalidade: z.enum(["PREGAO", "CONCORRENCIA", "CONTRATACAO_DIRETA"], { message: "Escolha a modalidade." }),
   registroPrecos: z.enum(["SIM", "NAO"], { message: "Diga se é registro de preços." }),
   checklists: z.array(z.enum(["CONSUMO", "PERMANENTES"])).min(1, "Marque ao menos um checklist."),

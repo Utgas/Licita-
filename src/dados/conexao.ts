@@ -20,9 +20,16 @@ let banco: Banco | undefined;
 export function bancoDaAplicacao(url = process.env.DATABASE_URL): Banco {
   if (banco) return banco;
   if (!url) throw new Error("DATABASE_URL não definida");
-  // prepare: false porque o pooler em modo transação não guarda comandos preparados entre conexões.
-  banco = drizzle(postgres(url, { prepare: false, max: 5 }), { schema: esquema });
+  // prepare: false porque o pooler em modo transação não guarda comandos preparados entre conexões. Fora da máquina
+  // local, a conexão é sempre cifrada (TLS), mesmo se a URL não pedir.
+  banco = drizzle(postgres(url, { prepare: false, max: 5, ...(exigeTls(url) ? { ssl: "require" as const } : {}) }), { schema: esquema });
   return banco;
+}
+
+/** TLS obrigatório, menos no banco local e quando a própria URL já diz o sslmode. */
+export function exigeTls(url: string): boolean {
+  const { hostname, searchParams } = new URL(url);
+  return !["127.0.0.1", "localhost", "::1", "[::1]"].includes(hostname) && !searchParams.has("sslmode");
 }
 
 /** Roda `fazer` com o papel authenticated e o id do usuário: o RLS vale para tudo que estiver dentro. */
@@ -30,6 +37,17 @@ export async function comoUsuario<T>(db: Banco, usuarioId: string, fazer: (tx: T
   return db.transaction(async (tx) => {
     const claims = JSON.stringify({ sub: usuarioId, role: "authenticated" });
     await tx.execute(sql`select set_config('request.jwt.claims', ${claims}, true), set_config('role', 'authenticated', true)`);
+    return fazer(tx);
+  });
+}
+
+/**
+ * Roda `fazer` com o papel authenticated e sem usuário (antes do login): o RLS não deixa ler nem gravar tabela
+ * nenhuma; só as funções do esquema privado liberadas para esse papel (limite de tentativas de login).
+ */
+export async function semSessao<T>(db: Banco, fazer: (tx: Transacao) => Promise<T>): Promise<T> {
+  return db.transaction(async (tx) => {
+    await tx.execute(sql`select set_config('request.jwt.claims', '{"role":"authenticated"}', true), set_config('role', 'authenticated', true)`);
     return fazer(tx);
   });
 }

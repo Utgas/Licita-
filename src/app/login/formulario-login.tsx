@@ -9,6 +9,13 @@ export function FormularioLogin({ volta }: { volta: string | null }) {
   return (
     <form action={acao} className="flex flex-col gap-4">
       {volta && <input type="hidden" name="volta" value={volta} />}
+      {/* Armadilha para robôs (decisão 0017): fora da tela, fora da ordem do Tab e escondida do leitor de tela. */}
+      <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
+        <label>
+          Não preencha
+          <input type="text" name="site" tabIndex={-1} autoComplete="off" defaultValue="" />
+        </label>
+      </div>
       <Campo key={resultado?.email} rotulo="E-mail" nome="email" tipo="email" autoComplete="username" valorInicial={resultado?.email} />
       <Campo rotulo="Senha" nome="senha" tipo="password" autoComplete="current-password" />
       <Mensagem resultado={resultado} />

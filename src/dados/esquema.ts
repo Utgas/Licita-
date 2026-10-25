@@ -154,3 +154,27 @@ export const auditoria = pgTable("auditoria", {
   hashPacote: text("hash_pacote"),
   hashPdf: text("hash_pdf"),
 });
+
+export const TIPOS_DE_SOLICITACAO = [
+  "CONFIRMACAO_ACESSO",
+  "CORRECAO",
+  "ANONIMIZACAO_BLOQUEIO_ELIMINACAO",
+  "PORTABILIDADE",
+  "INFORMACAO_COMPARTILHAMENTO",
+  "OPOSICAO",
+  "OUTRO",
+] as const;
+
+/** Pedido do titular (LGPD, art. 18): o usuário escreve o pedido; o administrador da TI da OM, a resposta. */
+export const solicitacaoTitular = pgTable("solicitacao_titular", {
+  id: bigint("id", { mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
+  usuarioId: uuid("usuario_id").notNull().references(() => usuario.id),
+  omId: uuid("om_id").notNull().references(() => om.id),
+  tipo: text("tipo", { enum: TIPOS_DE_SOLICITACAO }).notNull(),
+  descricao: text("descricao").notNull(),
+  situacao: text("situacao", { enum: ["ABERTA", "RESPONDIDA"] }).notNull().default("ABERTA"),
+  resposta: text("resposta"),
+  criadaEm: momento("criada_em").notNull().defaultNow(),
+  respondidaEm: momento("respondida_em"),
+  respondidaPor: uuid("respondida_por").references(() => usuario.id),
+});

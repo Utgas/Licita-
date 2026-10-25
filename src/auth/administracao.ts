@@ -13,14 +13,15 @@ import { PERFIS, usuario } from "../dados/esquema.ts";
 import type { Resultado } from "./acoes.ts";
 import { gerarSenhaProvisoria } from "./senha.ts";
 import { exigirUsuario } from "./sessao.ts";
+import { limparFalhas, marcador } from "./tentativas.ts";
 import { clienteAdministrativo } from "./supabase.ts";
 
 // Banimento longo = acesso desativado no Supabase Auth (não entra mais, nem com a senha certa).
 const DESATIVADO = "876000h";
 
 const novoUsuario = z.object({
-  nome: z.string().trim().min(3, "Informe o nome completo."),
-  email: z.string().trim().toLowerCase().email("E-mail inválido."),
+  nome: z.string().trim().min(3, "Informe o nome completo.").max(120, "Nome longo demais."),
+  email: z.string().trim().toLowerCase().max(254, "E-mail longo demais.").email("E-mail inválido."),
   perfil: z.enum(PERFIS),
 });
 
@@ -60,6 +61,8 @@ export async function definirSenhaProvisoria(_anterior: Resultado, dados: FormDa
   const senha = gerarSenhaProvisoria();
   const { error } = await clienteAdministrativo().auth.admin.updateUserById(alvo.id, { password: senha });
   if (error) return { erro: "Não foi possível trocar a senha." };
+  // Senha nova da TI libera o e-mail bloqueado por tentativas erradas.
+  await limparFalhas({ email: marcador("EMAIL", alvo.email), ip: "" });
   await comoUsuario(bancoDaAplicacao(), admin.id, async (tx) => {
     await tx.update(usuario).set({ senhaProvisoria: true }).where(and(eq(usuario.id, alvo.id), eq(usuario.omId, admin.omId)));
     await registrar(tx, { usuarioId: admin.id, omId: admin.omId, acao: "SENHA_PROVISORIA_DEFINIDA", detalhes: { usuario: alvo.id } });

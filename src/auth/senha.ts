@@ -7,11 +7,12 @@ export const TAMANHO_MINIMO = 10;
 const LETRAS = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ";
 const DIGITOS = "23456789";
 
-/** Senha provisória de 12 caracteres, com letras e dígitos, para a TI entregar ao usuário. */
+/** Senha provisória de 12 caracteres, com ao menos uma letra e um dígito, para a TI entregar ao usuário. */
 export function gerarSenhaProvisoria(): string {
   const todos = LETRAS + DIGITOS;
-  const caracteres = Array.from({ length: 11 }, () => todos[randomInt(todos.length)]);
-  caracteres.splice(randomInt(12), 0, DIGITOS[randomInt(DIGITOS.length)]);
+  const caracteres = Array.from({ length: 10 }, () => todos[randomInt(todos.length)]);
+  caracteres.splice(randomInt(11), 0, DIGITOS[randomInt(DIGITOS.length)]);
+  caracteres.splice(randomInt(12), 0, LETRAS[randomInt(LETRAS.length)]);
   return caracteres.join("");
 }
 
