@@ -1,0 +1,14 @@
+/**
+ * Marca do Licita+: folha com o "+" sobre o verde-oliva da marca. O mesmo desenho está em src/app/icon.svg (ícone da
+ * aba); favicon.ico e apple-icon.png foram gerados dele.
+ */
+export function Marca({ tamanho }: { tamanho: number }) {
+  return (
+    <svg aria-hidden viewBox="0 0 32 32" width={tamanho} height={tamanho} className="shrink-0">
+      <rect width="32" height="32" rx="6" fill="#4b5a32" />
+      <path d="M9 5h10l6 6v15a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" fill="#fff" />
+      <path d="M19 5v6h6z" fill="#c5cdb4" />
+      <path d="M14.75 13h2.5v4h4v2.5h-4v4h-2.5v-4h-4V17h4z" fill="#4b5a32" />
+    </svg>
+  );
+}
