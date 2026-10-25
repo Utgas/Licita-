@@ -169,7 +169,8 @@ export function formatar(v: Valor, formato: string | undefined, unidade?: Valor)
       if (!s) throw new FormatoInvalido("mês inválido");
       break;
     case "ANO":
-      s = partesDaData(v)[2];
+      // Data (o ano dela) ou o próprio ano, como número ou texto de quatro dígitos (VAR-038, ano do PCA).
+      s = /^\d{4}$/.test(String(v)) ? String(v) : partesDaData(v)[2];
       break;
     case "LISTA_TEXTO":
       s = listaEmTexto(Array.isArray(v) ? v : [v]);

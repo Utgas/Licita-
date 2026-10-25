@@ -835,10 +835,15 @@ export function compilar(dirMatrizes: string = DIR_MATRIZES, opcoes: Opcoes = {}
   return compilarConteudos(conteudos, opcoes);
 }
 
+/**
+ * Grava o pacote atual e uma cópia em historico/<sha256>.json. A cópia nunca é apagada: o processo guarda o hash do
+ * pacote com que nasceu e continua abrindo depois de uma correção nas matrizes (arquitetura, princípio 5).
+ */
 export function gravarPacote(pacote: { json: string; sha256: string }, dirSaida: string = DIR_PACOTE): void {
-  mkdirSync(dirSaida, { recursive: true });
+  mkdirSync(path.join(dirSaida, "historico"), { recursive: true });
   writeFileSync(path.join(dirSaida, "pacote.json"), pacote.json);
   writeFileSync(path.join(dirSaida, "pacote.sha256"), `${pacote.sha256}  pacote.json\n`);
+  writeFileSync(path.join(dirSaida, "historico", `${pacote.sha256}.json`), pacote.json);
 }
 
 export function formatarRelatorio(resultado: Resultado, opcoes: Opcoes = {}): string {

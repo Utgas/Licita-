@@ -2,6 +2,9 @@
  * Pacote de regras no servidor: lido de regras/<nome>/pacote.json uma vez por instância, conferido pelo esquema do
  * motor e pelo hash gravado ao lado (pacote.sha256). Hash diferente é erro: o processo nunca roda com regra
  * adulterada.
+ *
+ * O processo guarda o hash do pacote com que nasceu. Depois de uma correção nas matrizes, ele continua com o pacote
+ * dele, guardado pelo compilador em regras/<nome>/historico/<hash>.json (arquitetura, princípio 5).
  */
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
@@ -15,16 +18,26 @@ export type PacoteCarregado = { pacote: Pacote; hash: string };
 
 const carregados = new Map<string, PacoteCarregado>();
 
-export function carregarPacote(nome: string = PACOTE_ATUAL): PacoteCarregado {
-  const pronto = carregados.get(nome);
-  if (pronto) return pronto;
+/**
+ * Pacote atual (sem `hash`) ou o de um processo: com o `hash` gravado no processo, vem o pacote exato com que ele
+ * nasceu, do histórico quando as matrizes já mudaram. Hash que não está em lugar nenhum é erro.
+ */
+export function carregarPacote(nome: string = PACOTE_ATUAL, hash?: string): PacoteCarregado {
   if (!/^[a-z0-9-]+$/.test(nome)) throw new Error(`nome de pacote inválido: ${nome}`);
   const pasta = path.join(process.cwd(), "regras", nome);
-  const bruto = readFileSync(path.join(pasta, "pacote.json"));
+  const atual = carregados.get(nome) ?? lerPacote(path.join(pasta, "pacote.json"), readFileSync(path.join(pasta, "pacote.sha256"), "utf8").split(/\s+/)[0]);
+  carregados.set(nome, atual);
+  if (hash === undefined || hash === atual.hash) return atual;
+  if (!/^[0-9a-f]{64}$/.test(hash)) throw new Error(`hash de pacote inválido: ${hash}`);
+  const chave = `${nome}@${hash}`;
+  const antigo = carregados.get(chave) ?? lerPacote(path.join(pasta, "historico", `${hash}.json`), hash);
+  carregados.set(chave, antigo);
+  return antigo;
+}
+
+function lerPacote(arquivo: string, hashEsperado: string): PacoteCarregado {
+  const bruto = readFileSync(arquivo);
   const hash = createHash("sha256").update(bruto).digest("hex");
-  const gravado = readFileSync(path.join(pasta, "pacote.sha256"), "utf8").split(/\s+/)[0];
-  if (hash !== gravado) throw new Error(`pacote ${nome} não confere com o hash gravado`);
-  const carregado = { pacote: esquemaDoPacote.parse(JSON.parse(bruto.toString("utf8"))), hash };
-  carregados.set(nome, carregado);
-  return carregado;
+  if (hash !== hashEsperado) throw new Error(`pacote ${arquivo} não confere com o hash ${hashEsperado}`);
+  return { pacote: esquemaDoPacote.parse(JSON.parse(bruto.toString("utf8"))), hash };
 }

@@ -48,7 +48,7 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/che
   const { ver } = await searchParams;
   const todas = ver === "todas";
   const { usuario, p } = await abrirProcesso(id);
-  const { pacote } = carregarPacote(p.processo.pacote);
+  const { pacote } = carregarPacote(p.processo.pacote, p.processo.pacoteHash);
   const minuta = minutaDoProcesso(p);
   const somenteLeitura = p.processo.situacao === "CONCLUIDO";
 

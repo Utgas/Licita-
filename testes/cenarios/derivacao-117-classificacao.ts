@@ -8,7 +8,7 @@
  * - não comparado: a comparação do M06 não leu o trecho (NAO_LIDO); nada a reproduzir.
  *
  * `matriz`: observação para o agente das matrizes, quando o M06 deixa de ligar o bloco ao campo do ETP que a
- * própria evidência compara.
+ * própria evidência compara. (TR-4.H04, TR-5.4 e TR-5.5 já foram ligados em 25/10/2026.)
  */
 export type ClasseDaDerivacao = {
   tipo: "documento real" | "não comparado";
@@ -42,7 +42,6 @@ export const CLASSIFICACAO_117: Record<string, ClasseDaDerivacao> = {
     tipo: "documento real",
     motivo: "o ETP real justificou amostra e o TR real não a previu; no sistema a amostra do TR e a justificativa no ETP saem da mesma pergunta do wizard",
     mesmaFonte: ["WZ-20"],
-    matriz: "M06 sem campo do ETP no TR-4.H04, embora a evidência do par 117 compare com o ETP (amostra no ETP-04.01)",
   },
   "TR-5.1": {
     tipo: "documento real",
@@ -53,14 +52,12 @@ export const CLASSIFICACAO_117: Record<string, ClasseDaDerivacao> = {
     tipo: "documento real",
     motivo: "endereços de entrega diferentes no ETP e no TR reais; no sistema os dois leem a mesma VAR",
     mesmaFonte: ["VAR-064"],
-    matriz: "M06 sem campo do ETP no TR-5.4, embora a VAR-064 esteja no ETP-04.01 (M05.usada_em)",
   },
   "TR-5.5": {
     tipo: "documento real",
     motivo:
       "o TR real trouxe as duas opções de garantia do grupo GA-07 e o ETP não tratou de garantia; no sistema o grupo admite uma opção só, escolhida pela categoria do bem, que é a mesma nos dois",
     mesmaFonte: ["VAR-019"],
-    matriz: "M06 sem campo do ETP no TR-5.5; a categoria do bem (VAR-019) já vai para o ETP-06.01 pelo M06 do TR-5.6",
   },
   "TR-9.4": {
     tipo: "documento real",
