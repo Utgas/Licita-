@@ -1,18 +1,45 @@
 "use client";
 /** Peças de formulário com rótulo, alvo de 44 px e mensagens com texto e ícone (não só cor). */
-import type { ReactNode } from "react";
+import { type KeyboardEvent, type ReactNode, useId, useState } from "react";
 import { useFormStatus } from "react-dom";
 import type { Resultado } from "@/auth/acoes.ts";
 import { Icone } from "./icones.tsx";
 import { CLASSE_DA_CAIXA, classesDoBotao } from "./ui.tsx";
 
 export function Campo(props: { rotulo: string; nome: string; tipo?: string; autoComplete?: string; obrigatorio?: boolean; ajuda?: string; valorInicial?: string }) {
+  const id = useId();
+  const senha = props.tipo === "password";
+  const [visivel, setVisivel] = useState(false);
+  const [maiusculas, setMaiusculas] = useState(false);
+  // Senha: botão para ver o que foi digitado e aviso de Caps Lock, para o erro de digitação aparecer antes de enviar.
+  const conferirMaiusculas = (e: KeyboardEvent<HTMLInputElement>) => setMaiusculas(e.getModifierState("CapsLock"));
   return (
-    <label className="flex flex-col gap-1.5 text-sm font-medium text-tinta">
-      {props.rotulo}
-      <input name={props.nome} type={props.tipo ?? "text"} autoComplete={props.autoComplete} required={props.obrigatorio ?? true} defaultValue={props.valorInicial} className={CLASSE_DA_CAIXA} />
+    <div className="flex flex-col gap-1.5 text-sm font-medium text-tinta">
+      <label htmlFor={id}>{props.rotulo}</label>
+      <div className="flex gap-2">
+        <input
+          id={id}
+          name={props.nome}
+          type={senha && visivel ? "text" : (props.tipo ?? "text")}
+          autoComplete={props.autoComplete}
+          required={props.obrigatorio ?? true}
+          defaultValue={props.valorInicial}
+          className={CLASSE_DA_CAIXA}
+          {...(senha && { autoCapitalize: "none", autoCorrect: "off", spellCheck: false, onKeyUp: conferirMaiusculas, onKeyDown: conferirMaiusculas })}
+        />
+        {senha && (
+          <button type="button" aria-pressed={visivel} onClick={() => setVisivel((v) => !v)} className={`${classesDoBotao("secundario")} shrink-0`}>
+            {visivel ? "Ocultar" : "Mostrar"}
+          </button>
+        )}
+      </div>
+      {senha && maiusculas && (
+        <span className="flex items-center gap-1.5 font-normal text-atencao">
+          <Icone nome="atencao" /> Caps Lock ligado.
+        </span>
+      )}
       {props.ajuda && <span className="font-normal text-tinta-2">{props.ajuda}</span>}
-    </label>
+    </div>
   );
 }
 
