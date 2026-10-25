@@ -125,7 +125,9 @@ O escopo inicial dizia para não guardar conteúdo, mas, para outra pessoa revis
 | Acesso | Login individual por e-mail e senha (decisão 0010); cada usuário vê só os processos da própria OM. Senha esquecida é trocada pela TI, com senha provisória (decisão 0012). O segundo fator é reavaliado antes do piloto |
 | Tráfego | HTTPS obrigatório; banco com criptografia em repouso |
 | Registros técnicos | Sem conteúdo de requisição; sem serviço externo de monitoramento que receba dados |
-| Recursos externos | Páginas sem fonte, script ou imagem de terceiros; tudo servido pelo próprio sistema |
+| Recursos externos | Páginas sem fonte, script ou imagem de terceiros; tudo servido pelo próprio sistema. A política de segurança de conteúdo (CSP) do navegador garante isso (decisão 0017) |
+| Tentativas de login | 5 falhas do mesmo e-mail ou 20 do mesmo IP em 15 minutos bloqueiam; o banco guarda só marcadores cifrados, por 24 horas (decisão 0017) |
+| Direitos do titular | Tela "Meus dados" para ver, copiar e pedir correção ou eliminação; a TI responde (decisão 0017) |
 
 Documento com informação classificada continua fora do sistema. ETP e TR em elaboração são documentos preparatórios, e por isso o acesso fica restrito à equipe até a publicação.
 
@@ -189,6 +191,9 @@ licita-plus/
 │   ├── ia/                       # v2: vazio até o provedor ser aprovado
 │   └── app/                      # telas e rotas
 │       ├── login/
+│       ├── privacidade/          # política de privacidade e cookies, aberta (decisão 0017)
+│       ├── termos/               # termos de uso, abertos (decisão 0017)
+│       ├── meus-dados/           # dados do usuário, cópia em JSON e pedidos da LGPD (decisão 0017)
 │       ├── processos/            # lista e novo processo
 │       │   └── [id]/
 │       │       ├── wizard/
@@ -196,7 +201,7 @@ licita-plus/
 │       │       ├── revisao/      # minuta montada, edição por bloco, alertas
 │       │       ├── exportar/     # PDF e botões de copiar por campo
 │       │       └── etp/          # ETP campo a campo, copiar por campo e PDF (decisão 0015)
-│       └── admin/                # usuários, OMs, pacotes, auditoria
+│       └── admin/                # usuários, OMs, pacotes, auditoria e pedidos da LGPD (admin/pedidos/)
 └── testes/
     ├── motor/                    # testes unitários
     ├── cenarios/                 # C1 a C8 e os dois TRs reais de DEZ/2025
