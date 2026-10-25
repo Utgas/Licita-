@@ -30,7 +30,7 @@ const TRATAMENTOS: Record<string, string> = {
 async function Conteudo({ params }: PageProps<"/processos/[id]/itens">) {
   const { id } = await params;
   const { usuario, p } = await abrirProcesso(id);
-  const { pacote } = carregarPacote(p.processo.pacote);
+  const { pacote } = carregarPacote(p.processo.pacote, p.processo.pacoteHash);
   const minuta = minutaDoProcesso(p);
   const somenteLeitura = p.processo.situacao === "CONCLUIDO";
   const m05 = new Map(pacote.matrizes.M05.map((l) => [l.id, l]));

@@ -2,11 +2,11 @@
   "arquivos_de_origem": {
     "M00_inventario.csv": "fadea60ca9f6ee78ef42aa52e4d8c97f7c6e84d0d13ec6d287b516c0e08c245e",
     "M01_etp_campos.csv": "ae2ee3a5645dddbf828e1c5d26a64522043c36a0e344005f199ecbee9faae12c",
-    "M02_tr_blocos.csv": "3315edc26b105b438bfff69cffaa640c7fb7dec29c5688217dab585b59040fa1",
+    "M02_tr_blocos.csv": "3a01ba45fb0e91c94a613b5bdb88ab70b89e7fffd7dbb96e9f820e84afdbb18a",
     "M03_notas_explicativas.csv": "9c289804aa6541b42da2a9e1ba547cee8c93a7976f24b6635eade293b585d4cb",
     "M04_wizard.csv": "3b2f0e7dfb1ca23572bf942577630c3aab9034c9d3e94803696be05f45ca53bb",
     "M05_variaveis.csv": "67fdffe05aa7a2995b181fd87e701aa6a08fe5e28323528537b43bdc917e3cff",
-    "M06_derivacao_etp_tr.csv": "9e80fd593cae8b37dfaa95191697b814fa77c404ab48d077c6bd535428df6771",
+    "M06_derivacao_etp_tr.csv": "23b2a225103bf2e9194c405959c64732737e1d24f3c70695551c24936a4b6bba",
     "M07_normas.csv": "342db04c347367b575f30b2b3c3106428b7846a8dc6158fd62db0176ed518d29",
     "M08_clausulas_setoriais.csv": "f543d40db7410f6c76ae436e98b50764bf82410b4b2455d87a354d3f23dfd06d",
     "M09_desvios.csv": "3ccb5c4ea6761e8eb028b6eaec9b23d50504cb2c1780f8c7b5b55c4bf3d096e1",
@@ -1749,7 +1749,7 @@
           ]
         },
         "condicao_inclusao": "SE os dados do PCA forem detalhados no próprio TR",
-        "fonte": "TR exemplos/modelo-de-termo-de-referencia-compras-lei-no-14-133-dez-25.docx, word/document.xml, parágrafo 114 (contagem da Fase 0). Caracteres por formatação (P preto, Pi preto itálico, V vermelho, Vi vermelho itálico): Vi:92. Campos INFERIDOS: condicao_inclusao, origem_dado. Fase 10 (23/10/2026): grupo_ativo_expr em JSON Logic, tradução do texto da própria linha feita pelo f10_gerar_expr.py; convenções no README e na P31. Fase 13 (23/10/2026): lacunas_mapa e tabela_colunas INFERIDOS pelo f13_lacunas.py a partir do texto_literal, da coluna lacunas, do M05 (usada_em) e do M04; achado do Marco 1 (ligação só pelo usada_em em 50 de 106 blocos).",
+        "fonte": "TR exemplos/modelo-de-termo-de-referencia-compras-lei-no-14-133-dez-25.docx, word/document.xml, parágrafo 114 (contagem da Fase 0). Caracteres por formatação (P preto, Pi preto itálico, V vermelho, Vi vermelho itálico): Vi:92. Campos INFERIDOS: condicao_inclusao, origem_dado. Fase 10 (23/10/2026): grupo_ativo_expr em JSON Logic, tradução do texto da própria linha feita pelo f10_gerar_expr.py; convenções no README e na P31. Fase 13 (23/10/2026): lacunas_mapa e tabela_colunas INFERIDOS pelo f13_lacunas.py a partir do texto_literal, da coluna lacunas, do M05 (usada_em) e do M04; achado do Marco 1 (ligação só pelo usada_em em 50 de 106 blocos). Correção de 25/10/2026 (dono do projeto): [ANO] com formato ANO; sem ele a VAR-038 (NUMERO) saía 2.026.",
         "formatacao": "VERMELHO_ITALICO",
         "grupo_alternativa": "GA-03 (PCA)",
         "grupo_ativo_expr": {
@@ -1766,6 +1766,7 @@
         "lacunas_mapa": [
           {
             "fonte": "VAR_038",
+            "formato": "ANO",
             "marcador": "[ANO]",
             "ocorrencia": 1
           }
@@ -2192,7 +2193,7 @@
           ]
         },
         "condicao_inclusao": "SE os dados do PCA já constarem das informações básicas do TR Digital",
-        "fonte": "TR exemplos/modelo-de-termo-de-referencia-compras-lei-no-14-133-dez-25.docx, word/document.xml, parágrafo 121 (contagem da Fase 0). Caracteres por formatação (P preto, Pi preto itálico, V vermelho, Vi vermelho itálico): Vi:122. Campos INFERIDOS: condicao_inclusao, origem_dado. Fase 10 (23/10/2026): grupo_ativo_expr em JSON Logic, tradução do texto da própria linha feita pelo f10_gerar_expr.py; convenções no README e na P31. Fase 13 (23/10/2026): lacunas_mapa e tabela_colunas INFERIDOS pelo f13_lacunas.py a partir do texto_literal, da coluna lacunas, do M05 (usada_em) e do M04; achado do Marco 1 (ligação só pelo usada_em em 50 de 106 blocos).",
+        "fonte": "TR exemplos/modelo-de-termo-de-referencia-compras-lei-no-14-133-dez-25.docx, word/document.xml, parágrafo 121 (contagem da Fase 0). Caracteres por formatação (P preto, Pi preto itálico, V vermelho, Vi vermelho itálico): Vi:122. Campos INFERIDOS: condicao_inclusao, origem_dado. Fase 10 (23/10/2026): grupo_ativo_expr em JSON Logic, tradução do texto da própria linha feita pelo f10_gerar_expr.py; convenções no README e na P31. Fase 13 (23/10/2026): lacunas_mapa e tabela_colunas INFERIDOS pelo f13_lacunas.py a partir do texto_literal, da coluna lacunas, do M05 (usada_em) e do M04; achado do Marco 1 (ligação só pelo usada_em em 50 de 106 blocos). Correção de 25/10/2026 (dono do projeto): [ANO] com formato ANO; sem ele a VAR-038 (NUMERO) saía 2.026.",
         "formatacao": "VERMELHO_ITALICO",
         "grupo_alternativa": "GA-03 (PCA)",
         "grupo_ativo_expr": {
@@ -2209,6 +2210,7 @@
         "lacunas_mapa": [
           {
             "fonte": "VAR_038",
+            "formato": "ANO",
             "marcador": "[ANO]",
             "ocorrencia": 1
           }
@@ -35411,15 +35413,15 @@
       },
       {
         "bloco_tr": "TR-4.H04",
-        "campos_etp": "",
+        "campos_etp": "ETP-04.01",
         "classe_origem": "MODELO",
         "evidencia_caso_67_23": "",
         "evidencia_par_117": "O ETP justifica exigência de amostra (8 menções na p.10); o TR não tem nenhuma menção a amostra.",
-        "fonte": "M02 (TR-4.H04: origem_dado, formatacao, condicao_inclusao); M01 destino_tr; M05 usada_em; M04 liga_blocos e desliga_blocos; teste: ETP exemplos/Estudo Técnico Preliminar-2.pdf (ETP 117/2025) e TR exemplos/Termo de Referência-3.pdf (TR 117/2025), páginas indicadas na evidência",
+        "fonte": "M02 (TR-4.H04: origem_dado, formatacao, condicao_inclusao); M01 destino_tr; M05 usada_em; M04 liga_blocos e desliga_blocos; teste: ETP exemplos/Estudo Técnico Preliminar-2.pdf (ETP 117/2025) e TR exemplos/Termo de Referência-3.pdf (TR 117/2025), páginas indicadas na evidência Correção de 25/10/2026 (dono do projeto): campos_etp preenchido; a amostra é justificada no ETP-04.01 (WZ-20), como a evidência do par 117/2025 compara.",
         "perguntas_wz": "WZ-05; WZ-20",
         "regra_derivacao": "Texto do modelo com trechos em vermelho preenchidos ou escolhidos (NE-001, item 3); inclusão ou exclusão decidida por WZ-05, WZ-20.",
         "secao": "4. REQUISITOS DA CONTRATAÇÃO",
-        "status": "EXTRAIDO",
+        "status": "INFERIDO",
         "teste_caso_67_23": "NAO_TESTADO",
         "teste_par_117": "DIVERGENTE",
         "variaveis": ""
@@ -36731,15 +36733,15 @@
       },
       {
         "bloco_tr": "TR-5.4",
-        "campos_etp": "",
+        "campos_etp": "ETP-04.01",
         "classe_origem": "SISTEMA; CHECKLIST",
         "evidencia_caso_67_23": "",
         "evidencia_par_117": "Endereços de entrega diferentes no ETP (p.11) e no TR (p.6); os endereços não são copiados aqui.",
-        "fonte": "M02 (TR-5.4: origem_dado, formatacao, condicao_inclusao); M01 destino_tr; M05 usada_em; M04 liga_blocos e desliga_blocos; teste: ETP exemplos/Estudo Técnico Preliminar-2.pdf (ETP 117/2025) e TR exemplos/Termo de Referência-3.pdf (TR 117/2025), páginas indicadas na evidência",
+        "fonte": "M02 (TR-5.4: origem_dado, formatacao, condicao_inclusao); M01 destino_tr; M05 usada_em; M04 liga_blocos e desliga_blocos; teste: ETP exemplos/Estudo Técnico Preliminar-2.pdf (ETP 117/2025) e TR exemplos/Termo de Referência-3.pdf (TR 117/2025), páginas indicadas na evidência Correção de 25/10/2026 (dono do projeto): campos_etp preenchido; os endereços de entrega (VAR-064) estão no ETP-04.01, como a evidência do par 117/2025 compara.",
         "perguntas_wz": "WZ-28",
         "regra_derivacao": "Texto do modelo com trechos em vermelho preenchidos ou escolhidos (NE-001, item 3); lacunas preenchidas com VAR-064, VAR-131; inclusão ou exclusão decidida por WZ-28.",
         "secao": "5. MODELO DE EXECUÇÃO DO OBJETO",
-        "status": "EXTRAIDO",
+        "status": "INFERIDO",
         "teste_caso_67_23": "NAO_TESTADO",
         "teste_par_117": "DIVERGENTE",
         "variaveis": "VAR-064; VAR-131"
@@ -36776,15 +36778,15 @@
       },
       {
         "bloco_tr": "TR-5.5",
-        "campos_etp": "",
+        "campos_etp": "ETP-06.01",
         "classe_origem": "MODELO",
         "evidencia_caso_67_23": "",
         "evidencia_par_117": "O TR traz as duas opções do grupo GA-07 (garantia legal e garantia contratual, p.7); o ETP não trata de garantia do bem.",
-        "fonte": "M02 (TR-5.5: origem_dado, formatacao, condicao_inclusao); M01 destino_tr; M05 usada_em; M04 liga_blocos e desliga_blocos; teste: ETP exemplos/Estudo Técnico Preliminar-2.pdf (ETP 117/2025) e TR exemplos/Termo de Referência-3.pdf (TR 117/2025), páginas indicadas na evidência",
+        "fonte": "M02 (TR-5.5: origem_dado, formatacao, condicao_inclusao); M01 destino_tr; M05 usada_em; M04 liga_blocos e desliga_blocos; teste: ETP exemplos/Estudo Técnico Preliminar-2.pdf (ETP 117/2025) e TR exemplos/Termo de Referência-3.pdf (TR 117/2025), páginas indicadas na evidência Correção de 25/10/2026 (dono do projeto): campos_etp preenchido; a garantia do bem (VAR-019) está no ETP-06.01, como a evidência do par 117/2025 compara.",
         "perguntas_wz": "WZ-29",
         "regra_derivacao": "Texto do modelo com trechos em vermelho preenchidos ou escolhidos (NE-001, item 3); lacunas preenchidas com VAR-019; inclusão ou exclusão decidida por WZ-29.",
         "secao": "5. MODELO DE EXECUÇÃO DO OBJETO",
-        "status": "EXTRAIDO",
+        "status": "INFERIDO",
         "teste_caso_67_23": "NAO_TESTADO",
         "teste_par_117": "DIVERGENTE",
         "variaveis": "VAR-019"

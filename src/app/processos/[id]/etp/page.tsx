@@ -42,7 +42,7 @@ const SITUACAO: Record<SituacaoDoCampo, [TipoDeEstado, string]> = {
 async function Conteudo({ params }: PageProps<"/processos/[id]/etp">) {
   const { id } = await params;
   const { usuario, p } = await abrirProcesso(id);
-  const { pacote } = carregarPacote(p.processo.pacote);
+  const { pacote } = carregarPacote(p.processo.pacote, p.processo.pacoteHash);
   const documentos = documentosDoProcesso(p);
   const { minuta, etp, derivacao } = documentos;
   const somenteLeitura = p.processo.situacao === "CONCLUIDO";

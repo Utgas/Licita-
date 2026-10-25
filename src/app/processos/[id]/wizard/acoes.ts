@@ -21,7 +21,7 @@ export async function responderPergunta(id: string, _anterior: Resultado, dados:
   let resultado: Resultado;
   try {
     resultado = await gravarNoProcesso<Resultado>(id, "RESPOSTA_WIZARD", async (tx, p) => {
-      const { pacote } = carregarPacote(p.processo.pacote);
+      const { pacote } = carregarPacote(p.processo.pacote, p.processo.pacoteHash);
       const linha = pacote.matrizes.M04.find((l) => l.id === pergunta);
       if (!linha || linha.calculo_expr !== null) throw new EntradaRecusada("Pergunta não encontrada.");
       const opcoes = opcoesDoM04(linha);
@@ -59,7 +59,7 @@ export async function responderPergunta(id: string, _anterior: Resultado, dados:
 
 async function proximaDepois(id: string, pergunta: string): Promise<string | null> {
   const { p } = await abrirProcesso(id);
-  const { pacote } = carregarPacote(p.processo.pacote);
+  const { pacote } = carregarPacote(p.processo.pacote, p.processo.pacoteHash);
   return proximaPendente(perguntasDoWizard(pacote, minutaDoProcesso(p), p), pergunta);
 }
 
@@ -80,7 +80,7 @@ export async function salvarCampo(id: string, _anterior: Resultado, dados: FormD
   const variavel = String(dados.get("campo") ?? "");
   try {
     return await gravarNoProcesso<Resultado>(id, "RESPOSTA_WIZARD", async (tx, p) => {
-      const { pacote } = carregarPacote(p.processo.pacote);
+      const { pacote } = carregarPacote(p.processo.pacote, p.processo.pacoteHash);
       const campo = camposDaMinuta(pacote, minutaDoProcesso(p), p).campos.find((c) => c.id === variavel);
       if (!campo) throw new EntradaRecusada("Campo não encontrado.");
       const lido = valorDoCampo(campo, dados);

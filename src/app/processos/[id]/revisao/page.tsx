@@ -30,7 +30,7 @@ export default function TelaDaMinuta(props: PageProps<"/processos/[id]/revisao">
 async function Conteudo({ params }: PageProps<"/processos/[id]/revisao">) {
   const { id } = await params;
   const { usuario, p } = await abrirProcesso(id);
-  const { pacote } = carregarPacote(p.processo.pacote);
+  const { pacote } = carregarPacote(p.processo.pacote, p.processo.pacoteHash);
   const { minuta, etp, derivacao } = documentosDoProcesso(p);
   const nomesDosCampos = new Map(etp.campos.map((c) => [c.id, c.campo]));
   const doEtp = new Map(derivacao.blocos.map((b) => [b.bloco, b.campos.map((c) => `${c} (${nomesDosCampos.get(c)})`)]));

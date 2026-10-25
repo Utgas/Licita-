@@ -1,9 +1,10 @@
 /**
  * Conexão do servidor com o banco (Drizzle, pelo pooler do Supabase).
  *
- * O servidor entra no banco como dono, e o dono ignora o RLS. Por isso toda consulta de tela passa por
- * `comoUsuario`: numa transação, assume o papel `authenticated` com o id do usuário logado, e o RLS decide o que
- * ele vê. O id vem da sessão já verificada pelo Supabase Auth (src/auth/), nunca do navegador.
+ * Toda consulta passa por `comoUsuario`: numa transação, assume o papel `authenticated` com o id do usuário logado,
+ * e o RLS decide o que ele vê. O id vem da sessão já verificada pelo Supabase Auth (src/auth/), nunca do navegador.
+ * Em produção a aplicação entra como `licita_app`, que só pode assumir `authenticated` (decisão 0016); nos testes
+ * locais, como `postgres`.
  */
 import { sql } from "drizzle-orm";
 import { type PostgresJsDatabase, drizzle } from "drizzle-orm/postgres-js";

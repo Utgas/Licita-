@@ -25,7 +25,7 @@ export async function enviarWord(id: string, _anterior: Resultado, dados: FormDa
   if (arquivo.size > TAMANHO_MAXIMO) return { erro: "Arquivo maior que 4 MB. Tire imagens coladas no Word e envie de novo." };
   try {
     return await gravarNoProcesso<Resultado>(id, "CHECKLIST_LIDO", async (tx, p) => {
-      const { pacote } = carregarPacote(p.processo.pacote);
+      const { pacote } = carregarPacote(p.processo.pacote, p.processo.pacoteHash);
       const leitura = await lerChecklist(new Uint8Array(await arquivo.arrayBuffer()), pacote);
       if (!p.processo.checklists.includes(leitura.checklist)) {
         throw new VersaoDesconhecida(`Este é o checklist de ${leitura.checklist === "CONSUMO" ? "consumo" : "permanentes"}, que não foi marcado para este processo.`);
@@ -85,7 +85,7 @@ export async function salvarResposta(id: string, _anterior: Resultado, dados: Fo
   const confirmar = String(dados.get("confirmarMotivo") ?? "");
   try {
     return await gravarNoProcesso<Resultado>(id, "RESPOSTA_CHECKLIST", async (tx, p, usuario) => {
-      const { pacote } = carregarPacote(p.processo.pacote);
+      const { pacote } = carregarPacote(p.processo.pacote, p.processo.pacoteHash);
       const linha = linhaDaPergunta(pacote.matrizes.M11, pergunta, p.processo.checklists);
       if (!linha || linha.checklist === "COMPLEMENTO") return { resultado: { erro: "Pergunta não encontrada." } };
       const valor = valorDoFormulario(linha, dados);
@@ -136,7 +136,7 @@ export async function confirmarRevisao(id: string, _anterior: Resultado, dados: 
   const resposta = String(dados.get("resposta") ?? "").trim() || "Confirmada como está";
   try {
     return await gravarNoProcesso<Resultado>(id, "REVISAO_CONFIRMADA", async (tx, p, usuario) => {
-      const { pacote } = carregarPacote(p.processo.pacote);
+      const { pacote } = carregarPacote(p.processo.pacote, p.processo.pacoteHash);
       if (!linhaDaPergunta(pacote.matrizes.M11, pergunta, p.processo.checklists)) return { resultado: { erro: "Pergunta não encontrada." } };
       await tx
         .insert(revisaoConfirmada)
@@ -153,7 +153,7 @@ export async function salvarComplemento(id: string, _anterior: Resultado, dados:
   const pergunta = String(dados.get("pergunta") ?? "");
   try {
     return await gravarNoProcesso<Resultado>(id, "COMPLEMENTO_OPERADOR", async (tx, p) => {
-      const { pacote } = carregarPacote(p.processo.pacote);
+      const { pacote } = carregarPacote(p.processo.pacote, p.processo.pacoteHash);
       const linha = linhaDaPergunta(pacote.matrizes.M11, pergunta, p.processo.checklists);
       if (!linha || linha.checklist !== "COMPLEMENTO") return { resultado: { erro: "Complemento não encontrado." } };
       const ler = (campo: string): Valor => {

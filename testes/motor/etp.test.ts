@@ -119,6 +119,14 @@ describe("derivação ETP para TR (M06)", () => {
     expect(derivacao.blocos.find((b) => b.bloco === "TR-4.1.1")).toMatchObject({ situacao: "campo_vazio", camposVazios: ["ETP-14.01"] });
   });
 
+  it("o ano do PCA sai sem separador de milhar também no TR (TR-2.2 e TR-2.3)", () => {
+    for (const { minuta: m } of [montar(), montar((e) => (e.wizard.WZ_16 = "REMISSAO"))]) {
+      const texto = m.trechos.filter((t) => t.id === "TR-2.2" || t.id === "TR-2.3").map((t) => t.texto).join(" ");
+      expect(texto).toContain("2026");
+      expect(texto).not.toContain("2.026");
+    }
+  });
+
   it("só entram blocos que estão na minuta e que o M06 liga ao ETP", () => {
     const naMinuta = new Set(minuta.trechos.map((t) => t.id));
     for (const b of derivacao.blocos) {

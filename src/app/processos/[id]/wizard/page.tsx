@@ -58,7 +58,7 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/wiz
   const { id } = await params;
   const { p: escolhida } = await searchParams;
   const { usuario, p } = await abrirProcesso(id);
-  const { pacote } = carregarPacote(p.processo.pacote);
+  const { pacote } = carregarPacote(p.processo.pacote, p.processo.pacoteHash);
   const minuta = minutaDoProcesso(p);
   const somenteLeitura = p.processo.situacao === "CONCLUIDO";
   const perguntas = perguntasDoWizard(pacote, minuta, p);

@@ -16,7 +16,7 @@ export async function salvarCampoDoEtp(id: string, _anterior: Resultado, dados: 
   const variavel = String(dados.get("campo") ?? "");
   try {
     return await gravarNoProcesso<Resultado>(id, "RESPOSTA_WIZARD", async (tx, p) => {
-      const { pacote } = carregarPacote(p.processo.pacote);
+      const { pacote } = carregarPacote(p.processo.pacote, p.processo.pacoteHash);
       const campo = camposParaInformar(pacote, documentosDoProcesso(p), p).find((c) => c.id === variavel);
       if (!campo) throw new EntradaRecusada("Campo não encontrado.");
       const lido = valorDoCampo(campo, dados);

@@ -64,8 +64,8 @@ const NUMERICOS = new Set(["quantidade", "valor_unitario"]);
 
 /** Entrada do motor a partir do que está no banco. Nada é inventado: o que falta fica ausente. */
 export function entradaDoProcesso(p: ProcessoCompleto): EntradaProcesso {
-  const { pacote, hash } = carregarPacote(p.processo.pacote);
-  if (hash !== p.processo.pacoteHash) throw new Error("o pacote de regras do processo mudou desde a criação");
+  // O pacote exato com que o processo nasceu, mesmo depois de uma correção nas matrizes.
+  const { pacote, hash } = carregarPacote(p.processo.pacote, p.processo.pacoteHash);
   const porItem = new Set(pacote.matrizes.M11.filter((l) => l.por_item === "S").map((l) => l.id));
 
   const itens: ItemDeEntrada[] = p.itens.map((linha) => {
