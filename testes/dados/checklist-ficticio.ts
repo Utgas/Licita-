@@ -83,6 +83,14 @@ export class ChecklistFicticio {
     return this;
   }
 
+  /** Mexe direto no XML do Word, para imitar o que o Word ou quem preenche faz com o arquivo. */
+  alterarXml(alterar: (xml: string) => string): this {
+    const novo = alterar(this.xml);
+    if (novo === this.xml) throw new Error("a alteração não mudou nada no checklist");
+    this.xml = novo;
+    return this;
+  }
+
   private escreverNaCelula(inicioDaCelula: number, texto: string): this {
     const fim = this.xml.indexOf("</w:tc>", inicioDaCelula);
     this.xml = this.xml.slice(0, fim) + paragrafo(texto) + this.xml.slice(fim);

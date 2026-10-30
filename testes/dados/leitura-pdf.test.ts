@@ -1,5 +1,5 @@
 /**
- * Leitura do checklist em PDF (decisão 0017), com PDFs fictícios gerados do Word fictício pelo LibreOffice
+ * Leitura do checklist em PDF e em .odt (decisão 0017), com arquivos fictícios gerados do Word fictício pelo LibreOffice
  * (gerar-pdfs-ficticios.ts). Cobre o que chega das OMs: X colado no ☐, valor embaixo do rótulo ou colado nele,
  * resposta em mais de uma linha, cabeçalho e rodapé repetidos. A leitura do PDF tem de dar o mesmo que a do Word.
  * Não precisa de banco.
@@ -59,6 +59,17 @@ describe("checklist de permanentes em PDF", async () => {
   it("dá as mesmas respostas que o Word de onde o PDF saiu", async () => {
     const doWord = await lerChecklist(await (await permanentesPreenchido()).gerar(), pacote);
     const semHash = (x: Leitura) => x.respostas.map((r) => [r.pergunta, r.valor, r.texto?.replace(/\s+/g, " ") ?? null]);
+    expect(semHash(l)).toEqual(semHash(doWord));
+    expect(l.metadados).toEqual(doWord.metadados);
+  });
+});
+
+describe("checklist de permanentes salvo pelo LibreOffice (.odt)", () => {
+  it("dá as mesmas respostas que o Word de onde saiu", async () => {
+    const l = await lerChecklist(fixture("permanentes-ficticio.odt"), pacote);
+    const doWord = await lerChecklist(await (await permanentesPreenchido()).gerar(), pacote);
+    const semHash = (x: Leitura) => x.respostas.map((r) => [r.pergunta, r.valor, r.texto]);
+    expect(l.checklist).toBe("PERMANENTES");
     expect(semHash(l)).toEqual(semHash(doWord));
     expect(l.metadados).toEqual(doWord.metadados);
   });

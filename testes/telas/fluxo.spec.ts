@@ -44,10 +44,10 @@ test("fluxo completo de um TR fictício, do login ao PDF", async ({ page, contex
   await page.waitForURL(/\/processos\/[0-9a-f-]{36}\/checklist/);
   urlDoProcesso = page.url().replace(/\/checklist.*$/, "");
 
-  // Checklist: envio do Word e resolução da trava (duas marcas na 3.3)
+  // Checklist: anexo do Word no espaço do consumo e resolução da trava (duas marcas na 3.3)
   await page.locator('input[type="file"][name="arquivo"]').setInputFiles({ name: "checklist-ficticio.docx", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", buffer: await wordFicticioCompleto(NUMERO) });
-  await page.getByRole("button", { name: "Ler o checklist" }).click();
-  await expect(page.getByText(/Checklist de consumo lido/)).toBeVisible();
+  await page.getByRole("button", { name: "Ler o checklist de material de consumo" }).click();
+  await expect(page.getByText(/Checklist de material de consumo lido/)).toBeVisible();
   const trava = page.locator("li", { hasText: "Consumo 3.3." }).filter({ has: page.getByText("Trava", { exact: true }) }).first();
   await expect(trava).toBeVisible();
   await trava.getByRole("button", { name: "Não", exact: true }).click();

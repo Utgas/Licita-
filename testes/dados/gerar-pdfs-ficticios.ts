@@ -1,10 +1,10 @@
 /**
- * Gera os checklists fictícios em PDF usados por leitura-pdf.test.ts, convertendo o Word fictício pelo LibreOffice,
- * como faz quem preenche no Word e "salva como PDF". As marcas imitam o que chega das OMs: X colado no ☐ ("☐X",
+ * Gera os checklists fictícios em PDF e em .odt usados por leitura-pdf.test.ts, convertendo o Word fictício pelo
+ * LibreOffice, como faz quem preenche no Word e "salva como PDF" ou salva no formato do LibreOffice. As marcas imitam o que chega das OMs: X colado no ☐ ("☐X",
  * "X☐", "☐ XNão"), valor escrito embaixo do rótulo ou colado nele. Só dados fictícios.
  *
  * Rodar só quando o checklist ficticio mudar (exige LibreOffice): node testes/dados/gerar-pdfs-ficticios.ts
- * O teste usa os PDFs já gerados e não precisa do LibreOffice.
+ * O teste usa os arquivos já gerados e não precisa do LibreOffice.
  */
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, renameSync, rmSync, writeFileSync } from "node:fs";
@@ -34,19 +34,20 @@ export async function permanentesPreenchido(): Promise<ChecklistFicticio> {
     .trocarOpcao("12.6", "Antes do recebimento definitivo", "☐ xAntes do recebimento definitivo");
 }
 
-function paraPdf(docx: Uint8Array, nome: string) {
+function converter(docx: Uint8Array, nome: string, formato: "pdf" | "odt") {
   const dir = mkdtempSync(path.join(tmpdir(), "checklist-"));
   try {
     writeFileSync(path.join(dir, `${nome}.docx`), docx);
-    execFileSync("soffice", ["--headless", "--convert-to", "pdf", "--outdir", dir, path.join(dir, `${nome}.docx`)], { stdio: "ignore" });
-    renameSync(path.join(dir, `${nome}.pdf`), path.join(FIXTURES, `${nome}.pdf`));
+    execFileSync("soffice", ["--headless", "--convert-to", formato, "--outdir", dir, path.join(dir, `${nome}.docx`)], { stdio: "ignore" });
+    renameSync(path.join(dir, `${nome}.${formato}`), path.join(FIXTURES, `${nome}.${formato}`));
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
 }
 
 if (import.meta.main) {
-  paraPdf(await (await permanentesPreenchido()).gerar(), "permanentes-ficticio");
-  paraPdf(await (await ChecklistFicticio.de("CONSUMO")).gerar(), "consumo-em-branco");
-  console.log(`PDFs gravados em ${FIXTURES}`);
+  converter(await (await permanentesPreenchido()).gerar(), "permanentes-ficticio", "pdf");
+  converter(await (await permanentesPreenchido()).gerar(), "permanentes-ficticio", "odt");
+  converter(await (await ChecklistFicticio.de("CONSUMO")).gerar(), "consumo-em-branco", "pdf");
+  console.log(`Arquivos gravados em ${FIXTURES}`);
 }
