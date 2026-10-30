@@ -19,6 +19,8 @@ supabase/.branches/
 Documentos/
 corpus/
 *.pdf
+# exceção: checklists fictícios gerados por testes/dados/gerar-pdfs-ficticios.ts
+!testes/dados/fixtures/*.pdf
 
 # temporários
 *.log

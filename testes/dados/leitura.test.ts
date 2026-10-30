@@ -132,11 +132,73 @@ describe("checklist de permanentes preenchido", () => {
   });
 });
 
+describe("o que acontece com o Word de verdade", () => {
+  const permanentes = () => ChecklistFicticio.de("PERMANENTES");
+  const ler = async (doc: ChecklistFicticio) => lerChecklist(await doc.gerar(), pacote);
+
+  it("resposta escrita na mesma linha de 'Resposta:'", async () => {
+    const l = await ler((await permanentes()).alterarXml((x) => x.replace(/>Resposta:</, ">Resposta: Hospital Fictício<")));
+    expect(resposta(l, "CK-P-1.1")[0].valor).toBe("Hospital Fictício");
+  });
+
+  it("resposta escrita num parágrafo fora da caixa, mesmo começando com número", async () => {
+    const solto = '<w:p><w:r><w:t xml:space="preserve">4.5. ver memória de cálculo anexa</w:t></w:r></w:p>';
+    const l = await ler((await permanentes()).alterarXml((x) => x.replace(/(<w:p\b(?:(?!<w:p\b)[\s\S])*?>4\.6\. )/, `${solto}$1`)));
+    expect(resposta(l, "CK-P-4.5")[0].valor).toBe("4.5. ver memória de cálculo anexa");
+  });
+
+  it("orientação e opções do modelo não viram resposta", async () => {
+    const l = await ler(await permanentes());
+    expect(l.respostas).toEqual([]);
+  });
+
+  it("pergunta com numeração automática (o número sai do texto)", async () => {
+    const l = await ler((await permanentes()).responder("1.1", "Hospital Fictício").alterarXml((x) => x.replace(/>1\.1\. Qual/, ">Qual")));
+    expect(resposta(l, "CK-P-1.1")[0].valor).toBe("Hospital Fictício");
+  });
+
+  it("enunciado com espaço a mais ou aspas trocadas continua reconhecido", async () => {
+    const l = await ler((await permanentes()).alterarXml((x) => x.replace(/>1\.2\. Qual setor/, ">1.2. Qual  setor").replace(/>1\.3\. Qual é o nome/, ">1.3. Qual é o </w:t></w:r><w:r><w:rPr><w:b/></w:rPr><w:t xml:space=\"preserve\">nome")));
+    expect(l.checklist).toBe("PERMANENTES");
+  });
+
+  it("enunciado partido em dois parágrafos (Word abrindo um PDF)", async () => {
+    const l = await ler(
+      (await permanentes()).responder("2.1", "Necessidade fictícia").alterarXml((x) => x.replace(/>2\.1\. Qual necessidade assistencial, /, '>2.1. Qual necessidade assistencial,</w:t></w:r></w:p><w:p><w:r><w:t xml:space="preserve">')),
+    );
+    expect(resposta(l, "CK-P-2.1")[0].valor).toBe("Necessidade fictícia");
+  });
+
+  it("caixa de seleção de formulário antigo do Word (FORMCHECKBOX)", async () => {
+    const caixa = '</w:t></w:r><w:r><w:fldChar w:fldCharType="begin"><w:ffData><w:checkBox><w:default w:val="0"/><w:checked/></w:checkBox></w:ffData></w:fldChar></w:r><w:r><w:t xml:space="preserve"> ';
+    const l = await ler((await permanentes()).alterarXml((x) => x.replace(/(>2\.4\. [\s\S]*?)☐ Sim/, `$1${caixa}Sim`)));
+    expect(resposta(l, "CK-P-2.4")[0].valor).toBe("Sim");
+  });
+
+  it("pergunta dentro de marcação customXml continua lida", async () => {
+    const l = await ler(
+      (await permanentes()).alterarXml((x) => x.replace(/(<w:p\b(?:(?!<w:p\b)[\s\S])*?>1\.1\. [^<]*<\/w:t><\/w:r><\/w:p>)/, '<w:customXml w:element="x">$1</w:customXml>')).responder("1.1", "Hospital Fictício"),
+    );
+    expect(resposta(l, "CK-P-1.1")[0].valor).toBe("Hospital Fictício");
+  });
+
+  it("o mesmo item citado duas vezes numa resposta por item junta os textos (a gravação não quebra)", async () => {
+    const doc = (await ChecklistFicticio.de("CONSUMO")).responder("14.1", "Item 1: 24 meses; item 1: contados da entrega");
+    const l = await lerChecklist(await doc.gerar(), pacote);
+    expect(resposta(l, "CK-C-14.1").map((x) => [x.itens, x.valor])).toEqual([[[1], "24 meses; contados da entrega"]]);
+  });
+
+  it("pergunta apagada: erro que diz qual pergunta falta", async () => {
+    const doc = (await permanentes()).alterarXml((x) => x.replace(/>6\.3\. [^<]*</, "><"));
+    await expect(ler(doc)).rejects.toThrow(/pergunta 6\.3 \("Quais itens seriam exclusivos\?"\) falta ou foi alterada/);
+  });
+});
+
 describe("arquivo que não serve", () => {
   it("versão desconhecida é erro claro, nunca leitura parcial", async () => {
     const doc = (await ChecklistFicticio.de("CONSUMO")).trocarEnunciado("2.1", "Pergunta de outra versão?");
     await expect(lerChecklist(await doc.gerar(), pacote)).rejects.toThrow(VersaoDesconhecida);
-    await expect(lerChecklist(await doc.gerar(), pacote)).rejects.toThrow(/pergunta 2\.1/);
+    await expect(lerChecklist(await doc.gerar(), pacote)).rejects.toThrow(/pergunta 2\.1 /);
   });
 
   it("arquivo que não é Word", async () => {

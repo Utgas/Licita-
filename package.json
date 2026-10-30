@@ -29,6 +29,7 @@
     "fast-xml-parser": "5.11.2",
     "jszip": "3.10.2",
     "next": "16.4.2",
+    "pdfjs-dist": "6.4.299",
     "postgres": "3.4.9",
     "react": "19.3.0",
     "react-dom": "19.3.0",

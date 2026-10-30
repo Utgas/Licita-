@@ -1,7 +1,7 @@
 "use server";
 /**
- * Ações da tela do checklist (passo 7). O Word é lido em memória e descartado; fica o hash na auditoria (decisão
- * 0009). Correção na tela grava com origem OPERADOR e tira a pergunta das listas da leitura.
+ * Ações da tela do checklist (passo 7). O Word ou o PDF é lido em memória e descartado; fica o hash na auditoria
+ * (decisões 0009 e 0017). A origem gravada continua LEITURA_WORD para os dois formatos (é a leitura do arquivo). Correção na tela grava com origem OPERADOR e tira a pergunta das listas da leitura.
  */
 import { and, eq, like } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -12,6 +12,7 @@ import { complementoOperador, processo, respostaChecklist, revisaoConfirmada } f
 import { ArquivoInvalido } from "@/dados/leitura-checklist/docx.ts";
 import { VersaoDesconhecida, itensCitados, lerChecklist } from "@/dados/leitura-checklist/ler.ts";
 import { carregarPacote } from "@/dados/pacote.ts";
+import { nomeDaPergunta } from "../../../componentes/rotulos.ts";
 import { type LeiturasGravadas, semPerguntaNaLeitura } from "@/dados/processos.ts";
 import type { Valor } from "@/motor/pacote/avaliador.ts";
 import type { LinhaM11 } from "@/motor/pacote/esquema.ts";
@@ -19,16 +20,22 @@ import type { LinhaM11 } from "@/motor/pacote/esquema.ts";
 const TAMANHO_MAXIMO = 4 * 1024 * 1024;
 const PREFIXO = { CONSUMO: "CK-C-", PERMANENTES: "CK-P-" } as const;
 
-export async function enviarWord(id: string, _anterior: Resultado, dados: FormData): Promise<Resultado> {
+const NOME = { CONSUMO: "material de consumo", PERMANENTES: "material permanente" } as const;
+
+export async function enviarChecklist(id: string, _anterior: Resultado, dados: FormData): Promise<Resultado> {
   const arquivo = dados.get("arquivo");
-  if (!(arquivo instanceof File) || arquivo.size === 0) return { erro: "Escolha o arquivo .docx do checklist preenchido." };
-  if (arquivo.size > TAMANHO_MAXIMO) return { erro: "Arquivo maior que 4 MB. Tire imagens coladas no Word e envie de novo." };
+  const esperado = dados.get("checklist") === "CONSUMO" ? "CONSUMO" : "PERMANENTES";
+  if (!(arquivo instanceof File) || arquivo.size === 0) return { erro: "Escolha o arquivo do checklist preenchido (.docx, .odt ou PDF)." };
+  if (arquivo.size > TAMANHO_MAXIMO) return { erro: "Arquivo maior que 4 MB. Tire as imagens coladas no documento e envie de novo." };
   try {
     return await gravarNoProcesso<Resultado>(id, "CHECKLIST_LIDO", async (tx, p) => {
       const { pacote } = carregarPacote(p.processo.pacote, p.processo.pacoteHash);
       const leitura = await lerChecklist(new Uint8Array(await arquivo.arrayBuffer()), pacote);
+      if (leitura.checklist !== esperado) {
+        throw new VersaoDesconhecida(`Este arquivo é o checklist de ${NOME[leitura.checklist]}, e foi anexado no espaço do checklist de ${NOME[esperado]}. Anexe no espaço certo.`);
+      }
       if (!p.processo.checklists.includes(leitura.checklist)) {
-        throw new VersaoDesconhecida(`Este é o checklist de ${leitura.checklist === "CONSUMO" ? "consumo" : "permanentes"}, que não foi marcado para este processo.`);
+        throw new VersaoDesconhecida(`Este processo não usa o checklist de ${NOME[leitura.checklist]}. Use o botão para incluí-lo antes de anexar.`);
       }
       const prefixo = PREFIXO[leitura.checklist];
       // Novo envio substitui as respostas e as confirmações daquele checklist.
@@ -44,7 +51,7 @@ export async function enviarWord(id: string, _anterior: Resultado, dados: FormDa
       const m = leitura.metadados;
       return {
         resultado: {
-          aviso: `Checklist de ${leitura.checklist === "CONSUMO" ? "consumo" : "permanentes"} lido: ${leitura.respostas.length} resposta(s), ${m.sem_resposta?.length ?? 0} sem resposta, ${m.marcas_multiplas?.length ?? 0} com mais de uma marca. O arquivo foi descartado; ficou só o hash.`,
+          aviso: `Checklist de ${NOME[leitura.checklist]} lido: ${leitura.respostas.length} resposta(s), ${m.sem_resposta?.length ?? 0} sem resposta, ${m.marcas_multiplas?.length ?? 0} com mais de uma marca. Confira abaixo as perguntas que pedem atenção. O arquivo foi descartado; ficou só o hash.`,
         },
         hashArquivo: leitura.hashArquivo,
         detalhes: { checklist: leitura.checklist, respostas: leitura.respostas.length, versao: leitura.hashEnunciados.slice(0, 16) },
@@ -53,6 +60,20 @@ export async function enviarWord(id: string, _anterior: Resultado, dados: FormDa
   } catch (e) {
     if (e instanceof VersaoDesconhecida || e instanceof ArquivoInvalido) return { erro: e.message };
     return { erro: mensagemDeErro(e) };
+  }
+}
+
+/** Inclui no processo um checklist que não foi marcado na criação (o HCE mandou o de permanentes, por exemplo). */
+export async function incluirChecklist(id: string, checklist: "CONSUMO" | "PERMANENTES"): Promise<void> {
+  try {
+    await gravarNoProcesso(id, "PROCESSO_ALTERADO", async (tx, p) => {
+      if (!p.processo.checklists.includes(checklist)) {
+        await tx.update(processo).set({ checklists: [...p.processo.checklists, checklist] }).where(eq(processo.id, id));
+      }
+      return { resultado: null, detalhes: { checklistIncluido: checklist } };
+    });
+  } finally {
+    revalidatePath(`/processos/${id}`, "layout");
   }
 }
 
@@ -110,7 +131,7 @@ export async function salvarResposta(id: string, _anterior: Resultado, dados: Fo
           .values({ processoId: id, pergunta, motivo: confirmar, resposta: JSON.stringify(valor), confirmadoPor: usuario.id })
           .onConflictDoUpdate({ target: [revisaoConfirmada.processoId, revisaoConfirmada.pergunta, revisaoConfirmada.motivo], set: { resposta: JSON.stringify(valor), confirmadoPor: usuario.id } });
       }
-      return { resultado: { aviso: `Resposta da ${pergunta} salva.` }, detalhes: { pergunta, itens: itens.join(",") || null } };
+      return { resultado: { aviso: `Resposta salva (${nomeDaPergunta(pergunta)}).` }, detalhes: { pergunta, itens: itens.join(",") || null } };
     }).finally(() => revalidatePath(`/processos/${id}`, "layout"));
   } catch (e) {
     return { erro: mensagemDeErro(e) };
@@ -122,7 +143,7 @@ export async function apagarResposta(id: string, _anterior: Resultado, dados: Fo
   try {
     return await gravarNoProcesso<Resultado>(id, "RESPOSTA_CHECKLIST", async (tx) => {
       const [apagada] = await tx.delete(respostaChecklist).where(and(eq(respostaChecklist.id, linhaId), eq(respostaChecklist.processoId, id))).returning({ pergunta: respostaChecklist.pergunta });
-      return { resultado: { aviso: apagada ? `Resposta da ${apagada.pergunta} apagada.` : "Nada a apagar." }, detalhes: { pergunta: apagada?.pergunta ?? null, apagada: true } };
+      return { resultado: { aviso: apagada ? `Resposta apagada (${nomeDaPergunta(apagada.pergunta)}).` : "Nada a apagar." }, detalhes: { pergunta: apagada?.pergunta ?? null, apagada: true } };
     }).finally(() => revalidatePath(`/processos/${id}`, "layout"));
   } catch (e) {
     return { erro: mensagemDeErro(e) };
@@ -142,7 +163,7 @@ export async function confirmarRevisao(id: string, _anterior: Resultado, dados: 
         .insert(revisaoConfirmada)
         .values({ processoId: id, pergunta, motivo, resposta, confirmadoPor: usuario.id })
         .onConflictDoUpdate({ target: [revisaoConfirmada.processoId, revisaoConfirmada.pergunta, revisaoConfirmada.motivo], set: { resposta, confirmadoPor: usuario.id } });
-      return { resultado: { aviso: `Revisão da ${pergunta} confirmada.` }, detalhes: { pergunta, motivo } };
+      return { resultado: { aviso: `Revisão confirmada (${nomeDaPergunta(pergunta)}).` }, detalhes: { pergunta, motivo } };
     }).finally(() => revalidatePath(`/processos/${id}`, "layout"));
   } catch (e) {
     return { erro: mensagemDeErro(e) };
@@ -183,7 +204,7 @@ export async function salvarComplemento(id: string, _anterior: Resultado, dados:
           .values({ processoId: id, pergunta, valor })
           .onConflictDoUpdate({ target: [complementoOperador.processoId, complementoOperador.pergunta], set: { valor } });
       }
-      return { resultado: { aviso: `Complemento ${pergunta} salvo.` }, detalhes: { pergunta } };
+      return { resultado: { aviso: `${nomeDaPergunta(pergunta)} salvo.` }, detalhes: { pergunta } };
     }).finally(() => revalidatePath(`/processos/${id}`, "layout"));
   } catch (e) {
     return { erro: mensagemDeErro(e) };

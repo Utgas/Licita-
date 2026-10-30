@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Aviso, TituloDeSecao, classesDoBotao } from "../../../componentes/ui.tsx";
 import { Icone } from "../../../componentes/icones.tsx";
+import { nomeDaPergunta } from "../../../componentes/rotulos.ts";
 import { Suspense } from "react";
 import { abrirProcesso } from "@/dados/acesso-processo.ts";
 import { carregarPacote } from "@/dados/pacote.ts";
@@ -8,10 +9,16 @@ import { minutaDoProcesso, pendenciasDaMinuta } from "@/dados/processos.ts";
 import type { LinhaM11 } from "@/motor/pacote/esquema.ts";
 import { Carregando } from "../../../componentes/cabecalho.tsx";
 import { CabecalhoDoProcesso, Estado } from "../processo.tsx";
-import { apagarResposta, confirmarRevisao, enviarWord, irParaItens, salvarComplemento, salvarResposta } from "./acoes.ts";
-import { Complemento, type DadosDaPergunta, EnviarWord, FormularioResposta, Trava } from "./formularios.tsx";
+import type { LeiturasGravadas } from "@/dados/processos.ts";
+import { apagarResposta, confirmarRevisao, enviarChecklist, incluirChecklist, irParaItens, salvarComplemento, salvarResposta } from "./acoes.ts";
+import { Complemento, type DadosDaPergunta, EnviarChecklist, FormularioResposta, Trava } from "./formularios.tsx";
 
-/** Tela do checklist (passo 7): leitura do Word, revisão (trava, destaque, ok), correção e complementos. */
+const ESPACOS = [
+  { checklist: "PERMANENTES", nome: "material permanente", prefixo: "CK-P-" },
+  { checklist: "CONSUMO", nome: "material de consumo", prefixo: "CK-C-" },
+] as const;
+
+/** Tela do checklist (passo 7): leitura do Word ou do PDF, revisão (trava, destaque, ok), correção e complementos. */
 export default function TelaDoChecklist(props: PageProps<"/processos/[id]/checklist">) {
   return (
     <Suspense fallback={<Carregando />}>
@@ -73,11 +80,40 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/che
       <main className="mx-auto flex w-full max-w-[1400px] flex-col gap-8 px-4 py-6 md:px-6">
         {!somenteLeitura && (
           <section className="flex flex-col gap-4 border border-linha bg-folha p-4 md:p-5">
-            <TituloDeSecao>Enviar o checklist preenchido</TituloDeSecao>
-            <p>
-              Checklists deste processo: {p.processo.checklists.map((c) => (c === "CONSUMO" ? "consumo" : "permanentes")).join(" e ")}. Também é possível digitar ou corrigir as respostas abaixo, sem o Word.
+            <TituloDeSecao>Anexar os checklists preenchidos</TituloDeSecao>
+            <p className="text-tinta-2">
+              Aceita Word (.docx), LibreOffice (.odt) ou PDF salvo a partir deles. PDF escaneado (foto do papel) e Word antigo (.doc) não dão para ler. Também é possível digitar ou corrigir as respostas abaixo, sem arquivo.
             </p>
-            <EnviarWord acao={enviarWord.bind(null, id)} />
+            <div className="grid gap-4 md:grid-cols-2">
+              {ESPACOS.map((e) => {
+                const usado = p.processo.checklists.includes(e.checklist);
+                const lido = Boolean((p.processo.leituraChecklist as LeiturasGravadas | null)?.[e.checklist]);
+                const lidas = p.respostasChecklist.filter((r) => r.pergunta.startsWith(e.prefixo) && r.origem === "LEITURA_WORD").length;
+                return (
+                  <div key={e.checklist} className="flex flex-col gap-3 rounded-sm border border-linha p-4">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {usado && <Estado estado={lido ? "ok" : "destaque"} />}
+                      <h3 className="font-semibold">Checklist de {e.nome}</h3>
+                    </div>
+                    {!usado ? (
+                      <>
+                        <p className="text-sm">Este processo não usa o checklist de {e.nome}.</p>
+                        <form action={incluirChecklist.bind(null, id, e.checklist)}>
+                          <button type="submit" className={classesDoBotao("secundario")}>
+                            Usar também o checklist de {e.nome}
+                          </button>
+                        </form>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-sm">{lido ? `Já lido: ${lidas} resposta(s) vieram do arquivo. Um novo arquivo substitui as respostas deste checklist.` : "Ainda não foi anexado."}</p>
+                        <EnviarChecklist acao={enviarChecklist.bind(null, id)} checklist={e.checklist} nome={e.nome} jaLido={lido} />
+                      </>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </section>
         )}
 
@@ -93,7 +129,7 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/che
                   <li key={`${t.pergunta}-${t.motivo}`} className="flex flex-col gap-2 rounded-sm border-2 border-trava bg-trava-fundo p-3">
                     <div className="flex flex-wrap items-center gap-2">
                       <Estado estado="trava" />
-                      <strong>{t.pergunta}</strong> <span>{l.pergunta}</span>
+                      <strong title={t.pergunta}>{nomeDaPergunta(t.pergunta)}.</strong> <span>{l.pergunta}</span>
                     </div>
                     <p>{t.texto}</p>
                     {!somenteLeitura && (
@@ -116,7 +152,7 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/che
             <div key={l.id} className="flex flex-col gap-2 rounded-sm border border-linha p-3">
               <div className="flex flex-wrap items-center gap-2">
                 <Estado estado={valorDoComplemento.has(l.id) ? "ok" : "destaque"} />
-                <strong>{l.id}</strong> <span>{l.pergunta}</span>
+                <strong title={l.id}>{nomeDaPergunta(l.id)}.</strong> <span>{l.pergunta}</span>
               </div>
               {!somenteLeitura && (
                 <Complemento acao={salvarComplemento.bind(null, id)} pergunta={l.id} tipo={l.tipo_resposta} opcoes={opcoes(l)} itens={l.por_item === "S" ? p.itens.map((i) => i.numero) : null} valor={valorDoComplemento.get(l.id) ?? null} />
@@ -146,7 +182,7 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/che
                       <div className="flex flex-wrap items-start gap-2">
                         <Estado estado={estado} />
                         <span>
-                          <strong>{l.numero}.</strong> {l.pergunta}
+                          <strong title={l.id}>{l.numero.startsWith("CAB.") ? "Cabeçalho" : l.numero}.</strong> {l.pergunta}
                         </span>
                       </div>
                       {respostas.map((r) => (
@@ -155,7 +191,7 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/che
                           <strong>{mostrar(r.valor) || "—"}</strong>
                           {r.texto && <span> · {r.texto}</span>}
                           {r.numero !== null && <span> · número: {r.numero}</span>}
-                          <span className="text-tinta-2"> ({r.origem === "LEITURA_WORD" ? "lida do Word" : "digitada"})</span>
+                          <span className="text-tinta-2"> ({r.origem === "LEITURA_WORD" ? "lida do arquivo" : "digitada"})</span>
                         </p>
                       ))}
                       {motivos.map((m) => (

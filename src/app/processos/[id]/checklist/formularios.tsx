@@ -1,26 +1,75 @@
 "use client";
-/** Formulários da tela do checklist: envio do Word, resposta digitada, trava e complemento. */
-import { useActionState } from "react";
+/** Formulários da tela do checklist: envio do Word ou do PDF, resposta digitada, trava e complemento. */
+import { useActionState, useId, useRef, useState } from "react";
 import type { Resultado } from "@/auth/acoes.ts";
 import { Botao, Mensagem } from "../../../componentes/formulario.tsx";
+import { Icone } from "../../../componentes/icones.tsx";
+import { classesDoBotao } from "../../../componentes/ui.tsx";
 
 type Acao = (anterior: Resultado, dados: FormData) => Promise<Resultado>;
 
 const caixa = "min-h-11 w-full rounded-sm border border-linha-forte px-3 py-2";
 
-export function EnviarWord({ acao }: { acao: Acao }) {
-  const [resultado, enviar] = useActionState(acao, null);
+/** Limite do envio (o mesmo da ação no servidor): conferido aqui para o aviso sair antes do envio. */
+const TAMANHO_MAXIMO = 4 * 1024 * 1024;
+
+/**
+ * Espaço de um checklist: "Anexar" abre a escolha do arquivo; escolhido o arquivo, o botão passa a ser "Ler". O
+ * checklist esperado vai junto, para o servidor recusar o arquivo do outro checklist com uma mensagem clara.
+ */
+export function EnviarChecklist({ acao, checklist, nome, jaLido }: { acao: Acao; checklist: "CONSUMO" | "PERMANENTES"; nome: string; jaLido: boolean }) {
+  const [arquivo, setArquivo] = useState<File | null>(null);
+  const entrada = useRef<HTMLInputElement>(null);
+  // Lido o arquivo, o espaço volta ao "Anexar" (o resultado fica na mensagem).
+  const [resultado, enviar] = useActionState(async (anterior: Resultado, dados: FormData) => {
+    const r = await acao(anterior, dados);
+    if (r?.aviso) {
+      setArquivo(null);
+      if (entrada.current) entrada.current.value = "";
+    }
+    return r;
+  }, null);
+  const id = useId();
+  const grande = arquivo !== null && arquivo.size > TAMANHO_MAXIMO;
+  const escolher = () => entrada.current?.click();
   return (
     <form action={enviar} className="flex flex-col gap-3">
-      <label className="flex flex-col gap-1 text-sm font-medium">
-        Checklist preenchido (.docx)
-        <input type="file" name="arquivo" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required className="min-h-11 font-normal" />
-      </label>
-      <p className="text-sm text-tinta-2">O arquivo é lido e descartado; fica só o hash. Um novo envio substitui as respostas daquele checklist.</p>
+      <input type="hidden" name="checklist" value={checklist} />
+      <input
+        ref={entrada}
+        id={id}
+        type="file"
+        name="arquivo"
+        accept=".docx,.odt,.pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.oasis.opendocument.text,application/pdf"
+        className="sr-only"
+        tabIndex={-1}
+        onChange={(e) => setArquivo(e.currentTarget.files?.[0] ?? null)}
+      />
+      {arquivo === null ? (
+        <div>
+          <button type="button" onClick={escolher} className={classesDoBotao(jaLido ? "secundario" : "principal")}>
+            <Icone nome="documento" tamanho={16} /> {jaLido ? `Anexar outro checklist de ${nome}` : `Anexar checklist de ${nome}`}
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2">
+          <p className="text-sm">
+            Arquivo escolhido: <strong>{arquivo.name}</strong> ({(arquivo.size / 1024 / 1024).toFixed(1).replace(".", ",")} MB)
+          </p>
+          {grande && (
+            <p className="flex items-start gap-2 text-sm text-trava">
+              <Icone nome="trava" className="mt-0.5" /> Arquivo maior que 4 MB. Tire as imagens coladas no documento e escolha de novo.
+            </p>
+          )}
+          <div className="flex flex-wrap gap-2">
+            {!grande && <Botao>Ler o checklist de {nome}</Botao>}
+            <button type="button" onClick={escolher} className={classesDoBotao("discreto")}>
+              Trocar arquivo
+            </button>
+          </div>
+        </div>
+      )}
       <Mensagem resultado={resultado} />
-      <div>
-        <Botao>Ler o checklist</Botao>
-      </div>
     </form>
   );
 }

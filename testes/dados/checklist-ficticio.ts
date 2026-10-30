@@ -47,6 +47,15 @@ export class ChecklistFicticio {
     return this;
   }
 
+  /** Troca o "☐ opção" inteiro por outro texto (ex.: "☐ XNão", com o X colado no rótulo). */
+  trocarOpcao(numero: string, opcao: string, novo: string): this {
+    const alvo = `☐ ${escapar(opcao)}`;
+    const i = this.xml.indexOf(alvo, this.inicio(numero));
+    if (i < 0) throw new Error(`opção ${opcao} da ${numero} não achada`);
+    this.xml = this.xml.slice(0, i) + escapar(novo) + this.xml.slice(i + alvo.length);
+    return this;
+  }
+
   /** Escreve logo depois do texto da opção (ex.: "Outro: 18 meses"). */
   escreverNaOpcao(numero: string, opcao: string, texto: string): this {
     const i = this.xml.indexOf(escapar(opcao), this.inicio(numero)) + escapar(opcao).length;
@@ -71,6 +80,14 @@ export class ChecklistFicticio {
     const i = this.inicio(numero) + 1;
     const fim = this.xml.indexOf("<", i);
     this.xml = `${this.xml.slice(0, i)}${numero}. ${escapar(novo)}${this.xml.slice(fim)}`;
+    return this;
+  }
+
+  /** Mexe direto no XML do Word, para imitar o que o Word ou quem preenche faz com o arquivo. */
+  alterarXml(alterar: (xml: string) => string): this {
+    const novo = alterar(this.xml);
+    if (novo === this.xml) throw new Error("a alteração não mudou nada no checklist");
+    this.xml = novo;
     return this;
   }
 
