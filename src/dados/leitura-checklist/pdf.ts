@@ -8,8 +8,8 @@
  * - o que vem depois de "Resposta:", até a próxima pergunta, é a caixa de resposta;
  * - linhas com caixa de seleção seguidas viram um parágrafo só (opção que quebra de linha), e o enunciado que
  *   quebra de linha é juntado até o "?" ou ":" final;
- * - as demais linhas viram uma linha de tabela, com uma célula por trecho separado por espaço largo (é assim que
- *   ficam o cabeçalho e a tabela da 1.4).
+ * - no cabeçalho e nas linhas com mais de um trecho separado por espaço largo (a tabela da 1.4), cada trecho é uma
+ *   célula; as demais linhas são parágrafos.
  *
  * PDF escaneado (só imagem) não tem texto: é erro claro, sem leitura parcial.
  */
@@ -166,6 +166,9 @@ export async function lerPdf(arquivo: Uint8Array): Promise<Bloco[]> {
       // Valor escrito na linha de baixo do rótulo, na mesma coluna: outro parágrafo da mesma célula.
       l.celulas.forEach((c, i) => rotulosAcima.linha[colunas[i]].push(c.texto));
       tabela = { ...rotulosAcima, y: l.y };
+    } else if (dentroDoCorpo && l.celulas.length === 1) {
+      // Orientação ou texto escrito fora da caixa: parágrafo, como no Word.
+      blocos.push({ tipo: "p", texto });
     } else {
       const linha = l.celulas.map((c) => [c.texto]);
       blocos.push({ tipo: "tbl", linhas: [linha] });

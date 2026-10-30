@@ -1,9 +1,13 @@
 /**
  * Leitura determinística do checklist preenchido (passo 6; decisões 0009, 0011 e 0017), sem IA. Aceita o Word
- * (.docx) e o PDF gerado a partir dele; os dois viram os mesmos blocos e seguem a mesma leitura.
+ * (.docx), o LibreOffice (.odt) e o PDF salvo a partir deles; todos viram os mesmos blocos e seguem a mesma leitura.
  *
- * - Reconhece a versão pelos enunciados: as perguntas numeradas do Word têm de ser exatamente as do M11 (número e
- *   enunciado). Versão desconhecida é erro, nunca leitura parcial.
+ * - Reconhece a versão pelos enunciados: todas as perguntas numeradas do M11 têm de estar no arquivo, na ordem,
+ *   com o mesmo enunciado (sem contar maiúsculas, acentos, aspas e espaços). Pergunta que falta ou mudou é erro,
+ *   nunca leitura parcial. O número pode faltar (lista numerada automática do Word ou do LibreOffice), e texto a
+ *   mais com cara de pergunta ("4.5. ver anexo") é tratado como resposta escrita fora da caixa.
+ * - Texto escrito fora da caixa (depois de "Resposta:" na mesma linha, ou num parágrafo solto) entra como resposta;
+ *   o que é do próprio modelo (orientação e opções do M11) não.
  * - Marcas: ☒, ☑, ✓, ✔, ✗, ✘, ■, [X], (X) ou um X no lugar do ☐ ou colado nele ("☐X", "X☐", "☐ XNão").
  * - Resposta: a caixa de uma célula depois de "Resposta:"; tabelas com rótulo (campos) também são lidas.
  * - Produz os dados que as expressões usam (README das matrizes): CK_*, _texto, _numero e os metadados
@@ -16,6 +20,7 @@ import type { LeituraDoChecklist } from "../../motor/entrada.ts";
 import type { Valor } from "../../motor/pacote/avaliador.ts";
 import type { LinhaM11, Pacote } from "../../motor/pacote/esquema.ts";
 import { type Bloco, lerDocx } from "./docx.ts";
+import { eOdt, lerOdt } from "./odt.ts";
 import { ePdf, lerPdf } from "./pdf.ts";
 
 export type Checklist = "CONSUMO" | "PERMANENTES";
@@ -43,6 +48,13 @@ const VAZIA = "☐";
 
 const normal = (s: string) => s.replace(/\s+/g, " ").trim();
 const chave = (s: string) => normal(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+/** Chave de comparação de enunciado: também iguala aspas e travessões e tira o espaço antes da pontuação. */
+const chaveDoEnunciado = (s: string) =>
+  chave(s)
+    .replace(/[“”«»"]/g, '"')
+    .replace(/[‘’`´]/g, "'")
+    .replace(/[–—]/g, "-")
+    .replace(/\s+([?:;,.!])/g, "$1");
 
 /** Lista de enunciados numerados do M11 de um checklist, na ordem: a identidade da versão. */
 export function enunciadosDoM11(m11: readonly LinhaM11[], checklist: Checklist): string[] {
@@ -67,6 +79,12 @@ function segmentos(linha: string): Segmento[] {
 
 const temMarca = (linha: string) => /☐|☒|☑|✓|✔|✗|✘|■|▣/.test(linha) || /\[\s*[xX]\s*\]|\(\s*[xX]\s*\)/.test(linha);
 
+/** Texto que é do próprio modelo naquela pergunta: a orientação ou uma opção (inteira ou o pedaço que quebrou de linha). */
+function doModelo(texto: string, linha: LinhaM11): boolean {
+  const k = chaveDoEnunciado(texto);
+  return chaveDoEnunciado(linha.orientacao).includes(k) || chaveDoEnunciado(linha.opcoes).includes(k);
+}
+
 /** Opções do M11 ("Sim; Não", sem "campos: ..."). */
 function opcoesDoM11(linha: LinhaM11): string[] {
   return linha.opcoes
@@ -89,8 +107,26 @@ function casarOpcao(rotulo: string, opcoes: string[]): { opcao: string; resto: s
   return melhor && { opcao: melhor.opcao, resto: melhor.resto };
 }
 
-/** Conteúdo de uma pergunta no Word: linhas de opção, caixa de resposta e campos rotulados. */
-type Trecho = { linhasDeOpcao: string[]; caixa: string | null; campos: Record<string, string>; linhas: number };
+/** Conteúdo de uma pergunta no arquivo: linhas de opção, caixa de resposta, campos rotulados e texto solto. */
+type Trecho = { linhasDeOpcao: string[]; caixa: string | null; campos: Record<string, string>; soltos: string[] };
+
+const novoTrecho = (): Trecho => ({ linhasDeOpcao: [], caixa: null, campos: {}, soltos: [] });
+
+/** Perguntas numeradas do M11 de um checklist, na ordem, com a chave do enunciado. */
+function perguntasDoM11(m11: readonly LinhaM11[], checklist: Checklist): { linha: LinhaM11; chave: string }[] {
+  return m11.filter((l) => l.id.startsWith(PREFIXO[checklist]) && /^\d+\.\d+$/.test(l.numero)).map((l) => ({ linha: l, chave: chaveDoEnunciado(l.pergunta) }));
+}
+
+/** Índice da pergunta do M11 que o parágrafo é ("1.1. Qual..." ou só "Qual...", da lista numerada), ou -1. */
+function perguntaDoParagrafo(t: string, perguntas: { linha: LinhaM11; chave: string }[], aPartirDe: number): number {
+  const p = PERGUNTA.exec(t);
+  const k = chaveDoEnunciado(p ? p[2] : t);
+  for (let i = aPartirDe; i < perguntas.length; i++) {
+    if (perguntas[i].chave !== k) continue;
+    if (!p || p[1] === perguntas[i].linha.numero) return i;
+  }
+  return -1;
+}
 
 /**
  * Valor de um campo de tabela (1.4): a célula com o rótulo exato, ou a célula em que o valor foi escrito colado
@@ -137,40 +173,80 @@ function unidadeDoNumero(linha: LinhaM11): string | null {
 
 export async function lerChecklist(arquivo: Uint8Array, pacote: Pacote): Promise<Leitura> {
   const hashArquivo = createHash("sha256").update(arquivo).digest("hex");
-  const blocos = ePdf(arquivo) ? await lerPdf(arquivo) : await lerDocx(arquivo);
+  const blocos = ePdf(arquivo) ? await lerPdf(arquivo) : eOdt(arquivo) ? await lerOdt(arquivo) : await lerDocx(arquivo);
   const m11 = pacote.matrizes.M11;
+  const paragrafos = blocos.flatMap((b) => (b.tipo === "p" && normal(b.texto) ? [normal(b.texto)] : []));
+
+  // 0. Qual checklist: o que tem mais perguntas do M11 reconhecidas no arquivo, na ordem.
+  const reconhecidas = (c: Checklist) => {
+    const perguntas = perguntasDoM11(m11, c);
+    let proxima = 0;
+    const achadas: number[] = [];
+    for (const t of paragrafos) {
+      const i = perguntaDoParagrafo(t, perguntas, proxima);
+      if (i >= 0) {
+        achadas.push(i);
+        proxima = i + 1;
+      }
+    }
+    return { perguntas, achadas };
+  };
+  const candidatos = (["CONSUMO", "PERMANENTES"] as const).map((c) => ({ c, ...reconhecidas(c) }));
+  const melhor = candidatos.reduce((a, b) => (b.achadas.length > a.achadas.length ? b : a));
+  if (melhor.achadas.length === 0) {
+    throw new VersaoDesconhecida("O arquivo não tem as perguntas do checklist técnico. Envie o checklist de consumo ou de permanentes preenchido.");
+  }
+  if (melhor.achadas.length < melhor.perguntas.length) {
+    const faltam = melhor.perguntas.filter((_, i) => !melhor.achadas.includes(i)).map((x) => x.linha);
+    const lista = faltam.slice(0, 3).map((l) => `${l.numero} ("${normal(l.pergunta)}")`).join("; ");
+    throw new VersaoDesconhecida(
+      `Este arquivo não é a versão distribuída do checklist de ${melhor.c === "CONSUMO" ? "consumo" : "permanentes"}: ${faltam.length === 1 ? "a pergunta" : `${faltam.length} perguntas faltam ou foram alteradas, a começar por`} ${lista}${faltam.length === 1 ? " falta ou foi alterada" : ""}. Use o checklist distribuído, sem mudar o texto das perguntas, ou digite as respostas na tela.`,
+    );
+  }
+  const checklist: Checklist = melhor.c;
+  const perguntas = melhor.perguntas;
 
   // 1. Estrutura: cabeçalho, perguntas numeradas e seções sem número (22, 23), com o que vem até a próxima.
   const cabecalho: string[] = [];
-  const enunciados: string[] = [];
   const trechos = new Map<string, Trecho>();
   let atual: Trecho | null = null;
+  // Pergunta numerada em que se está (para separar o texto do modelo do texto escrito por quem preencheu).
+  let daPergunta: LinhaM11 | null = null;
   let esperandoCaixa = false;
   let secao = "0";
+  let proxima = 0;
   for (const b of blocos) {
     if (b.tipo === "p") {
       const t = normal(b.texto);
       if (!t) continue;
       const s = SECAO.exec(t);
-      if (s && t === t.toUpperCase()) {
+      if (s && t === t.toUpperCase() && Number(s[1]) >= Number(secao)) {
         secao = s[1];
-        atual = { linhasDeOpcao: [], caixa: null, campos: {}, linhas: 0 };
+        atual = novoTrecho();
+        daPergunta = null;
         trechos.set(secao, atual);
         esperandoCaixa = false;
         continue;
       }
-      const p = PERGUNTA.exec(t);
-      if (p) {
-        enunciados.push(`${p[1]}|${normal(p[2])}`);
-        atual = { linhasDeOpcao: [], caixa: null, campos: {}, linhas: 0 };
-        trechos.set(p[1], atual);
+      const i = perguntaDoParagrafo(t, perguntas, proxima);
+      if (i >= 0) {
+        proxima = i + 1;
+        daPergunta = perguntas[i].linha;
+        atual = novoTrecho();
+        trechos.set(daPergunta.numero, atual);
         esperandoCaixa = false;
         continue;
       }
       if (!atual) continue;
-      if (/^Resposta:?$/i.test(t)) esperandoCaixa = true;
-      else if (temMarca(b.texto)) for (const linha of b.texto.split("\n")) atual.linhasDeOpcao.push(linha);
-      atual.linhas++;
+      const resposta = /^Resposta:?\s*(.*)$/i.exec(t);
+      if (resposta) {
+        esperandoCaixa = true;
+        if (resposta[1] && daPergunta) atual.soltos.push(resposta[1]);
+      } else if (temMarca(b.texto)) {
+        for (const linha of b.texto.split("\n")) atual.linhasDeOpcao.push(linha);
+      } else if (daPergunta && !doModelo(t, daPergunta)) {
+        atual.soltos.push(t);
+      }
       continue;
     }
     // Tabela
@@ -191,19 +267,8 @@ export async function lerChecklist(arquivo: Uint8Array, pacote: Pacote): Promise
     }
   }
 
-  // 2. Versão: os enunciados têm de ser exatamente os de um checklist do M11.
-  const hashEnunciados = hashDe(enunciados);
-  const checklist = (["CONSUMO", "PERMANENTES"] as const).find((c) => hashDe(enunciadosDoM11(m11, c)) === hashEnunciados);
-  if (!checklist) {
-    const candidatos = (["CONSUMO", "PERMANENTES"] as const).map((c) => enunciadosDoM11(m11, c));
-    const maisProximo = candidatos.reduce((a, b) => (b.filter((x) => enunciados.includes(x)).length > a.filter((x) => enunciados.includes(x)).length ? b : a));
-    const diferenca = maisProximo.find((x, i) => enunciados[i] !== x);
-    throw new VersaoDesconhecida(
-      enunciados.length === 0
-        ? "O arquivo não tem as perguntas numeradas do checklist técnico. Envie o checklist de consumo ou de permanentes preenchido."
-        : `Versão do checklist desconhecida: as perguntas não são as da versão distribuída${diferenca ? ` (primeira diferença na pergunta ${diferenca.split("|")[0]})` : ""}. Use o checklist distribuído, sem alterar as perguntas, ou digite as respostas na tela.`,
-    );
-  }
+  // 2. Versão: a lista de enunciados do M11 que foi reconhecida inteira (passo 0).
+  const hashEnunciados = hashDe(enunciadosDoM11(m11, checklist));
 
   // 3. Respostas, pergunta a pergunta, pela coluna leitura do M11.
   const respostas: RespostaLida[] = [];
@@ -214,7 +279,15 @@ export async function lerChecklist(arquivo: Uint8Array, pacote: Pacote): Promise
   const divergencias: string[] = [];
   const linhas = m11.filter((l) => l.id.startsWith(PREFIXO[checklist]));
   const valores = new Map<string, RespostaLida>();
+  // Uma resposta por pergunta e conjunto de itens (é a chave da tabela resposta_checklist): o mesmo item citado
+  // duas vezes na mesma resposta junta os dois textos, em vez de quebrar a gravação.
   const guardar = (r: RespostaLida) => {
+    const igual = respostas.find((x) => x.pergunta === r.pergunta && x.itens.join(",") === r.itens.join(","));
+    if (igual) {
+      igual.valor = typeof igual.valor === "string" && typeof r.valor === "string" ? `${igual.valor}; ${r.valor}` : igual.valor;
+      igual.texto = [igual.texto, r.texto].filter(Boolean).join("\n") || null;
+      return;
+    }
     respostas.push(r);
     if (r.itens.length === 0) valores.set(r.pergunta, r);
   };
@@ -237,6 +310,8 @@ export async function lerChecklist(arquivo: Uint8Array, pacote: Pacote): Promise
       pendencias.push(linha.id);
       continue;
     }
+    // Texto escrito fora da caixa vale como escrito nela.
+    if (trecho.soltos.length) trecho.caixa = [trecho.caixa, ...trecho.soltos].filter(Boolean).join("\n");
     const opcoes = opcoesDoM11(linha);
     const marcadas: { opcao: string; resto: string }[] = [];
     let marcaSemOpcao = false;
