@@ -20,16 +20,22 @@ import type { LinhaM11 } from "@/motor/pacote/esquema.ts";
 const TAMANHO_MAXIMO = 4 * 1024 * 1024;
 const PREFIXO = { CONSUMO: "CK-C-", PERMANENTES: "CK-P-" } as const;
 
-export async function enviarWord(id: string, _anterior: Resultado, dados: FormData): Promise<Resultado> {
+const NOME = { CONSUMO: "material de consumo", PERMANENTES: "material permanente" } as const;
+
+export async function enviarChecklist(id: string, _anterior: Resultado, dados: FormData): Promise<Resultado> {
   const arquivo = dados.get("arquivo");
-  if (!(arquivo instanceof File) || arquivo.size === 0) return { erro: "Escolha o arquivo do checklist preenchido (.docx ou PDF)." };
+  const esperado = dados.get("checklist") === "CONSUMO" ? "CONSUMO" : "PERMANENTES";
+  if (!(arquivo instanceof File) || arquivo.size === 0) return { erro: "Escolha o arquivo do checklist preenchido (.docx, .odt ou PDF)." };
   if (arquivo.size > TAMANHO_MAXIMO) return { erro: "Arquivo maior que 4 MB. Tire as imagens coladas no documento e envie de novo." };
   try {
     return await gravarNoProcesso<Resultado>(id, "CHECKLIST_LIDO", async (tx, p) => {
       const { pacote } = carregarPacote(p.processo.pacote, p.processo.pacoteHash);
       const leitura = await lerChecklist(new Uint8Array(await arquivo.arrayBuffer()), pacote);
+      if (leitura.checklist !== esperado) {
+        throw new VersaoDesconhecida(`Este arquivo é o checklist de ${NOME[leitura.checklist]}, e foi anexado no espaço do checklist de ${NOME[esperado]}. Anexe no espaço certo.`);
+      }
       if (!p.processo.checklists.includes(leitura.checklist)) {
-        throw new VersaoDesconhecida(`Este é o checklist de ${leitura.checklist === "CONSUMO" ? "consumo" : "permanentes"}, que não foi marcado para este processo.`);
+        throw new VersaoDesconhecida(`Este processo não usa o checklist de ${NOME[leitura.checklist]}. Use o botão para incluí-lo antes de anexar.`);
       }
       const prefixo = PREFIXO[leitura.checklist];
       // Novo envio substitui as respostas e as confirmações daquele checklist.
@@ -45,7 +51,7 @@ export async function enviarWord(id: string, _anterior: Resultado, dados: FormDa
       const m = leitura.metadados;
       return {
         resultado: {
-          aviso: `Checklist de ${leitura.checklist === "CONSUMO" ? "consumo" : "permanentes"} lido: ${leitura.respostas.length} resposta(s), ${m.sem_resposta?.length ?? 0} sem resposta, ${m.marcas_multiplas?.length ?? 0} com mais de uma marca. O arquivo foi descartado; ficou só o hash.`,
+          aviso: `Checklist de ${NOME[leitura.checklist]} lido: ${leitura.respostas.length} resposta(s), ${m.sem_resposta?.length ?? 0} sem resposta, ${m.marcas_multiplas?.length ?? 0} com mais de uma marca. Confira abaixo as perguntas que pedem atenção. O arquivo foi descartado; ficou só o hash.`,
         },
         hashArquivo: leitura.hashArquivo,
         detalhes: { checklist: leitura.checklist, respostas: leitura.respostas.length, versao: leitura.hashEnunciados.slice(0, 16) },
@@ -54,6 +60,20 @@ export async function enviarWord(id: string, _anterior: Resultado, dados: FormDa
   } catch (e) {
     if (e instanceof VersaoDesconhecida || e instanceof ArquivoInvalido) return { erro: e.message };
     return { erro: mensagemDeErro(e) };
+  }
+}
+
+/** Inclui no processo um checklist que não foi marcado na criação (o HCE mandou o de permanentes, por exemplo). */
+export async function incluirChecklist(id: string, checklist: "CONSUMO" | "PERMANENTES"): Promise<void> {
+  try {
+    await gravarNoProcesso(id, "PROCESSO_ALTERADO", async (tx, p) => {
+      if (!p.processo.checklists.includes(checklist)) {
+        await tx.update(processo).set({ checklists: [...p.processo.checklists, checklist] }).where(eq(processo.id, id));
+      }
+      return { resultado: null, detalhes: { checklistIncluido: checklist } };
+    });
+  } finally {
+    revalidatePath(`/processos/${id}`, "layout");
   }
 }
 
