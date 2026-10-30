@@ -45,7 +45,7 @@ A entrada principal do sistema é o checklist técnico, e não o DFD. A área re
 3. A equipe administrativa responde ao wizard. O que o checklist já respondeu chega preenchido, e as decisões jurídicas ficam com ela.
 4. O motor monta o ETP e o TR, e cada trecho mostra a pergunta do checklist de onde veio.
 
-**Word, PDF e digitação pelo operador.** A área requisitante preenche o checklist em Word e o operador envia ao sistema o Word ou o PDF salvo a partir dele (decisão 0017), e o sistema lê as respostas. O operador também pode digitar ou corrigir respostas na tela. Só o operador usa o sistema (decisão 0010).
+**Word, PDF e digitação pelo operador.** A área requisitante preenche o checklist em Word e o operador envia ao sistema o Word, o arquivo do LibreOffice (.odt) ou o PDF salvo a partir deles, cada checklist no seu espaço (decisão 0017), e o sistema lê as respostas. O operador também pode digitar ou corrigir respostas na tela. Só o operador usa o sistema (decisão 0010).
 
 **A IA perde peso.** Com respostas estruturadas, a v1 já monta o ETP a partir do checklist. Na v2, a IA só melhora a redação, sempre citando a pergunta de origem.
 
@@ -145,7 +145,7 @@ O critério é usar uma linguagem só, ferramentas comuns e nada que prenda o mo
 | Condições | JSON Logic | Avalia a condição sem executar código |
 | PDF | @react-pdf/renderer, no servidor | Roda dentro da função, sem navegador; o Chromium esbarra no limite de 250 MB das funções da Vercel |
 | Planilhas | ExcelJS | Importação da tabela de itens |
-| Leitura do checklist | jszip e fast-xml-parser (Word); pdfjs-dist (PDF) | Leem o texto como está no arquivo, sem converter e sem rede (decisões 0011 e 0017) |
+| Leitura do checklist | jszip e fast-xml-parser (Word e .odt); pdfjs-dist (PDF) | Leem o texto como está no arquivo, sem converter e sem rede (decisões 0011 e 0017) |
 | Testes | Vitest no motor, Playwright nas telas | Os cenários do agente viram testes de ouro |
 | Ambientes | Dois projetos na Vercel e no Supabase: desenvolvimento e produção | Sem Docker na máquina; o desenvolvimento só usa dados fictícios |
 
