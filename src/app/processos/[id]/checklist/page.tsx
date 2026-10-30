@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Aviso, TituloDeSecao, classesDoBotao } from "../../../componentes/ui.tsx";
 import { Icone } from "../../../componentes/icones.tsx";
+import { nomeDaPergunta } from "../../../componentes/rotulos.ts";
 import { Suspense } from "react";
 import { abrirProcesso } from "@/dados/acesso-processo.ts";
 import { carregarPacote } from "@/dados/pacote.ts";
@@ -11,7 +12,7 @@ import { CabecalhoDoProcesso, Estado } from "../processo.tsx";
 import { apagarResposta, confirmarRevisao, enviarWord, irParaItens, salvarComplemento, salvarResposta } from "./acoes.ts";
 import { Complemento, type DadosDaPergunta, EnviarWord, FormularioResposta, Trava } from "./formularios.tsx";
 
-/** Tela do checklist (passo 7): leitura do Word, revisão (trava, destaque, ok), correção e complementos. */
+/** Tela do checklist (passo 7): leitura do Word ou do PDF, revisão (trava, destaque, ok), correção e complementos. */
 export default function TelaDoChecklist(props: PageProps<"/processos/[id]/checklist">) {
   return (
     <Suspense fallback={<Carregando />}>
@@ -75,7 +76,7 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/che
           <section className="flex flex-col gap-4 border border-linha bg-folha p-4 md:p-5">
             <TituloDeSecao>Enviar o checklist preenchido</TituloDeSecao>
             <p>
-              Checklists deste processo: {p.processo.checklists.map((c) => (c === "CONSUMO" ? "consumo" : "permanentes")).join(" e ")}. Também é possível digitar ou corrigir as respostas abaixo, sem o Word.
+              Checklists deste processo: {p.processo.checklists.map((c) => (c === "CONSUMO" ? "consumo" : "permanentes")).join(" e ")}. Pode ser o Word (.docx) ou o PDF. Também é possível digitar ou corrigir as respostas abaixo, sem arquivo.
             </p>
             <EnviarWord acao={enviarWord.bind(null, id)} />
           </section>
@@ -93,7 +94,7 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/che
                   <li key={`${t.pergunta}-${t.motivo}`} className="flex flex-col gap-2 rounded-sm border-2 border-trava bg-trava-fundo p-3">
                     <div className="flex flex-wrap items-center gap-2">
                       <Estado estado="trava" />
-                      <strong>{t.pergunta}</strong> <span>{l.pergunta}</span>
+                      <strong title={t.pergunta}>{nomeDaPergunta(t.pergunta)}.</strong> <span>{l.pergunta}</span>
                     </div>
                     <p>{t.texto}</p>
                     {!somenteLeitura && (
@@ -116,7 +117,7 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/che
             <div key={l.id} className="flex flex-col gap-2 rounded-sm border border-linha p-3">
               <div className="flex flex-wrap items-center gap-2">
                 <Estado estado={valorDoComplemento.has(l.id) ? "ok" : "destaque"} />
-                <strong>{l.id}</strong> <span>{l.pergunta}</span>
+                <strong title={l.id}>{nomeDaPergunta(l.id)}.</strong> <span>{l.pergunta}</span>
               </div>
               {!somenteLeitura && (
                 <Complemento acao={salvarComplemento.bind(null, id)} pergunta={l.id} tipo={l.tipo_resposta} opcoes={opcoes(l)} itens={l.por_item === "S" ? p.itens.map((i) => i.numero) : null} valor={valorDoComplemento.get(l.id) ?? null} />
@@ -146,7 +147,7 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/che
                       <div className="flex flex-wrap items-start gap-2">
                         <Estado estado={estado} />
                         <span>
-                          <strong>{l.numero}.</strong> {l.pergunta}
+                          <strong title={l.id}>{l.numero.startsWith("CAB.") ? "Cabeçalho" : l.numero}.</strong> {l.pergunta}
                         </span>
                       </div>
                       {respostas.map((r) => (
@@ -155,7 +156,7 @@ async function Conteudo({ params, searchParams }: PageProps<"/processos/[id]/che
                           <strong>{mostrar(r.valor) || "—"}</strong>
                           {r.texto && <span> · {r.texto}</span>}
                           {r.numero !== null && <span> · número: {r.numero}</span>}
-                          <span className="text-tinta-2"> ({r.origem === "LEITURA_WORD" ? "lida do Word" : "digitada"})</span>
+                          <span className="text-tinta-2"> ({r.origem === "LEITURA_WORD" ? "lida do arquivo" : "digitada"})</span>
                         </p>
                       ))}
                       {motivos.map((m) => (

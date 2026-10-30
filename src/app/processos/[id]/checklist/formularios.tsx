@@ -1,5 +1,5 @@
 "use client";
-/** Formulários da tela do checklist: envio do Word, resposta digitada, trava e complemento. */
+/** Formulários da tela do checklist: envio do Word ou do PDF, resposta digitada, trava e complemento. */
 import { useActionState } from "react";
 import type { Resultado } from "@/auth/acoes.ts";
 import { Botao, Mensagem } from "../../../componentes/formulario.tsx";
@@ -13,10 +13,10 @@ export function EnviarWord({ acao }: { acao: Acao }) {
   return (
     <form action={enviar} className="flex flex-col gap-3">
       <label className="flex flex-col gap-1 text-sm font-medium">
-        Checklist preenchido (.docx)
-        <input type="file" name="arquivo" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required className="min-h-11 font-normal" />
+        Checklist preenchido (Word .docx ou PDF)
+        <input type="file" name="arquivo" accept=".docx,.pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf" required className="min-h-11 font-normal" />
       </label>
-      <p className="text-sm text-tinta-2">O arquivo é lido e descartado; fica só o hash. Um novo envio substitui as respostas daquele checklist.</p>
+      <p className="text-sm text-tinta-2">O arquivo é lido e descartado; fica só o hash. Um novo envio substitui as respostas daquele checklist. PDF escaneado (foto do papel) não tem texto para ler: envie o PDF salvo pelo Word ou o próprio .docx.</p>
       <Mensagem resultado={resultado} />
       <div>
         <Botao>Ler o checklist</Botao>

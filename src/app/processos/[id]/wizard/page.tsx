@@ -9,7 +9,7 @@ import { type EstadoDaPergunta, type PerguntaDoWizard, camposDaMinuta, perguntas
 import type { Valor } from "@/motor/pacote/avaliador.ts";
 import { textoDoValor } from "@/motor/montagem/formatos.ts";
 import { Carregando } from "../../../componentes/cabecalho.tsx";
-import { legivel } from "../../../componentes/rotulos.ts";
+import { legivel, nomeDaPergunta } from "../../../componentes/rotulos.ts";
 import { CabecalhoDoProcesso } from "../processo.tsx";
 import { irParaMinuta, limparPergunta, responderPergunta, salvarCampo } from "./acoes.ts";
 import { AceitarSugestao, FormularioCampo, FormularioPergunta } from "./formularios.tsx";
@@ -170,7 +170,7 @@ function Pergunta({ id, x, somenteLeitura, daEquipe }: { id: string; x: Pergunta
       {respondida && (
         <p className="border border-linha bg-papel p-3">
           Resposta atual: <strong>{mostrar(x.valor)}</strong>
-          {x.doChecklist.length > 0 && <> (preenchida pelo checklist: {x.doChecklist.join(", ")}; a resposta da equipe vale sobre ela)</>}
+          {x.doChecklist.length > 0 && <> (preenchida pelo checklist: {x.doChecklist.map(nomeDaPergunta).join(", ")}; a resposta da equipe vale sobre ela)</>}
         </p>
       )}
       {x.estado === "decisao_pendente" && <Aviso tipo="trava" titulo="Decisão jurídica: a equipe responde. O checklist, no máximo, sugere." />}
@@ -179,7 +179,7 @@ function Pergunta({ id, x, somenteLeitura, daEquipe }: { id: string; x: Pergunta
           <p className="flex items-start gap-2">
             <Icone nome="sugestao" className="mt-0.5" />
             <span>
-              Sugestão do checklist (<Codigo>{s.pergunta}</Codigo>): <strong>{mostrar(s.valor)}</strong>. É só sugestão; quem decide é a equipe.
+              Sugestão do checklist (<span title={s.pergunta}>{nomeDaPergunta(s.pergunta)}</span>): <strong>{mostrar(s.valor)}</strong>. É só sugestão; quem decide é a equipe.
             </span>
           </p>
           {!somenteLeitura && x.estado !== "calculada" && <AceitarSugestao acao={responderPergunta.bind(null, id)} pergunta={x.id} valor={lista(s.valor)} rotulo={mostrar(s.valor)} />}
