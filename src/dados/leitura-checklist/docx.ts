@@ -1,7 +1,8 @@
 /**
  * Abre o .docx (jszip) e lê o corpo do documento (fast-xml-parser) na ordem em que está: parágrafos e tabelas
  * (decisão 0011). Não converte para HTML nem interpreta nada: só devolve o texto de cada parágrafo e de cada
- * célula. Marcas de caixa de seleção feitas com símbolo (Wingdings) ou com controle de conteúdo viram ☐ ou ☒.
+ * célula. Marcas de caixa de seleção feitas com símbolo (Wingdings), com controle de conteúdo ou com campo de
+ * formulário antigo viram ☐ ou ☒.
  */
 import { XMLParser } from "fast-xml-parser";
 import JSZip from "jszip";
@@ -33,7 +34,25 @@ function atributo(no: No, chave: string): string | undefined {
   return a?.[`@_${chave}`];
 }
 
-/** Texto de um trecho: w:t, tabulação, quebra, símbolo e caixa de seleção de controle de conteúdo. */
+/** Invólucros sem conteúdo próprio (marcação de XML, revisão, controle): o que vale é o que está dentro. */
+const INVOLUCROS = new Set(["w:customXml", "w:smartTag", "w:ins", "w:moveTo", "w:sdtContent"]);
+
+/** Caixa de seleção de formulário antigo do Word (FORMCHECKBOX): w:checked vale; sem ele, o padrão (w:default). */
+function caixaDeFormulario(fldChar: No): string {
+  const dados = filhos(fldChar).find((f) => nome(f) === "w:ffData");
+  const caixa = dados && filhos(dados).find((f) => nome(f) === "w:checkBox");
+  if (!caixa) return "";
+  const marcado = filhos(caixa).find((f) => nome(f) === "w:checked");
+  const padrao = filhos(caixa).find((f) => nome(f) === "w:default");
+  const valor = marcado ? (atributo(marcado, "w:val") ?? "1") : (padrao && atributo(padrao, "w:val")) ?? "0";
+  return valor === "1" || valor === "true" ? "☒" : "☐";
+}
+
+/**
+ * Texto de um trecho: w:t, tabulação, quebra, símbolo, caixa de seleção (controle de conteúdo ou formulário
+ * antigo). Texto apagado com revisão ligada (w:delText, w:moveFrom) não entra; de um conteúdo alternativo
+ * (mc:AlternateContent, caixa de texto) entra só a primeira versão, para não repetir o texto.
+ */
 function textoDe(no: No): string {
   let s = "";
   for (const f of filhos(no)) {
@@ -43,9 +62,11 @@ function textoDe(no: No): string {
     else if (n === "w:tab") s += "\t";
     else if (n === "w:br" || n === "w:cr") s += "\n";
     else if (n === "w:sym") s += SIMBOLOS[(atributo(f, "w:char") ?? "").toUpperCase()] ?? "";
+    else if (n === "w:fldChar") s += caixaDeFormulario(f);
     else if (n === "w:sdt") s += textoDoControle(f);
     else if (n === "w:p") s += `${textoDe(f)}\n`;
-    else if (n !== "w:instrText" && n !== "w:delText" && n !== "w:sdtPr") s += textoDe(f);
+    else if (n === "mc:AlternateContent") s += textoDe(filhos(f).find((x) => nome(x) === "mc:Choice") ?? {});
+    else if (n !== "w:instrText" && n !== "w:delText" && n !== "w:sdtPr" && n !== "w:moveFrom" && n !== "w:del") s += textoDe(f);
   }
   return s;
 }
@@ -63,13 +84,34 @@ function textoDoControle(sdt: No): string {
   return conteudo ? textoDe(conteudo) : "";
 }
 
+/** Filhos com o nome dado, atravessando controles de conteúdo e outros invólucros (linha ou célula dentro de w:sdt). */
+function filhosChamados(no: No, alvo: string): No[] {
+  const achados: No[] = [];
+  for (const f of filhos(no)) {
+    const n = nome(f);
+    if (n === alvo) achados.push(f);
+    else if (n === "w:sdt" || INVOLUCROS.has(n)) achados.push(...filhosChamados(f, alvo));
+  }
+  return achados;
+}
+
+/** Parágrafos de uma célula, inclusive os de tabela colada dentro dela (uma linha da tabela interna por parágrafo). */
 function paragrafosDaCelula(tc: No): string[] {
   const paragrafos: string[] = [];
   for (const f of filhos(tc)) {
-    if (nome(f) === "w:p") paragrafos.push(textoDe(f));
-    else if (nome(f) === "w:sdt") paragrafos.push(textoDoControle(f));
+    const n = nome(f);
+    if (n === "w:p") paragrafos.push(textoDe(f));
+    else if (n === "w:tbl") for (const linha of linhasDaTabela(f)) paragrafos.push(linha.map((c) => c.join(" ").trim()).filter(Boolean).join(" | "));
+    else if (n === "w:sdt") {
+      const conteudo = filhos(f).find((x) => nome(x) === "w:sdtContent");
+      paragrafos.push(...(conteudo ? paragrafosDaCelula(conteudo) : [textoDoControle(f)]));
+    } else if (INVOLUCROS.has(n)) paragrafos.push(...paragrafosDaCelula(f));
   }
   return paragrafos;
+}
+
+function linhasDaTabela(tbl: No): string[][][] {
+  return filhosChamados(tbl, "w:tr").map((tr) => filhosChamados(tr, "w:tc").map(paragrafosDaCelula));
 }
 
 function blocosDe(corpo: No[]): Bloco[] {
@@ -77,13 +119,9 @@ function blocosDe(corpo: No[]): Bloco[] {
   for (const no of corpo) {
     const n = nome(no);
     if (n === "w:p") blocos.push({ tipo: "p", texto: textoDe(no) });
-    else if (n === "w:tbl") {
-      const linhas = filhos(no)
-        .filter((f) => nome(f) === "w:tr")
-        .map((tr) => filhos(tr).filter((f) => nome(f) === "w:tc").map(paragrafosDaCelula));
-      blocos.push({ tipo: "tbl", linhas });
-    } else if (n === "w:sdt") {
-      const conteudo = filhos(no).find((f) => nome(f) === "w:sdtContent");
+    else if (n === "w:tbl") blocos.push({ tipo: "tbl", linhas: linhasDaTabela(no) });
+    else if (n === "w:sdt" || INVOLUCROS.has(n)) {
+      const conteudo = n === "w:sdt" ? filhos(no).find((f) => nome(f) === "w:sdtContent") : no;
       if (conteudo) blocos.push(...blocosDe(filhos(conteudo)));
     }
   }
