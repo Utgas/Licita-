@@ -47,6 +47,15 @@ export class ChecklistFicticio {
     return this;
   }
 
+  /** Troca o "☐ opção" inteiro por outro texto (ex.: "☐ XNão", com o X colado no rótulo). */
+  trocarOpcao(numero: string, opcao: string, novo: string): this {
+    const alvo = `☐ ${escapar(opcao)}`;
+    const i = this.xml.indexOf(alvo, this.inicio(numero));
+    if (i < 0) throw new Error(`opção ${opcao} da ${numero} não achada`);
+    this.xml = this.xml.slice(0, i) + escapar(novo) + this.xml.slice(i + alvo.length);
+    return this;
+  }
+
   /** Escreve logo depois do texto da opção (ex.: "Outro: 18 meses"). */
   escreverNaOpcao(numero: string, opcao: string, texto: string): this {
     const i = this.xml.indexOf(escapar(opcao), this.inicio(numero)) + escapar(opcao).length;

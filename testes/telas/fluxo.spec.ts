@@ -48,10 +48,10 @@ test("fluxo completo de um TR fictício, do login ao PDF", async ({ page, contex
   await page.locator('input[type="file"][name="arquivo"]').setInputFiles({ name: "checklist-ficticio.docx", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", buffer: await wordFicticioCompleto(NUMERO) });
   await page.getByRole("button", { name: "Ler o checklist" }).click();
   await expect(page.getByText(/Checklist de consumo lido/)).toBeVisible();
-  const trava = page.locator("li", { hasText: "CK-C-3.3" }).filter({ has: page.getByText("Trava", { exact: true }) }).first();
+  const trava = page.locator("li", { hasText: "Consumo 3.3." }).filter({ has: page.getByText("Trava", { exact: true }) }).first();
   await expect(trava).toBeVisible();
   await trava.getByRole("button", { name: "Não", exact: true }).click();
-  await expect(page.locator("li", { hasText: "CK-C-3.3" }).filter({ has: page.getByText("Trava", { exact: true }) })).toHaveCount(0);
+  await expect(page.locator("li", { hasText: "Consumo 3.3." }).filter({ has: page.getByText("Trava", { exact: true }) })).toHaveCount(0);
   // As demais (resposta única para vários itens) o operador confere e confirma como estão.
   for (let vez = 0; vez < 10 && (await page.getByText("Nenhuma trava", { exact: false }).count()) === 0; vez++) {
     const travas = await page.getByRole("heading", { name: /^Travas \(\d+\)$/ }).innerText();
