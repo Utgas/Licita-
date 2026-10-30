@@ -171,9 +171,33 @@ function unidadeDoNumero(linha: LinhaM11): string | null {
   return /número seguido de '([^']+)'/.exec(linha.leitura)?.[1] ?? null;
 }
 
+/**
+ * Enunciado partido em parágrafos (o Word, ao abrir um PDF, quebra o texto onde a linha quebrava): toda pergunta do
+ * checklist termina em "?" ou ":", então o parágrafo seguinte é juntado até chegar lá (no máximo três).
+ */
+function juntarEnunciadosQuebrados(blocos: Bloco[]): Bloco[] {
+  const saida: Bloco[] = [];
+  let juntados = 0;
+  for (const b of blocos) {
+    const anterior = saida.at(-1);
+    const t = b.tipo === "p" ? normal(b.texto) : "";
+    const continua =
+      anterior?.tipo === "p" && PERGUNTA.test(normal(anterior.texto)) && !/[?:]$/.test(normal(anterior.texto)) && juntados < 3 &&
+      t !== "" && !PERGUNTA.test(t) && !SECAO.test(t) && !temMarca(t) && !/^Resposta:?/i.test(t);
+    if (continua && anterior?.tipo === "p") {
+      anterior.texto = `${normal(anterior.texto)} ${t}`;
+      juntados++;
+    } else {
+      saida.push(b.tipo === "p" ? { ...b } : b);
+      juntados = 0;
+    }
+  }
+  return saida;
+}
+
 export async function lerChecklist(arquivo: Uint8Array, pacote: Pacote): Promise<Leitura> {
   const hashArquivo = createHash("sha256").update(arquivo).digest("hex");
-  const blocos = ePdf(arquivo) ? await lerPdf(arquivo) : eOdt(arquivo) ? await lerOdt(arquivo) : await lerDocx(arquivo);
+  const blocos = juntarEnunciadosQuebrados(ePdf(arquivo) ? await lerPdf(arquivo) : eOdt(arquivo) ? await lerOdt(arquivo) : await lerDocx(arquivo));
   const m11 = pacote.matrizes.M11;
   const paragrafos = blocos.flatMap((b) => (b.tipo === "p" && normal(b.texto) ? [normal(b.texto)] : []));
 

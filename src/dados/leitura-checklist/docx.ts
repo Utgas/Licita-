@@ -3,9 +3,13 @@
  * (decisão 0011). Não converte para HTML nem interpreta nada: só devolve o texto de cada parágrafo e de cada
  * célula. Marcas de caixa de seleção feitas com símbolo (Wingdings), com controle de conteúdo ou com campo de
  * formulário antigo viram ☐ ou ☒.
+ *
+ * Word que saiu de um conversor de PDF não tem parágrafos de verdade: cada pedaço de texto é uma caixa de texto
+ * posicionada na página. Nesse caso as linhas são remontadas pela posição das caixas, como no PDF (linhas.ts).
  */
 import { XMLParser } from "fast-xml-parser";
 import JSZip from "jszip";
+import { type Linha, blocosDeLinhas, linhasDaPagina } from "./linhas.ts";
 
 export type Bloco = { tipo: "p"; texto: string } | { tipo: "tbl"; linhas: string[][][] };
 
@@ -57,8 +61,7 @@ function textoDe(no: No): string {
   let s = "";
   for (const f of filhos(no)) {
     const n = nome(f);
-    if (n === "#text") s += String(f["#text"]);
-    else if (n === "w:t") s += filhos(f).map((x) => String(x["#text"] ?? "")).join("");
+    if (n === "w:t") s += filhos(f).map((x) => String(x["#text"] ?? "")).join("");
     else if (n === "w:tab") s += "\t";
     else if (n === "w:br" || n === "w:cr") s += "\n";
     else if (n === "w:sym") s += SIMBOLOS[(atributo(f, "w:char") ?? "").toUpperCase()] ?? "";
@@ -128,6 +131,73 @@ function blocosDe(corpo: No[]): Bloco[] {
   return blocos;
 }
 
+const EMU_POR_PONTO = 12700;
+/** Mínimo de caixas de texto posicionadas para tratar o documento como convertido de PDF. */
+const CAIXAS_DE_UM_CONVERTIDO = 20;
+
+const textoDoNo = (no: No | undefined) => (no ? filhos(no).map((x) => String(x["#text"] ?? "")).join("") : "");
+const filho = (no: No | undefined, alvo: string) => (no ? filhos(no).find((f) => nome(f) === alvo) : undefined);
+
+/** Caixas de texto ancoradas (wp:anchor com txbxContent) dentro de um nó, sem repetir a versão alternativa (VML). */
+function ancoras(no: No): No[] {
+  const achadas: No[] = [];
+  for (const f of filhos(no)) {
+    const n = nome(f);
+    if (n === "wp:anchor") achadas.push(f);
+    else if (n === "mc:AlternateContent") {
+      const escolha = filho(f, "mc:Choice");
+      if (escolha) achadas.push(...ancoras(escolha));
+    } else if (n !== "mc:Fallback" && n !== "#text") achadas.push(...ancoras(f));
+  }
+  return achadas;
+}
+
+function paragrafosDaCaixa(ancora: No): string[] {
+  const procurar = (no: No): No | undefined => {
+    for (const f of filhos(no)) {
+      if (nome(f) === "w:txbxContent") return f;
+      const achado = nome(f) === "#text" ? undefined : procurar(f);
+      if (achado) return achado;
+    }
+    return undefined;
+  };
+  const conteudo = procurar(ancora);
+  return conteudo ? filhosChamados(conteudo, "w:p").map(textoDe) : [];
+}
+
+/**
+ * Linhas do Word convertido de PDF, pela posição das caixas de texto; null se o documento não é desse tipo. Cada
+ * parágrafo do corpo que segura caixas presas a ele é uma página (é assim que o conversor monta), e caixas presas à
+ * página mudam de página na quebra de página.
+ */
+function linhasDasCaixas(corpo: No[], altura: number): Linha[] | null {
+  type Item = { x: number; y: number; largura: number; texto: string };
+  const paginas = new Map<number, Item[]>();
+  let pagina = 0;
+  let total = 0;
+  for (const p of corpo) {
+    if (nome(p) !== "w:p") continue;
+    const caixas = ancoras(p);
+    if (/"w:type":"page"|w:lastRenderedPageBreak/.test(JSON.stringify(p))) pagina++;
+    if (caixas.length === 0) continue;
+    const presoAoParagrafo = caixas.some((a) => atributo(filho(a, "wp:positionV") ?? {}, "relativeFrom") === "paragraph");
+    if (presoAoParagrafo) pagina++;
+    for (const a of caixas) {
+      const x = Number(textoDoNo(filho(filho(a, "wp:positionH"), "wp:posOffset")) || 0) / EMU_POR_PONTO;
+      const topo = Number(textoDoNo(filho(filho(a, "wp:positionV"), "wp:posOffset")) || 0) / EMU_POR_PONTO;
+      const largura = Number(atributo(filho(a, "wp:extent") ?? {}, "cx") ?? 0) / EMU_POR_PONTO;
+      const itens = paginas.get(pagina) ?? [];
+      paragrafosDaCaixa(a).forEach((texto, i) => {
+        if (texto.trim()) itens.push({ x, y: altura - topo - i * 8, largura, texto: texto.replace(/\n/g, " ") });
+      });
+      paginas.set(pagina, itens);
+      total++;
+    }
+  }
+  if (total < CAIXAS_DE_UM_CONVERTIDO) return null;
+  return [...paginas].flatMap(([n, itens]) => linhasDaPagina(n, altura, itens));
+}
+
 /** Blocos do corpo do documento, na ordem. Arquivo que não é .docx é erro claro. */
 export async function lerDocx(arquivo: Uint8Array): Promise<Bloco[]> {
   // Word 97-2003 (.doc) começa com a assinatura D0 CF 11 E0: formato antigo, sem XML para ler.
@@ -145,5 +215,8 @@ export async function lerDocx(arquivo: Uint8Array): Promise<Bloco[]> {
   const documento = arvore.find((n) => nome(n) === "w:document");
   const corpo = documento && filhos(documento).find((n) => nome(n) === "w:body");
   if (!corpo) throw new ArquivoInvalido("O documento do Word não tem corpo legível.");
-  return blocosDe(filhos(corpo));
+  const pagina = filho(filho(corpo, "w:sectPr"), "w:pgSz");
+  const altura = Number(atributo(pagina ?? {}, "w:h") ?? 16838) / 20;
+  const convertido = linhasDasCaixas(filhos(corpo), altura);
+  return convertido ? blocosDeLinhas(convertido) : blocosDe(filhos(corpo));
 }
