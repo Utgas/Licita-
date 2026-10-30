@@ -45,11 +45,11 @@ A entrada principal do sistema é o checklist técnico, e não o DFD. A área re
 3. A equipe administrativa responde ao wizard. O que o checklist já respondeu chega preenchido, e as decisões jurídicas ficam com ela.
 4. O motor monta o ETP e o TR, e cada trecho mostra a pergunta do checklist de onde veio.
 
-**Word e digitação pelo operador.** A área requisitante preenche o checklist em Word e o operador o envia ao sistema, que lê as respostas. O operador também pode digitar ou corrigir respostas na tela. Só o operador usa o sistema (decisão 0010).
+**Word, PDF e digitação pelo operador.** A área requisitante preenche o checklist em Word e o operador envia ao sistema o Word ou o PDF salvo a partir dele (decisão 0017), e o sistema lê as respostas. O operador também pode digitar ou corrigir respostas na tela. Só o operador usa o sistema (decisão 0010).
 
 **A IA perde peso.** Com respostas estruturadas, a v1 já monta o ETP a partir do checklist. Na v2, a IA só melhora a redação, sempre citando a pergunta de origem.
 
-**O checklist está congelado na versão já distribuída às OMs** (decisão 0009). Ele chega por upload do Word preenchido. A leitura destaca em amarelo o que ficou incerto, pergunta ao operador o que muda a minuta e oferece campos de complemento para o que o checklist não pede. Uma versão nova do checklist exige um M11 novo e gera um pacote de regras novo.
+**O checklist está congelado na versão já distribuída às OMs** (decisão 0009). Ele chega por upload do Word preenchido ou do PDF salvo a partir dele. A leitura destaca em amarelo o que ficou incerto, pergunta ao operador o que muda a minuta e oferece campos de complemento para o que o checklist não pede. Uma versão nova do checklist exige um M11 novo e gera um pacote de regras novo.
 
 ## Componentes
 
@@ -57,7 +57,7 @@ São onze componentes, entregues em três versões. A v0 monta o TR por regras. 
 
 | Componente | O que faz | Matrizes que usa | Versão |
 | --- | --- | --- | --- |
-| Checklist técnico | Leitura do Word preenchido pela área requisitante, enviado pelo operador, com revisão e complementos (decisão 0009) | M11 | v0 |
+| Checklist técnico | Leitura do Word ou do PDF preenchido pela área requisitante, enviado pelo operador, com revisão e complementos (decisões 0009 e 0017) | M11 | v0 |
 | Compilador de regras | Lê os CSV, confere IDs e condições e gera o pacote em JSON, com hash | M02 a M07, M10, M11 | v0 |
 | Motor: wizard | Escolhe a próxima pergunta pelas dependências e já preenche o que o checklist respondeu | M04, M05, M11 | v0 |
 | Motor: itens | Aplica as regras de cada item: ME/EPP pelo valor estimado, grupo, amostra, marca e validade | M03, M05, M11 | v0 |
@@ -99,7 +99,7 @@ O banco não guarda a minuta pronta. Guarda as respostas, os itens e as ediçõe
 | OM | UASG, nome, linhas do cabeçalho, endereços de entrega, foro | O administrador cadastra; vira padrão no wizard |
 | Usuário | nome, e-mail, OM, perfil | Perfis: operador (quem elabora TR e ETP) e administrador da TI, que cria usuários, troca senhas (provisórias) e lê a auditoria, sem abrir processos (decisões 0010 e 0012) |
 | Processo | NUP, objeto resumido, OM, pacote e hash, situação | Situações: rascunho, em revisão, liberado, concluído |
-| Resposta do checklist | processo, versão do checklist, pergunta (CK), valor, itens atingidos | Vem do formulário ou da leitura do Word |
+| Resposta do checklist | processo, versão do checklist, pergunta (CK), valor, itens atingidos | Vem do formulário ou da leitura do Word ou do PDF |
 | Resposta do wizard | processo, pergunta (WZ), valor, origem (checklist ou equipe) | Uma linha por pergunta respondida |
 | Item | número, especificação, CATMAT, unidade, quantidade, valor unitário de referência, grupo, tratamento ME/EPP, amostra, marca, perecível, validade mínima | O tratamento ME/EPP é calculado pelo valor; só a exceção justificada é escolha |
 | Quantidade por órgão | item, UASG, mínima, máxima | Só em registro de preços com participantes |
@@ -145,6 +145,7 @@ O critério é usar uma linguagem só, ferramentas comuns e nada que prenda o mo
 | Condições | JSON Logic | Avalia a condição sem executar código |
 | PDF | @react-pdf/renderer, no servidor | Roda dentro da função, sem navegador; o Chromium esbarra no limite de 250 MB das funções da Vercel |
 | Planilhas | ExcelJS | Importação da tabela de itens |
+| Leitura do checklist | jszip e fast-xml-parser (Word); pdfjs-dist (PDF) | Leem o texto como está no arquivo, sem converter e sem rede (decisões 0011 e 0017) |
 | Testes | Vitest no motor, Playwright nas telas | Os cenários do agente viram testes de ouro |
 | Ambientes | Dois projetos na Vercel e no Supabase: desenvolvimento e produção | Sem Docker na máquina; o desenvolvimento só usa dados fictícios |
 
