@@ -31,6 +31,8 @@ O Gabriel relatou que nem o Word do HCE era lido. O estudo da leitura simulou o 
 | Texto dentro de marcação `customXml`, linha ou célula dentro de controle de conteúdo, tabela dentro da caixa | texto perdido | lido |
 | Mesmo item citado duas vezes numa resposta por item | duas linhas iguais e erro genérico do banco ("Não foi possível salvar") | os textos são juntados |
 | Arquivo salvo no formato do LibreOffice (.odt), que é o que o HCE usa | "não é um documento do Word" | lido (`src/dados/leitura-checklist/odt.ts`, mesmas bibliotecas do Word) |
+| PDF transformado em Word por um conversor: cada pedaço de texto vira uma caixa de texto posicionada | "não tem as perguntas do checklist" (a leitura ainda misturava ao texto os números de posição das caixas) | linhas remontadas pela posição das caixas, como no PDF (`linhas.ts`) |
+| Enunciado partido em dois parágrafos (o Word, ao abrir um PDF, quebra onde a linha quebrava) | pergunta não reconhecida | parágrafos juntados até o "?" ou ":" final |
 | Pergunta que falta ou mudou | "primeira diferença na pergunta X", às vezes apontando a pergunta errada | diz qual pergunta falta e o texto esperado |
 
 A versão continua reconhecida pelos enunciados do M11: todas as perguntas da versão distribuída, na ordem, com o mesmo texto (sem contar maiúsculas, acentos, aspas e espaços). O que é do modelo (orientação e opções, pelas colunas `orientacao` e `opcoes` do M11) não vira resposta.

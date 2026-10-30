@@ -75,6 +75,17 @@ describe("checklist de permanentes salvo pelo LibreOffice (.odt)", () => {
   });
 });
 
+describe("Word que saiu de um conversor de PDF (caixas de texto posicionadas)", () => {
+  it("dá as mesmas respostas que o PDF de onde saiu", async () => {
+    const convertido = await lerChecklist(fixture("permanentes-ficticio-convertido-do-pdf.docx"), pacote);
+    const doPdf = await lerChecklist(fixture("permanentes-ficticio.pdf"), pacote);
+    const semHash = (x: Leitura) => x.respostas.map((r) => [r.pergunta, r.valor, r.texto?.replace(/\s+/g, " ") ?? null]);
+    expect(convertido.checklist).toBe("PERMANENTES");
+    expect(semHash(convertido)).toEqual(semHash(doPdf));
+    expect(convertido.metadados).toEqual(doPdf.metadados);
+  });
+});
+
 describe("checklist de consumo em PDF", () => {
   it("em branco: versão reconhecida e nenhuma resposta", async () => {
     const l = await lerChecklist(fixture("consumo-em-branco.pdf"), pacote);

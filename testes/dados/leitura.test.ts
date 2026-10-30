@@ -162,6 +162,13 @@ describe("o que acontece com o Word de verdade", () => {
     expect(l.checklist).toBe("PERMANENTES");
   });
 
+  it("enunciado partido em dois parágrafos (Word abrindo um PDF)", async () => {
+    const l = await ler(
+      (await permanentes()).responder("2.1", "Necessidade fictícia").alterarXml((x) => x.replace(/>2\.1\. Qual necessidade assistencial, /, '>2.1. Qual necessidade assistencial,</w:t></w:r></w:p><w:p><w:r><w:t xml:space="preserve">')),
+    );
+    expect(resposta(l, "CK-P-2.1")[0].valor).toBe("Necessidade fictícia");
+  });
+
   it("caixa de seleção de formulário antigo do Word (FORMCHECKBOX)", async () => {
     const caixa = '</w:t></w:r><w:r><w:fldChar w:fldCharType="begin"><w:ffData><w:checkBox><w:default w:val="0"/><w:checked/></w:checkBox></w:ffData></w:fldChar></w:r><w:r><w:t xml:space="preserve"> ';
     const l = await ler((await permanentes()).alterarXml((x) => x.replace(/(>2\.4\. [\s\S]*?)☐ Sim/, `$1${caixa}Sim`)));
