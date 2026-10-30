@@ -1,9 +1,10 @@
 /**
- * Leitura determinística do checklist preenchido (passo 6; decisões 0009 e 0011), sem IA.
+ * Leitura determinística do checklist preenchido (passo 6; decisões 0009, 0011 e 0017), sem IA. Aceita o Word
+ * (.docx) e o PDF gerado a partir dele; os dois viram os mesmos blocos e seguem a mesma leitura.
  *
  * - Reconhece a versão pelos enunciados: as perguntas numeradas do Word têm de ser exatamente as do M11 (número e
  *   enunciado). Versão desconhecida é erro, nunca leitura parcial.
- * - Marcas: ☒, ☑, ✓, ✔, ✗, ✘, ■, [X], (X) ou um X no lugar do ☐.
+ * - Marcas: ☒, ☑, ✓, ✔, ✗, ✘, ■, [X], (X) ou um X no lugar do ☐ ou colado nele ("☐X", "X☐", "☐ XNão").
  * - Resposta: a caixa de uma célula depois de "Resposta:"; tabelas com rótulo (campos) também são lidas.
  * - Produz os dados que as expressões usam (README das matrizes): CK_*, _texto, _numero e os metadados
  *   checklist.* (consumo, permanentes, marcas_multiplas, resposta_unica_por_item, divergencias_leitura,
@@ -15,6 +16,7 @@ import type { LeituraDoChecklist } from "../../motor/entrada.ts";
 import type { Valor } from "../../motor/pacote/avaliador.ts";
 import type { LinhaM11, Pacote } from "../../motor/pacote/esquema.ts";
 import { type Bloco, lerDocx } from "./docx.ts";
+import { ePdf, lerPdf } from "./pdf.ts";
 
 export type Checklist = "CONSUMO" | "PERMANENTES";
 
@@ -53,7 +55,9 @@ type Segmento = { marcada: boolean; rotulo: string };
 
 /** Opções de uma linha: cada marca e o texto até a próxima. */
 function segmentos(linha: string): Segmento[] {
-  const texto = linha.replace(/☐\s*[xX](?=\s)/g, "☒").replace(/(?<=^|\s)[xX]\s*☐/g, "☒");
+  const texto = linha
+    .replace(/☐\s*[xX](?=\s|$|[A-ZÁÉÍÓÚÂÊÔÃÕÇ])/g, "☒ ")
+    .replace(/(?<=^|\s)[xX]\s*☐/g, "☒");
   const marcas = [...texto.matchAll(MARCA)];
   return marcas.map((m, i) => ({
     marcada: m[0] !== VAZIA,
@@ -87,6 +91,16 @@ function casarOpcao(rotulo: string, opcoes: string[]): { opcao: string; resto: s
 
 /** Conteúdo de uma pergunta no Word: linhas de opção, caixa de resposta e campos rotulados. */
 type Trecho = { linhasDeOpcao: string[]; caixa: string | null; campos: Record<string, string>; linhas: number };
+
+/**
+ * Valor de um campo de tabela (1.4): a célula com o rótulo exato, ou a célula em que o valor foi escrito colado
+ * ao rótulo ("NomeFulano", "Posto/graduação Cap").
+ */
+function valorDoCampo(campos: Record<string, string>, campo: string): string {
+  if (campos[campo]) return campos[campo];
+  const rotulo = Object.keys(campos).find((k) => chave(k).startsWith(chave(campo)) && chave(k) !== chave(campo));
+  return rotulo ? normal([rotulo.slice(campo.length).replace(/^[:\s]+/, ""), campos[rotulo]].join(" ")) : "";
+}
 
 function textoDaCelula(paragrafos: string[]): string {
   return paragrafos.join("\n").replace(/\n+$/, "");
@@ -123,7 +137,7 @@ function unidadeDoNumero(linha: LinhaM11): string | null {
 
 export async function lerChecklist(arquivo: Uint8Array, pacote: Pacote): Promise<Leitura> {
   const hashArquivo = createHash("sha256").update(arquivo).digest("hex");
-  const blocos = await lerDocx(arquivo);
+  const blocos = ePdf(arquivo) ? await lerPdf(arquivo) : await lerDocx(arquivo);
   const m11 = pacote.matrizes.M11;
 
   // 1. Estrutura: cabeçalho, perguntas numeradas e seções sem número (22, 23), com o que vem até a próxima.
@@ -247,7 +261,7 @@ export async function lerChecklist(arquivo: Uint8Array, pacote: Pacote): Promise
       if (marcadas.length) valor = [...new Set(marcadas.map((m) => m.opcao))];
     } else if (linha.tipo_resposta === "TABELA") {
       const campos = /campos:\s*(.+)$/.exec(linha.opcoes)?.[1].split(/;\s*/) ?? [];
-      const entrada = Object.fromEntries(campos.map((c) => [c, trecho.campos[c] ?? ""]).filter(([, v]) => v));
+      const entrada = Object.fromEntries(campos.map((c) => [c, valorDoCampo(trecho.campos, c)]).filter(([, v]) => v));
       if (Object.keys(entrada).length) valor = [entrada];
     } else {
       valor = trecho.caixa || camposPreenchidos.join("\n") || null;

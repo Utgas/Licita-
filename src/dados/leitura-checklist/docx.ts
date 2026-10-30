@@ -92,11 +92,15 @@ function blocosDe(corpo: No[]): Bloco[] {
 
 /** Blocos do corpo do documento, na ordem. Arquivo que não é .docx é erro claro. */
 export async function lerDocx(arquivo: Uint8Array): Promise<Bloco[]> {
+  // Word 97-2003 (.doc) começa com a assinatura D0 CF 11 E0: formato antigo, sem XML para ler.
+  if (arquivo[0] === 0xd0 && arquivo[1] === 0xcf && arquivo[2] === 0x11 && arquivo[3] === 0xe0) {
+    throw new ArquivoInvalido("Arquivo do Word antigo (.doc). Abra no Word e salve como .docx ou como PDF, e envie de novo.");
+  }
   let xml: string | undefined;
   try {
     xml = await (await JSZip.loadAsync(arquivo)).file("word/document.xml")?.async("string");
   } catch {
-    throw new ArquivoInvalido("O arquivo não é um documento do Word (.docx).");
+    throw new ArquivoInvalido("O arquivo não é um documento do Word (.docx) nem um PDF.");
   }
   if (!xml) throw new ArquivoInvalido("O arquivo não é um documento do Word (.docx).");
   const arvore = new XMLParser({ preserveOrder: true, ignoreAttributes: false, trimValues: false, processEntities: true }).parse(xml) as No[];
